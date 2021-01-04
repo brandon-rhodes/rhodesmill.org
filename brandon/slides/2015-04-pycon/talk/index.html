@@ -1,0 +1,1478 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>&lt;stdin&gt;</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="slide">
+
+<style>
+  .section {position: relative;}
+  .note {position: absolute; left: 101%; top: 0;}
+  .presentation-mode .note {color: white; top: 250px; font-size: 0.5em;
+    width: 300px}
+</style>
+
+<style>
+  em {font-size: 1.04em;}
+</style><div class="line-block">
+<div class="line"><strong>Oh, Come On.</strong></div>
+<div class="line"><strong>Who Needs Bytearrays?</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line">&#64;brandon_rhodes</div>
+<div class="line"><em>PyCon 2015</em></div>
+<div class="line"><em>Montréal</em></div>
+</div>
+<!-- TODO
+
+what about the ability to change the middle of a bytearray?
+look up whether my sdd should really give such erratic performance.
+mention that PyPy will beat gcc, gcc -O3, but not clang
+wow pypy is slow on readinto. -->
+</div>
+<div class="section" id="id1">
+
+<div class="line-block">
+<div class="line">In Python, normal string</div>
+<div class="line">objects are immutable</div>
+</div>
+</div>
+<div class="section" id="id2">
+
+<div class="line-block">
+<div class="line">Python 2 / Python 3</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>str</strong> or <strong>bytes</strong> / <strong>bytes</strong></div>
+<div class="line"><strong>unicode</strong> / <strong>str</strong></div>
+</div>
+</div>
+<div class="section" id="id3">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">h</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;Content-Type: 30&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">h</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="sa">b</span><span class="s1">&#39;content-type: 30&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">h</span>
+<span class="sa">b</span><span class="s1">&#39;Content-Type: 30&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">h</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+<span class="p">[</span><span class="sa">b</span><span class="s1">&#39;Content-Type:&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;30&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">h</span>
+<span class="sa">b</span><span class="s1">&#39;Content-Type: 30&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id4">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">h</span>
+<span class="sa">b</span><span class="s1">&#39;Content-Type: 30&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">h</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39; &#39;</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="o">...</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="s1">&#39;bytes&#39;</span> <span class="nb">object</span> <span class="n">does</span> <span class="ow">not</span>
+           <span class="n">support</span> <span class="n">item</span> <span class="n">assignment</span>
+</pre></div>
+
+</div>
+<div class="section" id="immutability">
+<h1>Immutability</h1>
+<div class="line-block">
+<div class="line">+ Simple</div>
+<div class="line">+ Functional</div>
+</div>
+<div class="line-block">
+<div class="line">- Allocation</div>
+<div class="line">- Copying</div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<p><strong>bytearray</strong></p>
+</div>
+<div class="section" id="id6">
+
+<div class="line-block">
+<div class="line">The <strong>bytearray</strong> is</div>
+</div>
+<div class="line-block">
+<div class="line">• A <em>mutable</em> string</div>
+<div class="line">• Based on Python&nbsp;3 <strong>bytes</strong></div>
+<div class="line">• Available in Python 2.6, 2.7, 3</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Problem: &quot;based on&quot;!</p>
+</div>
+</div>
+<div class="section" id="problem">
+<h1>Problem:</h1>
+<div class="line-block">
+<div class="line">The Python 3 <strong>bytes</strong> type</div>
+<div class="line">is <em>designed</em> to be awkward</div>
+<div class="line">for string operations</div>
+</div>
+</div>
+<div class="section" id="id7">
+
+<p><strong>Q:</strong> Why?</p>
+<div class="line-block">
+<div class="line"><strong>A:</strong> So you will <em>want</em> to run <strong>decode()</strong></div>
+<div class="line">before treating it as characters</div>
+</div>
+</div>
+<div class="section" id="python-2">
+<h1>Python 2</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;Hello world!&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="mi">12</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="p">[</span><span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="s1">&#39;world!&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="python-3">
+<h1>Python 3</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;Hello world!&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="mi">12</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="p">[</span><span class="sa">b</span><span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;world!&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id8">
+<h1>Python 2</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;Hello world!&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+<span class="s1">&#39;lo worl&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id9">
+<h1>Python 3</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;Hello world!&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+<span class="sa">b</span><span class="s1">&#39;lo worl&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id10">
+<h1>Python 2</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;abc&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="mi">3</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+<span class="o">...</span>     <span class="k">print</span> <span class="nb">repr</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+<span class="s1">&#39;a&#39;</span>
+<span class="s1">&#39;b&#39;</span>
+<span class="s1">&#39;c&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id11">
+<h1>Python 3</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="sa">b</span><span class="s1">&#39;abc&#39;</span><span class="p">:</span>
+<span class="o">...</span>     <span class="k">print</span> <span class="nb">repr</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+</pre></div>
+
+<p>?</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It gives you &quot;SyntaxError,
+you failed to pay the Python 3 paren tax&quot;</p>
+</div>
+</div>
+<div class="section" id="id12">
+<h1>Python 3</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="sa">b</span><span class="s1">&#39;abc&#39;</span><span class="p">:</span>
+<span class="o">...</span>     <span class="k">print</span> <span class="nb">repr</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="o">...</span>
+<span class="ne">SyntaxError</span><span class="p">:</span> <span class="n">you</span> <span class="n">failed</span> <span class="n">to</span> <span class="n">pay</span> <span class="n">the</span>
+             <span class="n">Python</span> <span class="mi">3</span> <span class="n">paren</span> <span class="n">tax</span>
+</pre></div>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Like an old text-based adventure game
+throwing an extra obstacle in your way.</p>
+</div>
+</div>
+<div class="section" id="id13">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">cross</span> <span class="n">bridge</span>
+
+<span class="n">A</span> <span class="n">BURLY</span> <span class="n">TROLL</span> <span class="n">STANDS</span> <span class="n">BY</span> <span class="n">THE</span> <span class="n">BRIDGE</span> <span class="n">AND</span>
+<span class="n">INSISTS</span> <span class="n">YOU</span> <span class="n">THROW</span> <span class="n">HIM</span> <span class="n">TWO</span> <span class="n">PARENTHESES</span>
+<span class="n">BEFORE</span> <span class="n">YOU</span> <span class="n">MAY</span> <span class="n">CROSS</span><span class="o">.</span>
+</pre></div>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Ruby</p>
+</div>
+</div>
+<div class="section" id="a-conservative-estimate">
+<h1>A Conservative Estimate</h1>
+<div class="line-block">
+<div class="line">3 bugs per hour</div>
+<div class="line">×</div>
+<div class="line">2 <tt class="docutils literal">print</tt> statements per investigation</div>
+<div class="line">×</div>
+<div class="line">2 parentheses per print</div>
+<div class="line">×</div>
+<div class="line">6 coding hours per day</div>
+<div class="line">×</div>
+<div class="line">250 coding days per year</div>
+</div>
+</div>
+<div class="section" id="python-3-owes-me">
+<h1>Python&nbsp;3 Owes Me</h1>
+<p><strong>18,000 parenthesis characters per year</strong></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">I have to go into paren debt just to write any Emacs LISP.
+But, what's another two parens when I've already used so many?</p>
+</div>
+</div>
+<div class="section" id="id14">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="sa">b</span><span class="s1">&#39;abc&#39;</span><span class="p">:</span>
+<span class="o">...</span>     <span class="k">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+</pre></div>
+
+</div>
+<div class="section" id="id15">
+
+<p>Updated total: <strong>18,002 parenthesis</strong></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We'll just move on, not mention it.</p>
+</div>
+</div>
+<div class="section" id="id16">
+<h1>Python 3</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="sa">b</span><span class="s1">&#39;abc&#39;</span><span class="p">:</span>
+<span class="o">...</span>     <span class="k">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+<span class="mi">97</span>
+<span class="mi">98</span>
+<span class="mi">99</span>
+</pre></div>
+
+</div>
+<div class="section" id="breaks-the-contract">
+<h1>Breaks the contract</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;Hello world!&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="o">...</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="n">unsupported</span> <span class="n">operand</span> <span class="nb">type</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="o">+</span><span class="p">:</span>
+           <span class="s1">&#39;int&#39;</span> <span class="ow">and</span> <span class="s1">&#39;bytes&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id17">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;Hello world!&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+<span class="sa">b</span><span class="s1">&#39;Hello world!&#39;</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">There <em>is</em> sometimes</div>
+<div class="line">a way around</div>
+</div>
+</div>
+<div class="section" id="id18">
+
+<div class="line-block">
+<div class="line">But — <strong>bytes</strong> objects remain</div>
+<div class="line">an awkward fit for many tasks</div>
+<div class="line">they are called upon to do</div>
+</div>
+</div>
+<div class="section" id="id19">
+
+<img alt="ven.jpg" src="ven.jpg" />
+</div>
+<div class="section" id="bytearray">
+<h1>bytearray</h1>
+<div class="line-block">
+<div class="line"><em>Mutable</em> version of Python’s</div>
+<div class="line"><strong>most underpowered</strong></div>
+<div class="line">string type</div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="line-block">
+<div class="line"><strong>I.</strong> The Bit Vector</div>
+<div class="line"><strong>II.</strong> The Reusable Buffer</div>
+<div class="line"><strong>III.</strong> The Accumulator</div>
+<div class="line"><strong>IV.</strong> The Freestyle</div>
+<div class="line">Mutable String</div>
+</div>
+</div>
+<div class="section" id="i-the-bit-vector">
+<h1>I. The Bit Vector</h1>
+</div>
+<div class="section" id="id21">
+
+<div class="line-block">
+<div class="line">In the rare case</div>
+<div class="line">where you actually</div>
+<div class="line"><em>want to store bytes—</em></div>
+</div>
+<div class="line-block">
+<div class="line">is the <strong>bytearray</strong></div>
+<div class="line">a good choice?</div>
+</div>
+</div>
+<div class="section" id="bloom-filter">
+<h1>Bloom Filter</h1>
+</div>
+<div class="section" id="id22">
+
+<div class="highlight"><pre><span></span><span class="n">bits</span> <span class="o">=</span> <span class="mi">2048</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">bits</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">a</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">bits</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">a</span><span class="p">[</span><span class="n">n</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">n</span> <span class="o">&amp;</span> <span class="mi">7</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hashes</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+        <span class="nb">set</span><span class="p">(</span><span class="n">h</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id23">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span><span class="p">[</span><span class="n">n</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">]</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">n</span> <span class="o">&amp;</span> <span class="mi">7</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="n">h</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span>
+               <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hashes</span><span class="p">(</span><span class="n">word</span><span class="p">))</span>
+</pre></div>
+
+</div>
+<div class="section" id="id24">
+
+<div class="line-block">
+<div class="line">The name <tt class="docutils literal">a</tt> in the previous code</div>
+<div class="line">can be <em>either</em> an old <strong>array.array</strong></div>
+<div class="line">or a newfangled <strong>bytearray</strong></div>
+</div>
+</div>
+<div class="section" id="a-first-victory">
+<h1>A first victory</h1>
+<div class="line-block">
+<div class="line"><strong>bytearray</strong> is more than <strong>7%</strong> faster</div>
+<div class="line">than old general-purpose</div>
+<div class="line"><strong>array.array</strong> object</div>
+</div>
+<!-- bytearray   0.000328779
+array.array 0.000355959
+list        0.000321627 -->
+</div>
+<div class="section" id="id25">
+
+<div class="line-block">
+<div class="line">Want to know</div>
+<div class="line">what’s even <em>faster?</em></div>
+</div>
+</div>
+<div class="section" id="id26">
+
+<p><strong>list</strong> of <strong>int</strong>s</p>
+</div>
+<div class="section" id="id27">
+
+<div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">bits</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id28">
+
+<div class="line-block">
+<div class="line">A plain list of <strong>int</strong> objects</div>
+<div class="line">in the range 0…255 runs</div>
+<div class="line"><em>2% faster</em> than <strong>bytearray</strong></div>
+</div>
+</div>
+<div class="section" id="why">
+<h1>Why?</h1>
+</div>
+<div class="section" id="id29">
+
+<div class="line-block">
+<div class="line"><strong>bytearray</strong>: stores bytes that must each</div>
+<div class="line">be translated to an <strong>int</strong> object address,</div>
+<div class="line"><em>and back,</em> for each <tt class="docutils literal">a[n]</tt> <tt class="docutils literal">|=</tt> <tt class="docutils literal">bits</tt></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>list</strong>: simply stores <strong>int</strong> objects to</div>
+<div class="line">begin with — no translation!</div>
+</div>
+</div>
+<div class="section" id="id30">
+
+<div class="line-block">
+<div class="line">So plain old <strong>list</strong> is</div>
+<div class="line">a faster bit vector than</div>
+<div class="line">the fancy new <strong>bytearray</strong></div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="line-block">
+<div class="line">(Except on PyPy)</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id32">
+
+<div class="line-block">
+<div class="line">(Except on PyPy)</div>
+</div>
+<div class="line-block">
+<div class="line">(Where they are all the same)</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line">(Except on PyPy)</div>
+</div>
+<div class="line-block">
+<div class="line">(Where they are all the same)</div>
+</div>
+<div class="line-block">
+<div class="line">(And run <em>much</em> faster)</div>
+</div>
+<!-- pypy
+bytearray 0.000113964
+old array 0.000113964
+list      0.000111818 -->
+</div>
+<div class="section" id="conclusion">
+<h1>Conclusion?</h1>
+</div>
+<div class="section" id="id34">
+<h1>I. The Bit Vector</h1>
+<div class="line-block">
+<div class="line">Verdict:</div>
+<div class="line"><em>Space-efficient</em></div>
+</div>
+<p>Slightly slower, but 8× less space</p>
+</div>
+<div class="section" id="ii-the-reusable-buffer">
+<h1>II. The Reusable Buffer</h1>
+</div>
+<div class="section" id="cat">
+<h1>cat</h1>
+</div>
+<div class="section" id="id35">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">time</span> <span class="n">cat</span> <span class="o">&lt;</span> <span class="n">gigabyte</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span>
+<span class="mf">0.00</span><span class="n">s</span> <span class="n">user</span> <span class="mf">0.12</span><span class="n">s</span> <span class="n">system</span> <span class="mi">99</span><span class="o">%</span> <span class="n">cpu</span> <span class="mf">0.117</span> <span class="n">total</span>
+</pre></div>
+
+</div>
+<div class="section" id="id36">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">dd</span> <span class="k">if</span><span class="o">=</span><span class="n">gigabyte</span><span class="o">.</span><span class="n">data</span> <span class="n">of</span><span class="o">=/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span>
+<span class="mi">2097152</span><span class="o">+</span><span class="mi">0</span> <span class="n">records</span> <span class="ow">in</span>
+<span class="mi">2097152</span><span class="o">+</span><span class="mi">0</span> <span class="n">records</span> <span class="n">out</span>
+<span class="mi">1073741824</span> <span class="nb">bytes</span> <span class="p">(</span><span class="mf">1.1</span> <span class="n">GB</span><span class="p">)</span> <span class="n">copied</span><span class="p">,</span>
+        <span class="mf">0.698802</span> <span class="n">s</span><span class="p">,</span> <span class="mf">1.5</span> <span class="n">GB</span><span class="o">/</span><span class="n">s</span>
+</pre></div>
+
+</div>
+<div class="section" id="q">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">Why does <strong>dd</strong> take 5× longer</div>
+<div class="line">than <strong>cat</strong> by default?</div>
+</div>
+</div>
+<div class="section" id="a">
+<h1>A:</h1>
+<p>Block size!</p>
+</div>
+<div class="section" id="id37">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">strace</span> <span class="n">cat</span> <span class="o">&lt;</span> <span class="n">gigabyte</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="n">read</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">...</span><span class="p">,</span> <span class="mi">131072</span><span class="p">)</span> <span class="o">=</span> <span class="mi">131072</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">...</span><span class="p">,</span> <span class="mi">131072</span><span class="p">)</span> <span class="o">=</span> <span class="mi">131072</span>
+</pre></div>
+
+</div>
+<div class="section" id="id38">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">strace</span> <span class="n">dd</span> <span class="k">if</span><span class="o">=</span><span class="n">gigabyte</span><span class="o">.</span><span class="n">data</span> <span class="n">of</span><span class="o">=/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="n">read</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">...</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span> <span class="o">=</span> <span class="mi">512</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">...</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span> <span class="o">=</span> <span class="mi">512</span>
+</pre></div>
+
+</div>
+<div class="section" id="id39">
+
+<div class="line-block">
+<div class="line">Giving <strong>dd</strong> the same block size</div>
+<div class="line">as <strong>cat</strong> makes it perform the same</div>
+</div>
+</div>
+<div class="section" id="id40">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">dd</span> <span class="k">if</span><span class="o">=</span><span class="n">gigabyte</span><span class="o">.</span><span class="n">data</span> <span class="n">of</span><span class="o">=/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span> <span class="n">bs</span><span class="o">=</span><span class="mi">131072</span>
+<span class="mi">8192</span><span class="o">+</span><span class="mi">0</span> <span class="n">records</span> <span class="ow">in</span>
+<span class="mi">8192</span><span class="o">+</span><span class="mi">0</span> <span class="n">records</span> <span class="n">out</span>
+<span class="mi">1073741824</span> <span class="nb">bytes</span> <span class="p">(</span><span class="mf">1.1</span> <span class="n">GB</span><span class="p">)</span> <span class="n">copied</span><span class="p">,</span>
+        <span class="mf">0.117653</span> <span class="n">s</span><span class="p">,</span> <span class="mf">9.1</span> <span class="n">GB</span><span class="o">/</span><span class="n">s</span>
+</pre></div>
+
+</div>
+<div class="section" id="id41">
+
+<div class="line-block">
+<div class="line">So as we look at Python I/O, we will</div>
+<div class="line">need to keep block size in mind</div>
+</div>
+</div>
+<div class="section" id="id42">
+
+<p>Normal Python</p>
+<div class="highlight"><pre><span></span><span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id43">
+
+<p>Broken attempt at <strong>readinto()</strong></p>
+<div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">readinto</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">length</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id44">
+
+<p>Fix that incurs a copy</p>
+<div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">readinto</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">length</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="n">length</span><span class="p">])</span>
+</pre></div>
+
+</div>
+<div class="section" id="id45">
+
+<p>What if we want to achieve zero-copy?</p>
+</div>
+<div class="section" id="id46">
+
+<p><strong>memoryview</strong>!</p>
+</div>
+<div class="section" id="id47">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;_________&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="n">memoryview</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">v</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">65</span>  <span class="c1"># A</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">66</span>  <span class="c1"># B</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">67</span>  <span class="c1"># C</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span>
+<span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;___ABC___&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id48">
+
+<p>Zero-copy version of fix</p>
+<div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">memoryview</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">readinto</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">length</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">view</span><span class="p">[:</span><span class="n">length</span><span class="p">])</span>
+</pre></div>
+
+</div>
+<div class="section" id="id49">
+
+<div class="highlight"><pre><span></span><span class="n">dd</span>             <span class="mf">0.112</span> <span class="n">s</span>  <span class="o">**********</span>
+<span class="n">cat</span>            <span class="mf">0.113</span> <span class="n">s</span>  <span class="o">**********</span>
+<span class="n">read</span><span class="p">()</span>         <span class="mf">0.122</span> <span class="n">s</span>  <span class="o">************</span>
+<span class="n">readinto</span><span class="p">()</span>     <span class="mf">0.117</span> <span class="n">s</span>  <span class="o">***********</span>
+<span class="o">+</span><span class="nb">bytearray</span><span class="p">[]</span>   <span class="mf">0.183</span> <span class="n">s</span>  <span class="o">******************</span>
+<span class="o">+</span><span class="n">memoryview</span><span class="p">[]</span>  <span class="mf">0.119</span> <span class="n">s</span>  <span class="o">***********</span>
+</pre></div>
+
+</div>
+<div class="section" id="file-i-o-128kb-blocks">
+<h1>File I/O, 128kB blocks</h1>
+<div class="line-block">
+<div class="line"><em>Result:</em></div>
+<div class="line"><strong>bytearray</strong> gives 4% speedup</div>
+</div>
+</div>
+<div class="section" id="small-blocks">
+<h1>small blocks</h1>
+<p>512B</p>
+</div>
+<div class="section" id="id50">
+
+<p>What will slicing so often do?</p>
+<div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">memoryview</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">readinto</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">length</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">view</span><span class="p">[:</span><span class="n">length</span><span class="p">])</span>
+</pre></div>
+
+</div>
+<div class="section" id="id51">
+
+<div class="highlight"><pre><span></span><span class="n">dd</span>             <span class="mf">0.64</span>  <span class="o">*************</span>
+<span class="n">read</span><span class="p">()</span>         <span class="mf">1.04</span>  <span class="o">*********************</span>
+<span class="n">readinto</span><span class="p">()</span>     <span class="mf">0.96</span>  <span class="o">*******************</span>
+<span class="o">+</span><span class="nb">bytearray</span><span class="p">[]</span>   <span class="mf">1.33</span>  <span class="o">**************************</span>
+<span class="o">+</span><span class="n">memoryview</span><span class="p">[]</span>  <span class="mf">1.25</span>  <span class="o">*************************</span>
+</pre></div>
+
+<!-- dd             0.72
+read()         1.11
+readinto()     0.98
++bytearray[]   1.40
++memoryview[]  1.25 -->
+</div>
+<div class="section" id="file-i-o-512b-blocks">
+<h1>File I/O, 512B blocks</h1>
+<p><strong>20% slowdown</strong></p>
+</div>
+<div class="section" id="but">
+<h1>but</h1>
+</div>
+<div class="section" id="id52">
+
+<p><em>I thought of something</em></p>
+</div>
+<div class="section" id="id53">
+
+<div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">memoryview</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">readinto</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">length</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="k">elif</span> <span class="n">length</span> <span class="o">==</span> <span class="n">blocksize</span><span class="p">:</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">view</span><span class="p">[:</span><span class="n">length</span><span class="p">])</span>
+</pre></div>
+
+</div>
+<div class="section" id="id54">
+
+<div class="highlight"><pre><span></span><span class="n">dd</span>             <span class="mf">0.64</span>  <span class="o">*************</span>
+<span class="n">read</span><span class="p">()</span>         <span class="mf">1.04</span>  <span class="o">*********************</span>
+<span class="n">readinto</span><span class="p">()</span>     <span class="mf">0.96</span>  <span class="o">*******************</span>
+<span class="o">+</span><span class="nb">bytearray</span><span class="p">[]</span>   <span class="mf">1.33</span>  <span class="o">**************************</span>
+<span class="o">+</span><span class="n">memoryview</span><span class="p">[]</span>  <span class="mf">1.25</span>  <span class="o">*************************</span>
+<span class="o">+</span><span class="n">hybrid</span>        <span class="mf">1.00</span>  <span class="o">********************</span>
+</pre></div>
+
+</div>
+<div class="section" id="id55">
+<h1>File I/O, 512B blocks</h1>
+<p><strong>bytearray</strong> gives 4% speedup</p>
+</div>
+<div class="section" id="id56">
+
+<div class="line-block">
+<div class="line">Python 2.7 has the same behavior,</div>
+<div class="line">but slightly slower than 3.4</div>
+</div>
+<!-- what about real I/O?
+
+cat < gigabyte.data > output.data
+
+2.813 s  ****************************
+3.369 s  *********************************
+0.860 s  ********
+2.166 s  *********************
+3.694 s  ************************************
+
+dd            2.85
+bytes         1.06  *********************
+hybrid        1.02  ******************** -->
+</div>
+<div class="section" id="lesson">
+<h1>Lesson</h1>
+<div class="line-block">
+<div class="line">Hard to beat old-</div>
+<div class="line">fashioned strings</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Easy to write code that looks good,
+but is slower.
+Functional programmer's heart sing,
+versus side-effecty.</p>
+</div>
+</div>
+<div class="section" id="id57">
+<h1>II. The Reusable Buffer</h1>
+<div class="line-block">
+<div class="line">Verdict:</div>
+<div class="line"><strong>Dangerous</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><em>But</em> offers a great</div>
+<div class="line">memory profile!</div>
+</div>
+</div>
+<div class="section" id="iii-the-accumulator">
+<h1>III. The Accumulator</h1>
+</div>
+<div class="section" id="id58">
+
+<div class="line-block">
+<div class="line">Q: How many bytes will</div>
+<div class="line"><tt class="docutils literal">recv(1024)</tt> return?</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id59">
+
+<div class="line-block">
+<div class="line">Q: How many bytes will</div>
+<div class="line"><tt class="docutils literal">recv(1024)</tt> return?</div>
+</div>
+<div class="line-block">
+<div class="line">A: <em>One</em></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id60">
+
+<div class="line-block">
+<div class="line">Q: How many bytes will</div>
+<div class="line"><tt class="docutils literal">recv(1024)</tt> return?</div>
+</div>
+<div class="line-block">
+<div class="line">A: <em>One</em></div>
+<div class="line">(or more)</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Could be a single packet; could be several;
+could be one stray byte from the most recent packet</p>
+</div>
+</div>
+<div class="section" id="id61">
+
+<div class="line-block">
+<div class="line"><em>“But it</em> <strong>worked</strong> <em>when I</em></div>
+<div class="line"><em>ran against localhost!”</em></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Using min() here is a 10% performance penalty</p>
+</div>
+</div>
+<div class="section" id="id62">
+
+<p>How does a <strong>recv()</strong> solution perform?</p>
+</div>
+<div class="section" id="id63">
+
+<div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">content_length</span><span class="p">:</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">content_length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">more</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1500</span> <span class="k">else</span> <span class="mi">1500</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">more</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">+=</span> <span class="n">more</span>
+</pre></div>
+
+</div>
+<div class="section" id="id64">
+
+<p>How long does the <tt class="docutils literal">+=</tt> approach take?</p>
+</div>
+<div class="section" id="id65">
+
+<blockquote>
+∞</blockquote>
+</div>
+<div class="section" id="id66">
+
+<div class="highlight"><pre><span></span><span class="n">blocks</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">content_length</span>
+<span class="k">while</span> <span class="n">n</span><span class="p">:</span>
+    <span class="n">more</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1500</span> <span class="k">else</span> <span class="mi">1500</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">more</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">()</span>
+    <span class="n">blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">more</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">more</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id67">
+
+<p><tt class="docutils literal">recv()</tt></p>
+<p>1.08 s</p>
+<!-- excerpt 2b looked faster for a moment,
+but the effect cannot be reliably reproduced -->
+</div>
+<div class="section" id="id68">
+
+<div class="line-block">
+<div class="line"><strong>recv_into()</strong> now runs</div>
+<div class="line">into a problem</div>
+</div>
+</div>
+<div class="section" id="id69">
+
+<div class="highlight"><pre><span></span><span class="n">incoming</span> <span class="n">blocks</span>
+
+<span class="err">┌─┬─┬─┬─┐</span>
+<span class="err">└─┴─┴─┴─┘</span>
+<span class="err">┌─┬─┬─┐</span>
+<span class="err">└─┴─┴─┘</span>
+<span class="err">┌─┬─┬─┬─┐</span>
+<span class="err">└─┴─┴─┴─┘</span>
+    <span class="err">↓</span>
+<span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬</span>
+<span class="err">└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴</span>
+          <span class="nb">bytearray</span>
+</pre></div>
+
+</div>
+<div class="section" id="id70">
+
+<div class="highlight"><pre><span></span>      <span class="n">incoming</span> <span class="n">blocks</span>
+
+<span class="err">┌─┬─┬─┬─┐</span>
+<span class="err">└─┴─┴─┴─┘</span>
+        <span class="err">┌─┬─┬─┐</span>
+        <span class="err">└─┴─┴─┘</span>
+              <span class="err">┌─┬─┬─┬─┐</span>
+              <span class="err">└─┴─┴─┴─┘</span>
+    <span class="err">↓</span>      <span class="err">↓</span>      <span class="err">↓</span>
+<span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬</span>
+<span class="err">└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴</span>
+          <span class="nb">bytearray</span>
+</pre></div>
+
+</div>
+<div class="section" id="id71">
+
+<div class="line-block">
+<div class="line">So, the <strong>memoryview()</strong></div>
+<div class="line">slicing expense?</div>
+</div>
+<div class="line-block">
+<div class="line">It becomes mandatory</div>
+</div>
+</div>
+<div class="section" id="id72">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;_________&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="n">memoryview</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">v</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">65</span>  <span class="c1"># A</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">66</span>  <span class="c1"># B</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">67</span>  <span class="c1"># C</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span>
+<span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;___ABC___&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id73">
+
+<div class="highlight"><pre><span></span><span class="err">┌─┬─┬─┬─┐</span>  <span class="n">First</span> <span class="n">block</span>
+<span class="err">└─┴─┴─┴─┘</span>
+    <span class="err">↓</span>
+
+<span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬</span>
+<span class="err">└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴</span>
+          <span class="nb">bytearray</span>
+</pre></div>
+
+</div>
+<div class="section" id="id74">
+
+<div class="highlight"><pre><span></span>        <span class="err">┌─┬─┬─┐</span>  <span class="n">Second</span> <span class="n">block</span>
+        <span class="err">└─┴─┴─┘</span>
+           <span class="err">↓</span>       <span class="n">memoryview</span>
+        <span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬</span>
+<span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬</span>
+<span class="err">└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴</span>
+          <span class="nb">bytearray</span>
+</pre></div>
+
+</div>
+<div class="section" id="id75">
+
+<div class="highlight"><pre><span></span>              <span class="err">┌─┬─┬─┬─┐</span>
+              <span class="err">└─┴─┴─┴─┘</span>
+                 <span class="err">↓</span> <span class="n">memoryview</span>
+              <span class="err">┌─┬─┬─┬─┬─┬─┬─┬</span>
+<span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬</span>
+<span class="err">└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴</span>
+          <span class="nb">bytearray</span>
+</pre></div>
+
+</div>
+<div class="section" id="id76">
+
+<div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">content_length</span><span class="p">)</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">memoryview</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">content_length</span>
+<span class="k">while</span> <span class="n">n</span><span class="p">:</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1500</span> <span class="k">else</span> <span class="mi">1500</span>
+    <span class="n">more</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">recv_into</span><span class="p">(</span><span class="n">view</span><span class="p">[</span><span class="o">-</span><span class="n">n</span><span class="p">:],</span> <span class="n">limit</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">more</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">()</span>
+    <span class="n">n</span> <span class="o">-=</span> <span class="n">more</span>
+</pre></div>
+
+</div>
+<div class="section" id="id77">
+
+<div class="line-block">
+<div class="line">0.80 s</div>
+<div class="line">(instead of 1.08 s)</div>
+</div>
+<ul class="simple">
+<li>No <strong>list</strong> built</li>
+<li>No <strong>''.join()</strong> call</li>
+</ul>
+</div>
+<div class="section" id="id78">
+
+<div class="line-block">
+<div class="line">Old-fashioned <strong>recv()</strong></div>
+<div class="line">plus <strong>bytearray.extend()</strong></div>
+</div>
+<ul class="simple">
+<li>Still copies data twice</li>
+<li>But replaces <strong>''.join()</strong></li>
+</ul>
+</div>
+<div class="section" id="id79">
+
+<div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">content_length</span>
+<span class="k">while</span> <span class="n">n</span><span class="p">:</span>
+    <span class="n">more</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1500</span> <span class="k">else</span> <span class="mi">1500</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">more</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">()</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">more</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">more</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id80">
+
+<p>0.81 s</p>
+</div>
+<div class="section" id="id81">
+
+<p>Turns out?</p>
+<div class="line-block">
+<div class="line"><strong>bytearray.extend()</strong></div>
+<div class="line">is pretty inefficient</div>
+</div>
+</div>
+<div class="section" id="id82">
+
+<div class="line-block">
+<div class="line"><strong>bytearray.extend(s)</strong></div>
+</div>
+<ol class="arabic simple">
+<li><strong>i = iter(s)</strong></li>
+<li>Calls <strong>next(i)</strong> for <em>every byte</em></li>
+<li>Asks the byte its numeric value</li>
+</ol>
+</div>
+<div class="section" id="id83">
+
+<div class="highlight"><pre><span></span><span class="n">call</span> <span class="nb">next</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">integer</span> <span class="o">=</span> <span class="n">address</span> <span class="n">of</span> <span class="nb">int</span> <span class="nb">object</span>
+    <span class="n">INCREF</span><span class="p">(</span><span class="n">integer</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">integer</span>
+<span class="n">ask</span> <span class="n">the</span> <span class="n">integer</span> <span class="n">its</span> <span class="n">value</span>
+<span class="n">insert</span> <span class="n">that</span> <span class="n">value</span> <span class="n">into</span> <span class="nb">bytearray</span>
+<span class="n">DECREF</span><span class="p">(</span><span class="n">integer</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id84">
+
+<div class="highlight"><pre><span></span><span class="n">INCREF</span><span class="p">()</span>
+    <span class="n">reads</span> <span class="mi">8</span> <span class="nb">bytes</span> <span class="kn">from</span> <span class="nn">RAM</span>
+    <span class="n">writes</span> <span class="mi">8</span> <span class="nb">bytes</span> <span class="n">to</span> <span class="n">RAM</span>
+<span class="err">“</span><span class="k">return</span><span class="err">”</span>
+    <span class="n">copies</span> <span class="mi">8</span> <span class="n">byte</span> <span class="n">address</span>
+<span class="n">DECREF</span><span class="p">()</span>
+    <span class="n">reads</span> <span class="mi">8</span> <span class="nb">bytes</span> <span class="kn">from</span> <span class="nn">RAM</span>
+    <span class="n">writes</span> <span class="mi">8</span> <span class="nb">bytes</span> <span class="n">to</span> <span class="n">RAM</span>
+<span class="n">__________________________</span>
+    <span class="mi">40</span> <span class="nb">bytes</span> <span class="n">of</span> <span class="n">RAM</span> <span class="n">bandwidth</span>
+    <span class="n">just</span> <span class="n">to</span> <span class="n">communicate</span> <span class="mi">8</span> <span class="n">bits</span>
+</pre></div>
+
+</div>
+<div class="section" id="id85">
+
+<div class="line-block">
+<div class="line">Plus, <strong>bytearray.extend()</strong></div>
+<div class="line">writes to an <em>intermediate</em> buffer —</div>
+</div>
+<div class="line-block">
+<div class="line">which it dynamically</div>
+<div class="line">reallocates as it grows</div>
+</div>
+<div class="line-block">
+<div class="line">— <em>then</em> does the append</div>
+</div>
+</div>
+<div class="section" id="id86">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">Does <strong>bytearray</strong> have</div>
+<div class="line">an append operation</div>
+<div class="line">that’s any good?</div>
+</div>
+</div>
+<div class="section" id="id87">
+<h1>A:</h1>
+<p>Yes!</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Now think about it: where would you put the real append?</p>
+</div>
+</div>
+<div class="section" id="id88">
+
+<p><tt class="docutils literal">+=</tt></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The one they taught us to avoid!</p>
+</div>
+</div>
+<div class="section" id="id89">
+
+<div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">content_length</span>
+<span class="k">while</span> <span class="n">n</span><span class="p">:</span>
+    <span class="n">more</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1500</span> <span class="k">else</span> <span class="mi">1500</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">more</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">+=</span> <span class="n">more</span>
+    <span class="n">n</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">more</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id90">
+
+<p>0.73 s</p>
+</div>
+<div class="section" id="id91">
+
+<div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">+=</span> <span class="n">more</span>         <span class="err">∞</span>
+<span class="n">recv</span><span class="p">(</span><span class="err">…</span><span class="p">)</span> <span class="o">+</span> <span class="n">join</span><span class="p">(</span><span class="err">…</span><span class="p">)</span>  <span class="mf">1.09</span> <span class="n">s</span>  <span class="o">***********</span>
+<span class="n">recv_into</span><span class="p">(</span><span class="err">…</span><span class="p">)</span>       <span class="mf">0.80</span> <span class="n">s</span>  <span class="o">********</span>
+<span class="n">data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="err">…</span><span class="p">)</span>     <span class="mf">0.81</span> <span class="n">s</span>  <span class="o">********</span>
+<span class="n">data</span> <span class="o">+=</span> <span class="n">more</span>       <span class="mf">0.73</span> <span class="n">s</span>  <span class="o">*******</span>
+</pre></div>
+
+<p><strong>bytearray</strong> gives 33% speedup</p>
+</div>
+<div class="section" id="id92">
+
+<div class="line-block">
+<div class="line"><em>and</em></div>
+<div class="line">cleaner code</div>
+</div>
+</div>
+<div class="section" id="id93">
+
+<div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">content_length</span>
+<span class="k">while</span> <span class="n">n</span><span class="p">:</span>
+    <span class="n">more</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1500</span> <span class="k">else</span> <span class="mi">1500</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">more</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">+=</span> <span class="n">more</span>
+    <span class="n">n</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">more</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id94">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">What about the</div>
+<div class="line"><strong>send()</strong> maneuver?</div>
+</div>
+</div>
+<div class="section" id="id95">
+<h1>A:</h1>
+<div class="line-block">
+<div class="line">Python already</div>
+<div class="line">has you covered</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>sendall()</strong></div>
+</div>
+</div>
+<div class="section" id="id96">
+<h1>III. The Accumulator</h1>
+<div class="line-block">
+<div class="line">Verdict:</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>bytearray</strong> is a win!</div>
+</div>
+<div class="line-block">
+<div class="line">Try <strong>recv_into()</strong> for big blocks,</div>
+<div class="line">but <strong>recv()</strong> and <strong>+=</strong> for small.</div>
+</div>
+</div>
+<div class="section" id="iv-the-freestyle-mutable-string">
+<h1>IV. The Freestyle Mutable String</h1>
+</div>
+<div class="section" id="id97">
+
+<div class="line-block">
+<div class="line">What if you want to</div>
+<div class="line">change <em>part</em> of a payload before</div>
+<div class="line">using, storing, or re-transmitting?</div>
+</div>
+</div>
+<div class="section" id="id98">
+
+<div class="line-block">
+<div class="line"><em>Good</em> — the <strong>bytearray</strong> is mutable</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Bad</em> — none of the methods it</div>
+<div class="line">shares with strings do mutation!</div>
+</div>
+</div>
+<div class="section" id="id99">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;Hello, world!&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+<span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;HELLO, WORLD!&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span>
+<span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;Hello, world!&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id100">
+
+<div class="line-block">
+<div class="line">A <strong>bytearray</strong> only changes when</div>
+<div class="line">subjected to <em>list-like</em> operations</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span>
+<span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;Hello, world!&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;PyCon&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span>
+<span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;Hello  PyCon!&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span>
+<span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id101">
+
+<div class="line-block">
+<div class="line">The result is curious:</div>
+<div class="line">a “mutable string” that, alas,</div>
+<div class="line">does <strong>no</strong> mutation precisely when</div>
+<div class="line">you start calling its <em>string methods</em></div>
+</div>
+</div>
+<div class="section" id="id102">
+
+<div class="line-block">
+<div class="line">Want to lower-case a word?</div>
+</div>
+</div>
+<div class="section" id="id103">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;ALL YOUR BASE&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bslice</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">l</span> <span class="o">=</span> <span class="n">bslice</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span>
+<span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;ALL your BASE&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><strong>Problem:</strong> two extra data copies</div>
+</div>
+</div>
+<div class="section" id="id104">
+
+<div class="line-block">
+<div class="line">There is no <strong>.lower_into(b)</strong> method</div>
+<div class="line">hidden somewhere to save us</div>
+</div>
+</div>
+<div class="section" id="id105">
+<h1>Q:</h1>
+<p>Can the <strong>memoryview</strong> save us?</p>
+</div>
+<div class="section" id="id106">
+<h1>A:</h1>
+<p>No.</p>
+</div>
+<div class="section" id="id107">
+<h1>A:</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;ALL YOUR BASE&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">v</span> <span class="o">=</span> <span class="n">memoryview</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bslice</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">l</span> <span class="o">=</span> <span class="n">bslice</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="o">...</span>
+<span class="ne">AttributeError</span><span class="p">:</span> <span class="s1">&#39;memoryview&#39;</span> <span class="nb">object</span> <span class="n">has</span>
+                <span class="n">no</span> <span class="n">attribute</span> <span class="s1">&#39;lower&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id108">
+
+<div class="line-block">
+<div class="line">So, without in-place string operations,</div>
+<div class="line">you will incur data copies — thus removing</div>
+<div class="line"><em>some</em> of the temptation to use <strong>bytearray</strong></div>
+<div class="line">objects in the first place</div>
+</div>
+</div>
+<div class="section" id="id109">
+
+<div class="line-block">
+<div class="line">To mutate a <strong>bytearray</strong> without</div>
+<div class="line">rewriting its whole content,</div>
+<div class="line">you are going to need <em>indexes</em></div>
+</div>
+</div>
+<div class="section" id="indexes">
+<h1>Indexes</h1>
+<p>Do you remember indexes?</p>
+</div>
+<div class="section" id="id110">
+
+<div class="line-block">
+<div class="line">Do you remember the wilderness</div>
+<div class="line">in which you wandered before you</div>
+<div class="line">discovered <strong>split()</strong>, <strong>strip()</strong>, and <strong>join()</strong>?</div>
+</div>
+</div>
+<div class="section" id="id111">
+
+<div class="line-block">
+<div class="line">When your code, instead of explaining <em>what</em></div>
+<div class="line">you wanted to do, instead explained —</div>
+<div class="line">at great length — <strong>how</strong> to do it?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">)</span>
+<span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span>
+<span class="n">name</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">:]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id112">
+
+<div class="line-block">
+<div class="line">The <strong>bytearray</strong> will let you</div>
+<div class="line">enjoy those days <em>all over again</em></div>
+<div class="line">because mutation is entirely</div>
+<div class="line">powered by indexes</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">a</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="mi">65</span>
+<span class="n">a</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Python&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="hint-use-res">
+<h1>Hint: Use REs</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">re</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;Big Ben tower&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;Be.&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">match</span><span class="o">.</span><span class="n">span</span><span class="p">()</span>
+<span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id113">
+<h1>IV. The Freestyle Mutable String</h1>
+<div class="line-block">
+<div class="line">Verdict:</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>bytearray</strong> is awkward</div>
+</div>
+</div>
+<div class="section" id="tidbits">
+<h1>Tidbits</h1>
+</div>
+<div class="section" id="id114">
+
+<div class="line-block">
+<div class="line"><strong>bytearray</strong> has list-like methods</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Example</em> — <strong>.pop()</strong> and <strong>.append()</strong> in case</div>
+<div class="line">you ever need a stack of bytes</div>
+</div>
+</div>
+<div class="section" id="id115">
+
+<div class="line-block">
+<div class="line"><em>Buffer protocol</em> — the C interface that supports</div>
+<div class="line"><strong>readinto()</strong>, <strong>recv_into()</strong>, <strong>send()</strong>, <strong>write()</strong></div>
+</div>
+<ul class="simple">
+<li><strong>bytes</strong></li>
+<li><strong>bytearray</strong></li>
+<li><strong>struct.struct</strong></li>
+<li><strong>ctypes</strong> structures</li>
+<li>NumPy arrays</li>
+<li>Memory maps</li>
+</ul>
+</div>
+<div class="section" id="id116">
+
+<div class="line-block">
+<div class="line">Plus, <strong>memoryview()</strong> is <em>both</em></div>
+<div class="line">a consumer and a provider of</div>
+<div class="line">the buffer interface!</div>
+</div>
+</div>
+<div class="section" id="id117">
+
+<div class="line-block">
+<div class="line">So <strong>efficient, raw</strong> byte-oriented I/O</div>
+<div class="line">and byte-level introspection is now possible</div>
+<div class="line">for a range of Python data structures</div>
+</div>
+</div>
+<div class="section" id="id118">
+
+<div class="line-block">
+<div class="line">Note that <strong>memoryview.release()</strong> lets</div>
+<div class="line">you release the underlying bytes early</div>
+</div>
+</div>
+<div class="section" id="resources">
+<h1>Resources</h1>
+<div class="line-block">
+<div class="line">ctypes structures — David Beazley
+<a class="reference external" href="http://dabeaz.blogspot.com/2009/08/python-binary-io-handling.html">¹</a>
+<a class="reference external" href="http://dabeaz.blogspot.com/2010/01/few-useful-bytearray-tricks.html">²</a></div>
+<div class="line">NumPy arrays — Jake VanderPlas
+<a class="reference external" href="https://jakevdp.github.io/blog/2014/05/05/introduction-to-the-python-buffer-protocol/">³</a></div>
+<div class="line">Memory profiling — Victor Lin
+<a class="reference external" href="http://blog.ez2learn.com/2010/04/22/memory-efficient-python-with-bytearray/">⁴</a></div>
+<div class="line">readinto() — Eli Bendersky
+<a class="reference external" href="http://eli.thegreenplace.net/2011/11/28/less-copies-in-python-with-the-buffer-protocol-and-memoryviews/">⁵</a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Official Documentation</strong></div>
+<div class="line"><a class="reference external" href="https://docs.python.org/dev/library/functions.html#bytearray">bytearray()</a>
+<a class="reference external" href="https://docs.python.org/dev/library/stdtypes.html#typememoryview">memoryview()</a>
+<a class="reference external" href="https://docs.python.org/2/c-api/buffer.html#bufferobjects">buffer objects</a></div>
+<div class="line"><a class="reference external" href="https://www.python.org/dev/peps/pep-3118/">PEP-3118</a>
+“Revising the buffer protocol”</div>
+<div class="line">by Travis Oliphant, Carl Banks</div>
+</div>
+</div>
+<div class="section" id="id125">
+<h1>Conclusion</h1>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><em>bytearray</em></p>
+<ol class="arabic simple">
+<li>Memory-efficient store of byte integers</li>
+<li>Help <em>control</em> memory fragmentation</li>
+<li>Great way to <em>accumulate</em> data</li>
+<li><strong>Awkward</strong> for string operations</li>
+</ol>
+</div>
+<div class="section" id="thank-you-very-much">
+<h1>Thank you very much!</h1>
+<div class="line-block">
+<div class="line"><strong>&#64;brandon_rhodes</strong></div>
+</div>
+<p><em>bytearray</em></p>
+<ol class="arabic simple">
+<li>Memory-efficient store of byte integers</li>
+<li>Help <em>control</em> memory fragmentation</li>
+<li>Great way to <em>accumulate</em> data</li>
+<li><strong>Awkward</strong> for string operations</li>
+</ol>
+<!-- single quote: ’
+double quotes: x“”x
+em-dash: —
+vertical ellipsis: ⋮
+arrows: ←, ↑, →, ↓, ↔, ↕, ↖, ↗, ↘, ↙ -->
+<script>
+  window.slide_transition_time = 0;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

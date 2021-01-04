@@ -1,0 +1,402 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examples</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<p>Many programmers work most efficiently
+when they can start with a working example
+and adapt it to their needs.
+Each of the following examples
+pulls together several Skyfield features
+to solve a general problem,
+that should provide readers with a basis
+for solving other similar problems of their own.</p>
+<div class="section" id="when-will-it-get-dark-tonight">
+<h2>When will it get dark tonight?<a class="headerlink" href="#when-will-it-get-dark-tonight" title="Permalink to this headline">¶</a></h2>
+<p>Sunrise, sunset, and the several varieties of twilight
+are all available through the <a class="reference internal" href="almanac.html"><span class="doc">Almanac Computation</span></a> module.
+Here’s the script I use when I want to know when it will be dark enough
+to see the stars —
+or how early I need to rise to see the morning sky:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">from</span> <span class="nn">pytz</span> <span class="kn">import</span> <span class="n">timezone</span>
+<span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">almanac</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">N</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">wgs84</span><span class="p">,</span> <span class="n">load</span>
+
+<span class="c1"># Figure out local midnight.</span>
+<span class="n">zone</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="s1">&#39;US/Eastern&#39;</span><span class="p">)</span>
+<span class="n">now</span> <span class="o">=</span> <span class="n">zone</span><span class="o">.</span><span class="n">localize</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+<span class="n">midnight</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">next_midnight</span> <span class="o">=</span> <span class="n">midnight</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_datetime</span><span class="p">(</span><span class="n">midnight</span><span class="p">)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_datetime</span><span class="p">(</span><span class="n">next_midnight</span><span class="p">)</span>
+<span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">bluffton</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">40.8939</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="mf">83.8917</span> <span class="o">*</span> <span class="n">W</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">dark_twilight_day</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">bluffton</span><span class="p">)</span>
+<span class="n">times</span><span class="p">,</span> <span class="n">events</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">events</span><span class="p">):</span>
+    <span class="n">tstr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">zone</span><span class="p">))[:</span><span class="mi">16</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">tstr</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">almanac</span><span class="o">.</span><span class="n">TWILIGHTS</span><span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="s1">&#39;starts&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2020-04-19 05:09   Astronomical twilight starts
+2020-04-19 05:46   Nautical twilight starts
+2020-04-19 06:20   Civil twilight starts
+2020-04-19 06:49   Day starts
+2020-04-19 20:20   Civil twilight starts
+2020-04-19 20:48   Nautical twilight starts
+2020-04-19 21:23   Astronomical twilight starts
+2020-04-19 22:00   Night starts
+</pre></div>
+</div>
+</div>
+<div class="section" id="what-phase-is-the-moon-tonight">
+<h2>What phase is the Moon tonight?<a class="headerlink" href="#what-phase-is-the-moon-tonight" title="Permalink to this headline">¶</a></h2>
+<p>The <em>phase</em> of the Moon is defined
+as the angle between the Moon and the Sun along the ecliptic.
+This angle is computed as the difference in the <em>ecliptic longitude</em>
+of the Moon and of the Sun.
+The result is an angle that is 0° for the New Moon,
+90° at the First Quarter,
+180° at the Full Moon,
+and 270° at the Last Quarter.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">skyfield.framelib</span> <span class="kn">import</span> <span class="n">ecliptic_frame</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">36</span><span class="p">)</span>
+
+<span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">sun</span><span class="p">,</span> <span class="n">moon</span><span class="p">,</span> <span class="n">earth</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;sun&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;moon&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
+
+<span class="n">e</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">slon</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">frame_latlon</span><span class="p">(</span><span class="n">ecliptic_frame</span><span class="p">)</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">mlon</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">moon</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">frame_latlon</span><span class="p">(</span><span class="n">ecliptic_frame</span><span class="p">)</span>
+<span class="n">phase</span> <span class="o">=</span> <span class="p">(</span><span class="n">mlon</span><span class="o">.</span><span class="n">degrees</span> <span class="o">-</span> <span class="n">slon</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span> <span class="o">%</span> <span class="mf">360.0</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">phase</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>149.4
+</pre></div>
+</div>
+</div>
+<div class="section" id="what-is-the-angular-diameter-of-a-planet-given-its-radius">
+<h2>What is the angular diameter of a planet, given its radius?<a class="headerlink" href="#what-is-the-angular-diameter-of-a-planet-given-its-radius" title="Permalink to this headline">¶</a></h2>
+<p>Be careful to select the correct radius
+when predicting a planet’s angular diameter in the sky.
+Many web sites will quote some kind of “mean radius”
+that averages between a planet’s squat polar radius
+and its wide equatorial radius.
+But most astronomers instead want to know the maximum, not average, diameter
+across a planet’s visible face —
+so you will want to use the planet’s equatorial radius in your calculation.</p>
+<p>For example, a good current estimate of Neptune’s equatorial radius
+is 24,764&nbsp;km.
+We would therefore predicts its angular diameter as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">load</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">time</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">earth</span><span class="p">,</span> <span class="n">neptune</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;neptune barycenter&#39;</span><span class="p">]</span>
+<span class="n">radius_km</span> <span class="o">=</span> <span class="mf">24764.0</span>
+
+<span class="n">astrometric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">neptune</span><span class="p">)</span>
+<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
+<span class="n">apparent_diameter</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="n">radians</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">radius_km</span> <span class="o">/</span> <span class="n">distance</span><span class="o">.</span><span class="n">km</span><span class="p">)</span> <span class="o">*</span> <span class="mf">2.0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.6f}</span><span class="s1"> arcseconds&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">apparent_diameter</span><span class="o">.</span><span class="n">arcseconds</span><span class="p">()))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2.257190 arcseconds
+</pre></div>
+</div>
+<p>This agrees exactly with the output of the NASA HORIZONS system.</p>
+</div>
+<div class="section" id="when-is-venus-at-its-greatest-east-and-west-elongations-from-the-sun">
+<h2>When is Venus at its greatest east and west elongations from the Sun?<a class="headerlink" href="#when-is-venus-at-its-greatest-east-and-west-elongations-from-the-sun" title="Permalink to this headline">¶</a></h2>
+<p>This example illustrates the several practical steps
+that are often required to both find events of interest
+and then to learn more details about them.</p>
+<ul class="simple">
+<li>The concept of “elongation from the Sun” is here explained to Skyfield
+with a function that for any given time <code class="docutils literal notranslate"><span class="pre">t</span></code>
+returns the separation between the Sun and Venus in the sky.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">find_maxima()</span></code> routine is then set loose to find the moments
+over the 3&nbsp;years 2019–2021 at which the elongation of Venus from the Sun
+reaches its maximum values.
+Skyfield starts by computing the elongation every <code class="docutils literal notranslate"><span class="pre">step_days</span></code> = 15&nbsp;days
+between the search’s start time and end time,
+then hones in everywhere it sees a local maximum:
+a value that’s bigger than either of the two values next to it.</li>
+<li>Finally, a <code class="docutils literal notranslate"><span class="pre">for</span></code> loop over the results not only displays each maximum
+but computes and displays an extra fact:
+whether the elongation is an east or west maximum elongation,
+which is defined as whether Venus’s apparent ecliptic longitude
+is ahead of or behind the Sun’s along the great circle of the ecliptic.</li>
+</ul>
+<p>This example can serve as a template for many other kinds of custom search:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">skyfield.framelib</span> <span class="kn">import</span> <span class="n">ecliptic_frame</span>
+<span class="kn">from</span> <span class="nn">skyfield.searchlib</span> <span class="kn">import</span> <span class="n">find_maxima</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2019</span><span class="p">)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2022</span><span class="p">)</span>
+
+<span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">sun</span><span class="p">,</span> <span class="n">earth</span><span class="p">,</span> <span class="n">venus</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;sun&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;venus&#39;</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">elongation_at</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">venus</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">separation_from</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">degrees</span>
+
+<span class="n">elongation_at</span><span class="o">.</span><span class="n">step_days</span> <span class="o">=</span> <span class="mf">15.0</span>
+
+<span class="n">times</span><span class="p">,</span> <span class="n">elongations</span> <span class="o">=</span> <span class="n">find_maxima</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">elongation_at</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">elongation_degrees</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">elongations</span><span class="p">):</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">slon</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">frame_latlon</span><span class="p">(</span><span class="n">ecliptic_frame</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">vlon</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">venus</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">frame_latlon</span><span class="p">(</span><span class="n">ecliptic_frame</span><span class="p">)</span>
+    <span class="n">is_east</span> <span class="o">=</span> <span class="p">(</span><span class="n">vlon</span><span class="o">.</span><span class="n">degrees</span> <span class="o">-</span> <span class="n">slon</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span> <span class="o">%</span> <span class="mf">360.0</span> <span class="o">&lt;</span> <span class="mf">180.0</span>
+    <span class="n">direction</span> <span class="o">=</span> <span class="s1">&#39;east&#39;</span> <span class="k">if</span> <span class="n">is_east</span> <span class="k">else</span> <span class="s1">&#39;west&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">  </span><span class="si">{:4.1f}</span><span class="s1">° </span><span class="si">{}</span><span class="s1"> elongation&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(),</span> <span class="n">elongation_degrees</span><span class="p">,</span> <span class="n">direction</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2019-01-06 04:53:35 UTC  47.0° west elongation
+2020-03-24 22:13:32 UTC  46.1° east elongation
+2020-08-13 00:14:12 UTC  45.8° west elongation
+2021-10-29 20:51:56 UTC  47.0° east elongation
+</pre></div>
+</div>
+</div>
+<div class="section" id="at-what-angle-in-the-sky-is-the-crescent-moon">
+<h2>At what angle in the sky is the crescent Moon?<a class="headerlink" href="#at-what-angle-in-the-sky-is-the-crescent-moon" title="Permalink to this headline">¶</a></h2>
+<p>The angle of the crescent Moon changes with the seasons.
+In the spring,
+a crescent Moon will stand high above the Sun
+and appear to be lit from below.
+In the autumn,
+the Moon sets farther from the Sun along the horizon
+and is illuminated more from the side.
+What if we wanted to know the exact angle?</p>
+<p>You can find the answer
+by asking for the Sun’s “position angle” relative to the Moon,
+an angle you can compute between any two Skyfield positions.
+The angle will be 90° if the Sun is left of the moon,
+180° if the Sun is directly below,
+and 270° if the Sun is to the right of the Moon.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">N</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">wgs84</span>
+<span class="kn">from</span> <span class="nn">skyfield.trigonometry</span> <span class="kn">import</span> <span class="n">position_angle_of</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">23</span><span class="p">)</span>
+
+<span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">sun</span><span class="p">,</span> <span class="n">moon</span><span class="p">,</span> <span class="n">earth</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;sun&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;moon&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
+<span class="n">boston</span> <span class="o">=</span> <span class="n">earth</span> <span class="o">+</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">42.3583</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="mf">71.0636</span> <span class="o">*</span> <span class="n">W</span><span class="p">)</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="n">boston</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">moon</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">position_angle_of</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">altaz</span><span class="p">(),</span> <span class="n">s</span><span class="o">.</span><span class="n">altaz</span><span class="p">()))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>238deg 55&#39; 55.3&quot;
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="api-trigonometry.html#skyfield.trigonometry.position_angle_of" title="skyfield.trigonometry.position_angle_of"><code class="xref py py-func docutils literal notranslate"><span class="pre">position_angle_of()</span></code></a> routine
+will not only accept
+the output of <a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent.altaz" title="skyfield.positionlib.Apparent.altaz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">altaz()</span></code></a>,
+but also of <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_latlon" title="skyfield.positionlib.ICRF.frame_latlon"><code class="xref py py-meth docutils literal notranslate"><span class="pre">frame_latlon()</span></code></a>
+if you want a position angle relative to the ecliptic’s north pole.</p>
+<p>Beware, though, that <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radec()</span></code></a>
+produces coordinates in the opposite order
+from what <a class="reference internal" href="api-trigonometry.html#skyfield.trigonometry.position_angle_of" title="skyfield.trigonometry.position_angle_of"><code class="xref py py-func docutils literal notranslate"><span class="pre">position_angle_of()</span></code></a> expects:
+right ascension is like longitude, not latitude.
+Try reversing the coordinates, like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">position_angle_of</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">radec</span><span class="p">(),</span> <span class="n">s</span><span class="o">.</span><span class="n">radec</span><span class="p">()))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>282deg 28&#39; 15.7&quot;
+</pre></div>
+</div>
+<p>Drat, but this angle is backwards, because right ascension increases
+toward the east whereas the other angles, like azimuth, increase the
+other way around the circle.</p>
+</div>
+<div class="section" id="when-is-a-body-or-fixed-coordinate-above-the-horizon">
+<h2>When is a body or fixed coordinate above the horizon?<a class="headerlink" href="#when-is-a-body-or-fixed-coordinate-above-the-horizon" title="Permalink to this headline">¶</a></h2>
+<p>The following code will determine
+when the Galactic Center is above the horizon.
+The Galactic Center is an example of a fixed object,
+like a star or nebula or galaxy,
+whose right ascension and declination can be plugged in to a <code class="docutils literal notranslate"><span class="pre">Star()</span></code> object.
+The code will also work with a body from an ephemeris,
+like the Sun, Moon, or one of the planets.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">N</span><span class="p">,</span> <span class="n">Star</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">wgs84</span><span class="p">,</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">skyfield.almanac</span> <span class="kn">import</span> <span class="n">find_discrete</span><span class="p">,</span> <span class="n">risings_and_settings</span>
+<span class="kn">from</span> <span class="nn">pytz</span> <span class="kn">import</span> <span class="n">timezone</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">21</span><span class="p">)</span>
+
+<span class="n">moab</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">38.5725</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="mf">109.54972238</span> <span class="o">*</span> <span class="n">W</span><span class="p">)</span>
+<span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">gc</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">ra_hours</span><span class="o">=</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mf">40.04</span><span class="p">),</span> <span class="n">dec_degrees</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">29</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">28.1</span><span class="p">))</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">risings_and_settings</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">moab</span><span class="p">)</span>
+<span class="n">tz</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="s1">&#39;US/Mountain&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">updown</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">tz</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%a</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">),</span> <span class="s1">&#39;MST&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;rises&#39;</span> <span class="k">if</span> <span class="n">updown</span> <span class="k">else</span> <span class="s1">&#39;sets&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Sat 19 05:51 MST rises
+Sat 19 14:27 MST sets
+Sun 20 05:47 MST rises
+Sun 20 14:23 MST sets
+</pre></div>
+</div>
+</div>
+<div class="section" id="what-is-the-right-ascension-and-declination-of-a-point-in-the-sky">
+<h2>What is the right ascension and declination of a point in the sky?<a class="headerlink" href="#what-is-the-right-ascension-and-declination-of-a-point-in-the-sky" title="Permalink to this headline">¶</a></h2>
+<p>An observer is often interested in the astronomical coordinates
+of a particular position in the sky above them.
+If the observer can specify the position
+using altitude and azimuth coordinates,
+then Skyfield can return its right ascension and declination.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">api</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">geographic</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="n">latitude_degrees</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">longitude_degrees</span><span class="o">=-</span><span class="mi">87</span><span class="p">)</span>
+<span class="n">observer</span> <span class="o">=</span> <span class="n">geographic</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">observer</span><span class="o">.</span><span class="n">from_altaz</span><span class="p">(</span><span class="n">alt_degrees</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">az_degrees</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>13h 41m 14.65s
++42deg 05&#39; 50.0&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="what-latitude-and-longitude-is-beneath-this-right-ascension-and-declination">
+<h2>What latitude and longitude is beneath this right ascension and declination?<a class="headerlink" href="#what-latitude-and-longitude-is-beneath-this-right-ascension-and-declination" title="Permalink to this headline">¶</a></h2>
+<p>Most Skyfield calculations,
+like an observation of a planet or an Earth satellite,
+directly produce a vector position centered on the Earth.
+You can pass such a vector
+to the <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.subpoint" title="skyfield.toposlib.Geoid.subpoint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">subpoint()</span></code></a> method
+of a standard geoid to compute latitude and longitude.</p>
+<p>But sometimes the right ascension and declination of the position
+are known already.
+Instead of creating a <a class="reference internal" href="api-stars.html#skyfield.starlib.Star" title="skyfield.starlib.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a> with those coordinates
+and asking it to compute its position,
+there is a simpler approach:
+creating the position directly.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">wgs84</span>
+<span class="kn">from</span> <span class="nn">skyfield.positionlib</span> <span class="kn">import</span> <span class="n">position_of_radec</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">45</span><span class="p">)</span>
+
+<span class="n">earth</span> <span class="o">=</span> <span class="mi">399</span>  <span class="c1"># NAIF code for the Earth center of mass</span>
+<span class="n">ra_hours</span> <span class="o">=</span> <span class="mf">3.79</span>
+<span class="n">dec_degrees</span> <span class="o">=</span> <span class="mf">24.1167</span>
+<span class="n">pleiades</span> <span class="o">=</span> <span class="n">position_of_radec</span><span class="p">(</span><span class="n">ra_hours</span><span class="p">,</span> <span class="n">dec_degrees</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">earth</span><span class="p">)</span>
+<span class="n">subpoint</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">subpoint</span><span class="p">(</span><span class="n">pleiades</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Latitude:&#39;</span><span class="p">,</span> <span class="n">subpoint</span><span class="o">.</span><span class="n">latitude</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Longitude:&#39;</span><span class="p">,</span> <span class="n">subpoint</span><span class="o">.</span><span class="n">longitude</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Latitude: 24deg 10&#39; 33.5&quot;
+Longitude: 123deg 16&#39; 53.9&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="which-geographic-location-is-farther-from-earths-center">
+<h2>Which geographic location is farther from Earth’s center?<a class="headerlink" href="#which-geographic-location-is-farther-from-earths-center" title="Permalink to this headline">¶</a></h2>
+<p>After I hiked Mount Bierstadt in Colorado,
+a friend suggested that its 14,000 feet of elevation
+might have carried me farther from the Earth’s center
+than I had ever traveled before.
+It was a romantic thought:
+that under my own power
+I had hiked farther from my home planet’s core
+than ever before.</p>
+<p>But there was a problem.
+I&nbsp;knew that I had once visited a city
+only a few degrees away from the Earth’s equator,
+and that the Earth’s equatorial bulge
+might push even modest elevations at that latitude
+out farther from the Earth’s center
+than a mountaintop in Colorado.</p>
+<p>So I wrote a quick Skyfield script
+to compare the distance from the Earth’s center
+to both Accra, Ghana, and the top of Mount Bierstadt in Colorado.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">N</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">wgs84</span><span class="p">,</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">skyfield.functions</span> <span class="kn">import</span> <span class="n">length_of</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">bierstadt</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">39.5828</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="mf">105.6686</span> <span class="o">*</span> <span class="n">W</span><span class="p">,</span> <span class="n">elevation_m</span><span class="o">=</span><span class="mf">4287.012</span><span class="p">)</span>
+<span class="n">m1</span> <span class="o">=</span> <span class="n">length_of</span><span class="p">(</span><span class="n">bierstadt</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">m1</span><span class="p">))</span>
+
+<span class="n">accra</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">5.6037</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="mf">0.1870</span> <span class="o">*</span> <span class="n">W</span><span class="p">,</span> <span class="n">elevation_m</span><span class="o">=</span><span class="mi">61</span><span class="p">)</span>
+<span class="n">m2</span> <span class="o">=</span> <span class="n">length_of</span><span class="p">(</span><span class="n">accra</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">m2</span><span class="p">))</span>
+
+<span class="k">assert</span> <span class="n">m2</span> <span class="o">&gt;</span> <span class="n">m1</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I was&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">m2</span> <span class="o">-</span> <span class="n">m1</span><span class="p">),</span> <span class="s2">&quot;meters farther from the Earth&#39;s center</span><span class="se">\n</span><span class="s2">&quot;</span>
+      <span class="s2">&quot;when I visited Accra, at nearly sea level, than atop</span><span class="se">\n</span><span class="s2">&quot;</span>
+      <span class="s2">&quot;Mt. Bierstadt in Colorado.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>6373784
+6377995
+I was 4211 meters farther from the Earth&#39;s center
+when I visited Accra, at nearly sea level, than atop
+Mt. Bierstadt in Colorado.
+</pre></div>
+</div>
+</div>
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,760 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>slides.rst</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="slide">
+
+<div class="line-block">
+<div class="line"><strong>Moving Targets</strong></div>
+</div>
+<div class="line-block">
+<div class="line">&#64;brandon_rhodes</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Django Weekend 2014</em></div>
+<div class="line"><em>Cardiff, Wales</em></div>
+</div>
+</div>
+<div class="section" id="id1">
+
+<div class="line-block">
+<div class="line">Wolf</div>
+<div class="line">Coyote</div>
+<div class="line">Fox</div>
+</div>
+</div>
+<div class="section" id="id2">
+
+<div class="line-block">
+<div class="line">The biggest rivalries</div>
+<div class="line">will be between the most</div>
+<div class="line">similar technologies</div>
+</div>
+</div>
+<div class="section" id="id3">
+
+<div class="line-block">
+<div class="line">Corollary:</div>
+</div>
+<div class="line-block">
+<div class="line">The <strong>biggest</strong> arguments</div>
+<div class="line">will tend to be over the</div>
+<div class="line"><em>smallest</em> differences</div>
+</div>
+</div>
+<div class="section" id="id4">
+
+<p>A <strong>moving target</strong> —</p>
+<div class="line-block">
+<div class="line"><em>Fixes</em> problems.</div>
+<div class="line"><em>Adds</em> missing features.</div>
+<div class="line"><em>Invalidates</em> my complaints.</div>
+</div>
+</div>
+<div class="section" id="django">
+<h1>Django</h1>
+<div class="line-block">
+<div class="line">Has done a <strong>great</strong> job</div>
+<div class="line">of being a <em>moving target</em></div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<div class="line-block">
+<div class="line">“There are better <strong>URL mappers</strong>!”</div>
+<div class="line">“There are better <strong>template systems</strong>!”</div>
+<div class="line">“There are better <strong>ORMs</strong>!”</div>
+</div>
+</div>
+<div class="section" id="id6">
+
+<div class="line-block">
+<div class="line"><strong>1.2</strong></div>
+<div class="line">Multiple databases; usernames with <tt class="docutils literal">'&#64;'</tt></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>1.4</strong></div>
+<div class="line">Bulk insert; pre-fetching; WSGI;</div>
+<div class="line">fixed double import; timezones</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>1.5</strong></div>
+<div class="line">Caching related models; custom <tt class="docutils literal">User</tt></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>1.6</strong></div>
+<div class="line">No <tt class="docutils literal">SELECT</tt> on <tt class="docutils literal">Model.save()</tt></div>
+</div>
+</div>
+<div class="section" id="id7">
+
+</div>
+<div class="section" id="three-features">
+<h1>Three Features</h1>
+</div>
+<div class="section" id="id8">
+
+</div>
+<div class="section" id="templateresponse">
+<h1><tt class="docutils literal">TemplateResponse</tt></h1>
+<p><strong>1.3</strong></p>
+</div>
+<div class="section" id="id9">
+
+<p>request → data → document</p>
+</div>
+<div class="section" id="id10">
+
+<div class="line-block">
+<div class="line">request → data → document</div>
+<div class="line"><em>HTTP</em> &nbsp; <tt class="docutils literal">list</tt>, <tt class="docutils literal">dict</tt>, … &nbsp; <em>HTML</em></div>
+</div>
+</div>
+<div class="section" id="id11">
+
+<div class="line-block">
+<div class="line">request → data → document</div>
+</div>
+<div class="line-block">
+<div class="line">Let us consider these</div>
+<div class="line"><strong>two</strong> transforms <em>separately</em></div>
+</div>
+</div>
+<div class="section" id="request-data">
+<h1>request → data</h1>
+</div>
+<div class="section" id="id12">
+
+<div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">news</span><span class="o">/</span><span class="n">recent</span><span class="o">/</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;today&#39;</span><span class="p">:</span> <span class="s1">&#39;2014 February 8&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;top_stories&#39;</span><span class="p">:</span> <span class="p">[</span>
+  <span class="p">[</span><span class="s1">&#39;World&#39;</span><span class="p">,</span> <span class="p">[</span>
+   <span class="p">{</span><span class="s1">&#39;headline&#39;</span><span class="p">:</span> <span class="s1">&#39;Django Weekend Starting&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;blurb&#39;</span><span class="p">:</span> <span class="s1">&#39;World leaders are happy that…&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;byline&#39;</span><span class="p">:</span> <span class="s1">&#39;Cardiff, Wales&#39;</span><span class="p">},</span>
+   <span class="p">{</span><span class="s1">&#39;headline&#39;</span><span class="p">:</span> <span class="s1">&#39;Olympics Celebrates Opening&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;blurb&#39;</span><span class="p">:</span> <span class="s1">&#39;With the lighting of the…&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;byline&#39;</span><span class="p">:</span> <span class="s1">&#39;Sochi, Russia&#39;</span><span class="p">},</span>
+  <span class="err">⋮</span>
+ <span class="p">]}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id13">
+<h1>request → data</h1>
+<ul class="simple">
+<li>Written in <strong>Python</strong></li>
+<li>Authentication</li>
+<li>Authorization</li>
+<li>Data collection</li>
+<li>Data aggregation</li>
+</ul>
+</div>
+<div class="section" id="data-document">
+<h1>data → document</h1>
+</div>
+<div class="section" id="id14">
+
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;today&#39;</span><span class="p">:</span> <span class="s1">&#39;2014 February 8&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;top_stories&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="s1">&#39;World&#39;</span><span class="p">,</span> <span class="p">[</span><span class="err">…</span><span class="p">]],</span> <span class="err">…</span><span class="p">]}</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="n">World</span> <span class="n">news</span> <span class="n">on</span> <span class="mi">2014</span> <span class="n">February</span> <span class="mi">8</span>
+
+<span class="err">┌</span><span class="n">Django</span> <span class="n">Weekend</span> <span class="n">Starting</span><span class="err">───────────────────┐</span>
+<span class="err">│</span>  <span class="n">Cardiff</span><span class="p">,</span> <span class="n">Wales</span> <span class="err">─</span> <span class="n">World</span> <span class="n">leaders</span> <span class="n">are</span> <span class="n">happy</span><span class="err">│</span>
+<span class="err">│</span>  <span class="n">that</span> <span class="n">students</span><span class="p">,</span> <span class="n">programmers</span><span class="p">,</span> <span class="ow">and</span> <span class="n">other</span><span class="err">…</span>  <span class="err">│</span>
+<span class="err">└──────────────────────────────────────────┘</span>
+<span class="err">┌</span><span class="n">Olympics</span> <span class="n">Celebrates</span> <span class="n">Opening</span><span class="err">───────────────┐</span>
+<span class="err">│</span>  <span class="n">Sochi</span><span class="p">,</span> <span class="n">Russia</span> <span class="err">─</span> <span class="n">With</span> <span class="n">the</span> <span class="n">lighting</span> <span class="n">of</span> <span class="n">the</span><span class="err">│</span>
+<span class="err">│</span>  <span class="n">Olympic</span> <span class="n">torch</span><span class="p">,</span> <span class="n">the</span> <span class="n">opening</span> <span class="n">ceremony</span> <span class="n">has</span><span class="err">…│</span>
+<span class="err">└──────────────────────────────────────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id15">
+
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;today&#39;</span><span class="p">:</span> <span class="s1">&#39;2014 February 8&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;top_stories&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="s1">&#39;World&#39;</span><span class="p">,</span> <span class="p">[</span><span class="err">…</span><span class="p">]],</span> <span class="err">…</span><span class="p">]}</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="n">World</span> <span class="n">news</span> <span class="n">on</span> <span class="mi">2014</span> <span class="n">February</span> <span class="mi">8</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">article</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">Django</span> <span class="n">Weekend</span> <span class="n">Starting</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;byline&quot;</span><span class="o">&gt;</span><span class="n">Cardiff</span><span class="p">,</span> <span class="n">Wales</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">World</span> <span class="n">leaders</span> <span class="n">are</span> <span class="n">happy</span>
+   <span class="n">that</span> <span class="n">students</span><span class="p">,</span> <span class="n">programmers</span><span class="p">,</span> <span class="ow">and</span> <span class="n">other</span><span class="err">…</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">article</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">article</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">Olympics</span> <span class="n">Celebrates</span> <span class="n">Opening</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
+<span class="err">…</span>
+</pre></div>
+
+</div>
+<div class="section" id="id16">
+<h1>data → document</h1>
+<ul class="simple">
+<li>Written as a <strong>template</strong></li>
+<li>Interpolates data</li>
+<li>Uses <tt class="docutils literal">for</tt> to repeat structure</li>
+<li>HTML for use with CSS, JS</li>
+</ul>
+</div>
+<div class="section" id="id17">
+
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;today&#39;</span><span class="p">:</span> <span class="s1">&#39;2014 February 8&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;top_stories&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="s1">&#39;World&#39;</span><span class="p">,</span> <span class="p">[</span><span class="err">…</span><span class="p">]],</span> <span class="err">…</span><span class="p">]}</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">topic</span><span class="p">,</span> <span class="n">stories</span> <span class="ow">in</span> <span class="n">top_stories</span> <span class="o">%</span><span class="p">}</span>
+<span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">topic</span> <span class="p">}}</span> <span class="n">news</span> <span class="n">on</span> <span class="p">{{</span> <span class="n">today</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">story</span> <span class="ow">in</span> <span class="n">stories</span> <span class="o">%</span><span class="p">}</span>
+<span class="o">&lt;</span><span class="n">article</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">story</span><span class="o">.</span><span class="n">headline</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;byline&quot;</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">story</span><span class="o">.</span><span class="n">byline</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">story</span><span class="o">.</span><span class="n">blurb</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">article</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id18">
+
+<div class="line-block">
+<div class="line">Old state of the art</div>
+<div class="line">in Django applications:</div>
+</div>
+<div class="line-block">
+<div class="line"><em>integration test</em></div>
+</div>
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line">run</div>
+<div class="line">view</div>
+<div class="line">+</div>
+<div class="line">render</div>
+<div class="line">template</div>
+<div class="line">=</div>
+<div class="line">output</div>
+<div class="line">text</div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_recent_news_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;/news/recent/&#39;</span>
+    <span class="n">html</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">content</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;&lt;h2&gt;World &#39;</span><span class="p">,</span> <span class="n">html</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id21">
+
+<div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;&lt;h2&gt;World &#39;</span><span class="p">,</span> <span class="n">html</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><em>Compound</em></div>
+<div class="line"><em>Fragile</em></div>
+<div class="line"><em>Late</em></div>
+</div>
+</div>
+<div class="section" id="id22">
+
+<p>request → <em>(data)</em> → document</p>
+</div>
+<div class="section" id="id23">
+
+<p>Another approach</p>
+</div>
+<div class="section" id="id24">
+
+<div class="line-block">
+<div class="line">request → data &nbsp; <em>Programmer</em></div>
+<div class="line">data → document &nbsp; <em>Web designer</em></div>
+</div>
+</div>
+<div class="section" id="id25">
+
+<div class="line-block">
+<div class="line">request → data &nbsp; <em>Python test</em></div>
+<div class="line">data → document &nbsp; <em>Browser test</em></div>
+</div>
+</div>
+<div class="section" id="id26">
+
+<div class="line-block">
+<div class="line">This became possible when Django</div>
+<div class="line">added <tt class="docutils literal">TemplateResponse</tt> in <strong>1.3</strong></div>
+</div>
+</div>
+<div class="section" id="id27">
+
+<div class="line-block">
+<div class="line">A <tt class="docutils literal">TemplateResponse</tt> remembers</div>
+<div class="line">both the template <em>and</em> the context</div>
+</div>
+</div>
+<div class="section" id="id28">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">recent_news_page</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">context</span><span class="p">[</span><span class="s1">&#39;today&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="err">…</span>
+    <span class="n">context</span><span class="p">[</span><span class="s1">&#39;top_stories&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="err">…</span>
+    <span class="k">return</span> <span class="n">TemplateResponse</span><span class="p">(</span>
+        <span class="n">request</span><span class="p">,</span> <span class="s1">&#39;recent_news.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id29">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_person_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;/person/brandon&#39;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
+    <span class="n">title</span><span class="p">,</span> <span class="n">stories</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;top_stories&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;World&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id30">
+
+<div class="line-block">
+<div class="line">So your <strong>view data</strong> becomes</div>
+<div class="line">a <em>first-class</em> result available</div>
+<div class="line">during debugging and tests</div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="line-block">
+<div class="line">This lets you write</div>
+<div class="line">tests on <em>day one</em> once you</div>
+<div class="line">specify how the <strong>context</strong> looks</div>
+</div>
+</div>
+<div class="section" id="id32">
+
+<div class="line-block">
+<div class="line">The <strong>context</strong> structure becomes</div>
+<div class="line">an explicit <em>contract</em> between your</div>
+<div class="line">code and your template</div>
+</div>
+</div>
+<div class="section" id="id33">
+
+<p><em>View tests</em></p>
+<div class="line-block">
+<div class="line">db<sub>1</sub> → context<sub>1</sub></div>
+<div class="line">db<sub>2</sub> → context<sub>2</sub></div>
+<div class="line">db<sub>3</sub> → context<sub>3</sub></div>
+</div>
+<p><em>Design tests</em></p>
+<div class="line-block">
+<div class="line">context<sub>a</sub> → page<sub>a</sub></div>
+<div class="line">context<sub>b</sub> → page<sub>b</sub></div>
+</div>
+</div>
+<div class="section" id="id34">
+
+<div class="line-block">
+<div class="line">Also, a <tt class="docutils literal">TemplateResponse</tt> can</div>
+<div class="line">be examined and modified by —</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Decorators</em></div>
+<div class="line"><em>Middleware</em></div>
+</div>
+</div>
+<div class="section" id="overly-simple-example">
+<h1>Overly simple example</h1>
+<div class="line-block">
+<div class="line"><em>Eliminating</em> a common source</div>
+<div class="line">of <strong>duplicated code</strong></div>
+</div>
+</div>
+<div class="section" id="id35">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">front_page</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="err">⋮</span>
+    <span class="n">context</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+    <span class="err">⋮</span>
+
+<span class="k">def</span> <span class="nf">recent_news_page</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="err">⋮</span>
+    <span class="n">context</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+    <span class="err">⋮</span>
+
+<span class="k">def</span> <span class="nf">settings_page</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="err">⋮</span>
+    <span class="n">context</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+    <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id36">
+
+<div class="highlight"><pre><span></span><span class="c1"># Simple middleware example, for views</span>
+<span class="c1"># returning TemplateResponses</span>
+
+<span class="k">class</span> <span class="nc">DesignMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">process_template_response</span><span class="p">(</span>
+          <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+
+        <span class="n">context</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">context_data</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+</pre></div>
+
+</div>
+<div class="section" id="alternative">
+<h1>alternative</h1>
+</div>
+<div class="section" id="id37">
+
+<div class="line-block">
+<div class="line">Your view:</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">request</tt> → <tt class="docutils literal">{…}</tt></div>
+</div>
+<div class="line-block">
+<div class="line">Template context processors:</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">request</tt> → <tt class="docutils literal">{…}</tt></div>
+<div class="line"><tt class="docutils literal">request</tt> → <tt class="docutils literal">{…}</tt></div>
+<div class="line"><tt class="docutils literal">request</tt> → <tt class="docutils literal">{…}</tt></div>
+</div>
+<div class="line-block">
+<div class="line">Dictionaries are <em>merged</em></div>
+<div class="line">then given to the template</div>
+</div>
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">request</tt></div>
+<div class="line">↓</div>
+<div class="line">Your view</div>
+<div class="line">↓</div>
+<div class="line"><tt class="docutils literal">TemplateResponse</tt></div>
+<div class="line">↓</div>
+<div class="line"><tt class="docutils literal">request</tt> → Template response middleware</div>
+<div class="line"><tt class="docutils literal">request</tt> → Template response middleware</div>
+<div class="line"><tt class="docutils literal">request</tt> → Template response middleware</div>
+<div class="line">↓</div>
+</div>
+</div>
+<div class="section" id="id39">
+<h1><tt class="docutils literal">TemplateResponse</tt></h1>
+<p><strong>1.3</strong></p>
+</div>
+<div class="section" id="id40">
+
+</div>
+<div class="section" id="id41">
+
+</div>
+<div class="section" id="persistent-connections">
+<h1>Persistent Connections</h1>
+<p><strong>1.6</strong></p>
+</div>
+<div class="section" id="id42">
+
+<div class="line-block">
+<div class="line">By default, Django opens a</div>
+<div class="line"><strong>new connection</strong> to your database</div>
+<div class="line">for <em>every view</em> that it renders!</div>
+</div>
+</div>
+<div class="section" id="id43">
+
+<div class="highlight"><pre><span></span>       <span class="n">connect</span><span class="p">()</span> <span class="err">→</span>
+                 <span class="err">←</span> <span class="n">Please</span> <span class="n">authenticate</span>
+<span class="n">Identity</span><span class="p">,</span> <span class="n">secret</span> <span class="err">→</span>
+                 <span class="err">←</span> <span class="n">Success</span>
+<span class="mf">1.</span>         <span class="n">Query</span> <span class="err">→</span>
+                 <span class="err">←</span> <span class="n">Data</span>
+         <span class="n">close</span><span class="p">()</span> <span class="err">→</span>
+
+       <span class="n">connect</span><span class="p">()</span> <span class="err">→</span>
+                 <span class="err">←</span> <span class="n">Please</span> <span class="n">authenticate</span>
+<span class="n">Identity</span><span class="p">,</span> <span class="n">secret</span> <span class="err">→</span>
+                 <span class="err">←</span> <span class="n">Success</span>
+<span class="mf">2.</span>         <span class="n">Query</span> <span class="err">→</span>
+                 <span class="err">←</span> <span class="n">Data</span>
+         <span class="n">close</span><span class="p">()</span> <span class="err">→</span>
+</pre></div>
+
+</div>
+<div class="section" id="id44">
+
+<p><tt class="docutils literal">settings.py</tt></p>
+<div class="highlight"><pre><span></span><span class="n">CONN_MAX_AGE</span> <span class="o">=</span> <span class="mi">600</span>   <span class="c1"># ten minutes</span>
+</pre></div>
+
+</div>
+<div class="section" id="id45">
+
+<div class="highlight"><pre><span></span>       <span class="n">connect</span><span class="p">()</span> <span class="err">→</span>
+                 <span class="err">←</span> <span class="n">Please</span> <span class="n">authenticate</span>
+<span class="n">Identity</span><span class="p">,</span> <span class="n">secret</span> <span class="err">→</span>
+                 <span class="err">←</span> <span class="n">Success</span>
+<span class="mf">1.</span>         <span class="n">Query</span> <span class="err">→</span>
+                 <span class="err">←</span> <span class="n">Data</span>
+
+<span class="mf">2.</span>         <span class="n">Query</span> <span class="err">→</span>
+                 <span class="err">←</span> <span class="n">Data</span>
+
+<span class="mf">3.</span>         <span class="n">Query</span> <span class="err">→</span>
+                 <span class="err">←</span> <span class="n">Data</span>
+
+                 <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id46">
+
+<ul class="simple">
+<li>Skip <strong>3-way TCP/IP handshake</strong></li>
+<li>Skip <strong>re-authentication</strong></li>
+<li>So requests render <em>faster</em></li>
+</ul>
+</div>
+<div class="section" id="id47">
+
+<ul class="simple">
+<li>Reduces <strong>network</strong> load on DB</li>
+<li>Reduces <strong>authentication</strong> load on DB</li>
+<li>Can reduce load on <strong>auth server</strong></li>
+</ul>
+</div>
+<div class="section" id="id48">
+<h1>Persistent Connections</h1>
+<p><strong>1.6</strong></p>
+</div>
+<div class="section" id="id49">
+
+</div>
+<div class="section" id="transaction-management">
+<h1>Transaction Management</h1>
+<p><strong>1.6</strong></p>
+</div>
+<div class="section" id="id50">
+
+<p><em>Transactions</em> are funny things</p>
+</div>
+<div class="section" id="id51">
+
+<div class="highlight"><pre><span></span><span class="c1"># Once upon a time</span>
+
+<span class="n">db</span><span class="o">&gt;</span> <span class="n">SELECT</span> <span class="n">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="n">FROM</span> <span class="n">fast_changing_table</span><span class="p">;</span>
+<span class="mi">1035</span> <span class="n">rows</span>
+
+<span class="c1"># Then I waited several seconds</span>
+
+<span class="n">db</span><span class="o">&gt;</span> <span class="n">SELECT</span> <span class="n">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="n">FROM</span> <span class="n">fast_changing_table</span><span class="p">;</span>
+<span class="mi">1035</span> <span class="n">rows</span>
+
+<span class="c1"># Then I waited several minutes</span>
+
+<span class="n">db</span><span class="o">&gt;</span> <span class="n">SELECT</span> <span class="n">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="n">FROM</span> <span class="n">fast_changing_table</span><span class="p">;</span>
+<span class="mi">1035</span> <span class="n">rows</span>
+</pre></div>
+
+</div>
+<div class="section" id="id52">
+
+<div class="line-block">
+<div class="line">I disconnected</div>
+<div class="line">and reconnected</div>
+</div>
+</div>
+<div class="section" id="id53">
+
+<div class="highlight"><pre><span></span><span class="n">db</span><span class="o">&gt;</span> <span class="n">SELECT</span> <span class="n">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="n">FROM</span> <span class="n">fast_changing_table</span><span class="p">;</span>
+<span class="mi">1102</span> <span class="n">rows</span>
+
+<span class="c1"># Great! The table is updating now.</span>
+
+<span class="n">db</span><span class="o">&gt;</span> <span class="n">SELECT</span> <span class="n">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="n">FROM</span> <span class="n">fast_changing_table</span><span class="p">;</span>
+<span class="mi">1102</span> <span class="n">rows</span>
+
+<span class="c1"># Hmm. But now it has stopped again</span>
+
+<span class="n">db</span><span class="o">&gt;</span> <span class="n">SELECT</span> <span class="n">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="n">FROM</span> <span class="n">fast_changing_table</span><span class="p">;</span>
+<span class="mi">1102</span> <span class="n">rows</span>
+
+<span class="c1"># Drat.</span>
+</pre></div>
+
+</div>
+<div class="section" id="q">
+<h1>Q:</h1>
+<p>What was happening?</p>
+</div>
+<div class="section" id="a">
+<h1>A:</h1>
+<div class="line-block">
+<div class="line">The database was configured with</div>
+<div class="line">a consistency level of <strong>Serializable</strong></div>
+</div>
+</div>
+<div class="section" id="serializable">
+<h1>Serializable</h1>
+<div class="line-block">
+<div class="line"><strong>Database admin:</strong></div>
+<div class="line">“Look at this consistency</div>
+<div class="line">knob! <em>This goes to 11!”</em></div>
+</div>
+</div>
+<div class="section" id="id54">
+<h1>Serializable</h1>
+<ol class="arabic">
+<li><div class="first line-block">
+<div class="line">My <em>first statement</em> automatically</div>
+<div class="line">started a new <strong>transaction</strong></div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Inside of that transaction,</div>
+<div class="line">I could see <em>no new data</em></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line">Executing <em>one</em> statement caused</div>
+<div class="line">a <strong>frozen copy</strong> of the database to</div>
+<div class="line">be created for my benefit!</div>
+</div>
+</div>
+<div class="section" id="id56">
+
+<div class="highlight"><pre><span></span><span class="n">db</span><span class="o">&gt;</span> <span class="n">SELECT</span> <span class="n">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="n">FROM</span> <span class="n">fast_changing_table</span><span class="p">;</span>
+<span class="mi">1102</span> <span class="n">rows</span>
+
+<span class="n">db</span><span class="o">&gt;</span> <span class="n">COMMIT</span><span class="p">;</span>
+<span class="n">OK</span>
+
+<span class="n">db</span><span class="o">&gt;</span> <span class="n">SELECT</span> <span class="n">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="n">FROM</span> <span class="n">fast_changing_table</span><span class="p">;</span>
+<span class="mi">1129</span> <span class="n">rows</span>
+</pre></div>
+
+</div>
+<div class="section" id="consistency-levels">
+<h1>Consistency levels</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line"><strong>Read committed</strong> (“normal”) —</div>
+<div class="line">writes inside a transaction are</div>
+<div class="line">invisible outside until your commit</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line"><strong>Serializable</strong> (“11”) —</div>
+<div class="line">transaction gives you a private</div>
+<div class="line">read/write snapshot of the database!</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="in-django-1-6">
+<h1>In Django 1.6</h1>
+<ul class="simple">
+<li><em>Auto-commit</em> now <strong>default</strong></li>
+<li>Applies to both reads <em>and</em> writes</li>
+<li>Transactions must now be <em>explicit</em></li>
+</ul>
+<div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">transaction</span><span class="o">.</span><span class="n">atomic</span><span class="p">():</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="nd">@transaction.atomic</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">person_view</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+</pre></div>
+
+</div>
+<div class="section" id="id57">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">this</span>
+<span class="n">The</span> <span class="n">Zen</span> <span class="n">of</span> <span class="n">Python</span><span class="p">,</span> <span class="n">by</span> <span class="n">Tim</span> <span class="n">Peters</span>
+
+<span class="n">Beautiful</span> <span class="ow">is</span> <span class="n">better</span> <span class="n">than</span> <span class="n">ugly</span><span class="o">.</span>
+<span class="n">Explicit</span> <span class="ow">is</span> <span class="n">better</span> <span class="n">than</span> <span class="n">implicit</span><span class="o">.</span>
+<span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id58">
+<h1>Transaction Management</h1>
+<p><strong>1.6</strong></p>
+</div>
+<div class="section" id="id59">
+
+</div>
+<div class="section" id="id60">
+
+<div class="line-block">
+<div class="line">I hear rumors: <em>built-in</em></div>
+<div class="line"><strong>database migration support!</strong></div>
+</div>
+<p><strong>1.7</strong></p>
+</div>
+<div class="section" id="id61">
+
+</div>
+<div class="section" id="moving-targets">
+<h1>Moving targets</h1>
+</div>
+<div class="section" id="id62">
+
+<div class="line-block">
+<div class="line">If I am not careful, my</div>
+<div class="line">opinions tend to <strong>fossilize</strong></div>
+</div>
+</div>
+<div class="section" id="id63">
+
+<div class="line-block">
+<div class="line">An active, living project like</div>
+<div class="line"><strong>Django</strong> keeps you plugged in to a</div>
+<div class="line">community that is always thinking about</div>
+<div class="line">doing something <em>better</em> than before</div>
+</div>
+</div>
+<div class="section" id="thank-you-very-much">
+<h1>Thank you very much!</h1>
+<p>&#64;brandon_rhodes</p>
+<!-- Potential References
+http://perfectionkills.com/whats-wrong-with-extending-the-dom/ -->
+<!-- single quote: ’
+double quotes: x“”x
+em-dash: —
+vertical ellipsis: ⋮
+arrows: ←, ↑, →, ↓, ↔, ↕, ↖, ↗, ↘, ↙ -->
+<script>
+  window.slide_transition_time = 200;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

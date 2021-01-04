@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>API Reference — Downloading files</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css" />
+  </head>
+  <body>
+    
+    <p class="motto">
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-downloading-files">
+<h1>API Reference — Downloading files<a class="headerlink" href="#api-reference-downloading-files" title="Permalink to this headline">¶</a></h1>
+<p>See <a class="reference internal" href="files.html"><em>Downloading and Using Data Files</em></a> for an explanation of how Skyfield programs
+use an instance of the <a class="reference internal" href="#skyfield.iokit.Loader" title="skyfield.iokit.Loader"><code class="xref any py py-class docutils literal"><span class="pre">Loader</span></code></a> class described below
+to download and open the data files they need in order to operate.</p>
+<dl class="class">
+<dt id="skyfield.iokit.Loader">
+<em class="property">class </em><code class="descclassname">skyfield.iokit.</code><code class="descname">Loader</code><span class="sig-paren">(</span><em>directory</em>, <em>verbose=True</em>, <em>expire=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.iokit.Loader" title="Permalink to this definition">¶</a></dt>
+<dd><p>A tool for downloading and opening astronomical data files.</p>
+<p>A default <a class="reference internal" href="#skyfield.iokit.Loader" title="skyfield.iokit.Loader"><code class="xref any py py-class docutils literal"><span class="pre">Loader</span></code></a> that saves data files to the current working
+directory can be imported directly from the Skyfield API:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+</pre></div>
+</div>
+<p>But users can also create a <a class="reference internal" href="#skyfield.iokit.Loader" title="skyfield.iokit.Loader"><code class="xref any py py-class docutils literal"><span class="pre">Loader</span></code></a> of their own, if there is
+another directory they want data files saved to, or if they want to
+specify different options.  The directory is created automatically
+if it does not yet exist:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">Loader</span>
+<span class="n">load</span> <span class="o">=</span> <span class="n">Loader</span><span class="p">(</span><span class="s1">&#39;~/skyfield-data&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The options are:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">verbose</span></code> — if set to <code class="docutils literal"><span class="pre">False</span></code>, then the loader will not print
+a progress bar to the screen each time it downloads a file.  (If
+the standard output is not a TTY, then no progress bar is printed
+in any case.)</li>
+<li><code class="docutils literal"><span class="pre">expire</span></code> — if set to <code class="docutils literal"><span class="pre">False</span></code>, then Skyfield will always use an
+existing file on disk, instead of expiring files that are out of
+date and replacing them with newly downloaded copies.</li>
+</ul>
+<dl class="attribute">
+<dt id="skyfield.iokit.Loader.directory">
+<code class="descname">directory</code><a class="headerlink" href="#skyfield.iokit.Loader.directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>The directory where this loader looks when trying to open a file,
+and where it downloads files that have not been downloaded yet.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.iokit.Loader.path_of">
+<code class="descname">path_of</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.iokit.Loader.path_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the path to <code class="docutils literal"><span class="pre">filename</span></code> in this loader&#8217;s directory.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.iokit.Loader.timescale">
+<code class="descname">timescale</code><span class="sig-paren">(</span><em>delta_t=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.iokit.Loader.timescale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open or download three time scale files, returning a <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale" title="skyfield.timelib.Timescale"><code class="xref any py py-class docutils literal"><span class="pre">Timescale</span></code></a>.</p>
+<p>This method is how most Skyfield users build a <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale" title="skyfield.timelib.Timescale"><code class="xref any py py-class docutils literal"><span class="pre">Timescale</span></code></a>
+object, which is necessary for building specific <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal"><span class="pre">Time</span></code></a> objects
+that name specific moments.</p>
+<p>This will open or download the three files that Skyfield needs
+to measure time.  UT1 is tabulated by the United States Naval
+Observatory files <code class="docutils literal"><span class="pre">deltat.data</span></code> and <code class="docutils literal"><span class="pre">deltat.preds</span></code>, while
+UTC is defined by <code class="docutils literal"><span class="pre">Leap_Second.dat</span></code> from the International
+Earth Rotation Service.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+  </body>
+</html>

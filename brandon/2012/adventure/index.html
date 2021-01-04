@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Adventure in Python 3</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>Adventure in Python 3</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>6 April 2012</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">python, computing</td>
+</tr>
+</tbody>
+</table>
+<p>I have just released
+<a class="reference external" href="http://pypi.python.org/pypi/adventure/1.2/">adventure&nbsp;1.2</a>
+on the Python Package Index,
+an update of my Python&nbsp;3 port
+of the original Colossal Cave Adventure game
+that I announced more than a year ago during the final round of
+<a class="reference external" href="http://pyvideo.org/video/357/pycon-2011--sunday-afternoon-lightning-talks">PyCon 2011 lightning talks</a>.</p>
+<a class="reference external image-reference" href="http://www.flickr.com/photos/brandonrhodes/6115627693/"><img alt="http://rhodesmill.org/brandon/2012/adventure-heathkit-h19.jpg" src="http://rhodesmill.org/brandon/2012/adventure-heathkit-h19.jpg" /></a>
+<p>Written in the late 1970s,
+“Adventure” was the first game
+to offer players a virtual world to explore at their own pace,
+driven by their own curiosity.
+The player directs the game with simple one- and two-word commands
+like <tt class="docutils literal">ENTER</tt> <tt class="docutils literal">BUILDING</tt> and <tt class="docutils literal">GET</tt> <tt class="docutils literal">LAMP</tt>,
+together with the cardinal directions —
+which can, mercifully, be typed as abbreviations
+(<tt class="docutils literal">N</tt>, <tt class="docutils literal">NE</tt>, <tt class="docutils literal">E</tt>, <tt class="docutils literal">SE</tt>, and so forth,
+with <tt class="docutils literal">U</tt> and <tt class="docutils literal">D</tt> for up and down).
+Based on a real-life section
+of the Flint-Mammoth cave system in Kentucky
+that the original author helped map,
+“Adventure” invites you to start collecting treasures from the cave
+in a quest that eventually involves danger, magic,
+and even encounters with a few computer-controlled characters,
+who rustle in the darkness beyond the light of your lamp
+before finally pouncing.</p>
+<p>Keep reading if you want to learn
+about several discoveries that I made
+while porting “Adventure” to Python!
+If you want to know more about the history of the original game itself,
+I recommend Dennis G.&nbsp;Jerz's admirably thorough paper
+“<a class="reference external" href="http://www.digitalhumanities.org/dhq/vol/001/2/000009/000009.html">Somewhere Nearby is Colossal Cave: Examining Will Crowther's Original ‘Adventure’ in Code and in Kentucky</a>”
+from the Summer 2007 issue of the Digital Humanities Quarterly.</p>
+<div class="section" id="playing-at-the-prompt">
+<h2>Playing at the prompt</h2>
+<p>I was inspired to write the <tt class="docutils literal">adventure</tt> package
+when I realized that typing a name at the Python prompt
+could invoke an action if the object it referenced
+did something useful inside of its <tt class="docutils literal">__repr__()</tt> method.</p>
+<!-- more -->
+<p>Recall that a language like Ruby invokes a function
+if you merely mention the function's name:</p>
+<div class="highlight"><pre><span class="n">jump</span>    <span class="c1"># call the &quot;jump&quot; function in Ruby</span></pre></div>
+
+<p>I imagine that this would make it easy
+to implement a game like Adventure at the Ruby prompt.
+Typing the name of a command like <tt class="docutils literal">jump</tt> or <tt class="docutils literal">n</tt> or <tt class="docutils literal">sw</tt>
+would simply invoke it, just like at the prompt of the original game.</p>
+<p>In Python, however —
+as in higher math more generally,
+whose scruples Python tends to honor more faithfully
+than do other popular languages —
+<tt class="docutils literal">jump</tt> is merely a name,
+and its mention merely retrieves a reference to the function it names.
+To actually invoke the function you need to follow the name
+with a pair of parentheses:</p>
+<div class="highlight"><pre><span class="n">jump</span><span class="p">()</span>    <span class="c"># call the &quot;jump&quot; function in Python</span></pre></div>
+
+<p>For more about this distinction,
+see the discussion of songs and names-of-songs
+between Alice and the Red Knight in
+<a class="reference external" href="http://en.wikisource.org/wiki/Through_the_Looking-Glass,_and_What_Alice_Found_There/Chapter_VIII">Chapter VIII</a>
+of <em>Through the Looking Glass</em>
+— remember that Lewis Carroll was a logician in his day job! —
+or, if you find his writing too tedious,
+start at the Wikipedia article on the
+<a class="reference external" href="http://en.wikipedia.org/wiki/Use%E2%80%93mention_distinction">use-mention distinction</a>.
+And tell any analytic philosophers you know
+that Python is your favorite programming language.</p>
+<p>So the following line of Python code by definition does nothing,
+except, perhaps — depending on which implementation of Python you use —
+innocently incrementing and then decrementing
+the <tt class="docutils literal">jump</tt> object's reference count:</p>
+<div class="highlight"><pre><span class="n">jump</span>    <span class="c"># fetches then discards a reference</span></pre></div>
+
+<p>But things are quite different if,
+instead of appearing in a script on a line by itself,
+the bare name is typed at the interactive Python prompt.
+The third action taken by the prompt's read-eval-print loop —
+the “print” action —
+invokes the object's <tt class="docutils literal">__repr__()</tt> method.
+A&nbsp;normal function simply describes itself:</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">max</span>
+<span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">function</span> <span class="nb">max</span><span class="o">&gt;</span></pre></div>
+
+<p>But if we write a class of our own,
+we can do arbitrarily complex work when <tt class="docutils literal">__repr__()</tt> is called!</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">C</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="o">...</span>     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="o">...</span>         <span class="k">print</span><span class="p">(</span><span class="s">&#39;[advancing the game state]&#39;</span><span class="p">)</span>
+<span class="o">...</span>         <span class="k">return</span> <span class="s">&#39;There is a shiny brass lamp nearby.&#39;</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">jump</span> <span class="o">=</span> <span class="n">C</span><span class="p">()</span></pre></div>
+
+<p>We now have an object that, when simply named,
+causes something to happen and then returns a message
+that Python displays to show us the result.</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">jump</span>
+<span class="p">[</span><span class="n">advancing</span> <span class="n">the</span> <span class="n">game</span> <span class="n">state</span><span class="p">]</span>
+<span class="n">There</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">shiny</span> <span class="n">brass</span> <span class="n">lamp</span> <span class="n">nearby</span><span class="o">.</span></pre></div>
+
+<p>And this is what the <tt class="docutils literal">adventure</tt> package does, in spades.
+When you invoke its <tt class="docutils literal">play()</tt> function at the Python prompt,
+it uses the
+<a class="reference external" href="http://docs.python.org/library/inspect.html">inspect</a>
+Standard Library module
+to reach into the scope of your Python prompt
+and define every “Adventure” noun and verb as a symbol
+whose <tt class="docutils literal">__repr__()</tt> is sitting ready to be triggered.</p>
+<p>The word objects are also supplied with other methods
+like <tt class="docutils literal">__call__()</tt> and <tt class="docutils literal">__getattr__()</tt>
+so that words can be composed to form more complex commands,
+like <tt class="docutils literal">get(lamp)</tt> or <tt class="docutils literal">get.lamp</tt> —
+see
+<a class="reference external" href="https://bitbucket.org/brandon/adventure/src/86507c6fe2b9/adventure/prompt.py">prompt.py</a>
+if you want to read all of the details.</p>
+</div>
+<div class="section" id="de-morgan-and-old-fortran">
+<h2>De&nbsp;Morgan and old FORTRAN</h2>
+<p>The original FORTRAN language
+in which “Adventure” is written
+does not support “structured programming” —
+you cannot combine several statements into a single block of code
+under the control of an <tt class="docutils literal">IF</tt> statement.
+Instead, <tt class="docutils literal">IF</tt> can only govern
+the single statement that follows it.
+Several statements can be skipped by an <tt class="docutils literal">IF</tt>
+only if it does a <tt class="docutils literal">GOTO</tt> to a line number that follows them.
+Here, for example, is an excerpt from <tt class="docutils literal">advent.for</tt>
+in which an <tt class="docutils literal">IF</tt> clause controls two statements,
+with normal execution continuing at line <tt class="docutils literal">2630</tt>:</p>
+<div class="highlight"><pre><span class="mi">2610</span>    <span class="k">IF</span><span class="p">(</span><span class="nv">WD1</span><span class="ow">.NE.</span><span class="s1">&#39;WEST&#39;</span><span class="p">)</span><span class="k">GOTO </span><span class="mi">2630</span>
+        <span class="nv">IWEST</span><span class="o">=</span><span class="nv">IWEST</span><span class="o">+</span><span class="mi">1</span>
+        <span class="k">IF</span><span class="p">(</span><span class="nv">IWEST</span><span class="ow">.EQ.</span><span class="mi">10</span><span class="p">)</span><span class="k">CALL </span><span class="nv">RSPEAK</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
+<span class="mi">2630</span></pre></div>
+
+<p>When I translated this code into Python,
+the line number and <tt class="docutils literal">GOTO</tt> disappeared
+in favor of simply indenting the lines that run conditionally:</p>
+<div class="highlight"><pre><span class="k">if</span> <span class="n">word1</span> <span class="o">==</span> <span class="s">&#39;west&#39;</span><span class="p">:</span>
+    <span class="n">full_wests</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">full_wests</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">write_message</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span></pre></div>
+
+<p>You will note that my outer Python <tt class="docutils literal">if</tt> statement
+tests a condition that is, in fact, the complete <em>opposite</em>
+of its equivalent in FORTRAN:
+the original code wants the word to not-equal <tt class="docutils literal">'WEST'</tt>
+whereas, in my rewrite, I test whether they are equal instead.
+The reason is plain enough:
+while my modern Python code gets to directly test
+whether to <em>execute</em> the block of code,
+the original FORTRAN has to think backwards
+and test whether to <em>skip</em> the statements that follow.</p>
+<p>(Note that the second <tt class="docutils literal">IF</tt> statement
+controls only a single line of code,
+and therefore is written “forwards” even in FORTRAN.)</p>
+<p>Flipping a simple <tt class="docutils literal">.NE.</tt> so that it becomes <tt class="docutils literal">==</tt> is simple enough.
+But what happens when I need to
+<a class="reference external" href="http://en.wikipedia.org/wiki/Third_Doctor#.22Reverse_the_polarity.22">reverse the polarity</a>
+of a more complex expression?</p>
+<div class="highlight"><pre>        <span class="k">IF</span><span class="p">((</span><span class="nv">WD1</span><span class="ow">.NE.</span><span class="s1">&#39;WATER&#39;</span><span class="ow">.AND.</span><span class="nv">WD1</span><span class="ow">.NE.</span><span class="s1">&#39;OIL&#39;</span><span class="p">)</span>
+        <span class="mi">1</span>      <span class="ow">.OR.</span><span class="p">(</span><span class="nv">WD2</span><span class="ow">.NE.</span><span class="s1">&#39;PLANT&#39;</span><span class="ow">.AND.</span><span class="nv">WD2</span><span class="ow">.NE.</span><span class="s1">&#39;DOOR&#39;</span><span class="p">))</span><span class="k">GOTO </span><span class="mi">2610</span>
+        <span class="k">IF</span><span class="p">(</span><span class="nv">AT</span><span class="p">(</span><span class="nv">VOCAB</span><span class="p">(</span><span class="nv">WD2</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span><span class="nv">WD2</span><span class="o">=</span><span class="s1">&#39;POUR&#39;</span>
+<span class="mi">2610</span></pre></div>
+
+<p>I was delighted!
+Here — <em>finally</em> — was a use for De Morgan's laws,
+a mere seventeen years after I learned them in computer science class.</p>
+<p><a class="reference external" href="http://en.wikipedia.org/wiki/De_Morgan's_laws">De Morgan's laws</a>
+state, basically,
+that instead of simply slapping <tt class="docutils literal">not</tt> in front of a large expression —
+making your code even harder to read —
+you can dive into the big expression and change <tt class="docutils literal">and</tt> to <tt class="docutils literal">or</tt>,
+<tt class="docutils literal">or</tt> to <tt class="docutils literal">and</tt>,
+and then reverse the meaning of each equality.
+The result will mean precisely the opposite,
+the <tt class="docutils literal">not</tt>, of the original big expression.
+You do have to be careful with parentheses
+since <tt class="docutils literal">and</tt> and <tt class="docutils literal">or</tt> have different precedence
+in most programming languages,
+but De Morgan let me convert the FORTRAN above
+into roughly this Python translation:</p>
+<div class="highlight"><pre><span class="k">if</span> <span class="p">((</span><span class="n">word1</span> <span class="o">==</span> <span class="s">&#39;water&#39;</span> <span class="ow">or</span> <span class="n">word1</span> <span class="o">==</span> <span class="s">&#39;oil&#39;</span><span class="p">)</span> <span class="ow">and</span>
+    <span class="p">(</span><span class="n">word2</span> <span class="o">==</span> <span class="s">&#39;plant&#39;</span> <span class="ow">or</span> <span class="n">word2</span> <span class="o">==</span> <span class="s">&#39;door&#39;</span><span class="p">)</span> <span class="ow">and</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">is_here</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">referent</span><span class="p">(</span><span class="n">word2</span><span class="p">))):</span>
+    <span class="o">...</span></pre></div>
+
+<p>And the result works great.
+In general, much of the work
+of translating “Adventure” to Python
+involved taking FORTRAN code that said one thing
+and making it say more or less exactly the opposite,
+so that I could replace <tt class="docutils literal">GOTO</tt> statements
+with more modern — and more readable — control flow.</p>
+</div>
+<div class="section" id="testing-randomness-is-tricky">
+<h2>Testing randomness is tricky</h2>
+<p>The main tests for the game are two large walkthroughs.
+You can find them in the package's <tt class="docutils literal">tests</tt> directory.
+Since the game is playable at the Python prompt,
+each walkthrough is simply a long docfile
+that starts the game and plays to completion.
+I pass them to a Standard Library
+<a class="reference external" href="http://docs.python.org/library/doctest.html#doctest.DocFileSuite">DocFileSuite</a>
+and away they go.</p>
+<p>As soon as I started implementing game elements
+that involved chance, my tests started breaking,
+because the series of numbers from the
+<a class="reference external" href="http://docs.python.org/library/random.html">random</a>
+Standard Library module is different every time you run Python.
+This has a well-known fix:
+at the beginning of each test
+I set the <tt class="docutils literal">random</tt> generator's seed value,
+making the sequence of pseudo-random numbers
+unfold in the same order every time.
+In case anyone runs my tests in parallel,
+I even abandoned the global random number generator
+and gave each instance of my <tt class="docutils literal">Game</tt> class
+its own <tt class="docutils literal">Random()</tt> object,
+so that two games going at once
+will not interfere with each other's stream of random numbers.
+So each walkthrough starts with something like:</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">import</span> <span class="nx">adventure</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nx">adventure.play</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="nx">WELCOME</span> <span class="k">TO</span> <span class="nx">ADVENTURE</span><span class="o">!!</span>  <span class="nx">WOULD</span> <span class="nx">YOU</span> <span class="nx">LIKE</span> <span class="nx">INSTRUCTIONS</span><span class="o">?</span>
+<span class="o">&lt;</span><span class="nx">BLANKLINE</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nx">no</span></pre></div>
+
+<p>After all of that caution, I felt betrayed and dismayed
+when the tests <em>still</em> wound up being random,
+giving different output every time they were run!</p>
+<p>It took me quite a long time to realize
+that my problem was this scrap of code:</p>
+<div class="highlight"><pre><span class="n">locations</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c"># every Room() object reachable from here</span>
+    <span class="p">}</span>
+<span class="n">next_room</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">locations</span><span class="p">)</span></pre></div>
+
+<p>Why is this code a problem?
+Because of four different facts
+that, when combined together, make trouble:</p>
+<ul class="simple">
+<li>To choose an item from a set <tt class="docutils literal">s</tt>,
+<tt class="docutils literal">choice()</tt> selects an integer <tt class="docutils literal">0</tt> <tt class="docutils literal">≤</tt> <tt class="docutils literal">n</tt> <tt class="docutils literal">&lt;</tt> <tt class="docutils literal">len(s)</tt>
+and iterates over <tt class="docutils literal">n</tt> items to find item number <tt class="docutils literal">n</tt>.</li>
+<li>Sets, by definition, they have no inherent ordering.</li>
+<li>When faced with quite generic objects like my <tt class="docutils literal">Room</tt> instances,
+Python sets must hash and store them by their memory addresses.</li>
+<li>Finally, Python object memory address are not stable
+from one run of the interpreter to the next,
+even if you are running exactly the same sequence of operations!</li>
+</ul>
+<p>So the random number generator
+would indeed return a stable value like, say,&nbsp;3,
+but iterating across <tt class="docutils literal">locations</tt> would yield a different
+“object&nbsp;3” each time I ran my tests.</p>
+<p>The worse part was that these random room decisions were hidden —
+their consequences were not immediately visible to the player —
+so the walkthrough would not fail until much later,
+when the execution of the above code snippet was far in the past.
+I&nbsp;kept staring at the code at the point of failure,
+not at all suspecting that the random number generator
+was being knocked off course invisibly
+a hundred lines earlier in the walkthrough!</p>
+<p>The solution was simple: to sort the rooms into a list
+on some criteria <em>other</em> than their memory address
+before letting <tt class="docutils literal">choice()</tt> get to work on them.</p>
+</div>
+<div class="section" id="a-grand-adventure-at-1200-baud">
+<h2>A grand adventure, at 1200 baud</h2>
+<p>My final discovery was made quite by accident.
+Now that “Adventure” could be played at the Python prompt,
+I also added a real console prompt that requires no syntactic magic.
+Simply invoke the <tt class="docutils literal">adventure</tt> package and start typing:</p>
+<div class="highlight"><pre><span class="err">$</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">adventure</span>
+<span class="n">WELCOME</span> <span class="n">TO</span> <span class="n">ADVENTURE</span><span class="o">!!</span>  <span class="n">WOULD</span> <span class="n">YOU</span> <span class="n">LIKE</span> <span class="n">INSTRUCTIONS</span><span class="o">?</span>
+
+<span class="o">&gt;</span> <span class="n">no</span>
+<span class="n">YOU</span> <span class="n">ARE</span> <span class="n">STANDING</span> <span class="n">AT</span> <span class="n">THE</span> <span class="n">END</span> <span class="n">OF</span> <span class="n">A</span> <span class="n">ROAD</span> <span class="n">BEFORE</span> <span class="n">A</span> <span class="n">SMALL</span> <span class="n">BRICK</span> <span class="n">BUILDING</span><span class="p">.</span>
+<span class="n">AROUND</span> <span class="n">YOU</span> <span class="n">IS</span> <span class="n">A</span> <span class="n">FOREST</span><span class="p">.</span>  <span class="n">A</span> <span class="n">SMALL</span> <span class="n">STREAM</span> <span class="n">FLOWS</span> <span class="n">OUT</span> <span class="n">OF</span> <span class="n">THE</span> <span class="n">BUILDING</span> <span class="n">AND</span>
+<span class="n">DOWN</span> <span class="n">A</span> <span class="n">GULLY</span><span class="p">.</span>
+
+<span class="o">&gt;</span> <span class="n">enter</span> <span class="n">building</span></pre></div>
+
+<p>Just for fun, I replaced the <tt class="docutils literal">print</tt> statement with a delayed loop
+that prints characters at the speed of a 1200 baud modem
+like the modem over which I myself first played the “Adventure” game.
+And after a few minutes of playing
+I was suddenly brought up short
+by the fact that the game seemed, somehow, to be more fun
+when the text was presented slowly.</p>
+<p>What was going on?</p>
+<p>I paid close attention to the game experience,
+and remembered that the human eye scans — and does not merely read —
+a block of text that appears on the screen all at once.
+Even if you intend to read a paragraph as narrative,
+your eyes will jealously dart forward
+to get a glimpse of what happens next;
+your mind wants to initially take in the paragraph as <em>gestalt</em>.
+Recall how hard it is to pay attention in a novel,
+if farther down the page you see emphatic lettering
+that signals that something terrible is about to happen!</p>
+<p>Now consider the following event
+from early in the “Adventure” game:</p>
+<div class="highlight"><pre><span class="o">&gt;</span> <span class="n">n</span>
+<span class="n">YOU</span> <span class="n">ARE</span> <span class="n">IN</span> <span class="n">THE</span> <span class="n">HALL</span> <span class="n">OF</span> <span class="n">THE</span> <span class="n">MOUNTAIN</span> <span class="n">KING</span><span class="p">,</span> <span class="n">WITH</span> <span class="n">PASSAGES</span> <span class="n">OFF</span> <span class="n">IN</span> <span class="n">ALL</span>
+<span class="n">DIRECTIONS</span><span class="p">.</span>
+
+<span class="n">A</span> <span class="n">HUGE</span> <span class="n">GREEN</span> <span class="n">FIERCE</span> <span class="n">SNAKE</span> <span class="n">BARS</span> <span class="n">THE</span> <span class="n">WAY</span><span class="o">!</span></pre></div>
+
+<p>When this text is presented all at once,
+my eye jumps immediately to the exclamation point,
+finds out about the snake,
+and only then — almost as an afterthought — gets around to reading
+about my location.
+It only makes things worse that the news about the snake
+will have appeared nearly on top
+of where my prompt was sitting
+as I watched myself type the <tt class="docutils literal">s</tt> command.</p>
+<p>It would normally be exciting to reach a location
+with as storied a name as “the Hall of the Mountain King.”
+Both Ibsen and Tolkien might leap to mind.
+And after the safety of exploring narrow corridors,
+a shiver goes down my spine to realize that my lamp
+no longer finds solid walls close at hand,
+but that passages recede into darkness in “all directions.”
+All of this can be ruined if I read first about the snake
+and hardly pause to read the room description
+because I am thinking about my safety instead.</p>
+<p>At 1200 baud my experience of the text is completely different.
+It does scroll by at a speed faster than I can read —
+I am not bored waiting for more text to appear as I am at 300 baud —
+but I am forced, as were all early “Adventure” players,
+to learn something about my location
+before I am then startled by the presence of danger.
+And the danger feels all the more acute
+if I know already that this is the Hall of the Mountain King which,
+offering passages in all directions,
+lacks even a single wall that I could turn my back against.</p>
+<p>I am happy to have solved the technical puzzle
+of how “Adventure” might be played at the Python prompt.
+And without the challenge
+it would not have occurred to me to sit down over Christmas 2010
+and to start porting the game in the first place.
+But having played the game both ways —
+with descriptions appearing instantly at the Python prompt,
+versus being printed slowly by a dedicated game prompt —
+I must say that I much prefer the latter.</p>
+<p>And so I suggest,
+if you are playing “Adventure” for the first time,
+that you invoke it with <tt class="docutils literal"><span class="pre">-m</span></tt>
+and simply ignore the fun that I had as I conquered
+the limitations of the Python prompt.
+You and the game deserve it!</p>
+</div>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'rhodesmill';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<p class="byline">©2020</p>
+
+</body>
+</html>

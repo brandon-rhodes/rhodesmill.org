@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+ <title>PyFTS Python interface to OpenFTS</title>
+</head>
+<body>
+<h1>PyFTS</h1>
+
+<blockquote>
+<i>A Python interface to the OpenFTS full-text search engine</i>
+<p>
+<b>Status:</b> the author currently uses the example web interface
+to search the 241&nbsp;MB of email in his archive,
+and can find old emails much faster now.
+</blockquote>
+<p>
+The <a href="http://openfts.sourceforge.net/">OpenFTS</a> project
+is developing index types and functions
+for the <a href="http://www.postgresql.org/">PostgreSQL</a> database
+which provide the ability to conduct efficient full-text searches.
+While their work is both important and valuable,
+they currently offer native programming interfaces
+only to users of the <a href="http://tcl.sourceforge.net/">Tcl</a>
+and <a href="http://www.perl.org/">Perl</a> languages.
+<p>
+This package provides the beginnings of a third progamming interface,
+this time for the <a href="http://www.python.org/">Python</a> language.
+Though still under development,
+this Python interface can already do simple searches
+using the same document parsing and lexeme analysis
+performed by the other interfaces.
+<p>
+You will need to acquire PostgreSQL and OpenFTS yourself,
+as well as the <a href="http://www.druid.net/pygresql/">PyGreSQL</a> module
+which this library uses to communicate with the database.
+This package includes:
+<ul>
+<li>Python extension modules
+ which provide access to the low-level OpenFTS routines
+ for both document parsing and English word stemming.
+<li>A full python package built on top of these modules
+ which provides operations for document indexing, searching, and headlining.
+<li>An example application
+ which will index directories full of documents for you,
+ then let you search them either from the command line or a web browser.
+</ul>
+<b>Download:</b> <a href="pyfts-0.3.tar.gz">pyfts-0.3.tar.gz</a>,
+or view the <a href="pyfts-README">README</a> file by itself
+<hr>
+<b>Brandon Craig Rhodes</b>
+(<a href="http://www.rhodesmill.org/brandon/">web page</a> and
+<a href="mailto:brandon@rhodesmill.org">email</a>)
+<br>
+Last modified on Sunday 2 March 2003
+</body>
+</html>

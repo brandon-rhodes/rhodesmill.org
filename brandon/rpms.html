@@ -1,0 +1,269 @@
+<HTML><HEAD><TITLE>Brandon Craig Rhodes: RPMs</TITLE></HEAD>
+<BODY TEXT=#ffffff BGCOLOR=#006060 LINK=#ffffd0 VLINK=#ffffff>
+<BR><BR>
+<TABLE ALIGN=CENTER BORDER=0>
+<TR><TD VALIGN=TOP>Brandon Craig Rhodes<TD ROWSPAN=2><H1>RPMs</H1>
+</TABLE>
+<BR><BR>
+Several programs that are favorites of mine
+or that I use frequenly for my work
+are not supported as part of
+<A HREF="http://www.redhat.com/">Red Hat Software</A>'s offical distributions,
+so I have packaged them myself
+and contributed them to Red Hat's 
+<A HREF="ftp://ftp.redhat.com/pub/contrib/">contrib/</A> directory.
+For an independent listing of my contribution,
+see <A HREF="http://rufus.w3.org/linux/RPM/Brandon_Craig_Rhodes_(bcrhodes@cc.gatech.edu).html">my entry</A>
+on the excellent <A HREF="http://rufus.w3.org/linux/RPM/">RPM Repository</A>.
+
+
+
+
+
+<DL>
+<DT><B>Applications/Networking: Argus 1.7 (beta 1b)</B></P>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/readmes/argus-1.7beta1b-1.readme">
+hurricane/readmes/argus-1.7beta1b-1.readme</A><P>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/SRPMS/argus-1.7beta1b-1.src.rpm">
+hurricane/SRPMS/argus-1.7beta1b-1.src.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/argus-1.7beta1b-1.i386.rpm">
+hurricane/i386/argus-1.7beta1b-1.i386.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/argus-utilities-1.7beta1b-1.i386.rpm">
+hurricane/i386/argus-utilities-1.7beta1b-1.i386.rpm</A>
+<DD>This is an IP transaction auditing tool
+ that I use to monitor accesses to the machines I administer.
+ I have split it into two components:
+ the sniffer itself
+ (which you will probably need installed on only one machine per subnet),
+ and the collection of commands it comes with for scanning its log files
+ (which you might want to install on many machines).
+</P>
+<DT><B>Applications/Scientific: XEphem 3.0</B></P>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/SRPMS/xephem-3.1-1.src.rpm">
+hurricane/SRPMS/xephem-3.1-1.src.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/xephem-3.1-1.i386.rpm">
+hurricane/i386/xephem-3.1-1.i386.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/noarch/xephem-ppm-1990-2.noarch.rpm">
+noarch/xephem-ppm-1990-2.noarch.rpm</A>
+<DD>XEphem should be used by every astronomer.
+ Many amateur astronomers spend money for PC-based systems,
+ while this free application outperforms almost all of them!
+ (Exception: it will not do gravitational dynamics simulations,
+  but they are almost irrelevant to the needs of an observer
+  with access to up-to-date ephemeri.)
+ I think every Red Hat user should try this package out.
+ <P>
+ The <I>ppm</I> star database is included in a separate RPM:
+ it is an optional and very large star catalog
+ that can be used by <I>XEphem</I>.</P>
+</P>
+<DT><B>Development/Languages/Python: Python 1.5</B></P>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/readmes/python-1.5-1.readme">
+hurricane/readmes/python-1.5-1.readme</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/readmes/tkinter-1.5-1.readme">
+readmes/tkinter-1.5-1.readme</A><P>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/SRPMS/python-1.5-1.src.rpm">
+hurricane/SRPMS/python-1.5-1.src.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/python-1.5-1.i386.rpm">
+hurricane/i386/python-1.5-1.i386.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/python-devel-1.5-1.i386.rpm">
+hurricane/i386/python-devel-1.5-1.i386.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/python-docs-1.5-1.i386.rpm">
+hurricane/i386/python-docs-1.5-1.i386.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/python-extralibs-1.5-1.i386.rpm">
+hurricane/i386/python-extralibs-1.5-1.i386.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/python-stdwin-1.5-1.i386.rpm">
+hurricane/i386/python-stdwin-1.5-1.i386.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/i386/tkinter-1.5-1.i386.rpm">
+i386/tkinter-1.5-1.i386.rpm</A>
+<DD>I am a fan and regular user of <A HREF="http://www.python.org">Python</A>.
+ This is the most recent version,
+ newer than the 1.4 currently being shipped with Red Hat 5.0.
+ When making these packages I attempted to provide a more complete
+ range of functionality than does Red Hat,
+ while carefully retaining Red Hat's package structure.
+ In particular I compiled all of the libraries that could possibly be useful
+ but that did not require other software;
+ these are in the `extralibs' package.
+<P>
+ Most sigificantly,
+ I compiled the Python interpreter with <B>threads</B> enabled,
+ taking advantage of the C library and kernel modifications
+ available with Red Hat 5.0.
+ This incurs a performance penalty for nonthreaded applications
+ since the interpreter performs all of its operations in a thread-safe manner,
+ but this will probably not be noticable
+ since Python 1.5 itself is notably faster than 1.4 was.
+</P>
+<DT><B>Development/Languages/Tcl: Scotty Toolkit</B></P>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/SRPMS/scotty-2.1.8-1.src.rpm">
+hurricane/SRPMS/scotty-2.1.8-1.src.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/scotty-2.1.8-1.i386.rpm">
+hurricane/i386/scotty-2.1.8-1.i386.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/scotty-mibs-i586-2.1.8-1.i386.rpm">
+hurricane/i386/scotty-mibs-i586-2.1.8-1.i386.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/scotty-tkined-2.1.8-1.i386.rpm">
+hurricane/i386/scotty-tkined-2.1.8-1.i386.rpm</A>
+<DD>Scotty is a collection of network protocol routines
+ incorporated into the Tcl scripting language.
+ I will probably wind up using Python for my ``real'' network applications,
+ since it is faster and has real data structures,
+ but I went ahead and packaged this as well.
+</P>
+<DT><B>Development/Libraries: libpcap</B></P>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/SRPMS/libpcap-0.4a6-1.src.rpm">
+hurricane/SRPMS/libpcap-0.4a6-1.src.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/libpcap-0.4a6-1.i386.rpm">
+hurricane/i386/libpcap-0.4a6-1.i386.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/libpcap-devel-0.4a6-1.i386.rpm">
+hurricane/i386/libpcap-devel-0.4a6-1.i386.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/libpcap-static-0.4a6-1.i386.rpm">
+hurricane/i386/libpcap-static-0.4a6-1.i386.rpm</A>
+<DD>I needed to compile a program
+ that required this recent version of libpcap,
+ which is a library providing an interface for capturing packets
+ that is portable across many brands of Unix.
+ (The program was SNMPSniff;
+ see the SNMP section of the
+ <A HREF="http://www.btc.gatech.edu/net/management/linux">Linux Network
+ Management Pages</A>.)
+</P>
+<DT><B>Development/Tools: CWeb 3.4g</B></P>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/readmes/cweb-3.4g-1.readme">
+hurricane/readmes/cweb-3.4g-1.readme</A><P>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/SRPMS/cweb-3.4g-1.src.rpm">
+hurricane/SRPMS/cweb-3.4g-1.src.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/i386/cweb-3.4g-1.i386.rpm">
+hurricane/i386/cweb-3.4g-1.i386.rpm</A>
+<DD>Sometime around the seventies,
+ the eminent computer scientist Donald Knuth became dissatisfied
+ with the manner in which computer programming languages
+ force us to organize our code.
+ Actually the problem was more specific:
+ he was using Pascal,
+ which forces your application, however large,
+ to be expressed as a single program module.
+ A subroutine is coded inside the routine that calls it,
+ right smack in between its parent's variable declarations and code!
+ So in a large program there could be thousands of lines separating
+ the variables of a high-level procedure with its code.
+ We are lucky that such an unfortunate language
+ did not drive <NOBR>Dr. Knuth</NOBR> out of computing altogether.
+ <P>
+ What Knuth did instead
+ was to develop the doctrine of ``literate programming,''
+ along with an implementation for Pascal that was called <I>Web</I>.
+ His scheme contains two ingredients:
+ first,
+ you express a program hierarchically,
+ breaking it into concentric levels of detail
+ that allow you to view high level structures
+ without having them interrupted by their lengthy components;
+ second,
+ you write a description of what each of these pieces of code does.
+ This structure can then be collapsed into compilable code,
+ or be formatted and printed.
+ The <I>Web</I> system was used by Knuth to create the current version
+ of the widely used TeX program.
+ <P>
+ <I>CWeb</I> is another implementation
+ of the literate programming concept,
+ written by Silvio Levy and <NOBR>Dr. Knuth</NOBR>.
+ I would estimate that literate programming
+ is probably only half as useful for writing C
+ as it was for Pascal:
+ since C compilers let you combine multiple source files
+ and make you write all functions in the external scope,
+ they avoid the horrible mess that Pascal made of a large project.
+ <P>
+ But even though C is more convenient,
+ <I>cweb</I> still seems like a good idea.
+ Putting my verbal commentary on a piece of C code into a nearby comment -
+ a fragment of text stuck inside of slashes and stars -
+ seems somewhat lopsided to me.
+ So I am very attracted to the idea of a system
+ that places code and description on an equal footing;
+ thus I have packaged <I>CWeb</I> and plan to use it
+ the next time I write C code.
+</P>
+<DT><B>Development/Tools: Swig 1.1p5</B></P>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/swig-1.1p5-1.src.rpm">
+hurricane/swig-1.1p5-1.src.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/hurricane/swig-1.1p5-1.i386.rpm">
+hurricane/swig-1.1p5-1.i386.rpm</A>
+<DD>The Simplified Wrapper and Interface Generator is a magnificent tool
+ that automatically builds interfaces to collections of C or C++ functions
+ from any one of several scripting languages.
+ It currently supports Python, Tcl, Perl, and Guile.
+ <P>
+ The individual who made the RPM for Swig 1.1p3
+ incorrectly named the packages with the version number `1.3p1'.
+ So this package in fact represents the most recent version.
+</P>
+<DT><B>Games: Adventure</B></P>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/SRPMS/adventure-2.5-1.src.rpm">
+SRPMS/adventure-2.5-1.src.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/i386/adventure-2.5-1.i386.rpm">
+i386/adventure-2.5-1.i386.rpm</A>
+<DD>This is the most recent authorized edition
+ of the venerable and original text adventure game.
+ I recommend playing it late at night in a dark room,
+ as this enhances its atmosphere considerably;
+ if you play it in a lighted room or office
+ you are likely to forget that caves are dark
+ and imperfectly lit by your latern.
+</P>
+</DL>
+<!-- <DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/SRPMS/cfengine-1.4.8a-1.src.rpm">
+SRPMS/cfengine-1.4.8a-1.src.rpm</A>
+<DT>
+<A HREF="ftp://ftp.cc.gatech.edu/pub/linux/distributions/redhat/contrib/i386/cfengine-1.4.8a-1.i386.rpm">
+i386/cfengine-1.4.8a-1.i386.rpm</A>
+<DD>The GNU remote configuration engine <I>CFEngine</I>
+ is a powerful tool for locally or remotely maintaining the configuration
+ of a Unix system.
+ It allows you to specify checks and repairs
+ related to filesystems, files, daemons, timezone,
+ and several other aspects of your systems.
+ In particular it is an excellent way to make sure
+ that the permissions of individual files and of whole hierarchies
+ stay consistent with your security policies.</P> -->
+<BR CLEAR=BOTH><HR>
+<CENTER>
+Return to my <A HREF="index.html">home page.</A><BR>
+This page last updated by
+<A HREF="mailto:brandon@rhodesmill.org">brandon@rhodesmill.org</A>
+on Friday 22 January 1999.</CENTER>
+</BODY></HTML>

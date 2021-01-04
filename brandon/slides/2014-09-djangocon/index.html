@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>slides.rst</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="slide">
+
+<div class="line-block">
+<div class="line"><strong>Django: a Data Shovel</strong></div>
+<div class="line"><strong>With a Future</strong></div>
+</div>
+<!-- abstract, from email to Steve Holden
+
+At its essence, a web framework like Django is designed to duct tape
+over awkward problems with data.  Like the fact that data wants to
+live on big servers, but users keep wanting it to appear on their
+screens instead.  And that users want to edit data, but are horrible
+typists.  Now that data is becoming big business for Python, how do
+web frameworks fit into the picture — and is Django up to the
+challenge? -->
+<div class="line-block">
+<div class="line">&#64;brandon_rhodes</div>
+<div class="line"><em>DjangoCon 2014</em></div>
+</div>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: {extensions: ["cancel.js"]},
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+  "HTML-CSS": {scale: 94}
+});
+</script>
+<script type="text/javascript"
+        src="/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<style>
+  body p {text-rendering: optimizeLegibility;}
+  body.presentation-mode .section {font-size: 60pt;}
+  body.presentation-mode .pre,
+  body.presentation-mode .literal {font-size: 48pt;}
+  body.presentation-mode pre {font-size: 30pt;}
+  .MathJax {scale: 50%}
+  .strike {text-decoration: line-through;}
+</style></div>
+<div class="section" id="id1">
+
+<div class="highlight"><pre><span></span><span class="n">complexity</span>
+<span class="err">↑</span>
+
+<span class="err">•</span>   <span class="err">→</span> <span class="n">time</span>
+</pre></div>
+
+</div>
+<div class="section" id="id2">
+
+<div class="highlight"><pre><span></span>              <span class="err">↗</span>
+            <span class="err">↗</span>
+          <span class="err">↗</span>
+        <span class="err">↗</span>
+      <span class="err">↗</span>
+    <span class="err">↗</span>
+<span class="n">start</span>
+</pre></div>
+
+</div>
+<div class="section" id="id3">
+
+<div class="highlight"><pre><span></span>         <span class="n">working</span>
+          <span class="n">code</span>
+          <span class="err">↗</span>
+        <span class="err">↗</span>
+      <span class="err">↗</span>
+    <span class="err">↗</span>
+<span class="n">start</span>
+</pre></div>
+
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line">Once my code</div>
+<div class="line">is <em>finally</em> working</div>
+<div class="line">…</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<div class="line-block">
+<div class="line">Once my code</div>
+<div class="line">is <em>finally</em> working</div>
+<div class="line">it is probably better</div>
+<div class="line">described as <strong>barely working</strong></div>
+</div>
+</div>
+<div class="section" id="guideline">
+<h1>guideline</h1>
+<div class="line-block">
+<div class="line">Once new code <em>works,</em></div>
+<div class="line">I am probably about</div>
+<div class="line"><strong>halfway done</strong></div>
+</div>
+</div>
+<div class="section" id="id6">
+
+<div class="highlight"><pre><span></span>         <span class="n">working</span>
+          <span class="n">code</span>
+          <span class="err">↗</span>  <span class="err">↘</span>
+        <span class="err">↗</span>      <span class="err">↘</span>
+      <span class="err">↗</span>          <span class="n">good</span>
+    <span class="err">↗</span>            <span class="n">code</span>
+<span class="n">start</span>
+</pre></div>
+
+</div>
+<div class="section" id="id7">
+
+<div class="line-block">
+<div class="line">Web framework</div>
+<div class="line">history follows a</div>
+<div class="line">similar pattern</div>
+</div>
+</div>
+<div class="section" id="id8">
+
+<div class="highlight"><pre><span></span>              <span class="err">↗</span>
+            <span class="err">↗</span>
+          <span class="err">↗</span>
+        <span class="err">↗</span>
+      <span class="err">↗</span>
+    <span class="err">↗</span>
+<span class="n">start</span>
+</pre></div>
+
+</div>
+<div class="section" id="id9">
+
+<div class="highlight"><pre><span></span>            <span class="n">Zope</span>
+            <span class="err">↗</span>
+          <span class="err">↗</span>
+        <span class="err">↗</span>
+      <span class="err">↗</span>
+    <span class="err">↗</span>
+<span class="n">start</span>
+</pre></div>
+
+</div>
+<div class="section" id="id10">
+
+<div class="highlight"><pre><span></span>            <span class="n">Zope</span>
+            <span class="err">↗</span> <span class="err">↘</span>
+          <span class="err">↗</span>     <span class="n">CherryPy</span>
+        <span class="err">↗</span>         <span class="n">Django</span>
+      <span class="err">↗</span>
+    <span class="err">↗</span>
+<span class="n">start</span>
+</pre></div>
+
+</div>
+<div class="section" id="id11">
+
+<div class="highlight"><pre><span></span>            <span class="n">Zope</span>
+            <span class="err">↗</span> <span class="err">↘</span>
+          <span class="err">↗</span>     <span class="n">CherryPy</span>
+        <span class="err">↗</span>         <span class="n">Django</span>
+      <span class="err">↗</span>             <span class="err">↘</span>
+    <span class="err">↗</span>             <span class="err">µ</span> <span class="n">frameworks</span>
+<span class="n">start</span>
+</pre></div>
+
+</div>
+<div class="section" id="id12">
+
+<div class="highlight"><pre><span></span>            <span class="n">Zope</span>
+            <span class="err">↗</span> <span class="err">↘</span>
+          <span class="err">↗</span>     <span class="n">CherryPy</span>
+        <span class="err">↗</span>         <span class="n">Django</span>   <span class="err">µ</span> <span class="o">+</span> <span class="n">ORM</span>
+      <span class="err">↗</span>             <span class="err">↘</span>     <span class="err">⋰</span>
+    <span class="err">↗</span>             <span class="err">µ</span> <span class="n">frameworks</span>
+<span class="n">start</span>
+</pre></div>
+
+</div>
+<div class="section" id="id13">
+
+<div class="highlight"><pre><span></span>            <span class="n">Zope</span>
+            <span class="err">↗</span> <span class="err">↘</span>          <span class="err">↘</span>
+          <span class="err">↗</span>     <span class="n">CherryPy</span>   <span class="n">Pyramid</span>
+        <span class="err">↗</span>         <span class="n">Django</span>
+      <span class="err">↗</span>             <span class="err">↘</span>
+    <span class="err">↗</span>             <span class="err">µ</span> <span class="n">frameworks</span>
+<span class="n">start</span>
+</pre></div>
+
+<!-- Django is the simplest web framework that has everything you need -->
+<!-- is node.js a threat?
+repeated efforts to automate away BOTH sides of client/server! -->
+</div>
+<div class="section" id="id14">
+
+<div class="line-block">
+<div class="line">What <em>is</em> a</div>
+<div class="line"><strong>web framework?</strong></div>
+</div>
+</div>
+<div class="section" id="id15">
+
+<p><em>A denormalization engine</em></p>
+</div>
+<div class="section" id="id16">
+
+<div class="line-block">
+<div class="line">A web framework</div>
+<div class="line">denormalizes <strong>data</strong></div>
+<div class="line">to <strong>documents</strong></div>
+</div>
+</div>
+<div class="section" id="q">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line"><em>How much</em> data</div>
+<div class="line">should you deliver</div>
+<div class="line">to the client?</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>minimum &nbsp; ↔ &nbsp; maximum</strong></div>
+</div>
+</div>
+<div class="section" id="id17">
+
+<p><em>imagine</em></p>
+</div>
+<div class="section" id="id18">
+
+<div class="line-block">
+<div class="line">If hard drives</div>
+<div class="line">kept growing</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line">If hard drives</div>
+<div class="line">kept growing</div>
+</div>
+<div class="line-block">
+<div class="line"><em>30 years</em></div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="line-block">
+<div class="line">If hard drives</div>
+<div class="line">kept growing</div>
+</div>
+$$ {{\rm 8\,TB} \over \rm{20\,MB}} = {{\rm ?} \over \rm{8\,TB}} $$</div>
+<div class="section" id="id21">
+
+<div class="line-block">
+<div class="line">if hard drives</div>
+<div class="line">kept growing</div>
+</div>
+$$ {{\rm 8\,TB} \over \rm{20\,MB}} = {{\rm 3.2\,EB} \over \rm{8\,TB}} $$</div>
+<div class="section" id="id22">
+
+<div class="line-block">
+<div class="line">Why not have</div>
+<div class="line">Stack Overflow on</div>
+<div class="line">your hard drive?</div>
+</div>
+</div>
+<div class="section" id="id23">
+
+<ul class="simple">
+<li>Stack Overflow</li>
+<li>Wikipedia</li>
+<li>IMDB</li>
+</ul>
+</div>
+<div class="section" id="id24">
+
+<div class="line-block">
+<div class="line">Why not have</div>
+<div class="line">the Library of Congress</div>
+<div class="line">on your hard drive?</div>
+</div>
+$$ {\rm 0.003\,EB} $$</div>
+<div class="section" id="id25">
+
+<div class="line-block">
+<div class="line">Why not have</div>
+<div class="line">every movie ever made,</div>
+<div class="line">in High Definition?</div>
+</div>
+$$ {\rm 0.008\,EB} $$</div>
+<div class="section" id="id26">
+
+<div class="line-block">
+<div class="line">Subversion &nbsp; &nbsp; git / hg</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>minimum &nbsp; ↔ &nbsp; maximum</strong></div>
+</div>
+</div>
+<div class="section" id="id27">
+
+<div class="line-block">
+<div class="line">Django is <em>flexible</em> and</div>
+<div class="line"><strong>not</strong> opinionated about</div>
+<div class="line">where my views land</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>minimum &nbsp; ↔ &nbsp; maximum</strong></div>
+</div>
+</div>
+<div class="section" id="id28">
+
+<p><em>A story</em></p>
+<!-- hence things like meteor.js and Websockets and stuff -->
+<!-- intro where I ask computer questions?
+suggest that all those answers will soon be stored locally?
+future EB drives?
+
+talk about what is ephemeral versus what is stored?
+is this whole story about not just (or even) denormalizing data,
+but choosing to instantiate the denormalized data?
+
+lessons from newfs
+  big database put together by people?
+  then: the big thing: building up a query
+    so what do we want for our apps
+      cacheable!
+      mention two techniques? (hard Cache date; last-modified and IDthing)
+      caching matters to front-end, not just to browsers!
+        build one with varnish, or use Fastly (PyCon sponsor)
+      story about adding just 1s of caching to big app? -->
+</div>
+<div class="section" id="id29">
+
+<img alt="newfs-logo.png" src="newfs-logo.png" style="width: 560px;" />
+</div>
+<div class="section" id="id30">
+
+<img alt="jazkarta.gif" src="jazkarta.gif" style="width: 560px;" />
+</div>
+<div class="section" id="id31">
+
+<p><strong>Problem:</strong></p>
+<p>dichotomous keys</p>
+</div>
+<div class="section" id="id32">
+
+<img alt="choose-adventure.jpg" src="choose-adventure.jpg" style="height: 740px;" />
+</div>
+<div class="section" id="id33">
+
+<img alt="gymnosperms.jpg" src="gymnosperms.jpg" />
+</div>
+<div class="section" id="id34">
+
+<div class="line-block">
+<div class="line">User-directed search</div>
+</div>
+</div>
+<div class="section" id="id35">
+
+<img alt="gobotany-logo.png" src="gobotany-logo.png" style="width: 720px;" />
+</div>
+<div class="section" id="id36">
+
+<div class="line-block">
+<div class="line">User-directed search</div>
+</div>
+<div class="line-block">
+<div class="line"><em>“choose a filter”</em></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id37">
+
+<div class="line-block">
+<div class="line">User-directed search</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>red flowers</strong></div>
+<div class="line"><em>“choose a filter”</em></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line">User-directed search</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>red flowers</strong></div>
+<div class="line"><strong>smooth leaves</strong></div>
+<div class="line"><em>“choose a filter”</em></div>
+</div>
+</div>
+<div class="section" id="id39">
+
+<div class="line-block">
+<div class="line">User-directed search</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>red flowers</strong></div>
+<div class="line"><strong>smooth leaves</strong></div>
+<div class="line"><strong>Vermont</strong></div>
+</div>
+</div>
+<div class="section" id="id40">
+
+<img alt="how-many-leaves.jpg" src="how-many-leaves.jpg" />
+</div>
+<div class="section" id="id41">
+
+<img alt="55-matching-species.jpg" src="55-matching-species.jpg" />
+</div>
+<div class="section" id="first-iteration">
+<h1>First iteration</h1>
+<div class="line-block">
+<div class="line"><strong>1 : 1</strong></div>
+<div class="line">User action - API call</div>
+</div>
+</div>
+<div class="section" id="id42">
+
+<div class="line-block">
+<div class="line"><strong>red flowers</strong></div>
+<div class="line"><strong>smooth leaves</strong></div>
+<div class="line"><strong>Vermont</strong></div>
+</div>
+</div>
+<div class="section" id="id43">
+
+<div class="highlight"><pre><span></span><span class="o">/</span><span class="n">q</span> <span class="err">?</span> <span class="n">flower</span><span class="o">=</span><span class="n">red</span> <span class="o">&amp;</span> <span class="n">leaf</span><span class="o">=</span><span class="n">smooth</span> <span class="o">&amp;</span> <span class="n">state</span><span class="o">=</span><span class="n">vt</span>
+</pre></div>
+
+</div>
+<div class="section" id="id44">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">These searches</div>
+<div class="line">get <strong>expensive</strong> —</div>
+<div class="line">will <em>caching</em> search</div>
+<div class="line">results help?</div>
+</div>
+</div>
+<div class="section" id="a">
+<h1>A:</h1>
+<div class="line-block">
+<div class="line">No</div>
+</div>
+</div>
+<div class="section" id="id45">
+
+<div class="highlight"><pre><span></span><span class="err">?</span> <span class="n">flower</span><span class="o">=</span><span class="n">red</span> <span class="o">&amp;</span> <span class="n">leaf</span><span class="o">=</span><span class="n">smooth</span> <span class="o">&amp;</span> <span class="n">state</span><span class="o">=</span><span class="n">vt</span>
+<span class="err">?</span> <span class="n">flower</span><span class="o">=</span><span class="n">red</span> <span class="o">&amp;</span> <span class="n">state</span><span class="o">=</span><span class="n">vt</span> <span class="o">&amp;</span> <span class="n">leaf</span><span class="o">=</span><span class="n">smooth</span>
+<span class="err">?</span> <span class="n">leaf</span><span class="o">=</span><span class="n">smooth</span> <span class="o">&amp;</span> <span class="n">flower</span><span class="o">=</span><span class="n">red</span> <span class="o">&amp;</span> <span class="n">state</span><span class="o">=</span><span class="n">vt</span>
+<span class="err">?</span> <span class="n">leaf</span><span class="o">=</span><span class="n">smooth</span> <span class="o">&amp;</span> <span class="n">state</span><span class="o">=</span><span class="n">vt</span> <span class="o">&amp;</span> <span class="n">flower</span><span class="o">=</span><span class="n">red</span>
+<span class="err">?</span> <span class="n">state</span><span class="o">=</span><span class="n">vt</span> <span class="o">&amp;</span> <span class="n">flower</span><span class="o">=</span><span class="n">red</span> <span class="o">&amp;</span> <span class="n">leaf</span><span class="o">=</span><span class="n">smooth</span>
+<span class="err">?</span> <span class="n">state</span><span class="o">=</span><span class="n">vt</span> <span class="o">&amp;</span> <span class="n">leaf</span><span class="o">=</span><span class="n">smooth</span> <span class="o">&amp;</span> <span class="n">flower</span><span class="o">=</span><span class="n">red</span>
+</pre></div>
+
+</div>
+<div class="section" id="id46">
+
+<div class="line-block">
+<div class="line"><em>canonicalization</em></div>
+</div>
+<div class="line-block">
+<div class="line">Same meaning → same text</div>
+</div>
+</div>
+<div class="section" id="id47">
+
+<div class="line-block">
+<div class="line">“Order filters alphabetically”</div>
+</div>
+<p><em>‘f’</em> ≤ <em>‘l’</em> ≤ <em>‘s’</em></p>
+<div class="highlight"><pre><span></span><span class="err">?</span> <span class="n">flower</span><span class="o">=</span><span class="n">red</span> <span class="o">&amp;</span> <span class="n">leaf</span><span class="o">=</span><span class="n">smooth</span> <span class="o">&amp;</span> <span class="n">state</span><span class="o">=</span><span class="n">vt</span>
+</pre></div>
+
+</div>
+<div class="section" id="where">
+<h1>where?</h1>
+<ul class="simple">
+<li>In our own front-end <strong>JS</strong></li>
+<li>Redirection for 3rd parties?</li>
+</ul>
+</div>
+<div class="section" id="id48">
+
+<div class="highlight"><pre><span></span><span class="n">GET</span> <span class="o">/</span><span class="n">q</span><span class="err">?</span><span class="n">state</span><span class="o">=</span><span class="n">vt</span><span class="o">&amp;</span><span class="n">flower</span><span class="o">=</span><span class="n">red</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+<span class="n">Host</span><span class="p">:</span> <span class="n">gobotany</span><span class="o">.</span><span class="n">newfs</span><span class="o">.</span><span class="n">org</span>
+
+               <span class="err">↓</span>
+
+<span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span> <span class="mi">301</span> <span class="n">Moved</span> <span class="n">Permanently</span>
+<span class="n">Location</span><span class="p">:</span> <span class="o">/</span><span class="n">q</span><span class="err">?</span><span class="n">flower</span><span class="o">=</span><span class="n">red</span><span class="o">&amp;</span><span class="n">state</span><span class="o">=</span><span class="n">vt</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Transform is purely textual!</div>
+</div>
+</div>
+<div class="section" id="id49">
+
+<div class="line-block">
+<div class="line">With <strong>Cache-Control,</strong></div>
+<div class="line">301s can be pushed to:</div>
+</div>
+<div class="line-block">
+<div class="line"><em>varnish</em></div>
+<div class="line"><em>CDN</em></div>
+</div>
+</div>
+<div class="section" id="id50">
+
+<div class="line-block">
+<div class="line">In general, caching</div>
+<div class="line">non-<strong>200</strong> results can</div>
+<div class="line">be a <em>big deal</em></div>
+</div>
+</div>
+<div class="section" id="id51">
+
+<p><a class="reference external" href="http://www.reddit.com/r/django/comments/bhvhz/the_onion_uses_django_and_why_it_matters_to_us/">The Onion Uses Django, And Why It Matters To Us</a></p>
+</div>
+<div class="section" id="id52">
+
+<div class="line-block">
+<div class="line">“And the <em>biggest</em></div>
+<div class="line">performance</div>
+<div class="line">boost of <strong>all:</strong></div>
+</div>
+</div>
+<div class="section" id="id53">
+
+<div class="line-block">
+<div class="line">“—caching <strong>404s</strong> and sending</div>
+<div class="line"><em>Cache-Control</em> headers</div>
+<div class="line">to the CDN on 404.”</div>
+</div>
+</div>
+<div class="section" id="id54">
+
+<div class="highlight"><pre><span></span><span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span> <span class="mi">404</span> <span class="n">Not</span> <span class="n">Found</span>
+<span class="n">Cache</span><span class="o">-</span><span class="n">control</span><span class="p">:</span> <span class="nb">max</span><span class="o">-</span><span class="n">age</span><span class="o">=</span><span class="mi">3600</span>
+</pre></div>
+
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line">Outgoing bandwidth</div>
+<div class="line"><strong>↓ 66%</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id56">
+
+<div class="line-block">
+<div class="line">Outgoing bandwidth</div>
+<div class="line"><strong>↓ 66%</strong></div>
+</div>
+<div class="line-block">
+<div class="line">Load average</div>
+<div class="line"><strong>↓ 50%</strong></div>
+</div>
+</div>
+<div class="section" id="id57">
+
+<div class="line-block">
+<div class="line">Had we wanted,</div>
+<div class="line">we could have cached</div>
+<div class="line">normalizations</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span> <span class="mi">301</span> <span class="n">Moved</span> <span class="n">Permanently</span>
+<span class="n">Location</span><span class="p">:</span> <span class="o">/</span><span class="n">q</span><span class="err">?</span><span class="n">flower</span><span class="o">=</span><span class="n">red</span><span class="o">&amp;</span><span class="n">state</span><span class="o">=</span><span class="n">vt</span>
+<span class="n">Cache</span><span class="o">-</span><span class="n">control</span><span class="p">:</span> <span class="nb">max</span><span class="o">-</span><span class="n">age</span><span class="o">=</span><span class="mi">3600</span>
+</pre></div>
+
+<!-- slide
+- - - - -
+
+.. image:: paths.svg
+           :height: 720px
+           :width: 1000px -->
+</div>
+<div class="section" id="id58">
+
+<div class="highlight"><pre><span></span><span class="err">?</span> <span class="n">flower</span><span class="o">=</span><span class="n">red</span> <span class="o">&amp;</span> <span class="n">leaf</span><span class="o">=</span><span class="n">smooth</span> <span class="o">&amp;</span> <span class="n">state</span><span class="o">=</span><span class="n">vt</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">If we cache these</div>
+<div class="line">URLs, <strong>how often</strong> will</div>
+<div class="line">they be revisited?</div>
+</div>
+</div>
+<div class="section" id="id59">
+
+<div class="line-block">
+<div class="line">Imagine <em>100 filters</em> in</div>
+<div class="line">use by students who apply</div>
+<div class="line"><strong>5 filters</strong> per search</div>
+</div>
+</div>
+<div class="section" id="id60">
+
+$$\left( 100 \atop 5 \right)$$</div>
+<div class="section" id="id61">
+
+<!-- calculation:
+>>> from math import factorial as f
+>>> f(100) / f(5) / f(95)
+75287520L -->
+$$\left( 100 \atop 5 \right) = 75,287,520$$<!-- $$
+\\begin{eqnarray}
+2^3 =& 8 \\cr
+2^5 =& 32 \\cr
+2^7 =& 128
+\\end{eqnarray}
+$$ -->
+</div>
+<div class="section" id="id62">
+
+<p>step back</p>
+</div>
+<div class="section" id="id63">
+
+<div class="highlight"><pre><span></span><span class="err">?</span> <span class="n">flower</span><span class="o">=</span><span class="n">red</span> <span class="o">&amp;</span> <span class="n">leaf</span><span class="o">=</span><span class="n">smooth</span> <span class="o">&amp;</span> <span class="n">state</span><span class="o">=</span><span class="n">vt</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Django <em>n</em><strong>-way join</strong></div>
+<div class="line">against <em>plant ↔ feature</em></div>
+<div class="line">binary relation</div>
+</div>
+</div>
+<div class="section" id="id64">
+
+<p><strong>3 phases</strong></p>
+<div class="highlight"><pre><span></span><span class="n">SELECT</span> <span class="o">*</span>
+ <span class="n">FROM</span> <span class="n">plant_feature</span> <span class="n">f1</span>
+ <span class="n">JOIN</span> <span class="n">plant_feature</span> <span class="n">f2</span> <span class="n">ON</span> <span class="n">plant_id</span>
+ <span class="n">JOIN</span> <span class="n">plant_feature</span> <span class="n">f3</span> <span class="n">ON</span> <span class="n">plant_id</span>
+  <span class="n">WHERE</span> <span class="n">f1</span> <span class="o">=</span> <span class="s1">&#39;form=tree&#39;</span>
+    <span class="n">AND</span> <span class="n">f2</span> <span class="o">=</span> <span class="s1">&#39;leaf=smooth&#39;</span>
+    <span class="n">AND</span> <span class="n">f3</span> <span class="o">=</span> <span class="s1">&#39;state=vt&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id65">
+
+<div class="highlight"><pre><span></span>        <span class="n">plant_feature</span>
+<span class="o">-----------------------------</span>
+<span class="n">Acer</span> <span class="n">rubrum</span>       <span class="n">form</span><span class="o">=</span><span class="n">tree</span>
+<span class="n">Acer</span> <span class="n">rubrum</span>       <span class="n">leaves</span><span class="o">=</span><span class="n">fall</span>
+<span class="n">Acer</span> <span class="n">rubrum</span>       <span class="n">twig</span><span class="o">=</span><span class="n">gray</span>
+<span class="n">Acer</span> <span class="n">rubrum</span>       <span class="n">twig</span><span class="o">=</span><span class="n">red</span>
+<span class="n">Acer</span> <span class="n">saccharinum</span>  <span class="n">form</span><span class="o">=</span><span class="n">tree</span>
+<span class="n">Acer</span> <span class="n">saccharinum</span>  <span class="n">leaves</span><span class="o">=</span><span class="n">fall</span>
+              <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id66">
+
+<p><em>plant list</em></p>
+<div class="highlight"><pre><span></span><span class="n">FROM</span> <span class="n">plant_feature</span> <span class="n">f1</span>
+ <span class="o">...</span> <span class="n">WHERE</span> <span class="n">f1</span> <span class="o">=</span> <span class="s1">&#39;form=tree&#39;</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="n">Acer</span> <span class="n">rubrum</span>       <span class="n">form</span><span class="o">=</span><span class="n">tree</span>
+<span class="n">Acer</span> <span class="n">saccharinum</span>  <span class="n">form</span><span class="o">=</span><span class="n">tree</span>
+              <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id67">
+
+<p><em>intersection</em></p>
+<div class="line-block">
+<div class="line">What plants are in lists</div>
+<div class="line"><tt class="docutils literal">f1</tt> and <tt class="docutils literal">f2</tt> and <tt class="docutils literal">f3</tt></div>
+</div>
+</div>
+<div class="section" id="id68">
+
+<p>pivot</p>
+</div>
+<div class="section" id="id69">
+
+<object data="design1.svg" style="width: 1000px; height: 720px;" type="image/svg+xml">
+design1.svg</object>
+</div>
+<div class="section" id="id70">
+
+<object data="design2.svg" style="width: 1000px; height: 720px;" type="image/svg+xml">
+design2.svg</object>
+</div>
+<div class="section" id="id71">
+
+<p><tt class="docutils literal">/api/feature/leaf_edge</tt></p>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;smooth&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;Smooth leaves&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;plants&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="err">…</span><span class="p">]},</span>
+ <span class="s1">&#39;serrated&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">:</span>  <span class="s1">&#39;Jagged leaves&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;plants&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="err">…</span><span class="p">]},</span>
+ <span class="s1">&#39;lobed&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;Lobed leaves&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;plants&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="err">…</span><span class="p">]}}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id72">
+
+<div class="highlight"><pre><span></span><span class="n">_</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="gone">
+<h1>Gone!</h1>
+<div class="highlight"><pre><span></span><span class="err">?</span> <span class="n">flower</span><span class="o">=</span><span class="n">red</span> <span class="o">&amp;</span> <span class="n">leaf</span><span class="o">=</span><span class="n">smooth</span> <span class="o">&amp;</span> <span class="n">state</span><span class="o">=</span><span class="n">vt</span>
+</pre></div>
+
+</div>
+<div class="section" id="id73">
+
+<div class="highlight"><pre><span></span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">feature</span><span class="o">/</span><span class="n">flower</span>
+<span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">feature</span><span class="o">/</span><span class="n">leaf</span>
+<span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">feature</span><span class="o">/</span><span class="n">state</span>
+</pre></div>
+
+</div>
+<div class="section" id="id74">
+
+<img alt="55-matching-species.jpg" src="55-matching-species.jpg" />
+</div>
+<div class="section" id="id75">
+
+<div class="line-block">
+<div class="line"><em>n</em> features?</div>
+</div>
+<div class="line-block">
+<div class="line">Only <em>n</em> URLs!</div>
+</div>
+</div>
+<div class="section" id="id76">
+
+<img alt="gobotany-logo.png" src="gobotany-logo.png" style="width: 540px;" />
+<div class="line-block">
+<div class="line">Giving the client <strong>more</strong></div>
+<div class="line">data meant <em>less</em> work</div>
+<div class="line">for our servers!</div>
+</div>
+<!-- combinatorics rules our life -->
+</div>
+<div class="section" id="data">
+<h1>Data</h1>
+</div>
+<div class="section" id="id77">
+
+<div class="line-block">
+<div class="line">Be aware of Python’s</div>
+<div class="line">growing data toolset</div>
+</div>
+</div>
+<div class="section" id="id78">
+
+<div class="line-block">
+<div class="line"><strong>NumPy</strong> arrays</div>
+<div class="line"><strong>Pandas</strong> dataframes</div>
+</div>
+</div>
+<div class="section" id="id79">
+
+<div class="highlight"><pre><span></span><span class="n">person</span><span class="p">[</span><span class="n">person</span><span class="o">.</span><span class="n">age</span> <span class="o">&gt;=</span> <span class="mi">21</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="blaze">
+<h1>Blaze</h1>
+</div>
+<div class="section" id="id80">
+
+<div class="highlight"><pre><span></span><span class="n">person</span><span class="p">[</span><span class="n">person</span><span class="o">.</span><span class="n">age</span> <span class="o">&gt;=</span> <span class="mi">21</span><span class="p">]</span>
+</pre></div>
+
+<p>↓</p>
+<div class="highlight"><pre><span></span><span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="n">person</span> <span class="n">p</span>
+  <span class="n">WHERE</span> <span class="n">p</span><span class="o">.</span><span class="n">age</span> <span class="o">&gt;=</span> <span class="mi">21</span><span class="p">;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id81">
+
+<div class="highlight"><pre><span></span><span class="n">person</span><span class="p">[</span><span class="n">person</span><span class="o">.</span><span class="n">age</span> <span class="o">&gt;=</span> <span class="mi">21</span><span class="p">]</span>
+</pre></div>
+
+<p>↓</p>
+<div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">people</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="n">age</span><span class="p">:</span> <span class="p">{</span><span class="err">$</span><span class="n">gte</span><span class="p">:</span> <span class="mi">21</span><span class="p">}})</span>
+</pre></div>
+
+</div>
+<div class="section" id="id82">
+
+<ul class="simple">
+<li>Python</li>
+<li>Pandas</li>
+<li>MongoDB</li>
+<li>SQL</li>
+<li>Apache Spark</li>
+<li>PyTables</li>
+<li>BColz</li>
+</ul>
+<!-- TODO Why on earth did I just talk about Blaze? -->
+</div>
+<div class="section" id="id83">
+
+<div class="line-block">
+<div class="line">Python is becoming</div>
+<div class="line">an <strong>important tool</strong> for</div>
+<div class="line">large data sets</div>
+</div>
+</div>
+<div class="section" id="id84">
+
+<div class="line-block">
+<div class="line"><em>Watch</em> for how these</div>
+<div class="line">data tools might fit</div>
+<div class="line">into your projects</div>
+</div>
+</div>
+<div class="section" id="django">
+<h1>Django</h1>
+</div>
+<div class="section" id="id85">
+
+<div class="line-block">
+<div class="line">Flexible</div>
+<div class="line">denormalization</div>
+</div>
+</div>
+<div class="section" id="id86">
+
+<div class="line-block">
+<div class="line">No dependencies</div>
+</div>
+</div>
+<div class="section" id="id87">
+
+<div class="line-block">
+<div class="line">URLs are simply text</div>
+</div>
+<p><em>code</em> ↔ <em>data</em></p>
+</div>
+<div class="section" id="id88">
+
+<div class="line-block">
+<div class="line">Views can be</div>
+<div class="line">simple <em>procedures</em></div>
+</div>
+</div>
+<div class="section" id="id89">
+
+<div class="line-block">
+<div class="line">Privileges</div>
+<div class="line">relational</div>
+<div class="line">databases</div>
+</div>
+</div>
+<div class="section" id="id90">
+
+<div class="line-block">
+<div class="line">Finding the simplest</div>
+<div class="line">possible thing is <strong>hard</strong></div>
+</div>
+</div>
+<div class="section" id="id91">
+<h1>Django:</h1>
+<div class="line-block">
+<div class="line">First-to-market</div>
+<div class="line">with <em>simplicity</em></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id92">
+<h1>Django:</h1>
+<div class="line-block">
+<div class="line">First-to-market</div>
+<div class="line">with <em>simplicity</em></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Thank you!</strong></div>
+<div class="line">&#64;brandon_rhodes</div>
+</div>
+<!-- like having Facebook on your hard drive, decided to move
+    bigger version of the picture out to the client
+so what does Django do that gives it a future?
+  lets you decouple your database from particular denormalizations
+  (would meteorjs let you do fetch of filter plus its choices
+    plus its species?)
+  views are callables: it understands that a view is basically
+    a data transformation
+  (say something about other competitors and how they used
+    objects? how they thought URL was code not data?
+    name of method, not part of a string?
+    I once thought object method was better because it
+    made you think about intermediate URLs.
+    but now I think that maybe treating URLs as data is better?
+    who were competitors anyway? cherrypy. turbogears? pylons?
+    grok? zope? about how URL to zope was reference to XML?)
+  something about how django packages / apps are experiments
+    in sharing? hmph. -->
+<!-- then mention blaze?
+show how I would use it?
+
+Storage:
+1980 5MB drive was available for PCs
+2014 6TB
+Ratio: 1200000 = 1,200,000
+
+6TB * 1200000 = 7.2 EB
+
+https://code.facebook.com/posts/229861827208629/scaling-the-facebook-data-warehouse-to-300-pb/
+FB 5 months ago: 0.3 EB
+
+http://www.seagate.com/about/newsroom/press-releases/Seagate-ships-worlds-first-8TB-hard-drives-pr-master/
+
+https://www.backblaze.com/blog/category/storage-pod/
+puts FB at 400 PB = 0.4 EB
+
+so 1984 - 20 MB
+   2014 - 8 TB
+    +30 - 3.2 EB
+
+assuming 10 GB per hour of HD video
+48952282 minutes = 815872 hours
+815872 * 10 GB = 0.008 EB
+Library of Congress 0.003 EB -->
+<!-- single quote: ’
+double quotes: x“”x
+em-dash: —
+vertical ellipsis: ⋮
+arrows: ←, ↑, →, ↓, ↔, ↕, ↖, ↗, ↘, ↙ -->
+<script>
+  window.slide_transition_time = 0;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1540 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>slides.rst</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<!-- ideas
+
+can we see directory being removed from under a process? or not?
+ps, pidof, %n
+show a process that dies mysteriously and strace shows a file it cannot open?
+show conda Python dying a horrible death?
+  https://github.com/ContinuumIO/anaconda-issues/issues/33 ?
+see what Python does with socket address of ''?
+can ltrace see raw SSL data
+show how to survive SIGPIPE? talk about signals in general?
+buffering and isatty
+timing blocking async?
+/etc/nsswitch.conf and hostnames?
+locales? -->
+<div class="section" id="tracing-python-with-strace-or-truss">
+<h1>Tracing Python with strace or truss</h1>
+<div class="line-block">
+<div class="line"><strong>&#64;brandon_rhodes</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><em>PyOhio 2014</em></div>
+</div>
+</div>
+<div class="section" id="slide">
+
+<p>What is a <em>system call?</em></p>
+</div>
+<div class="section" id="id1">
+
+<div class="line-block">
+<div class="line">Hundreds of times a second,</div>
+<div class="line">your operating system <strong>turns over</strong></div>
+<div class="line">control of the CPU to a <em>process</em></div>
+</div>
+</div>
+<div class="section" id="id2">
+
+<div class="line-block">
+<div class="line">Each process is <strong>sandboxed</strong></div>
+</div>
+<ul class="simple">
+<li>Can read and write from memory</li>
+<li>Must <em>ask</em> the OS for <strong>everything else</strong></li>
+</ul>
+</div>
+<div class="section" id="id3">
+
+<div class="line-block">
+<div class="line"><em>“Python, Linkers, and Virtual Memory”</em></div>
+<div class="line">— PyCon 2012</div>
+</div>
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">strace</tt> — Linux, thus Ubuntu</div>
+<div class="line"><tt class="docutils literal">truss</tt> — BSD, thus Mac OS X</div>
+</div>
+<!-- TODO sandbox -->
+<!-- TODO exit is section 3?f -->
+<!-- TODO time or alarm? -->
+</div>
+<div class="section" id="stderr-is-awesome">
+<h1>stderr is awesome</h1>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">cat</span> <span class="n">a</span><span class="o">.</span><span class="n">html</span> <span class="n">b</span><span class="o">.</span><span class="n">html</span> <span class="n">c</span><span class="o">.</span><span class="n">html</span> <span class="o">|</span> <span class="n">wc</span>
+
+<span class="n">cat</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">html</span><span class="p">:</span> <span class="n">No</span> <span class="n">such</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">directory</span>
+   <span class="mi">111</span>     <span class="mi">250</span>    <span class="mi">5787</span>
+</pre></div>
+
+</div>
+<div class="section" id="id5">
+
+<div class="highlight"><pre><span></span>       <span class="err">┌───┐</span>     <span class="err">┌──┐</span>
+<span class="n">TTY</span> <span class="err">→</span> <span class="mi">0</span><span class="err">│</span><span class="n">cat</span><span class="err">│</span><span class="mi">1</span> <span class="err">→</span> <span class="mi">0</span><span class="err">│</span><span class="n">wc</span><span class="err">│</span><span class="mi">1</span><span class="err">→</span> <span class="n">TTY</span>
+       <span class="err">└───┘</span>     <span class="err">└──┘</span>
+         <span class="mi">2</span>         <span class="mi">2</span>
+         <span class="err">↓</span>         <span class="err">↓</span>
+
+        <span class="n">TTY</span>       <span class="n">TTY</span>
+</pre></div>
+
+</div>
+<div class="section" id="id6">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">cat</span> <span class="n">a</span><span class="o">.</span><span class="n">html</span> <span class="n">b</span><span class="o">.</span><span class="n">html</span> <span class="n">c</span><span class="o">.</span><span class="n">html</span> <span class="mi">2</span><span class="o">&gt;</span><span class="n">err</span> <span class="o">|</span> <span class="n">wc</span> <span class="o">&gt;</span><span class="n">out</span>
+<span class="err">$</span> <span class="n">cat</span> <span class="n">err</span>
+
+<span class="n">cat</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">html</span><span class="p">:</span> <span class="n">No</span> <span class="n">such</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">directory</span>
+
+<span class="err">$</span> <span class="n">cat</span> <span class="n">out</span>
+
+   <span class="mi">111</span>     <span class="mi">250</span>    <span class="mi">5787</span>
+</pre></div>
+
+</div>
+<div class="section" id="id7">
+
+<div class="highlight"><pre><span></span>       <span class="err">┌───┐</span>     <span class="err">┌──┐</span>
+<span class="n">TTY</span> <span class="err">→</span> <span class="mi">0</span><span class="err">│</span><span class="n">cat</span><span class="err">│</span><span class="mi">1</span> <span class="err">→</span> <span class="mi">0</span><span class="err">│</span><span class="n">wc</span><span class="err">│</span><span class="mi">1</span><span class="err">→</span> <span class="err">“</span><span class="o">./</span><span class="n">out</span><span class="err">”</span>
+       <span class="err">└───┘</span>     <span class="err">└──┘</span>
+         <span class="mi">2</span>         <span class="mi">2</span>
+         <span class="err">↓</span>         <span class="err">↓</span>
+
+      <span class="err">“</span><span class="o">./</span><span class="n">err</span><span class="err">”</span>     <span class="n">TTY</span>
+</pre></div>
+
+</div>
+<div class="section" id="why-2">
+<h1>Why “2&gt;”?</h1>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">0&lt;</tt> — stdin</div>
+<div class="line"><tt class="docutils literal">1&gt;</tt> — stdout</div>
+<div class="line"><tt class="docutils literal">2&gt;</tt> — stderr</div>
+</div>
+<div class="line-block">
+<div class="line">where <tt class="docutils literal">1</tt> is the</div>
+<div class="line">default for <tt class="docutils literal">&gt;</tt></div>
+</div>
+</div>
+<div class="section" id="so-we-could">
+<h1>So we could:</h1>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="o">...</span> <span class="o">|</span> <span class="n">strace</span> <span class="n">python</span> <span class="n">script</span><span class="o">.</span><span class="n">py</span> <span class="mi">2</span><span class="o">&gt;</span><span class="n">trace</span><span class="o">.</span><span class="n">txt</span> <span class="o">|</span> <span class="o">...</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><em>But</em> this would interleave</div>
+<div class="line">the trace output with whatever</div>
+<div class="line"><tt class="docutils literal">script.py</tt> itself prints to stderr</div>
+</div>
+</div>
+<div class="section" id="instead-we-will">
+<h1>Instead we will:</h1>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="o">...</span> <span class="o">|</span> <span class="n">strace</span> <span class="o">-</span><span class="n">o</span> <span class="n">trace</span><span class="o">.</span><span class="n">txt</span> <span class="n">python</span> <span class="n">script</span><span class="o">.</span><span class="n">py</span> <span class="o">|</span> <span class="o">...</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">to isolate trace output</div>
+<div class="line">in its own separate file</div>
+</div>
+</div>
+<div class="section" id="id8">
+
+<div class="line-block">
+<div class="line">Let’s trace the simplest</div>
+<div class="line">possible command</div>
+</div>
+</div>
+<div class="section" id="id9">
+
+<p><tt class="docutils literal">/bin/true</tt></p>
+<div class="line-block">
+<div class="line">Purpose:</div>
+<div class="line">Exit with status <tt class="docutils literal">0</tt></div>
+</div>
+</div>
+<div class="section" id="process-exit-status">
+<h1>process exit status</h1>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">0</tt> — success</div>
+<div class="line"><tt class="docutils literal">1</tt> — run-time error</div>
+<div class="line"><tt class="docutils literal">2</tt> — bad command line</div>
+<div class="line"><tt class="docutils literal">≥3</tt> — see <em>bash</em>(1) and <em>wait</em>(2)</div>
+</div>
+</div>
+<div class="section" id="id10">
+<h1>$?</h1>
+<div class="line-block">
+<div class="line">Status of most recent command</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">grep</span> <span class="n">root</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span>
+
+<span class="n">root</span><span class="p">:</span><span class="n">x</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="n">root</span><span class="p">:</span><span class="o">/</span><span class="n">root</span><span class="p">:</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bash</span>
+
+<span class="err">$</span> <span class="n">echo</span> <span class="err">$?</span>
+
+<span class="mi">0</span>
+
+<span class="err">$</span> <span class="n">grep</span> <span class="n">hamlet</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span>
+<span class="err">$</span> <span class="n">echo</span> <span class="err">$?</span>
+
+<span class="mi">1</span>
+</pre></div>
+
+</div>
+<div class="section" id="if">
+<h1>if</h1>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="k">if</span> <span class="n">grep</span> <span class="o">-</span><span class="n">q</span> <span class="n">root</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span><span class="p">;</span> \
+  <span class="n">then</span> <span class="n">echo</span> <span class="n">found</span><span class="p">;</span> <span class="k">else</span> <span class="n">echo</span> <span class="n">nope</span><span class="p">;</span> <span class="n">fi</span>
+
+<span class="n">found</span>
+
+<span class="err">$</span> <span class="k">if</span> <span class="n">grep</span> <span class="o">-</span><span class="n">q</span> <span class="n">hamlet</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span><span class="p">;</span> \
+  <span class="n">then</span> <span class="n">echo</span> <span class="n">found</span><span class="p">;</span> <span class="k">else</span> <span class="n">echo</span> <span class="n">nope</span><span class="p">;</span> <span class="n">fi</span>
+
+<span class="n">nope</span>
+</pre></div>
+
+</div>
+<div class="section" id="error-status">
+<h1>Error status</h1>
+<ul class="simple">
+<li>Nonzero status fine in <tt class="docutils literal">if</tt> / <tt class="docutils literal">while</tt></li>
+<li>Otherwise shell script will <em>exit</em></li>
+<li>Use <tt class="docutils literal">command</tt> <tt class="docutils literal">||</tt> <tt class="docutils literal">true</tt> to survive</li>
+<li>Or <tt class="docutils literal">set</tt> <tt class="docutils literal"><span class="pre">-e</span></tt> before command</li>
+</ul>
+</div>
+<div class="section" id="id11">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">/bin/true</tt></div>
+</div>
+<div class="line-block">
+<div class="line">Originally an empty file:</div>
+<div class="line">shell script → exit status <tt class="docutils literal">0</tt></div>
+</div>
+</div>
+<div class="section" id="id12">
+
+<div class="line-block">
+<div class="line">As AT&amp;T commercialized UNIX,</div>
+<div class="line">John Chambers noticed something</div>
+</div>
+</div>
+<div class="section" id="id13">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">/bin/true</tt></div>
+</div>
+<div class="highlight"><pre><span></span><span class="c1">#     Copyright (c) 1984 AT&amp;T</span>
+<span class="c1">#       All Rights Reserved</span>
+
+<span class="c1">#     THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF AT&amp;T</span>
+<span class="c1">#     The copyright notice above does not evidence any</span>
+<span class="c1">#     actual or intended publication of such source code.</span>
+
+<span class="c1">#ident        &quot;@(#)cmd/true.sh        50.1&quot;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id14">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">/bin/true</tt></div>
+</div>
+<div class="line-block">
+<div class="line">Has AT&amp;T copyrighted</div>
+<div class="line"><em>their own copyright message?</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="c1">#     Copyright (c) 1984 AT&amp;T</span>
+<span class="c1">#       All Rights Reserved</span>
+
+<span class="c1">#     THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF AT&amp;T</span>
+<span class="c1">#     The copyright notice above does not evidence any</span>
+<span class="c1">#     actual or intended publication of such source code.</span>
+
+<span class="c1">#ident        &quot;@(#)cmd/true.sh        50.1&quot;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id15">
+
+<div class="highlight"><pre><span></span><span class="c1">#     Copyright (c) 1984 AT&amp;T</span>
+<span class="c1">#       All Rights Reserved</span>
+
+<span class="c1">#     THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF AT&amp;T</span>
+<span class="c1">#     The copyright notice above does not evidence any</span>
+<span class="c1">#     actual or intended publication of such source code.</span>
+
+<span class="c1">#ident        &quot;@(#)cmd/true.sh        50.1&quot;</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Or are we violating AT&amp;T copyright</div>
+<div class="line"><strong>every time we create an empty file?</strong></div>
+</div>
+</div>
+<div class="section" id="id16">
+
+<div class="line-block">
+<div class="line">On my Linux laptop:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="nb">file</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">true</span>
+
+<span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">true</span><span class="p">:</span> <span class="n">ELF</span> <span class="mi">32</span><span class="o">-</span><span class="n">bit</span> <span class="n">LSB</span> <span class="n">executable</span><span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id17">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">strace</span> <span class="o">-</span><span class="n">o</span> <span class="n">trace</span><span class="o">.</span><span class="n">txt</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">true</span>
+</pre></div>
+
+</div>
+<div class="section" id="id18">
+
+<div style="zoom: 64.29%"><div class="highlight"><pre><span></span><span class="n">execve</span><span class="p">(</span><span class="s2">&quot;/bin/true&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;true&quot;</span><span class="p">],</span> <span class="p">[</span><span class="o">/*</span> <span class="mi">71</span> <span class="nb">vars</span> <span class="o">*/</span><span class="p">])</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">brk</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>                                  <span class="o">=</span> <span class="mh">0x8385000</span>
+<span class="n">access</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.nohwcap&quot;</span><span class="p">,</span> <span class="n">F_OK</span><span class="p">)</span>      <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span> <span class="p">(</span><span class="n">No</span> <span class="n">such</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">directory</span><span class="p">)</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">8192</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="o">|</span><span class="n">MAP_ANONYMOUS</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb777d000</span>
+<span class="n">access</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.preload&quot;</span><span class="p">,</span> <span class="n">R_OK</span><span class="p">)</span>      <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span> <span class="p">(</span><span class="n">No</span> <span class="n">such</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">directory</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.cache&quot;</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="o">|</span><span class="n">O_CLOEXEC</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">fstat64</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">{</span><span class="n">st_mode</span><span class="o">=</span><span class="n">S_IFREG</span><span class="o">|</span><span class="mo">0644</span><span class="p">,</span> <span class="n">st_size</span><span class="o">=</span><span class="mi">95435</span><span class="p">,</span> <span class="o">...</span><span class="p">})</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">95435</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb7765000</span>
+<span class="n">close</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>                                <span class="o">=</span> <span class="mi">0</span>
+<span class="n">access</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.nohwcap&quot;</span><span class="p">,</span> <span class="n">F_OK</span><span class="p">)</span>      <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span> <span class="p">(</span><span class="n">No</span> <span class="n">such</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">directory</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/lib/i386-linux-gnu/libc.so.6&quot;</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="o">|</span><span class="n">O_CLOEXEC</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">read</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\177</span><span class="s2">ELF</span><span class="se">\1\1\1\0\0\0\0\0</span><span class="s2">&quot;</span><span class="o">...</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span> <span class="o">=</span> <span class="mi">512</span>
+<span class="n">fstat64</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">{</span><span class="n">st_mode</span><span class="o">=</span><span class="n">S_IFREG</span><span class="o">|</span><span class="mo">0755</span><span class="p">,</span> <span class="n">st_size</span><span class="o">=</span><span class="mi">1758972</span><span class="p">,</span> <span class="o">...</span><span class="p">})</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">1763964</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_EXEC</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="o">|</span><span class="n">MAP_DENYWRITE</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb75b6000</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="mh">0xb775f000</span><span class="p">,</span> <span class="mi">12288</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_WRITE</span><span class="p">,</span>
+      <span class="n">MAP_PRIVATE</span><span class="o">|</span><span class="n">MAP_FIXED</span><span class="o">|</span><span class="n">MAP_DENYWRITE</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mh">0x1a9000</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb775f000</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="mh">0xb7762000</span><span class="p">,</span> <span class="mi">10876</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_WRITE</span><span class="p">,</span>
+      <span class="n">MAP_PRIVATE</span><span class="o">|</span><span class="n">MAP_FIXED</span><span class="o">|</span><span class="n">MAP_ANONYMOUS</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb7762000</span>
+<span class="n">close</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>                                <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">4096</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="o">|</span><span class="n">MAP_ANONYMOUS</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb75b5000</span>
+<span class="n">set_thread_area</span><span class="p">({</span><span class="n">entry_number</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span> <span class="o">-&gt;</span> <span class="mi">6</span><span class="p">,</span> <span class="n">base_addr</span><span class="p">:</span><span class="mh">0xb75b5940</span><span class="p">,</span>
+                 <span class="n">limit</span><span class="p">:</span><span class="mi">1048575</span><span class="p">,</span> <span class="n">seg_32bit</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="n">contents</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="n">read_exec_only</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">limit_in_pages</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="n">seg_not_present</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="n">useable</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mprotect</span><span class="p">(</span><span class="mh">0xb775f000</span><span class="p">,</span> <span class="mi">8192</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">)</span>   <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mprotect</span><span class="p">(</span><span class="mh">0x804d000</span><span class="p">,</span> <span class="mi">4096</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">)</span>    <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mprotect</span><span class="p">(</span><span class="mh">0xb77a0000</span><span class="p">,</span> <span class="mi">4096</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">)</span>   <span class="o">=</span> <span class="mi">0</span>
+<span class="n">munmap</span><span class="p">(</span><span class="mh">0xb7765000</span><span class="p">,</span> <span class="mi">95435</span><span class="p">)</span>               <span class="o">=</span> <span class="mi">0</span>
+<span class="n">exit_group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>                           <span class="o">=</span> <span class="err">?</span>
+<span class="o">+++</span> <span class="n">exited</span> <span class="k">with</span> <span class="mi">0</span> <span class="o">+++</span>
+</pre></div>
+
+</div></div>
+<div class="section" id="system-calls">
+<h1>System calls</h1>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">0</tt> often means <em>success</em></div>
+<div class="line"><tt class="docutils literal"><span class="pre">-1</span></tt> often means <em>failure</em></div>
+<div class="line"><tt class="docutils literal">errno</tt> global is set</div>
+</div>
+<div class="line-block">
+<div class="line">Documentation:</div>
+<div class="line"><tt class="docutils literal">man 2 write</tt></div>
+</div>
+</div>
+<div class="section" id="id19">
+
+<div class="highlight"><pre><span></span><span class="n">execve</span><span class="p">(</span><span class="s2">&quot;/bin/true&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;true&quot;</span><span class="p">],</span> <span class="p">[</span><span class="o">/*</span> <span class="mi">71</span> <span class="nb">vars</span> <span class="o">*/</span><span class="p">])</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+
+</div>
+<div class="section" id="id20">
+
+<div class="highlight"><pre><span></span><span class="n">brk</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>                                  <span class="o">=</span> <span class="mh">0x8385000</span>
+</pre></div>
+
+</div>
+<div class="section" id="id21">
+
+<div class="highlight"><pre><span></span><span class="n">access</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.nohwcap&quot;</span><span class="p">,</span> <span class="n">F_OK</span><span class="p">)</span>
+  <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span> <span class="p">(</span><span class="n">No</span> <span class="n">such</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">directory</span><span class="p">)</span>
+
+<span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">8192</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_WRITE</span><span class="p">,</span>
+      <span class="n">MAP_PRIVATE</span><span class="o">|</span><span class="n">MAP_ANONYMOUS</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb777d000</span>
+
+<span class="n">access</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.preload&quot;</span><span class="p">,</span> <span class="n">R_OK</span><span class="p">)</span>
+  <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span> <span class="p">(</span><span class="n">No</span> <span class="n">such</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">directory</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id22">
+
+<div class="highlight"><pre><span></span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.cache&quot;</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="o">|</span><span class="n">O_CLOEXEC</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">fstat64</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">{</span><span class="o">...</span><span class="p">,</span> <span class="n">st_size</span><span class="o">=</span><span class="mi">95435</span><span class="p">,</span> <span class="o">...</span><span class="p">})</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">95435</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="o">=</span> <span class="mh">0xb7765000</span>
+
+<span class="n">close</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">The life and death of</div>
+<div class="line"><em>file descriptor</em> number 3</div>
+</div>
+</div>
+<div class="section" id="perl-meets-cobol">
+<h1>“Perl Meets Cobol”</h1>
+</div>
+<div class="section" id="id23">
+
+<div class="line-block">
+<div class="line">“I didn’t have to explain</div>
+<div class="line"><strong>filehandles</strong>; they already knew</div>
+<div class="line">about filehandles. But they used</div>
+<div class="line">jargon to talk about them that wasn’t</div>
+<div class="line">the jargon I was familiar with.</div>
+</div>
+</div>
+<div class="section" id="id24">
+
+<div class="line-block">
+<div class="line">“Oh, you're establishing</div>
+<div class="line"><strong>addressibility</strong> on the file,”</div>
+<div class="line">someone said.</div>
+</div>
+</div>
+<div class="section" id="id25">
+
+<div class="line-block">
+<div class="line">—They seemed pleased</div>
+<div class="line">at how <strong>easy</strong> it was … to establish</div>
+<div class="line">addressibility on a file.”</div>
+</div>
+<div class="highlight"><pre><span></span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.cache&quot;</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="o">|</span><span class="n">O_CLOEXEC</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
+</pre></div>
+
+</div>
+<div class="section" id="lsof">
+<h1>lsof</h1>
+<div class="line-block">
+<div class="line">Run <tt class="docutils literal">lsof</tt> <tt class="docutils literal"><span class="pre">-p</span></tt> <tt class="docutils literal">PID</tt> to see a process’s</div>
+<div class="line">file descriptors and memory maps</div>
+</div>
+</div>
+<div class="section" id="id26">
+
+<div class="highlight"><pre><span></span><span class="n">access</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.nohwcap&quot;</span><span class="p">,</span> <span class="n">F_OK</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span>
+
+<span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/lib/i386-linux-gnu/libc.so.6&quot;</span><span class="p">,</span>
+     <span class="n">O_RDONLY</span><span class="o">|</span><span class="n">O_CLOEXEC</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">read</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\177</span><span class="s2">ELF</span><span class="se">\1\1\1\0\0\0\0\0</span><span class="s2">&quot;</span><span class="o">...</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span> <span class="o">=</span> <span class="mi">512</span>
+
+<span class="n">fstat64</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">{</span><span class="o">...</span><span class="p">,</span> <span class="n">st_size</span><span class="o">=</span><span class="mi">1758972</span><span class="p">,</span> <span class="o">...</span><span class="p">})</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">1763964</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_EXEC</span><span class="p">,</span>
+      <span class="n">MAP_PRIVATE</span><span class="o">|</span><span class="n">MAP_DENYWRITE</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb75b6000</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="mh">0xb775f000</span><span class="p">,</span> <span class="mi">12288</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_WRITE</span><span class="p">,</span>
+      <span class="n">MAP_PRIVATE</span><span class="o">|...</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mh">0x1a9000</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb775f000</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="mh">0xb7762000</span><span class="p">,</span> <span class="mi">10876</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_WRITE</span><span class="p">,</span>
+      <span class="n">MAP_PRIVATE</span><span class="o">|...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb7762000</span>
+
+<span class="n">close</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+
+</div>
+<div class="section" id="id27">
+
+<div class="highlight"><pre><span></span><span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">4096</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_WRITE</span><span class="p">,</span>
+      <span class="n">MAP_PRIVATE</span><span class="o">|</span><span class="n">MAP_ANONYMOUS</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+      <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb75b5000</span>
+
+<span class="n">set_thread_area</span><span class="p">({</span><span class="n">entry_number</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span> <span class="o">-&gt;</span> <span class="mi">6</span><span class="p">,</span>
+  <span class="n">base_addr</span><span class="p">:</span><span class="mh">0xb75b5940</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span><span class="mi">1048575</span><span class="p">,</span>
+  <span class="n">seg_32bit</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="n">contents</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="n">read_exec_only</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+  <span class="n">limit_in_pages</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="n">seg_not_present</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+  <span class="n">useable</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">mprotect</span><span class="p">(</span><span class="mh">0xb775f000</span><span class="p">,</span> <span class="mi">8192</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">)</span>   <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mprotect</span><span class="p">(</span><span class="mh">0x804d000</span><span class="p">,</span> <span class="mi">4096</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">)</span>    <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mprotect</span><span class="p">(</span><span class="mh">0xb77a0000</span><span class="p">,</span> <span class="mi">4096</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">)</span>   <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">munmap</span><span class="p">(</span><span class="mh">0xb7765000</span><span class="p">,</span> <span class="mi">95435</span><span class="p">)</span>               <span class="o">=</span> <span class="mi">0</span>
+<span class="n">exit_group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>                           <span class="o">=</span> <span class="err">?</span>
+<span class="o">+++</span> <span class="n">exited</span> <span class="k">with</span> <span class="mi">0</span> <span class="o">+++</span>
+</pre></div>
+
+</div>
+<div class="section" id="noise">
+<h1>noise</h1>
+</div>
+<div class="section" id="id28">
+
+<div style="zoom: 64.29%"><div class="highlight"><pre><span></span><span class="n">execve</span><span class="p">(</span><span class="s2">&quot;/bin/true&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;true&quot;</span><span class="p">],</span> <span class="p">[</span><span class="o">/*</span> <span class="mi">71</span> <span class="nb">vars</span> <span class="o">*/</span><span class="p">])</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">brk</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>                                  <span class="o">=</span> <span class="mh">0x8385000</span>
+<span class="n">access</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.nohwcap&quot;</span><span class="p">,</span> <span class="n">F_OK</span><span class="p">)</span>      <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span> <span class="p">(</span><span class="n">No</span> <span class="n">such</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">directory</span><span class="p">)</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">8192</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="o">|</span><span class="n">MAP_ANONYMOUS</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb777d000</span>
+<span class="n">access</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.preload&quot;</span><span class="p">,</span> <span class="n">R_OK</span><span class="p">)</span>      <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span> <span class="p">(</span><span class="n">No</span> <span class="n">such</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">directory</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.cache&quot;</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="o">|</span><span class="n">O_CLOEXEC</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">fstat64</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">{</span><span class="n">st_mode</span><span class="o">=</span><span class="n">S_IFREG</span><span class="o">|</span><span class="mo">0644</span><span class="p">,</span> <span class="n">st_size</span><span class="o">=</span><span class="mi">95435</span><span class="p">,</span> <span class="o">...</span><span class="p">})</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">95435</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb7765000</span>
+<span class="n">close</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>                                <span class="o">=</span> <span class="mi">0</span>
+<span class="n">access</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.nohwcap&quot;</span><span class="p">,</span> <span class="n">F_OK</span><span class="p">)</span>      <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span> <span class="p">(</span><span class="n">No</span> <span class="n">such</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">directory</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/lib/i386-linux-gnu/libc.so.6&quot;</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="o">|</span><span class="n">O_CLOEXEC</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">read</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\177</span><span class="s2">ELF</span><span class="se">\1\1\1\0\0\0\0\0</span><span class="s2">&quot;</span><span class="o">...</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span> <span class="o">=</span> <span class="mi">512</span>
+<span class="n">fstat64</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">{</span><span class="n">st_mode</span><span class="o">=</span><span class="n">S_IFREG</span><span class="o">|</span><span class="mo">0755</span><span class="p">,</span> <span class="n">st_size</span><span class="o">=</span><span class="mi">1758972</span><span class="p">,</span> <span class="o">...</span><span class="p">})</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">1763964</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_EXEC</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="o">|</span><span class="n">MAP_DENYWRITE</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb75b6000</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="mh">0xb775f000</span><span class="p">,</span> <span class="mi">12288</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_WRITE</span><span class="p">,</span>
+      <span class="n">MAP_PRIVATE</span><span class="o">|</span><span class="n">MAP_FIXED</span><span class="o">|</span><span class="n">MAP_DENYWRITE</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mh">0x1a9000</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb775f000</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="mh">0xb7762000</span><span class="p">,</span> <span class="mi">10876</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_WRITE</span><span class="p">,</span>
+      <span class="n">MAP_PRIVATE</span><span class="o">|</span><span class="n">MAP_FIXED</span><span class="o">|</span><span class="n">MAP_ANONYMOUS</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb7762000</span>
+<span class="n">close</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>                                <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">4096</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="o">|</span><span class="n">MAP_ANONYMOUS</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xb75b5000</span>
+<span class="n">set_thread_area</span><span class="p">({</span><span class="n">entry_number</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span> <span class="o">-&gt;</span> <span class="mi">6</span><span class="p">,</span> <span class="n">base_addr</span><span class="p">:</span><span class="mh">0xb75b5940</span><span class="p">,</span>
+                 <span class="n">limit</span><span class="p">:</span><span class="mi">1048575</span><span class="p">,</span> <span class="n">seg_32bit</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="n">contents</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="n">read_exec_only</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">limit_in_pages</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="n">seg_not_present</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="n">useable</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mprotect</span><span class="p">(</span><span class="mh">0xb775f000</span><span class="p">,</span> <span class="mi">8192</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">)</span>   <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mprotect</span><span class="p">(</span><span class="mh">0x804d000</span><span class="p">,</span> <span class="mi">4096</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">)</span>    <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mprotect</span><span class="p">(</span><span class="mh">0xb77a0000</span><span class="p">,</span> <span class="mi">4096</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">)</span>   <span class="o">=</span> <span class="mi">0</span>
+<span class="n">munmap</span><span class="p">(</span><span class="mh">0xb7765000</span><span class="p">,</span> <span class="mi">95435</span><span class="p">)</span>               <span class="o">=</span> <span class="mi">0</span>
+<span class="n">exit_group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>                           <span class="o">=</span> <span class="err">?</span>
+<span class="o">+++</span> <span class="n">exited</span> <span class="k">with</span> <span class="mi">0</span> <span class="o">+++</span>
+</pre></div>
+
+</div></div>
+<div class="section" id="id29">
+
+<div class="line-block">
+<div class="line">“It is a pity that so much <strong>tracing</strong></div>
+<div class="line"><strong>clutter</strong> is produced by systems</div>
+<div class="line">employing shared libraries.”</div>
+</div>
+<p>— <em>strace</em>(2)</p>
+</div>
+<div class="section" id="id30">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">strace</span> <span class="o">-</span><span class="n">o</span> <span class="n">trace</span><span class="o">.</span><span class="n">txt</span> <span class="n">python3</span><span class="o">.</span><span class="mi">4</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;&#39;</span>
+</pre></div>
+
+<p>↓</p>
+<p>507 lines</p>
+</div>
+<div class="section" id="id31">
+
+<div class="highlight"><pre><span></span><span class="n">execve</span><span class="p">(</span><span class="s2">&quot;/usr/bin/python3.4&quot;</span><span class="p">,</span>
+       <span class="p">[</span><span class="s2">&quot;python3.4&quot;</span><span class="p">,</span> <span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">],</span> <span class="p">[</span><span class="o">/*</span> <span class="mi">71</span> <span class="nb">vars</span> <span class="o">*/</span><span class="p">])</span>
+<span class="n">brk</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">access</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.nohwcap&quot;</span><span class="p">,</span> <span class="n">F_OK</span><span class="p">)</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">8192</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span>
+<span class="n">access</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.preload&quot;</span><span class="p">,</span> <span class="n">R_OK</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.cache&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">fstat64</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">{</span><span class="err">…</span><span class="p">,</span> <span class="n">st_size</span><span class="o">=</span><span class="mi">95435</span><span class="p">,</span> <span class="err">…</span><span class="p">})</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">95435</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span>
+<span class="n">close</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                        <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id32">
+
+<p>7 times:</p>
+<div class="highlight"><pre><span></span>                        <span class="err">⋮</span>
+<span class="n">access</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.nohwcap&quot;</span><span class="p">,</span> <span class="n">F_OK</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/lib/i386-linux-gnu/libpthread.so.0&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span>
+<span class="n">read</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\177</span><span class="s2">ELF</span><span class="se">\1\1\1\0</span><span class="s2">&quot;</span><span class="err">…</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+<span class="n">fstat64</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">{</span><span class="err">…</span><span class="p">,</span> <span class="n">st_size</span><span class="o">=</span><span class="mi">130518</span><span class="p">,</span> <span class="err">…</span><span class="p">})</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">111276</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="mh">0xb776e000</span><span class="p">,</span> <span class="mi">8192</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span>
+<span class="n">mmap2</span><span class="p">(</span><span class="mh">0xb7770000</span><span class="p">,</span> <span class="mi">4780</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span>
+<span class="n">close</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                        <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id33">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">which</span> <span class="n">python3</span><span class="o">.</span><span class="mi">4</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">4</span>
+</pre></div>
+
+</div>
+<div class="section" id="id34">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">ldd</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">4</span>
+        <span class="n">linux</span><span class="o">-</span><span class="n">gate</span><span class="o">.</span><span class="n">so</span><span class="o">.</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="o">...</span>
+        <span class="n">libpthread</span><span class="o">.</span><span class="n">so</span><span class="o">.</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="o">...</span>
+        <span class="n">libc</span><span class="o">.</span><span class="n">so</span><span class="o">.</span><span class="mi">6</span> <span class="o">=&gt;</span> <span class="o">...</span>
+        <span class="n">libdl</span><span class="o">.</span><span class="n">so</span><span class="o">.</span><span class="mi">2</span> <span class="o">=&gt;</span> <span class="o">...</span>
+        <span class="n">libutil</span><span class="o">.</span><span class="n">so</span><span class="o">.</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="o">...</span>
+        <span class="n">libexpat</span><span class="o">.</span><span class="n">so</span><span class="o">.</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="o">...</span>
+        <span class="n">libz</span><span class="o">.</span><span class="n">so</span><span class="o">.</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="o">...</span>
+        <span class="n">libm</span><span class="o">.</span><span class="n">so</span><span class="o">.</span><span class="mi">6</span> <span class="o">=&gt;</span> <span class="o">...</span>
+        <span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ld</span><span class="o">-</span><span class="n">linux</span><span class="o">.</span><span class="n">so</span><span class="o">.</span><span class="mi">2</span> <span class="p">(</span><span class="mh">0xb77da000</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id35">
+
+<p>After further memory-map shenanigans:</p>
+<div class="highlight"><pre><span></span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/dev/urandom&quot;</span><span class="p">,</span>
+     <span class="n">O_RDONLY</span><span class="o">|</span><span class="n">O_LARGEFILE</span><span class="o">|</span><span class="n">O_CLOEXEC</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">fcntl64</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">F_GETFD</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0x1</span> <span class="p">(</span><span class="n">flags</span> <span class="n">FD_CLOEXEC</span><span class="p">)</span>
+<span class="n">read</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;…&quot;</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span> <span class="o">=</span> <span class="mi">24</span>
+<span class="n">close</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id36">
+
+<p>Then the Python runtime gets serious:</p>
+<div class="highlight"><pre><span></span><span class="n">stat64</span><span class="p">(</span><span class="s2">&quot;/home/brandon/bin/python3.4&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">stat64</span><span class="p">(</span><span class="s2">&quot;/home/brandon/usr/bin/python3.4&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">stat64</span><span class="p">(</span><span class="s2">&quot;/usr/local/sbin/python3.4&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">stat64</span><span class="p">(</span><span class="s2">&quot;/usr/local/bin/python3.4&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">stat64</span><span class="p">(</span><span class="s2">&quot;/usr/sbin/python3.4&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">stat64</span><span class="p">(</span><span class="s2">&quot;/usr/bin/python3.4&quot;</span><span class="p">,</span>
+       <span class="p">{</span><span class="err">…</span><span class="p">,</span> <span class="n">st_size</span><span class="o">=</span><span class="mi">3802224</span><span class="p">,</span> <span class="err">…</span><span class="p">})</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">readlink</span><span class="p">(</span><span class="s2">&quot;/usr/bin/python3.4&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">,</span> <span class="mi">4096</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</pre></div>
+
+<p>the result is stored as <tt class="docutils literal">sys.executable</tt></p>
+</div>
+<div class="section" id="id37">
+
+<p>Python checks for a few config files</p>
+<div class="highlight"><pre><span></span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/usr/bin/pyvenv.cfg&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/usr/pyvenv.cfg&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span>
+<span class="n">stat64</span><span class="p">(</span><span class="s2">&quot;/usr/bin/Modules/Setup&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span>
+</pre></div>
+
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line">The standard library is discovered</div>
+<div class="line">through a search for nearby <tt class="docutils literal">lib</tt> directories</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">stat64</span><span class="p">(</span><span class="s2">&quot;/usr/bin/lib/python3.4/os.py&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">stat64</span><span class="p">(</span><span class="s2">&quot;/usr/bin/lib/python3.4/os.pyc&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">stat64</span><span class="p">(</span><span class="s2">&quot;/usr/lib/python3.4/os.py&quot;</span><span class="p">,</span>
+       <span class="p">{</span><span class="err">…</span><span class="p">,</span> <span class="n">st_size</span><span class="o">=</span><span class="mi">33618</span><span class="p">,</span> <span class="err">…</span><span class="p">})</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">(That is why <tt class="docutils literal">virtualenv</tt> copies <tt class="docutils literal">os.py</tt>)</div>
+</div>
+</div>
+<div class="section" id="id39">
+
+<p>Finally, <tt class="docutils literal">import</tt> can start its work</p>
+<div class="highlight"><pre><span></span><span class="n">stat64</span><span class="p">(</span><span class="s2">&quot;/usr/lib/python3.4/encodings&quot;</span>
+        <span class="s2">&quot;/__init__.cpython-34m-i386-linux-gnu.so&quot;</span><span class="p">,</span>
+       <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">stat64</span><span class="p">(</span><span class="err">…</span><span class="s2">&quot;/__init__.cpython-34m.so&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">stat64</span><span class="p">(</span><span class="err">…</span><span class="s2">&quot;/__init__.abi3.so&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">stat64</span><span class="p">(</span><span class="err">…</span><span class="s2">&quot;/__init__.so&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">stat64</span><span class="p">(</span><span class="err">…</span><span class="s2">&quot;/__init__.py&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">stat64</span><span class="p">(</span><span class="err">…</span><span class="s2">&quot;/__init__.py&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">open</span><span class="p">(</span><span class="err">…</span><span class="s2">&quot;/__pycache__/__init__.cpython-34.pyc&quot;</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
+</pre></div>
+
+</div>
+<div class="section" id="id40">
+
+<p>How many filenames does Python try?</p>
+<p><em>m</em> <strong>directories</strong> × <em>n</em> <strong>extensions</strong></p>
+</div>
+<div class="section" id="id41">
+
+<p>System Python:</p>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">python3</span><span class="o">.</span><span class="mi">4</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import sys, pprint;</span><span class="se">\</span>
+<span class="s1">                pprint.pprint(sys.path)&#39;</span>
+<span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/usr/lib/python3.4&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/usr/lib/python3.4/plat-i386-linux-gnu&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/usr/lib/python3.4/lib-dynload&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/usr/local/lib/python3.4/dist-packages&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/usr/lib/python3/dist-packages&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id42">
+
+<p>Python in a virtualenv:</p>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="nb">bin</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">4</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import sys,pprint;</span><span class="se">\</span>
+<span class="s1">                    pprint.pprint(sys.path)&#39;</span>
+<span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;…venv/lib/python3.4&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;…venv/lib/python3.4/plat-i386-linux-gnu&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;…venv/lib/python3.4/lib-dynload&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/usr/lib/python3.4&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/usr/lib/python3.4/plat-i386-linux-gnu&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/home/brandon/p/lib/python3.4/site-packages&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/usr/lib/python3/dist-packages&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/usr/local/lib/python3.4/dist-packages&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id43">
+
+<p>After <tt class="docutils literal">easy_install</tt> of some eggs:</p>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">easy_install</span> <span class="n">zc</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">egg</span>
+<span class="err">⋮</span>
+<span class="err">$</span> <span class="nb">bin</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">4</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import sys,pprint;</span><span class="se">\</span>
+<span class="s1">                    pprint.pprint(sys.path)&#39;</span>
+<span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;…venv/…/site-packages/zc.recipe.egg-2.0.1-py3.4.egg&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;…venv/…/site-packages/zc.buildout-2.2.1-py3.4.egg&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;…venv/lib/python3.4&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;…venv/lib/python3.4/plat-i386-linux-gnu&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;…venv/lib/python3.4/lib-dynload&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/usr/lib/python3.4&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/usr/lib/python3.4/plat-i386-linux-gnu&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/home/brandon/v/lib/python3.4/site-packages&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/usr/lib/python3/dist-packages&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/usr/local/lib/python3.4/dist-packages&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id44">
+
+<div class="line-block">
+<div class="line">The combination of <strong>Zope</strong> plus</div>
+<div class="line"><strong>easy_install</strong> was a perfect storm</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">grokenv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">easy_install</span> <span class="n">grok</span>
+
+<span class="err">⋮</span>
+
+<span class="err">$</span> <span class="n">grokenv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">c</span> \
+  <span class="s1">&#39;import sys; print(len(sys.path))&#39;</span>
+
+<span class="mi">183</span>
+</pre></div>
+
+</div>
+<div class="section" id="id45">
+
+<div class="line-block">
+<div class="line">Longer <tt class="docutils literal">sys.path</tt> generates more</div>
+<div class="line">system calls for each <tt class="docutils literal">import</tt></div>
+</div>
+</div>
+<div class="section" id="id46">
+
+<div class="highlight"><pre><span></span><span class="n">strace</span> <span class="o">-</span><span class="n">c</span> <span class="o">...</span>
+</pre></div>
+
+<p><em>Counts</em> system calls</p>
+</div>
+<div class="section" id="id47">
+
+<div class="highlight"><pre><span></span><span class="n">strace</span> <span class="o">-</span><span class="n">e</span> <span class="nb">open</span><span class="p">,</span><span class="n">stat64</span> <span class="o">...</span>
+</pre></div>
+
+<p><em>Filter</em> system calls</p>
+</div>
+<div class="section" id="id48">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">strace</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">e</span> <span class="nb">open</span><span class="p">,</span><span class="n">stat64</span> \
+  <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import popen2&#39;</span>
+
+<span class="o">%</span> <span class="n">time</span>     <span class="n">seconds</span>  <span class="n">usecs</span><span class="o">/</span><span class="n">call</span>     <span class="n">calls</span>    <span class="n">errors</span> <span class="n">syscall</span>
+<span class="o">------</span> <span class="o">-----------</span> <span class="o">-----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">-------</span>
+ <span class="mf">70.11</span>    <span class="mf">0.000258</span>           <span class="mi">1</span>       <span class="mi">276</span>       <span class="mi">206</span> <span class="nb">open</span>
+ <span class="mf">29.89</span>    <span class="mf">0.000110</span>           <span class="mi">1</span>       <span class="mi">102</span>        <span class="mi">66</span> <span class="n">stat64</span>
+<span class="o">------</span> <span class="o">-----------</span> <span class="o">-----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">-------</span>
+<span class="mf">100.00</span>    <span class="mf">0.000368</span>                   <span class="mi">378</span>       <span class="mi">272</span> <span class="n">total</span>
+</pre></div>
+
+</div>
+<div class="section" id="id49">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">strace</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">e</span> <span class="nb">open</span><span class="p">,</span><span class="n">stat64</span> \
+  <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import popen2&#39;</span>
+
+<span class="o">%</span> <span class="n">time</span>     <span class="n">seconds</span>  <span class="n">usecs</span><span class="o">/</span><span class="n">call</span>     <span class="n">calls</span>    <span class="n">errors</span> <span class="n">syscall</span>
+<span class="o">------</span> <span class="o">-----------</span> <span class="o">-----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">-------</span>
+ <span class="mf">72.73</span>    <span class="mf">0.000947</span>           <span class="mi">3</span>       <span class="mi">292</span>       <span class="mi">237</span> <span class="nb">open</span>
+ <span class="mf">27.27</span>    <span class="mf">0.000355</span>           <span class="mi">2</span>       <span class="mi">222</span>       <span class="mi">117</span> <span class="n">stat64</span>
+<span class="o">------</span> <span class="o">-----------</span> <span class="o">-----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">-------</span>
+<span class="mf">100.00</span>    <span class="mf">0.001302</span>                   <span class="mi">514</span>       <span class="mi">354</span> <span class="n">total</span>
+</pre></div>
+
+</div>
+<div class="section" id="id50">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">strace</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">e</span> <span class="nb">open</span><span class="p">,</span><span class="n">stat64</span> \
+  <span class="n">grokenv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import popen2&#39;</span>
+
+<span class="o">%</span> <span class="n">time</span>     <span class="n">seconds</span>  <span class="n">usecs</span><span class="o">/</span><span class="n">call</span>     <span class="n">calls</span>    <span class="n">errors</span> <span class="n">syscall</span>
+<span class="o">------</span> <span class="o">-----------</span> <span class="o">-----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">-------</span>
+ <span class="mf">72.42</span>    <span class="mf">0.013402</span>           <span class="mi">3</span>      <span class="mi">4290</span>      <span class="mi">4232</span> <span class="nb">open</span>
+ <span class="mf">27.58</span>    <span class="mf">0.005104</span>           <span class="mi">4</span>      <span class="mi">1417</span>       <span class="mi">879</span> <span class="n">stat64</span>
+<span class="o">------</span> <span class="o">-----------</span> <span class="o">-----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">-------</span>
+<span class="mf">100.00</span>    <span class="mf">0.018506</span>                  <span class="mi">5707</span>      <span class="mi">5111</span> <span class="n">total</span>
+</pre></div>
+
+</div>
+<div class="section" id="id51">
+
+<div class="line-block">
+<div class="line"><em>How long</em> do those</div>
+<div class="line">5,707 system calls take?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">time</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import popen2&#39;</span>
+
+<span class="n">real</span> <span class="mf">0.03</span>
+<span class="n">user</span> <span class="mf">0.03</span>
+<span class="n">sys</span> <span class="mf">0.00</span>
+
+<span class="err">$</span> <span class="n">time</span> <span class="o">-</span><span class="n">p</span> <span class="n">grokenv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import popen2&#39;</span>
+
+<span class="n">real</span> <span class="mf">0.13</span>
+<span class="n">user</span> <span class="mf">0.05</span>
+<span class="n">sys</span> <span class="mf">0.07</span>
+</pre></div>
+
+</div>
+<div class="section" id="id52">
+
+<p><strong>Note</strong></p>
+<div class="line-block">
+<div class="line">That was from merely</div>
+<div class="line">having Grok <em>installed</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">popen2</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">What if we actually</div>
+<div class="line"><em>imported Grok?</em></div>
+</div>
+</div>
+<div class="section" id="id53">
+
+<p>O(<em>n²</em>)</p>
+</div>
+<div class="section" id="id54">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">strace</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">e</span> <span class="nb">open</span><span class="p">,</span><span class="n">stat64</span> \
+  <span class="n">grokenv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import grok&#39;</span>
+
+<span class="o">%</span> <span class="n">time</span>     <span class="n">seconds</span>  <span class="n">usecs</span><span class="o">/</span><span class="n">call</span>     <span class="n">calls</span>    <span class="n">errors</span> <span class="n">syscall</span>
+<span class="o">------</span> <span class="o">-----------</span> <span class="o">-----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">-------</span>
+ <span class="mf">79.56</span>    <span class="mf">0.163195</span>           <span class="mi">3</span>     <span class="mi">59704</span>     <span class="mi">58917</span> <span class="nb">open</span>
+ <span class="mf">20.44</span>    <span class="mf">0.041926</span>           <span class="mi">3</span>     <span class="mi">13773</span>     <span class="mi">11972</span> <span class="n">stat64</span>
+<span class="o">------</span> <span class="o">-----------</span> <span class="o">-----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">-------</span>
+<span class="mf">100.00</span>    <span class="mf">0.205121</span>                 <span class="mi">73477</span>     <span class="mi">70889</span> <span class="n">total</span>
+</pre></div>
+
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line"><em>Always use</em></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">pip</tt> and <tt class="docutils literal">virtualenv</tt></div>
+</div>
+</div>
+<div class="section" id="two-approaches">
+<h1>Two approaches</h1>
+</div>
+<div class="section" id="id56">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">easy_install</tt></div>
+</div>
+<div class="line-block">
+<div class="line">Everything in system site-packages,</div>
+<div class="line">then mix-and-match with <tt class="docutils literal">sys.path</tt></div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">…</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">Django</span><span class="o">-</span><span class="mf">1.3</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">django</span><span class="o">/</span><span class="err">…</span>
+<span class="err">…</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">Django</span><span class="o">-</span><span class="mf">1.5</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">django</span><span class="o">/</span><span class="err">…</span>
+<span class="err">…</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">Django</span><span class="o">-</span><span class="mf">1.6</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">django</span><span class="o">/</span><span class="err">…</span>
+</pre></div>
+
+</div>
+<div class="section" id="id57">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">virtualenv</tt> and <tt class="docutils literal">pip</tt></div>
+</div>
+<div class="line-block">
+<div class="line">Separate environments, each with</div>
+<div class="line">a single <tt class="docutils literal">django</tt> directly installed</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">…</span><span class="o">/</span><span class="n">venv</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">django</span><span class="o">/</span><span class="err">…</span>
+</pre></div>
+
+</div>
+<div class="section" id="id58">
+
+<div class="line-block">
+<div class="line"><em>Always use</em></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">pip</tt></div>
+</div>
+<div class="line-block">
+<div class="line">~</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Always use</em></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">virtualenv</tt></div>
+</div>
+</div>
+<div class="section" id="faster-search">
+<h1>Faster search</h1>
+<div class="line-block">
+<div class="line">Python 3.3+ runs <tt class="docutils literal">os.listdir()</tt></div>
+<div class="line">on each entry in <tt class="docutils literal">sys.path</tt> instead</div>
+<div class="line">of repeated <tt class="docutils literal">stat64()</tt> and <tt class="docutils literal">open()</tt></div>
+</div>
+</div>
+<div class="section" id="id59">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">strace</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">e</span> <span class="nb">open</span><span class="p">,</span><span class="n">stat64</span> \
+  <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import email&#39;</span>
+
+<span class="o">%</span> <span class="n">time</span>     <span class="n">seconds</span>  <span class="n">usecs</span><span class="o">/</span><span class="n">call</span>     <span class="n">calls</span>    <span class="n">errors</span> <span class="n">syscall</span>
+<span class="err">⋮</span>
+<span class="mf">100.00</span>    <span class="mf">0.000000</span>                   <span class="mi">384</span>       <span class="mi">275</span> <span class="n">total</span>
+
+<span class="err">$</span> <span class="n">strace</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">e</span> <span class="nb">open</span><span class="p">,</span><span class="n">stat64</span> \
+  <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">4</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import email&#39;</span>
+
+<span class="o">%</span> <span class="n">time</span>     <span class="n">seconds</span>  <span class="n">usecs</span><span class="o">/</span><span class="n">call</span>     <span class="n">calls</span>    <span class="n">errors</span> <span class="n">syscall</span>
+<span class="err">⋮</span>
+<span class="mf">100.00</span>    <span class="mf">0.000000</span>                   <span class="mi">148</span>        <span class="mi">24</span> <span class="n">total</span>
+</pre></div>
+
+</div>
+<div class="section" id="debugging">
+<h1>Debugging</h1>
+<div class="line-block">
+<div class="line">These stacks of <tt class="docutils literal">stat()</tt> and</div>
+<div class="line"><tt class="docutils literal">open()</tt> calls give <em>great</em> info</div>
+</div>
+</div>
+<div class="section" id="id60">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">example</span>
+</pre></div>
+
+<ul>
+<li><div class="first line-block">
+<div class="line">Is the directory that contains</div>
+<div class="line"><tt class="docutils literal">example.py</tt> getting searched?</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>No?</strong></div>
+</div>
+<div class="line-block">
+<div class="line">Check <tt class="docutils literal">sys.path</tt></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id61">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">example</span>
+</pre></div>
+
+<ul>
+<li><div class="first line-block">
+<div class="line">Is Python able to open file</div>
+<div class="line"><tt class="docutils literal">example.py</tt> without error?</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>No?</strong></div>
+</div>
+<div class="line-block">
+<div class="line">Check file, directory <em>permissions</em></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id62">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">example</span>
+</pre></div>
+
+<ul>
+<li><div class="first line-block">
+<div class="line">Is <em>another</em> file named <tt class="docutils literal">example.*</tt></div>
+<div class="line">getting found and loaded first?</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Yes?</strong></div>
+</div>
+<div class="line-block">
+<div class="line">Something has <em>shadowed</em> the</div>
+<div class="line">module; it might need renaming,</div>
+<div class="line">or removal of an old <tt class="docutils literal">*.pyc</tt></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id63">
+
+<div class="line-block">
+<div class="line">Note that a Python <tt class="docutils literal">import</tt> can</div>
+<div class="line">trigger dynamic library loading!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ssl</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">ssl.py</tt></div>
+<div class="line">↓</div>
+<div class="line"><tt class="docutils literal">_ssl.so</tt></div>
+<div class="line">↓</div>
+<div class="line"><tt class="docutils literal">libssl.so.1.0.0</tt></div>
+<div class="line"><tt class="docutils literal">libcrypto.so.1.0.0</tt></div>
+</div>
+</div>
+<div class="section" id="id64">
+
+<div class="line-block">
+<div class="line">PEP 302</div>
+<div class="line">PEP 328</div>
+</div>
+</div>
+<div class="section" id="id65">
+
+<div class="line-block">
+<div class="line">Once your application</div>
+<div class="line">is imported and running,</div>
+<div class="line">what calls will you see?</div>
+</div>
+</div>
+<div class="section" id="id66">
+<h1>1 : 1</h1>
+<div class="line-block">
+<div class="line">Many <tt class="docutils literal">os</tt> and <tt class="docutils literal">socket</tt> routines</div>
+<div class="line">map directly to system calls</div>
+</div>
+</div>
+<div class="section" id="id67">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span>       <span class="err">⋮</span>
+<span class="n">mkdir</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="mo">0777</span><span class="p">)</span>
+       <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id68">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">socket</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span>                    <span class="err">⋮</span>
+<span class="n">socket</span><span class="p">(</span><span class="n">PF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="n">IPPROTO_IP</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
+                    <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id69">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;hello</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span>           <span class="err">⋮</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;hello</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span> <span class="o">=</span> <span class="mi">6</span>
+           <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="many">
+<h1>1 : many</h1>
+<div class="line-block">
+<div class="line">Other Python operations</div>
+<div class="line">generate several calls</div>
+</div>
+</div>
+<div class="section" id="id70">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span>               <span class="err">⋮</span>
+<span class="n">openat</span><span class="p">(</span><span class="n">AT_FDCWD</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">getdents64</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="o">/*</span> <span class="mi">27</span> <span class="n">entries</span> <span class="o">*/</span><span class="p">,</span> <span class="mi">32768</span><span class="p">)</span>  <span class="o">=</span> <span class="mi">720</span>
+<span class="n">getdents64</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="o">/*</span> <span class="mi">0</span> <span class="n">entries</span> <span class="o">*/</span><span class="p">,</span> <span class="mi">32768</span><span class="p">)</span>   <span class="o">=</span> <span class="mi">0</span>
+<span class="n">close</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>                                <span class="o">=</span> <span class="mi">0</span>
+               <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id71">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">socket</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">getaddrinfo</span><span class="p">(</span><span class="s2">&quot;google.com&quot;</span><span class="p">,</span> <span class="s2">&quot;www&quot;</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/etc/resolv.conf&quot;</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="o">|</span><span class="n">O_CLOEXEC</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
+                       <span class="err">⋮</span>
+             <span class="p">(</span><span class="mi">20</span> <span class="n">more</span> <span class="n">system</span> <span class="n">calls</span><span class="p">)</span>
+                       <span class="err">⋮</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/etc/gai.conf&quot;</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="o">|</span><span class="n">O_CLOEXEC</span><span class="p">)</span>    <span class="o">=</span> <span class="mi">3</span>
+                       <span class="err">⋮</span>
+             <span class="p">(</span><span class="mi">18</span> <span class="n">more</span> <span class="n">system</span> <span class="n">calls</span><span class="p">)</span>
+                       <span class="err">⋮</span>
+<span class="n">socket</span><span class="p">(</span><span class="n">PF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="o">|</span><span class="err">…</span><span class="p">,</span> <span class="n">IPPROTO_IP</span><span class="p">)</span>    <span class="o">=</span> <span class="mi">3</span>
+<span class="n">connect</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">{</span><span class="n">sa_family</span><span class="o">=</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">sin_port</span><span class="o">=</span><span class="n">htons</span><span class="p">(</span><span class="mi">53</span><span class="p">),</span>
+        <span class="n">sin_addr</span><span class="o">=</span><span class="n">inet_addr</span><span class="p">(</span><span class="s2">&quot;127.0.1.1&quot;</span><span class="p">)},</span> <span class="mi">16</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span>
+                       <span class="err">⋮</span>
+             <span class="p">(</span><span class="mi">35</span> <span class="n">more</span> <span class="n">system</span> <span class="n">calls</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id72">
+
+<p>Manual section 2 vs 3</p>
+</div>
+<div class="section" id="id73">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">man</span> <span class="n">mkdir</span>
+</pre></div>
+
+<p><strong>Whoops!</strong> Section 1 is shell commands:</p>
+<div class="highlight"><pre><span></span><span class="n">MKDIR</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>     <span class="n">User</span> <span class="n">Commands</span>    <span class="n">MKDIR</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">NAME</span>
+       <span class="n">mkdir</span> <span class="o">-</span> <span class="n">make</span> <span class="n">directories</span>
+
+<span class="n">SYNOPSIS</span>
+       <span class="n">mkdir</span> <span class="p">[</span><span class="n">OPTION</span><span class="p">]</span><span class="o">...</span> <span class="n">DIRECTORY</span><span class="o">...</span>
+
+<span class="n">DESCRIPTION</span>
+       <span class="n">Create</span>  <span class="n">the</span>  <span class="n">DIRECTORY</span><span class="p">(</span><span class="n">ies</span><span class="p">),</span> <span class="k">if</span>
+       <span class="n">they</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">already</span> <span class="n">exist</span><span class="o">.</span>
+</pre></div>
+
+</div>
+<div class="section" id="id74">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">man</span> <span class="o">-</span><span class="n">s</span> <span class="mi">2</span><span class="p">,</span><span class="mi">3</span> <span class="n">mkdir</span>
+</pre></div>
+
+<p>or, if you already have a guess:</p>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">man</span> <span class="mi">2</span> <span class="n">mkdir</span>         <span class="c1"># system call: simple</span>
+<span class="err">$</span> <span class="n">man</span> <span class="mi">3</span> <span class="n">getaddrinfo</span>   <span class="c1"># libc function: compound</span>
+</pre></div>
+
+</div>
+<div class="section" id="nothing">
+<h1>1 : nothing!</h1>
+<div class="line-block">
+<div class="line">Sometimes an action</div>
+<div class="line">can seem to have <em>no</em></div>
+<div class="line">immediate result!</div>
+</div>
+</div>
+<div class="section" id="id75">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">time</span>
+<span class="k">print</span> <span class="s2">&quot;Hello&quot;</span><span class="p">,</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;world.&quot;</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Process makes no</div>
+<div class="line">attempt to output!</div>
+</div>
+</div>
+<div class="section" id="buffering">
+<h1>Buffering</h1>
+</div>
+<div class="section" id="id76">
+
+<div class="line-block">
+<div class="line"><strong>Not</strong> an OS feature,</div>
+<div class="line">but a behavior of:</div>
+</div>
+<ul class="simple">
+<li>(originally) <tt class="docutils literal">FILE*</tt> objects in <tt class="docutils literal">libc</tt></li>
+<li>(nowadays) Python <tt class="docutils literal">io</tt> module</li>
+</ul>
+</div>
+<div class="section" id="id77">
+
+<div class="line-block">
+<div class="line"><em>Buffering</em> makes I/O more efficient</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">print</tt></div>
+<div class="line"><tt class="docutils literal">stdout.write()</tt></div>
+<div class="line"><tt class="docutils literal">stderr.write()</tt></div>
+<div class="line"><tt class="docutils literal">another_file.write()</tt></div>
+</div>
+<div class="line-block">
+<div class="line">compared to raw I/O</div>
+</div>
+<p><tt class="docutils literal">os.write()</tt></p>
+</div>
+<div class="section" id="id78">
+
+<div class="highlight"><pre><span></span><span class="k">print</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span>
+<span class="k">print</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span>
+<span class="k">print</span> <span class="s2">&quot;c&quot;</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span>          <span class="err">⋮</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;a b c</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+          <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id79">
+<h1>Buffering</h1>
+<ul class="simple">
+<li>More efficient</li>
+<li>Can <strong>delay</strong> output</li>
+<li>Can be <em>confusing</em></li>
+</ul>
+</div>
+<div class="section" id="flushing">
+<h1>flushing</h1>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="k">print</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+<span class="k">print</span> <span class="s2">&quot;b&quot;</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span>       <span class="err">⋮</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot; b</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+       <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="turn-off-buffering">
+<h1>turn off buffering</h1>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">python</span> <span class="o">-</span><span class="n">u</span> <span class="o">...</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">export</span> <span class="n">PYTHONUNBUFFERED</span><span class="o">=</span><span class="bp">True</span>
+</pre></div>
+
+<p>or even</p>
+<div class="highlight"><pre><span></span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fdopen</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id80">
+
+<div class="line-block">
+<div class="line">When does buffered output</div>
+<div class="line"><tt class="docutils literal">flush()</tt> on its own?</div>
+</div>
+</div>
+<div class="section" id="id81">
+
+<p>After newline, when writing to terminal:</p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+    <span class="k">print</span> <span class="s1">&#39;Number&#39;</span><span class="p">,</span>
+    <span class="k">print</span> <span class="n">i</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span>          <span class="err">⋮</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Number 0</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Number 1</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Number 2</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+          <span class="err">⋮</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Number 9999</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+          <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id82">
+
+<p>Every block, when writing to file:</p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+    <span class="k">print</span> <span class="s1">&#39;Number&#39;</span><span class="p">,</span>
+    <span class="k">print</span> <span class="n">i</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span>          <span class="err">⋮</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Number 0</span><span class="se">\n</span><span class="s2">Number 1</span><span class="se">\n</span><span class="s2">Number 2</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">...</span><span class="p">,</span> <span class="mi">4096</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;er 382</span><span class="se">\n</span><span class="s2">Number 383</span><span class="se">\n</span><span class="s2">Number 384&quot;</span><span class="o">...</span><span class="p">,</span> <span class="mi">4096</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;54</span><span class="se">\n</span><span class="s2">Number 755</span><span class="se">\n</span><span class="s2">Number 756</span><span class="se">\n</span><span class="s2">Nu&quot;</span><span class="o">...</span><span class="p">,</span> <span class="mi">4096</span><span class="p">)</span>
+          <span class="err">⋮</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;mber 9991</span><span class="se">\n</span><span class="s2">Number 9992</span><span class="se">\n</span><span class="s2">Number&quot;</span><span class="o">...</span><span class="p">,</span> <span class="mi">106</span><span class="p">)</span>
+          <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id83">
+
+<div class="line-block">
+<div class="line">How does Python tell?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">isatty</span><span class="p">()</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">isatty</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="n">ioctl</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span>
+      <span class="n">SNDCTL_TMR_TIMEBASE</span>
+      <span class="ow">or</span> <span class="n">SNDRV_TIMER_IOCTL_NEXT_DEVICE</span>
+      <span class="ow">or</span> <span class="n">TCGETS</span><span class="p">,</span>
+      <span class="p">{</span><span class="n">B38400</span> <span class="n">opost</span> <span class="n">isig</span> <span class="n">icanon</span> <span class="n">echo</span><span class="o">...</span><span class="p">})</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+
+</div>
+<div class="section" id="id84">
+
+<ul class="simple">
+<li><tt class="docutils literal">sys.exit()</tt> flushes buffers</li>
+<li><tt class="docutils literal">os._exit()</tt> does not</li>
+</ul>
+</div>
+<div class="section" id="threads">
+<h1>Threads</h1>
+<div class="line-block">
+<div class="line">Like a new process,</div>
+<div class="line">but lives in the <em>same</em></div>
+<div class="line">memory sandbox</div>
+</div>
+</div>
+<div class="section" id="id85">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">threading</span>
+<span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err">⋮</span>
+<span class="n">clone</span><span class="p">(</span><span class="n">child_stack</span><span class="o">=</span><span class="mh">0xb70f6424</span><span class="p">,</span>
+      <span class="n">flags</span><span class="o">=</span><span class="n">CLONE_VM</span><span class="o">|</span><span class="n">CLONE_FS</span><span class="o">|</span><span class="n">CLONE_FILES</span>
+           <span class="o">|</span><span class="n">CLONE_SIGHAND</span><span class="o">|</span><span class="n">CLONE_THREAD</span><span class="o">|</span><span class="n">CLONE_SYSVSEM</span>
+           <span class="o">|</span><span class="n">CLONE_SETTLS</span><span class="o">|</span><span class="n">CLONE_PARENT_SETTID</span>
+           <span class="o">|</span><span class="n">CLONE_CHILD_CLEARTID</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span> <span class="o">=</span> <span class="mi">13496</span>
+<span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="process">
+<h1>Process</h1>
+<div class="line-block">
+<div class="line">Run a <strong>different</strong> executable</div>
+<div class="line">inside a <em>new</em> memory sandbox</div>
+</div>
+</div>
+<div class="section" id="id86">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">spawnvp</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">P_WAIT</span><span class="p">,</span> <span class="s2">&quot;ls&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;ls&quot;</span><span class="p">])</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err">⋮</span>
+<span class="n">clone</span><span class="p">(</span><span class="n">child_stack</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">CLONE_CHILD_CLEARTID</span>
+      <span class="o">|</span><span class="n">CLONE_CHILD_SETTID</span><span class="o">|</span><span class="n">SIGCHLD</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span> <span class="o">=</span> <span class="mi">13703</span>
+<span class="err">⋮</span>
+</pre></div>
+
+<p>And then what?</p>
+</div>
+<div class="section" id="id87">
+
+<div class="line-block">
+<div class="line">Use <tt class="docutils literal">strace</tt> <tt class="docutils literal"><span class="pre">-f</span></tt> to <em>follow</em> each</div>
+<div class="line">child thread created by <tt class="docutils literal">clone()</tt></div>
+</div>
+</div>
+<div class="section" id="id88">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">spawnvp</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">P_WAIT</span><span class="p">,</span> <span class="s2">&quot;ls&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;ls&quot;</span><span class="p">])</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err">⋮</span>
+<span class="mi">13742</span> <span class="n">clone</span><span class="p">(</span><span class="n">child_stack</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">CLONE_CHILD_CLEARTID</span>
+            <span class="o">|</span><span class="n">CLONE_CHILD_SETTID</span><span class="o">|</span><span class="n">SIGCHLD</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span> <span class="o">=</span> <span class="mi">13743</span>
+<span class="err">⋮</span>
+<span class="mi">13743</span> <span class="n">execve</span><span class="p">(</span><span class="s2">&quot;/bin/ls&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;ls&quot;</span><span class="p">],</span> <span class="p">[</span><span class="o">/*</span> <span class="mi">70</span> <span class="nb">vars</span> <span class="o">*/</span><span class="p">])</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="mi">13743</span> <span class="n">brk</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>                             <span class="o">=</span> <span class="mh">0x90b4000</span>
+<span class="mi">13743</span> <span class="n">access</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.nohwcap&quot;</span><span class="p">,</span> <span class="n">F_OK</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span>
+<span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id89">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ls&quot;</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err">⋮</span>
+<span class="mi">1915</span> <span class="n">clone</span><span class="p">(</span><span class="n">child_stack</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">CLONE_CHILD_CLEARTID</span>
+           <span class="o">|</span><span class="n">CLONE_CHILD_SETTID</span><span class="o">|</span><span class="n">SIGCHLD</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1916</span>
+<span class="mi">1915</span> <span class="n">wait4</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="o">&lt;</span><span class="n">unfinished</span> <span class="o">...&gt;</span>
+<span class="mi">1916</span> <span class="n">execve</span><span class="p">(</span><span class="s2">&quot;/bin/ls&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;ls&quot;</span><span class="p">],</span> <span class="p">[</span><span class="o">/*</span> <span class="mi">79</span> <span class="nb">vars</span> <span class="o">*/</span><span class="p">])</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="mi">1916</span> <span class="n">brk</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>                            <span class="o">=</span> <span class="mh">0x90b4000</span>
+<span class="mi">1916</span> <span class="n">access</span><span class="p">(</span><span class="s2">&quot;/etc/ld.so.nohwcap&quot;</span><span class="p">,</span> <span class="n">F_OK</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span>
+<span class="err">⋮</span>
+<span class="mi">1916</span>  <span class="o">+++</span> <span class="n">exited</span> <span class="k">with</span> <span class="mi">0</span> <span class="o">+++</span>
+<span class="mi">1915</span>  <span class="o">&lt;...</span> <span class="n">waitpid</span> <span class="n">resumed</span><span class="o">&gt;</span>
+      <span class="p">[{</span><span class="n">WIFEXITED</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="err">…</span> <span class="o">==</span> <span class="mi">0</span><span class="p">}],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">NULL</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1916</span>
+<span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id90">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">subprocess</tt> operations are</div>
+<div class="line">even more complicated</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">call</span><span class="p">()</span>
+<span class="n">check_call</span><span class="p">()</span>
+<span class="n">check_output</span><span class="p">()</span>
+<span class="n">Popen</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="advice">
+<h1>Advice</h1>
+<div class="line-block">
+<div class="line"><strong>Always</strong> compare your trace</div>
+<div class="line">to a <em>working example</em></div>
+</div>
+</div>
+<div class="section" id="common-debugging">
+<h1>Common debugging</h1>
+</div>
+<div class="section" id="running-out-of-memory">
+<h1>Running out of memory</h1>
+<ul class="simple">
+<li>malloc used <tt class="docutils literal">brk()</tt> in the old days</li>
+<li>Python calls <tt class="docutils literal"><span class="pre">mmap2(…,fd=-1,…)</span></tt> today</li>
+<li><tt class="docutils literal">ENOMEM (Cannot allocate memory)</tt></li>
+</ul>
+</div>
+<div class="section" id="running-out-of-file-descriptors">
+<h1>Running out of file descriptors</h1>
+<ul class="simple">
+<li>FD’s for <em>open files</em></li>
+<li>Also used for <em>sockets</em></li>
+<li>Watch for <strong>monotonic</strong> increase</li>
+<li><tt class="docutils literal">ulimit</tt> <tt class="docutils literal"><span class="pre">-n</span></tt> to check bound</li>
+<li>Check for reference loops</li>
+<li>Use <tt class="docutils literal">with</tt> or <tt class="docutils literal">close()</tt></li>
+</ul>
+</div>
+<div class="section" id="more-options">
+<h1>More options</h1>
+<ul class="simple">
+<li><tt class="docutils literal">strace</tt> <tt class="docutils literal"><span class="pre">-p</span></tt> <tt class="docutils literal">PID</tt> against running process</li>
+<li><tt class="docutils literal"><span class="pre">-P</span></tt> for calls targeting a specific path</li>
+<li><tt class="docutils literal"><span class="pre">-T</span></tt> elapsed time of each system call</li>
+<li><tt class="docutils literal"><span class="pre">-t</span></tt> timestamp each system call</li>
+<li><tt class="docutils literal"><span class="pre">-s</span></tt> can print larger string excerpts</li>
+<li><tt class="docutils literal"><span class="pre">-e</span></tt> can turn on other extended data</li>
+<li>Take a look at the <tt class="docutils literal">sysdig</tt> project</li>
+</ul>
+</div>
+<div class="section" id="ltrace">
+<h1>ltrace</h1>
+<div class="line-block">
+<div class="line">Even slower:</div>
+<div class="line">traces <em>library</em> calls</div>
+</div>
+</div>
+<div class="section" id="id91">
+
+<div class="line-block">
+<div class="line">Useful for SSL, when</div>
+<div class="line"><tt class="docutils literal">strace</tt> can only show:</div>
+</div>
+<div class="highlight"><pre><span></span>                      <span class="err">⋮</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\27\3\3\0</span><span class="s2">`</span><span class="se">\342\243\357\314\n</span><span class="s2">dk&quot;</span><span class="o">...</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">read</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\27\3\3\4\343</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">read</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\0\0\0\0\0\0\0\1\262</span><span class="s2">/</span><span class="se">\264\254\0</span><span class="s2">&quot;</span><span class="o">...</span><span class="p">,</span> <span class="mi">1251</span><span class="p">)</span>
+                      <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id92">
+
+<p><tt class="docutils literal">ssl_test.py</tt></p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">urllib</span>
+<span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s1">&#39;https://www.google.com/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+
+<p><tt class="docutils literal">ltrace.conf</tt></p>
+<div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">SSL_write</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">uint</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id93">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">ltrace</span> <span class="o">-</span><span class="n">F</span> <span class="n">ltrace</span><span class="o">.</span><span class="n">conf</span> <span class="o">-</span><span class="n">s</span> <span class="mi">9999</span> \
+    <span class="o">-</span><span class="n">l</span> <span class="s1">&#39;libssl*&#39;</span> <span class="o">-</span><span class="n">o</span> <span class="n">ltrace</span><span class="o">.</span><span class="n">txt</span> \
+    <span class="n">python2</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">c</span> <span class="n">ssl_test</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="n">_ssl</span><span class="o">.</span><span class="n">i386</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">gnu</span><span class="o">.</span><span class="n">so</span><span class="o">-&gt;</span><span class="n">SSL_write</span><span class="p">(</span>
+  <span class="s2">&quot;GET / HTTP/1.0</span><span class="se">\r\n</span><span class="s2">Host: www.google.com</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+  <span class="s2">&quot;User-Agent: Python-urllib/1.17</span><span class="se">\r\n\r\n</span><span class="s2">&quot;</span><span class="p">,</span>
+  <span class="mi">72</span><span class="p">)</span> <span class="o">=</span> <span class="mi">72</span>
+</pre></div>
+
+</div>
+<div class="section" id="id94">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">strace</tt></div>
+<div class="line"><tt class="docutils literal">ltrace</tt></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">truss</tt></div>
+</div>
+</div>
+<div class="section" id="id95">
+
+<p><strong>&#64;brandon_rhodes</strong></p>
+<!-- single quote: ’
+double quotes: x“”x
+em-dash: —
+vertical ellipsis: ⋮
+arrows: ←, ↑, →, ↓, ↔, ↕, ↖, ↗, ↘, ↙ -->
+<style>
+  body.presentation-mode pre {font-size: 28px}
+</style>
+<script>
+  window.slide_transition_time = 200;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
+<title></title>
+<link rel="stylesheet" href="/css/slides.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body>
+<div class="document">
+
+
+<div class="section" id="squinting-at-python-objects">
+<h1>Squinting at Python Objects</h1>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line">──────────────────</div>
+<div class="line"><tt class="docutils literal">PyOhio</tt></div>
+<div class="line">2011 July 30th</div>
+<div class="line">Brandon Craig Rhodes</div>
+<div class="line">──────────────────</div>
+</div>
+</div>
+<div class="section" id="slide">
+<h1>slide</h1>
+<ol class="arabic simple">
+<li>Cyclic garbage collection</li>
+<li>Property attributes</li>
+<li>“Squinting” with <tt class="docutils literal">squint</tt></li>
+</ol>
+</div>
+<div class="section" id="id1">
+<h1>slide</h1>
+<p>Some instrumentation</p>
+</div>
+<div class="section" id="id2">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="c1"># A base class that remembers its objects</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">weakref</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">people</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakKeyDictionary</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="o">...</span>     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="o">...</span>         <span class="n">people</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">starbuck</span> <span class="o">=</span> <span class="n">Person</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">people</span><span class="p">)</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">del</span> <span class="n">starbuck</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">people</span><span class="p">)</span>
+<span class="mi">0</span>
+</pre></div>
+
+</div>
+<div class="section" id="id3">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">400</span><span class="p">):</span>
+<span class="o">...</span>     <span class="n">ahab</span> <span class="o">=</span> <span class="n">Person</span><span class="p">()</span>
+<span class="o">...</span>     <span class="n">starbuck</span> <span class="o">=</span> <span class="n">Person</span><span class="p">()</span>
+<span class="o">...</span>     <span class="n">ahab</span><span class="o">.</span><span class="n">firstmate</span> <span class="o">=</span> <span class="n">starbuck</span>
+</pre></div>
+
+<p>At the bottom of each loop:</p>
+<div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">people</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+</pre></div>
+
+</div>
+<div class="section" id="id4">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span>     <span class="n">ahab</span>       <span class="n">starbuck</span>
+      <span class="err">↓</span>            <span class="err">↓</span>
+<span class="err">┌───────────┐</span> <span class="err">┌──────────┐</span>
+<span class="err">│</span><span class="n">Person</span>     <span class="err">│</span> <span class="err">│</span><span class="n">Person</span>    <span class="err">│</span>
+<span class="err">│“</span><span class="n">firstmate</span><span class="err">”→</span> <span class="err">│</span>          <span class="err">│</span>
+<span class="err">│</span>  <span class="n">refs</span><span class="o">==</span><span class="mi">1</span>  <span class="err">│</span> <span class="err">│</span> <span class="n">refs</span><span class="o">==</span><span class="mi">2</span>  <span class="err">│</span>
+<span class="err">└───────────┘</span> <span class="err">└──────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id5">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">400</span><span class="p">):</span>
+<span class="o">...</span>     <span class="n">ahab</span> <span class="o">=</span> <span class="n">Person</span><span class="p">()</span>
+<span class="o">...</span>     <span class="n">starbuck</span> <span class="o">=</span> <span class="n">Person</span><span class="p">()</span>
+<span class="o">...</span>     <span class="n">ahab</span><span class="o">.</span><span class="n">firstmate</span> <span class="o">=</span> <span class="n">starbuck</span>
+<span class="o">...</span>     <span class="n">starbuck</span><span class="o">.</span><span class="n">captain</span> <span class="o">=</span> <span class="n">ahab</span>
+</pre></div>
+
+<p>Here <tt class="docutils literal">len(people)</tt> varies.</p>
+</div>
+<div class="section" id="id6">
+<h1>slide</h1>
+<img alt="cyclic-gc.png" src="cyclic-gc.png" />
+<div class="line-block">
+<div class="line"><tt class="docutils literal">len(people) &gt; 2</tt> &nbsp; &nbsp; What's going on?</div>
+</div>
+</div>
+<div class="section" id="id7">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span>     <span class="n">ahab</span>       <span class="n">starbuck</span>
+      <span class="err">↓</span>            <span class="err">↓</span>
+<span class="err">┌───────────┐</span> <span class="err">┌──────────┐</span>
+<span class="err">│</span><span class="n">Person</span>     <span class="err">│</span> <span class="err">│</span><span class="n">Person</span>    <span class="err">│</span>
+<span class="err">│“</span><span class="n">firstmate</span><span class="err">”→</span> <span class="err">←“</span><span class="n">captain</span><span class="err">”</span> <span class="err">│</span>
+<span class="err">│</span>  <span class="n">refs</span><span class="o">==</span><span class="mi">2</span>  <span class="err">│</span> <span class="err">│</span> <span class="n">refs</span><span class="o">==</span><span class="mi">2</span>  <span class="err">│</span>
+<span class="err">└───────────┘</span> <span class="err">└──────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id8">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="err">┌───────────┐</span> <span class="err">┌──────────┐</span>
+<span class="err">│</span><span class="n">Person</span>     <span class="err">│</span> <span class="err">│</span><span class="n">Person</span>    <span class="err">│</span>
+<span class="err">│“</span><span class="n">firstmate</span><span class="err">”→</span> <span class="err">←“</span><span class="n">captain</span><span class="err">”</span> <span class="err">│</span>
+<span class="err">│</span>  <span class="n">refs</span><span class="o">==</span><span class="mi">1</span>  <span class="err">│</span> <span class="err">│</span> <span class="n">refs</span><span class="o">==</span><span class="mi">1</span>  <span class="err">│</span>
+<span class="err">└───────────┘</span> <span class="err">└──────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id9">
+<h1>slide</h1>
+<img alt="cyclic-gc.png" src="cyclic-gc.png" />
+<div class="line-block">
+<div class="line">“cyclic garbage collection” (Python≥2.0)</div>
+</div>
+</div>
+<div class="section" id="lesson">
+<h1>Lesson:</h1>
+<div class="line-block">
+<div class="line">Cyclic garbage collection</div>
+<div class="line">only cleans up cycles</div>
+<div class="line">every so often</div>
+</div>
+</div>
+<div class="section" id="issue-2">
+<h1>Issue #2</h1>
+<p>Property attributes</p>
+</div>
+<div class="section" id="id10">
+<h1>slide</h1>
+<div class="line-block">
+<div class="line">A property creates an <strong>attribute</strong></div>
+<div class="line">that <strong>invokes code</strong> on the object</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Captain</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+<span class="o">...</span>     <span class="n">_firstmate</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="o">...</span>
+<span class="o">...</span>     <span class="nd">@property</span>
+<span class="o">...</span>     <span class="k">def</span> <span class="nf">firstmate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="o">...</span>         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_firstmate</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+<span class="o">...</span>             <span class="bp">self</span><span class="o">.</span><span class="n">_firstmate</span> <span class="o">=</span> <span class="n">Person</span><span class="p">()</span>
+<span class="o">...</span>             <span class="bp">self</span><span class="o">.</span><span class="n">_firstmate</span><span class="o">.</span><span class="n">captain</span> <span class="o">=</span> <span class="bp">self</span>
+<span class="o">...</span>         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_firstmate</span>
+</pre></div>
+
+</div>
+<div class="section" id="id11">
+<h1>slide</h1>
+<div class="line-block">
+<div class="line">Properties <strong>surprise</strong> you by creating</div>
+<div class="line">new objects when you look at them</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Captain</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">dir</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="s1">&#39;firstmate&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">firstmate</span>
+<span class="o">&lt;...</span><span class="n">Person</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f4b9db490c0</span><span class="o">&gt;</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">If you are not careful, you might</div>
+<div class="line">think <tt class="docutils literal">.firstmate</tt> was there the whole time</div>
+</div>
+</div>
+<div class="section" id="id12">
+<h1>slide</h1>
+<div class="line-block">
+<div class="line">The <strong>truth</strong> about an object</div>
+<div class="line">is in its <tt class="docutils literal">__dict__</tt> dictionary</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Captain</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="p">{}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">firstmate</span>
+<span class="o">&lt;...</span><span class="n">Person</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f4b9db490b0</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="p">{</span><span class="s1">&#39;_firstmate&#39;</span><span class="p">:</span> <span class="o">&lt;...</span><span class="n">Person</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f4b9db490a0</span><span class="o">&gt;</span><span class="p">}</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">We can see there was no <tt class="docutils literal">_firstmate</tt></div>
+<div class="line">until we induced its creation</div>
+</div>
+</div>
+<div class="section" id="id13">
+<h1>slide</h1>
+<p><strong>“Observer effect”</strong> in physics</p>
+<div class="line-block">
+<div class="line">When the mere act of measurement</div>
+<div class="line">causes a change in the value being measured.</div>
+</div>
+</div>
+<div class="section" id="id14">
+<h1>slide</h1>
+<div class="line-block">
+<div class="line">So, <strong>which actions</strong> on a Python</div>
+<div class="line">object are <strong>safe</strong> actions?</div>
+</div>
+<div class="line-block">
+<div class="line">==</div>
+</div>
+<div class="line-block">
+<div class="line">How can we safely <strong>“squint”</strong></div>
+<div class="line">at an object without changing it?</div>
+</div>
+</div>
+<div class="section" id="id15">
+<h1>slide</h1>
+<p>Note that <tt class="docutils literal">print</tt> is <em>not</em> safe!</p>
+<div class="line-block">
+<div class="line">Nothing is safe that might call</div>
+<div class="line"><tt class="docutils literal">__str__()</tt> or <tt class="docutils literal">__repr__()</tt></div>
+</div>
+</div>
+<div class="section" id="safe-operators">
+<h1>Safe operators</h1>
+<div class="highlight"><pre><span></span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id16">
+<h1>slide</h1>
+<div class="line-block">
+<div class="line">BTW: it is to <strong>make</strong> these safe</div>
+<div class="line">that Python implements them as plain</div>
+<div class="line">functions instead of attributes!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">See Armin Ronacher's</div>
+<div class="line">wonderful “Python and the</div>
+<div class="line">Principle of Least Astonishment”</div>
+</div>
+</div>
+<div class="section" id="id17">
+<h1>slide</h1>
+<p>Safe-by-convention:</p>
+<div class="highlight"><pre><span></span><span class="n">x</span><span class="o">.</span><span class="n">__class__</span>
+<span class="n">x</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__module__</span>
+<span class="n">x</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
+<span class="n">x</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="n">x</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">&#39;attribute&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="what-about-built-in-containers">
+<h1>What about built-in containers?</h1>
+<div class="line-block">
+<div class="line">If <tt class="docutils literal">isinstance(x, dict)</tt></div>
+<div class="line">then can we safely ask for its keys?</div>
+</div>
+</div>
+<div class="section" id="no">
+<h1>No!</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">MyDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="o">...</span>     <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="o">...</span>         <span class="k">print</span> <span class="s1">&#39;SIDE EFFECT!&#39;</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">MyDict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="n">SIDE</span> <span class="n">EFFECT</span><span class="err">!</span>
+</pre></div>
+
+</div>
+<div class="section" id="id18">
+<h1>slide</h1>
+<p>Q: How do we avoid the side effect?</p>
+<div class="line-block">
+<div class="line">A: Calling <tt class="docutils literal">dict.keys()</tt> manually instead</div>
+<div class="line">of letting the <tt class="docutils literal">x</tt> object dispatch <tt class="docutils literal">x.keys()</tt>!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">MyDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="o">...</span>     <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="o">...</span>         <span class="k">print</span> <span class="s1">&#39;SIDE EFFECT!&#39;</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">MyDict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">dict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="safe-container-methods">
+<h1>Safe container methods</h1>
+<div class="highlight"><pre><span></span><span class="nb">list</span><span class="o">.</span><span class="n">__len__</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">list</span><span class="o">.</span><span class="n">__getitem__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+<span class="nb">set</span><span class="o">.</span><span class="n">__iter__</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">dict</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">dict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">dict</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id19">
+<h1>slide</h1>
+<div class="line-block">
+<div class="line">These are even safe even if</div>
+<div class="line">you accidentally try using them</div>
+<div class="line">against non-container objects!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="nb">set</span><span class="o">.</span><span class="n">__iter__</span><span class="p">(</span><span class="n">Person</span><span class="p">())</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="o">...</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="n">descriptor</span> <span class="s1">&#39;__iter__&#39;</span> <span class="n">requires</span>
+ <span class="n">a</span> <span class="s1">&#39;set&#39;</span> <span class="nb">object</span> <span class="n">but</span> <span class="n">received</span> <span class="n">a</span> <span class="s1">&#39;Person&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="note-that-getitem-is-not-safe">
+<h1>Note that getitem is NOT safe!</h1>
+<div class="highlight"><pre><span></span><span class="nb">dict</span><span class="o">.</span><span class="n">__getitem__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">It invokes every key's</div>
+<div class="line"><tt class="docutils literal">__eq__()</tt> method!</div>
+</div>
+<div class="line-block">
+<div class="line">In general,</div>
+<div class="line"><tt class="docutils literal">x is y</tt> is safe</div>
+<div class="line"><tt class="docutils literal">x == y</tt> is not</div>
+</div>
+</div>
+<div class="section" id="traditional-exploration-is-painful">
+<h1>Traditional exploration is painful</h1>
+<div class="line-block">
+<div class="line">One mistake at the <tt class="docutils literal">pdb</tt> prompt</div>
+<div class="line">and you have to go back to square one</div>
+</div>
+</div>
+<div class="section" id="id20">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="n">Pdb</span><span class="p">)</span> <span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="p">(</span><span class="n">Pdb</span><span class="p">)</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="p">(</span><span class="n">Pdb</span><span class="p">)</span> <span class="n">a</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="p">(</span><span class="n">Pdb</span><span class="p">)</span> <span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">&#39;firstmate&#39;</span><span class="p">])</span>
+<span class="p">(</span><span class="n">Pdb</span><span class="p">)</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">&#39;firstmate&#39;</span><span class="p">])</span>
+<span class="p">(</span><span class="n">Pdb</span><span class="p">)</span> <span class="n">a</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">&#39;firstmate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="p">(</span><span class="n">Pdb</span><span class="p">)</span> <span class="n">a</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">&#39;firstmate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Aargh!</div>
+<div class="line">I was not supposed to say <tt class="docutils literal">.name</tt></div>
+<div class="line">Have to start over again</div>
+</div>
+</div>
+<div class="section" id="solution">
+<h1>Solution</h1>
+<p>The <tt class="docutils literal">squint</tt> package.</p>
+</div>
+<div class="section" id="invocation">
+<h1>Invocation</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">squint</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">squint</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+
+<p>or</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">myfunction</span><span class="p">(</span><span class="err">…</span><span class="p">):</span>
+    <span class="err">…</span>
+    <span class="kn">import</span> <span class="nn">squint</span><span class="p">;</span> <span class="n">squint</span><span class="o">.</span><span class="n">pdb</span><span class="p">()</span>
+    <span class="err">…</span>
+</pre></div>
+
+</div>
+<div class="section" id="id21">
+<h1>slide</h1>
+<div class="line-block">
+<div class="line">Here are two sample objects</div>
+<div class="line">on which to try our newfound powers:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">ahab</span> <span class="o">=</span> <span class="n">Person</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ahab</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Ahab&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ahab</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ahab</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;religion&#39;</span><span class="p">:</span> <span class="s1">&#39;Puritan&#39;</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">starbuck</span> <span class="o">=</span> <span class="n">Person</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">starbuck</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Starbuck&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">starbuck</span><span class="o">.</span><span class="n">traits</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;loyal&#39;</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ahab</span><span class="o">.</span><span class="n">firstmate</span> <span class="o">=</span> <span class="n">starbuck</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">starbuck</span><span class="o">.</span><span class="n">captain</span> <span class="o">=</span> <span class="n">ahab</span>
+</pre></div>
+
+</div>
+<div class="section" id="primitives">
+<h1>Primitives</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">squint</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ahab</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">This <tt class="docutils literal">s</tt> object <em>wraps</em> <tt class="docutils literal">ahab</tt> and promises</div>
+<div class="line">to only use “safe” operations</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">(</span><span class="n">ahab</span><span class="p">)</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">typename</span>
+<span class="s1">&#39;__main__.Person&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">type</span>       <span class="c1"># dangerous?</span>
+<span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Person</span><span class="s1">&#39;&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="squint-s-repr-and-verbose">
+<h1>Squint's repr() and .verbose</h1>
+<p>Where all the fun is waiting:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">squint</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ahab</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">verbose</span>
+<span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Person</span> <span class="mh">0x7f4b9db490d0</span><span class="o">&gt;</span>
+  <span class="n">a_age</span> <span class="o">&lt;</span><span class="nb">int</span> <span class="mi">60</span><span class="o">&gt;</span>
+  <span class="n">a_features</span> <span class="o">&lt;</span><span class="nb">dict</span> <span class="mh">0x7f4b9db490e0</span><span class="o">&gt;</span>
+  <span class="n">a_firstmate</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Person</span> <span class="mh">0x7f4b9db490f0</span><span class="o">&gt;</span>
+  <span class="n">a_name</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;Ahab&#39;</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id22">
+<h1>slide</h1>
+<div class="line-block">
+<div class="line">All operations on a squinter are <strong>safe</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">squint</tt> will never let you</div>
+<div class="line">accidentally invoke object code</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">a_age</span>
+<span class="o">&lt;</span><span class="nb">int</span> <span class="mi">60</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">a_name</span>
+<span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;Ahab&#39;</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id23">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">a_features</span><span class="o">.</span><span class="n">verbose</span>
+<span class="o">&lt;</span><span class="nb">dict</span> <span class="mh">0x7f4b9db49100</span> <span class="nb">len</span><span class="o">=</span><span class="mi">1</span><span class="o">&gt;</span>
+  <span class="n">k_religion</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;Puritan&#39;</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">a_features</span><span class="o">.</span><span class="n">k_religion</span>
+<span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;Puritan&#39;</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">a_firstmate</span><span class="o">.</span><span class="n">verbose</span>
+<span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Person</span> <span class="mh">0x7f4b9db49110</span><span class="o">&gt;</span>
+  <span class="n">a_captain</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Person</span> <span class="mh">0x7f4b9db49120</span><span class="o">&gt;</span>
+  <span class="n">a_name</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;Starbuck&#39;</span><span class="o">&gt;</span>
+  <span class="n">a_traits</span> <span class="o">&lt;</span><span class="nb">set</span> <span class="mh">0x7f4b9db49130</span> <span class="nb">len</span><span class="o">=</span><span class="mi">1</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id24">
+<h1>slide</h1>
+<div class="line-block">
+<div class="line">Q: So what about non-verbose mode?</div>
+</div>
+<div class="line-block">
+<div class="line">A: It omits simple sub-objects</div>
+<div class="line">since they cannot create cycles</div>
+</div>
+</div>
+<div class="section" id="id25">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span>
+<span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Person</span> <span class="mh">0x7f4b9db49140</span><span class="o">&gt;</span>  <span class="nb">int</span><span class="o">*</span><span class="mi">1</span>  <span class="nb">str</span><span class="o">*</span><span class="mi">4</span>
+  <span class="n">a_features</span> <span class="o">&lt;</span><span class="nb">dict</span> <span class="mh">0x7f4b9db49150</span> <span class="nb">len</span><span class="o">=</span><span class="mi">1</span><span class="o">&gt;</span>
+  <span class="n">a_firstmate</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Person</span> <span class="mh">0x7f4b9db49160</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">a_features</span>
+<span class="o">&lt;</span><span class="nb">dict</span> <span class="mh">0x7f4b9db49170</span> <span class="nb">len</span><span class="o">=</span><span class="mi">1</span><span class="o">&gt;</span>  <span class="nb">str</span><span class="o">*</span><span class="mi">7</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">a_firstmate</span>
+<span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Person</span> <span class="mh">0x7f4b9db49180</span><span class="o">&gt;</span>  <span class="nb">str</span><span class="o">*</span><span class="mi">8</span>
+  <span class="n">a_captain</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Person</span> <span class="mh">0x7f4b9db49190</span><span class="o">&gt;</span>
+  <span class="n">a_traits</span> <span class="o">&lt;</span><span class="nb">set</span> <span class="mh">0x7f4b9db491a0</span> <span class="nb">len</span><span class="o">=</span><span class="mi">1</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="squint-s-attribute-dialect">
+<h1>squint's attribute dialect</h1>
+</div>
+<div class="section" id="id26">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">squint</span><span class="o">.</span><span class="n">at</span><span class="p">((</span><span class="s1">&#39;zero&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">verbose</span>
+<span class="o">&lt;</span><span class="nb">tuple</span> <span class="mh">0x7f4b9db491b0</span> <span class="nb">len</span><span class="o">=</span><span class="mi">3</span><span class="o">&gt;</span>
+  <span class="n">item0</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;zero&#39;</span><span class="o">&gt;</span>
+  <span class="n">item1</span> <span class="o">&lt;</span><span class="nb">int</span> <span class="mi">1</span><span class="o">&gt;</span>
+  <span class="n">item2</span> <span class="o">&lt;</span><span class="nb">int</span> <span class="mi">2</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id27">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">squint</span><span class="o">.</span><span class="n">at</span><span class="p">([</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;baz&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">verbose</span>
+<span class="o">&lt;</span><span class="nb">list</span> <span class="mh">0x7f4b9db491c0</span> <span class="nb">len</span><span class="o">=</span><span class="mi">3</span><span class="o">&gt;</span>
+  <span class="n">item0</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;foo&#39;</span><span class="o">&gt;</span>
+  <span class="n">item1</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;bar&#39;</span><span class="o">&gt;</span>
+  <span class="n">item2</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;baz&#39;</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id28">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">squint</span><span class="o">.</span><span class="n">at</span><span class="p">({</span><span class="s1">&#39;egg&#39;</span><span class="p">,</span> <span class="s1">&#39;tgz&#39;</span><span class="p">,</span> <span class="s1">&#39;zip&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">verbose</span>
+<span class="o">&lt;</span><span class="nb">set</span> <span class="mh">0x7f4b9db491d0</span> <span class="nb">len</span><span class="o">=</span><span class="mi">3</span><span class="o">&gt;</span>
+  <span class="n">member0</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;tgz&#39;</span><span class="o">&gt;</span>
+  <span class="n">member1</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;egg&#39;</span><span class="o">&gt;</span>
+  <span class="n">member2</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;zip&#39;</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id29">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">squint</span><span class="o">.</span><span class="n">at</span><span class="p">({</span>
+<span class="o">...</span>     <span class="s1">&#39;happy_key&#39;</span><span class="p">:</span> <span class="s1">&#39;foo&#39;</span><span class="p">,</span>
+<span class="o">...</span>     <span class="mi">15</span><span class="p">:</span> <span class="s1">&#39;bar&#39;</span><span class="p">,</span>
+<span class="o">...</span>     <span class="s1">&#39;ugly$key&#39;</span><span class="p">:</span> <span class="s1">&#39;baz&#39;</span><span class="p">,</span>
+<span class="o">...</span>     <span class="p">})</span><span class="o">.</span><span class="n">verbose</span>
+<span class="o">...</span>
+<span class="o">&lt;</span><span class="nb">dict</span> <span class="mh">0x7f4b9db491e0</span> <span class="nb">len</span><span class="o">=</span><span class="mi">3</span><span class="o">&gt;</span>
+      <span class="n">k15</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;bar&#39;</span><span class="o">&gt;</span>
+      <span class="n">k_happy_key</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;foo&#39;</span><span class="o">&gt;</span>
+      <span class="n">key0</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;ugly$key&#39;</span><span class="o">&gt;</span>
+      <span class="n">value0</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;baz&#39;</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id30">
+<h1>slide</h1>
+<div class="line-block">
+<div class="line">Hybrid objects can have</div>
+<div class="line">several kinds of squint attribute</div>
+</div>
+</div>
+<div class="section" id="id31">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">MyDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="o">...</span>     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="o">...</span>         <span class="bp">self</span><span class="o">.</span><span class="n">myattr</span> <span class="o">=</span> <span class="s1">&#39;myvalue&#39;</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">MyDict</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;happy_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;foo&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;ugly$key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;baz&#39;</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">squint</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">verbose</span>
+<span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">MyDict</span> <span class="mh">0x7f4b9db491f0</span><span class="o">&gt;</span>
+  <span class="n">a_myattr</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;myvalue&#39;</span><span class="o">&gt;</span>
+  <span class="n">k_happy_key</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;foo&#39;</span><span class="o">&gt;</span>
+  <span class="n">key0</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;ugly$key&#39;</span><span class="o">&gt;</span>
+  <span class="n">value0</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;baz&#39;</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id32">
+<h1>slide</h1>
+<div class="line-block">
+<div class="line">Finally, what about getting <tt class="docutils literal">squint</tt></div>
+<div class="line">to do its own search for cycles?</div>
+</div>
+</div>
+<div class="section" id="id33">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">squint</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ahab</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">cycles</span><span class="p">()</span>
+<span class="n">_</span> <span class="o">&lt;-</span> <span class="o">.</span><span class="n">a_firstmate</span><span class="o">.</span><span class="n">a_captain</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">It found the cycle we saw earlier!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">┌───────────┐</span> <span class="err">┌──────────┐</span>
+<span class="err">│</span><span class="n">Person</span>     <span class="err">│</span> <span class="err">│</span><span class="n">Person</span>    <span class="err">│</span>
+<span class="err">│“</span><span class="n">firstmate</span><span class="err">”→</span> <span class="err">←“</span><span class="n">captain</span><span class="err">”</span> <span class="err">│</span>
+<span class="err">└───────────┘</span> <span class="err">└──────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id34">
+<h1>slide</h1>
+<div class="line-block">
+<div class="line">It will even find cycles</div>
+<div class="line">that do not involve the main object</div>
+<div class="line">at which you are squinting</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">melville</span> <span class="o">=</span> <span class="n">Person</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">melville</span><span class="o">.</span><span class="n">characters</span> <span class="o">=</span> <span class="p">[</span><span class="n">ahab</span><span class="p">,</span> <span class="n">starbuck</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">squint</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">melville</span><span class="p">)</span><span class="o">.</span><span class="n">cycles</span><span class="p">()</span>
+<span class="n">_</span><span class="o">.</span><span class="n">a_characters</span><span class="o">.</span><span class="n">item0</span> <span class="o">&lt;-</span> <span class="o">.</span><span class="n">a_firstmate</span><span class="o">.</span><span class="n">a_captain</span>
+<span class="n">_</span><span class="o">.</span><span class="n">a_characters</span><span class="o">.</span><span class="n">item1</span> <span class="o">&lt;-</span> <span class="o">.</span><span class="n">a_captain</span><span class="o">.</span><span class="n">a_firstmate</span>
+</pre></div>
+
+</div>
+<div class="section" id="conclusion">
+<h1>Conclusion</h1>
+<ul class="simple">
+<li>Introspection is <strong>fun</strong></li>
+<li>Helps you learn about Python</li>
+<li><strong>Safe</strong> introspection is difficult</li>
+<li><tt class="docutils literal">squint</tt> can help</li>
+</ul>
+<p>Thank you!</p>
+</div>
+<div class="section" id="id35">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Fancy</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="o">...</span>     <span class="n">a</span> <span class="o">=</span> <span class="s1">&#39;classattr&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Fancy2</span><span class="p">(</span><span class="n">Fancy</span><span class="p">):</span>
+<span class="o">...</span>     <span class="nd">@property</span>
+<span class="o">...</span>     <span class="k">def</span> <span class="nf">a</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="o">...</span>         <span class="k">return</span> <span class="s1">&#39;property&#39;</span>
+<span class="o">...</span>     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="o">...</span>         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;a&#39;</span><span class="p">:</span>
+<span class="o">...</span>             <span class="k">return</span> <span class="s1">&#39;getattr&#39;</span>
+<span class="o">...</span>         <span class="k">raise</span> <span class="ne">AttributeError</span>
+<span class="o">...</span>     <span class="k">def</span> <span class="nf">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="o">...</span>         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">:</span>
+<span class="o">...</span>             <span class="n">ga</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">__getattribute__</span>
+<span class="o">...</span>             <span class="k">return</span> <span class="n">ga</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">)</span>
+<span class="o">...</span>         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;a&#39;</span><span class="p">:</span>
+<span class="o">...</span>             <span class="k">return</span> <span class="s1">&#39;getattribute&#39;</span>
+<span class="o">...</span>         <span class="k">raise</span> <span class="ne">AttributeError</span>
+</pre></div>
+
+</div>
+<div class="section" id="id36">
+<h1>slide</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">f</span> <span class="o">=</span> <span class="n">Fancy2</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">f</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;instanceattr&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">f</span><span class="o">.</span><span class="n">a</span>
+<span class="s1">&#39;getattribute&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">del</span> <span class="n">Fancy2</span><span class="o">.</span><span class="n">__getattribute__</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">f</span><span class="o">.</span><span class="n">a</span>
+<span class="s1">&#39;property&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">del</span> <span class="n">Fancy2</span><span class="o">.</span><span class="n">a</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">f</span><span class="o">.</span><span class="n">a</span>
+<span class="s1">&#39;instanceattr&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">del</span> <span class="n">f</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">f</span><span class="o">.</span><span class="n">a</span>
+<span class="s1">&#39;classattr&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">del</span> <span class="n">Fancy</span><span class="o">.</span><span class="n">a</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">f</span><span class="o">.</span><span class="n">a</span>
+<span class="s1">&#39;getattr&#39;</span>
+</pre></div>
+
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides.js"></script></div>
+</div>
+</body>
+</html>

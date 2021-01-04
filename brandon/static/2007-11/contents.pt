@@ -1,0 +1,11 @@
+<html><body>
+  <h1>Contents</h1>
+  <ul>
+    <li tal:repeat="item context/values">
+      <a tal:attributes="href python: view.url(item)">
+        <b tal:content="item/name">name</b>
+      </a>
+    </li>
+  </ul>
+  <a href="index">Return home</a>
+</body></html>

@@ -1,0 +1,290 @@
+PyFTS - Python interface to the OpenFTS full-text search engine
+Version 0.3
+
+Python modules are copyright (C) 2003 by Brandon Craig Rhodes; see
+LICENSING below, and the COPYING file in this directory.
+
+WELCOME
+
+    These Python modules are designed to replace the Perl modules that
+    form the current programming interface to the OpenFTS project; at
+    the moment they are rudimentary but do implement the same basic
+    functions as the standard Perl interface.
+
+    This distribution includes the `fts' Python module itself, as well
+    as example commands with which you can index your own documents
+    then search them - from either the command line, or through a web
+    browser!
+
+    Note that these routines use different database table names than
+    the ones used by the Perl interface, so you cannot use these
+    modules to access a database you have already set up with the Perl
+    routines.  Other differences, some simple and others technical,
+    are listed below under DIFFERENCES WITH PERL INTERFACE.
+
+INSTALLATION
+
+    You should already have installed Postgresql and the contrib
+    modules that come with OpenFTS; you can obtain both source code
+    and installation instructions for these at:
+
+	http://openfts.sourceforge.net/
+
+    Next, untar the pyfts-0.3.tar.gz archive (which you have probably
+    already done since you are reading its README file) and make
+    pyfts-0.3/ your working directory.  At this point you have two
+    choices; if you have write permission on the site-packages/
+    directory (which on many systems is restricted to root) and want
+    to make `fts' module availabe to all users on your system, then
+    simply enter:
+
+	python setup.py install
+
+    If you instead just want to play with the `fts' module yourself,
+    you can build it locally and point PYTHONPATH to its directory:
+
+	mkdir pylib
+	python setup.py install --home .
+	export PYTHONPATH=$PWD/lib/python/
+
+    Remember that to use the `fts' module when running Python from
+    another shell, you will need to either set PYTHONPATH manually in
+    that instance of the shell, or set it in your profile.
+
+    Programmers will want to `import fts' in their Python programs and
+    read the documentation under FTS MODULE below; but those wanting a
+    quick demonstration can run the sample code under the examples/
+    directory by reading the next section.
+
+EXAMPLE DATABASE AND WEB SEARCH ENGINE
+
+    The commands under example/ require that Postgresql is up and
+    running; they create an `example_texts' database where they index
+    documents you provide and allow you to search them from either the
+    command line or your web browser.
+
+    While the commands under the example/ directory are almost ready
+    to run, they lack the knowledge of where you have installed the
+    openfts.sql and tsearch.sql scripts with which a database can be
+    prepared for using OpenFTS.  You must edit the example/init.sh
+    file and change PG_CONTRIB to where the postgresql/contrib
+    directory lies on your own system.
+
+    Having corrected the value of PG_CONTRIB, change your working
+    directory to the example/ directory and initialize the database:
+
+        ./init.sh
+
+    then you can index an entire directory of documents at once:
+
+        ./load.sh <target-directory>
+
+    The script calls find(1) on the target directory and submits the
+    resulting list of filenames to the ./load.py program for indexing.
+    Its one clever feature is that it creates a file named .index_time
+    inside the target directory, whose time of modification it can use
+    to avoid re-indexing unchanged documents the next time you run it
+    on the given directory.
+
+    (Actually it has one other clever feature, since I use it to index
+    my email: lines that look like base64-encoded binary are discarded
+    from the input so that random strings of binary data do not bloat
+    your document indexes.)
+
+    So by running ./load.sh on the same directory every day, your
+    index can stay up to date with the file contents without having to
+    rebuild the entire database.
+
+    To search you can either run ./search.sh with one or more search
+    terms as arguments:
+
+        ./search.sh <word> ...
+
+    or run the web server provided and connect your browser to the
+    same port.  For example, while running:
+
+        python web_server.py 2080
+
+    you will find a simple search engine at:
+
+        http://localhost:2080/
+
+FTS MODULE
+
+    The `fts' module provides a create_index(...) function which you
+    should call exactly once when you want to create a document index;
+    it creates the necessary tables and store the preferences you give
+    it.  Then, each time your application runs, you can load your
+    index configuration back in with the load_index(...) function.
+
+    fts.create_index(db [, <parameters> ...] )
+
+        Creates a full-text search index, including all necessary
+        tables and indexes, in the database to which you provide an
+        open Pygresql connection (here named `db').  Many parameters
+        can be specified, but all are optional:
+
+	prefix = <string>
+
+	    Provides a prefix with which all full text index tables
+	    will be prefixed.  By default this is `fts', meaning that
+	    all of the objects created in your database will start
+	    with `fts_' which can help you keep them separate both
+	    from other indexes and from other tables your application
+	    might require.
+
+	parser = <function>
+
+	    The parse function should accept a single string as its
+	    argument, and return a list of (type, word) pairs giving
+	    an integer type and string word for each token found in
+	    the input.  The default parser function if no other is
+	    specified is fts.ftsParser().parse.
+
+	ignore_types = [ <integer>, ... ]
+
+	    A list of word types to ignore; words returned by the
+	    parser whose type appears in this list are discarded and
+	    not indexed.  By default types 7, 12, 13, 14, and 23 are
+	    ignored (see the OpenFTS documentation for what the
+	    default parser means by each type).
+
+	longest_word = <integer>
+
+	    Words returned by the parser which are longer than this
+	    maximum length are discarded and not indexed.
+
+	dictionaries = [ <function>, ... ]
+
+	    Each function listed should accept a string containing a
+	    single word argument, and return a list of stems for that
+	    word.  A dictionary can return None for words whose form
+	    it does not recognize, in which case the next dictionary
+	    in the list will be tried.
+
+	    The default dictionary fts.PorterEnglish.lexeme is used if
+	    the user does not specify a `dictionaries' option.
+
+	type_dictionaries = { <integer> : [ <function>, ... ], ... }
+
+	    Sometimes your parser can identify words that belong to
+	    specific languages, or other word categories, for which
+	    you have special stemming dictionaries.  In this case,
+	    have the parser mark those words with a particular integer
+	    token type, and then list the applicable dictionaries here
+	    under that type; dictionaries listed here for a type are
+	    used instead of the normal list of dictionaries.
+
+	stopper = <function>
+
+	    This function should accept a lexeme and return true if it
+	    is a stop word, or return false otherwise.  Stop words are
+	    discarded and not indexed.  By default the system uses the
+	    fts.PorterEnglish.is_stoplexeme function.
+
+	All of these options are saved in the database so that you
+	will not have to specify them all over again when you run your
+	application the next time; instead you will just run the
+	following function.
+
+    load_index(db [, prefix=<string> ])
+
+        Retrieves an index for use that has been previously created in
+        the database by the create_index(...) function.  The database
+        should be provided as an open Pygresql connection.  The prefix
+        must be specified if you created the index with anything other
+        than the default prefix value of `fts'.
+
+    Both create_index(...) and load_index(...) return an ftsIndex
+    object which you will probably want to assign to a variable for
+    further use, like so:
+
+        index = load_index(db)
+
+    Each ftsIndex object supports the basic interface for Python
+    dictionaries but indexes documents instead of storing them.  After
+    the above assignment, the `index' object would support:
+
+    index[key] = body
+    index[key] = (title, body)
+
+        This indexes a document whose content is provided as a string;
+        if a title string is also provided, its text will be weighted
+        more heavily when ranking search results.  The key is used to
+        identify the document in the other operations listed below,
+        and can be an arbitrary text string.  The example/ routines
+        use it to store the path of the document file.
+
+    del index[key]
+
+        Removes the document from the index which was inserted under
+        the given key.
+
+    index.search(query)
+
+        Returns a list of (key, relevance) pairs, one for each
+        document that matches the query, sorted in decreasing order of
+        relevance.  The keys are the ones you provided when indexing
+        the documents, and each relevance measure is a floating-point
+        number.  The query should be a whitespace-separated list of
+        words that you want each of the returned documents to contain.
+
+    index.headline(query, document, [ limit=None, ] [ ignore_types=[16] ] )
+
+        Returns quotes from the document that contain the search terms
+        from the query, with the search terms highlighted with `<b>'
+        and `</b>' delimeters.  The document content should be given
+        as a text string.  The limit should be an integer specifying
+        how many tokens the parser should read, to ignore the rest of
+        very large files, while ignore_types lists token types to
+        ignore when building the headline.
+
+    Other dictionary operations act normally as though the ftsIndex
+    were a normal Python dictionary:
+
+    len(index)
+
+        Returns how many documents are in the index.
+
+    index.keys()
+
+        Returns a list of the keys of all documents currently in the
+        index.
+
+    key in index
+
+        Returns true if a document with the given key is in the index,
+        and returns false otherwise.
+
+TO DO
+
+    - Add Python docstrings to each Python module, class, and method.
+    - Add a snowball parser interface.
+    - Allow the user to specify the ranking function.
+    - Make the headline code more sophisticated, like the Perl version.
+    - Improve example/load.py so that it deletes the indexes for files
+      that have been removed.
+
+DIFFERENCES WITH PERL INTERFACE
+
+    - Currently lacks snowball parser module.
+    - Creates a single lexeme position table rather than several.
+    - Creates its own tables rather than making you create them.
+
+LICENSING
+
+    This collection of Python modules is free software; you can
+    redistribute them and/or modify them under the terms of the GNU
+    General Public License as published by the Free Software
+    Foundation; either version 2 of the License, or (at your option)
+    any later version.
+
+    They are distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+    02111-1307 USA

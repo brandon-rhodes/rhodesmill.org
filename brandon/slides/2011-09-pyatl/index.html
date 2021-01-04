@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
+<title></title>
+<link rel="stylesheet" href="/css/slides.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="data-structures-data-bases">
+<h1>Data Structures, Data-Bases</h1>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line">──────────────────</div>
+<div class="line"><tt class="docutils literal">PyAtl</tt></div>
+<div class="line">2011 September 8</div>
+<div class="line">Brandon Craig Rhodes</div>
+<div class="line">──────────────────</div>
+</div>
+</div>
+<div class="section" id="id1">
+<h1><em>!</em></h1>
+<div class="line-block">
+<div class="line">To clearly <em>see</em> your data</div>
+<div class="line">is as important as writing</div>
+<div class="line">beautiful code <em>about</em> your data</div>
+</div>
+</div>
+<div class="section" id="slide">
+
+<img alt="feynman.jpg" src="feynman.jpg" />
+</div>
+<div class="section" id="feynman">
+<h1>Feynman</h1>
+</div>
+<div class="section" id="id2">
+
+<object data="Feynmann_Diagram_Gluon_Radiation.svg" style="width: 300px; height: 200px;" type="image/svg+xml">
+Feynmann_Diagram_Gluon_Radiation.svg</object>
+</div>
+<div class="section" id="feynman-diagram">
+<h1>Feynman diagram</h1>
+</div>
+<div class="section" id="id3">
+
+<div class="line-block">
+<div class="line"><em>The Nobel Prize in Physics 1965</em></div>
+<div class="line"><em>was awarded jointly</em></div>
+</div>
+<div class="line-block">
+<div class="line">Sin-Itiro Tomonaga</div>
+<div class="line">Julian Schwinger</div>
+<div class="line">Richard P. Feynman</div>
+</div>
+<div class="line-block">
+<div class="line"><em>“for their fundamental work</em></div>
+<div class="line"><em>in quantum electrodynamics (QED),</em></div>
+</div>
+<div class="line-block">
+<div class="line"><em>with deep-ploughing consequences for the</em></div>
+<div class="line"><em>physics of elementary particles.”</em></div>
+</div>
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line">All three scientists</div>
+<div class="line">had the same <em>idea</em></div>
+<div class="line">the same <em>math</em></div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<div class="line-block">
+<div class="line">But physics students still use</div>
+<div class="line"><strong>Feynman diagrams</strong></div>
+</div>
+</div>
+<div class="section" id="why">
+<h1>Why?</h1>
+<div class="line-block">
+<div class="line">Because <em>visualization</em> is a</div>
+<div class="line">key component of <em>thinking</em></div>
+</div>
+</div>
+<div class="section" id="id6">
+
+<div class="line-block">
+<div class="line">See the recent book</div>
+<div class="line"><em>Creating Scientific Concepts</em></div>
+<div class="line">by Nancy Nersessian</div>
+</div>
+</div>
+<div class="section" id="id7">
+
+<img alt="maxwell-light.jpg" src="maxwell-light.jpg" />
+</div>
+<div class="section" id="nersessian">
+<h1>Nersessian:</h1>
+<div class="line-block">
+<div class="line">To produce <em>abstract</em> differential equations</div>
+<div class="line">Maxwell had to use <em>visual</em> physical analogies</div>
+</div>
+</div>
+<div class="section" id="computer-programming">
+<h1>Computer Programming</h1>
+</div>
+<div class="section" id="fred-brooks-the-mythical-man-month">
+<h1>Fred Brooks: <em>The Mythical Man-Month</em></h1>
+<div class="line-block">
+<div class="line">Famous 1975 book about software projects</div>
+</div>
+</div>
+<div class="section" id="id8">
+
+<img alt="mythical-cover.jpg" src="mythical-cover.jpg" style="height: 500px;" />
+</div>
+<div class="section" id="id9">
+<h1>Fred Brooks: <em>The Mythical Man-Month</em></h1>
+<div class="line-block">
+<div class="line"><em>“The bearing of a child takes nine months,</em></div>
+<div class="line"><em>no matter how many women are assigned.”</em></div>
+</div>
+</div>
+<div class="section" id="id10">
+<h1>Fred Brooks: <em>The Mythical Man-Month</em></h1>
+<div class="line-block">
+<div class="line">“<em>Show</em> me your flowchart</div>
+<div class="line">and <em>conceal</em> your tables,</div>
+<div class="line">and I shall continue to be mystified.</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Show</em> me your tables,</div>
+<div class="line">and I won't usually <em>need</em> your flowchart;</div>
+<div class="line">it'll be obvious.”</div>
+</div>
+<div class="line-block">
+<div class="line"><em>(1975)</em></div>
+</div>
+</div>
+<div class="section" id="idea">
+<h1>Idea</h1>
+<div class="line-block">
+<div class="line"><em>Data structures</em> drive <em>code</em></div>
+</div>
+</div>
+<div class="section" id="a-test">
+<h1>A test</h1>
+<div class="line-block">
+<div class="line">Take 3 seconds to look at each</div>
+<div class="line">of the following slides</div>
+</div>
+</div>
+<div class="section" id="code">
+<h1>1. Code</h1>
+<p>Ready?</p>
+</div>
+<div class="section" id="id11">
+
+<div class="highlight"><pre><span></span><span class="n">departments</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">employee</span> <span class="ow">in</span> <span class="n">get_employees</span><span class="p">():</span>
+    <span class="n">dept</span> <span class="o">=</span> <span class="n">employee</span><span class="o">.</span><span class="n">department</span><span class="o">.</span><span class="n">abbreviation</span>
+    <span class="n">departments</span><span class="p">[</span><span class="n">dept</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">employee</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="data">
+<h1>2. Data</h1>
+</div>
+<div class="section" id="id12">
+
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;hr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">employee</span> <span class="n">Jamie</span> <span class="n">Vasta</span><span class="o">&gt;</span><span class="p">,</span>
+        <span class="o">&lt;</span><span class="n">employee</span> <span class="n">Clare</span> <span class="n">Lurie</span><span class="o">&gt;</span><span class="p">],</span>
+ <span class="s1">&#39;ops&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">employee</span> <span class="n">Harriett</span> <span class="n">Sutherlin</span><span class="o">&gt;</span><span class="p">,</span>
+         <span class="o">&lt;</span><span class="n">employee</span> <span class="n">Louisa</span> <span class="n">Savell</span><span class="o">&gt;</span><span class="p">],</span>
+ <span class="s1">&#39;research&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">employee</span> <span class="n">Clinton</span> <span class="n">Hobbler</span><span class="o">&gt;</span><span class="p">,</span>
+              <span class="o">&lt;</span><span class="n">employee</span> <span class="n">Max</span> <span class="n">Grosse</span><span class="o">&gt;</span><span class="p">,</span>
+              <span class="o">&lt;</span><span class="n">employee</span> <span class="n">Tia</span> <span class="n">Limones</span><span class="o">&gt;</span><span class="p">]}</span>
+</pre></div>
+
+</div>
+<div class="section" id="claim">
+<h1>Claim:</h1>
+<div class="line-block">
+<div class="line">A data structure and the code</div>
+<div class="line">that produces it are <em>isomorphic</em></div>
+</div>
+<div class="line-block">
+<div class="line">BUT</div>
+</div>
+<div class="line-block">
+<div class="line">Seeing the data structure</div>
+<div class="line">imposes a <em>lower</em> cognitive overhead</div>
+</div>
+</div>
+<div class="section" id="if-brooks-is-right">
+<h1>If Brooks is right</h1>
+<div class="line-block">
+<div class="line">then Python possesses <em>advantages</em></div>
+<div class="line">that I had never noticed before</div>
+</div>
+</div>
+<div class="section" id="id13">
+
+<div class="line-block">
+<div class="line">Python is well-known for making</div>
+<div class="line"><em>code</em> clean, elegant, beautiful</div>
+</div>
+</div>
+<div class="section" id="id14">
+
+<div class="line-block">
+<div class="line">But if Brooks is right</div>
+<div class="line">then we ought also pay attention</div>
+<div class="line">to how Python makes <em>data</em> beautiful</div>
+</div>
+</div>
+<div class="section" id="id15">
+
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;hr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">employee</span> <span class="n">Jamie</span> <span class="n">Vasta</span><span class="o">&gt;</span><span class="p">,</span>
+        <span class="o">&lt;</span><span class="n">employee</span> <span class="n">Clare</span> <span class="n">Lurie</span><span class="o">&gt;</span><span class="p">],</span>
+ <span class="s1">&#39;ops&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">employee</span> <span class="n">Harriett</span> <span class="n">Sutherlin</span><span class="o">&gt;</span><span class="p">,</span>
+         <span class="o">&lt;</span><span class="n">employee</span> <span class="n">Louisa</span> <span class="n">Savell</span><span class="o">&gt;</span><span class="p">],</span>
+ <span class="s1">&#39;research&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">employee</span> <span class="n">Clinton</span> <span class="n">Hobbler</span><span class="o">&gt;</span><span class="p">,</span>
+              <span class="o">&lt;</span><span class="n">employee</span> <span class="n">Max</span> <span class="n">Grosse</span><span class="o">&gt;</span><span class="p">,</span>
+              <span class="o">&lt;</span><span class="n">employee</span> <span class="n">Tia</span> <span class="n">Limones</span><span class="o">&gt;</span><span class="p">]}</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><strong>Q:</strong> Why can we Python programmers</div>
+<div class="line">immediately read and understand</div>
+<div class="line">this expression?</div>
+</div>
+</div>
+<div class="section" id="a">
+<h1>A:</h1>
+<div class="line-block">
+<div class="line">Because unlike several popular languages,</div>
+<div class="line">Python offers <em>standard representations</em></div>
+<div class="line">of its most basic data structures</div>
+</div>
+</div>
+<div class="section" id="building-a-dictionary">
+<h1>Building a dictionary</h1>
+</div>
+<div class="section" id="id16">
+
+<div class="line-block">
+<div class="line">1.</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">teams</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Highlanders&#39;</span><span class="p">:</span> <span class="s1">&#39;New York&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;Senators&#39;</span><span class="p">:</span> <span class="s1">&#39;Washington&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;Browns&#39;</span><span class="p">:</span> <span class="s1">&#39;St. Louis&#39;</span><span class="p">}</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">2.</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">teams</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">teams</span><span class="p">[</span><span class="s1">&#39;Highlanders&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;New York&#39;</span>
+<span class="n">teams</span><span class="p">[</span><span class="s1">&#39;Senators&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Washington&#39;</span>
+<span class="n">teams</span><span class="p">[</span><span class="s1">&#39;Browns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;St. Louis&#39;</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">3.</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">teams</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">Highlanders</span><span class="o">=</span><span class="s1">&#39;New York&#39;</span><span class="p">,</span> <span class="n">Senators</span><span class="o">=</span><span class="s1">&#39;Washington&#39;</span><span class="p">,</span>
+             <span class="n">Browns</span><span class="o">=</span><span class="s1">&#39;St. Louis&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id17">
+
+<div class="highlight"><pre><span></span><span class="n">teams</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Highlanders&#39;</span><span class="p">:</span> <span class="s1">&#39;New York&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;Senators&#39;</span><span class="p">:</span> <span class="s1">&#39;Washington&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;Browns&#39;</span><span class="p">:</span> <span class="s1">&#39;St. Louis&#39;</span><span class="p">}</span>
+</pre></div>
+
+<p><strong>This is kind of weird</strong></p>
+<ul class="simple">
+<li>Not strictly necessary</li>
+<li>Can only be used at creation time</li>
+<li>Looks nothing like the dict's use</li>
+</ul>
+</div>
+<div class="section" id="but">
+<h1>But</h1>
+</div>
+<div class="section" id="id18">
+
+<div class="line-block">
+<div class="line">It gives <em>all</em> Python</div>
+<div class="line">programmers a <em>common</em> picture</div>
+<div class="line">of the dictionary data structure</div>
+</div>
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line">We all have the <em>same</em> picture</div>
+<div class="line">in our heads when we talk about</div>
+<div class="line">dicts, lists, tuples, and sets</div>
+</div>
+</div>
+<div class="section" id="if-fred-brooks-is-right">
+<h1>If Fred Brooks is right…</h1>
+<div class="line-block">
+<div class="line"><em>Show</em> me your [data structures],</div>
+<div class="line">and I won't usually <em>need</em> your [code];</div>
+<div class="line">it'll be obvious.”</div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="line-block">
+<div class="line">…then Python's clear syntax</div>
+<div class="line">is also important because it lets</div>
+<div class="line">you draw <em>pretty pictures</em> of your</div>
+<div class="line">data structures in your program!</div>
+</div>
+</div>
+<div class="section" id="id21">
+
+<div class="line-block">
+<div class="line">Your Python programs are</div>
+<div class="line">a <em>mix</em> of sequential <em>procedures</em></div>
+<div class="line">and of data structure <em>declarations</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">teams</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Highlanders&#39;</span><span class="p">:</span> <span class="s1">&#39;New York&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;Senators&#39;</span><span class="p">:</span> <span class="s1">&#39;Washington&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;Browns&#39;</span><span class="p">:</span> <span class="s1">&#39;St. Louis&#39;</span><span class="p">}</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Fred Brooks would claim that the</div>
+<div class="line">declarations are at least as important!</div>
+</div>
+</div>
+<div class="section" id="now-think-about-databases">
+<h1>Now, think about databases</h1>
+</div>
+<div class="section" id="id22">
+
+<div class="line-block">
+<div class="line">If Fred Brooks is right,</div>
+<div class="line">the ability to <em>see</em> your data</div>
+<div class="line">accelerates your ability</div>
+<div class="line">to write <em>code</em></div>
+</div>
+</div>
+<div class="section" id="nosql">
+<h1>NoSQL</h1>
+<div class="line-block">
+<div class="line">The new generation of NoSQL databases,</div>
+<div class="line">instead of offering a mere API, offer you</div>
+<div class="line">a <em>picture</em> of how your data looks</div>
+</div>
+</div>
+<div class="section" id="mongodb">
+<h1>MongoDB</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">plants</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Huperzia appressa&quot;</span><span class="p">})</span>
+<span class="p">{</span><span class="s2">&quot;_id&quot;</span> <span class="p">:</span> <span class="s2">&quot;Huperzia appressa&quot;</span><span class="p">,</span>
+ <span class="s2">&quot;common_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;mountain firmoss&quot;</span><span class="p">],</span>
+ <span class="s2">&quot;habitat&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="s2">&quot;alpine&quot;</span><span class="p">,</span> <span class="s2">&quot;cliffs&quot;</span><span class="p">,</span> <span class="s2">&quot;mountains&quot;</span><span class="p">],</span>
+ <span class="s2">&quot;family&quot;</span> <span class="p">:</span> <span class="s2">&quot;Huperziaceae&quot;</span><span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="q">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">How often do you <em>go behind</em></div>
+<div class="line">your application to look at</div>
+<div class="line">your actual database?</div>
+</div>
+</div>
+<div class="section" id="id23">
+<h1>A:</h1>
+<div class="line-block">
+<div class="line">If your answer is “never” because</div>
+<div class="line">your database is behind an ORM, then:</div>
+</div>
+<ul class="simple">
+<li>Debugging can be more difficult</li>
+<li>Bulk operations can become impossible</li>
+<li>You might lack as clear a <em>picture</em></li>
+</ul>
+</div>
+<div class="section" id="id24">
+<h1>If Fred Brooks is right</h1>
+<div class="line-block">
+<div class="line">Then a direct view into your database,</div>
+<div class="line">and comfort in directly manipulating it,</div>
+<div class="line">offers <em>conceptual</em> power</div>
+</div>
+</div>
+<div class="section" id="sql">
+<h1>SQL</h1>
+<ul class="simple">
+<li>Very powerful</li>
+<li>But very complex</li>
+<li>Does that keep you away?</li>
+</ul>
+<div class="line-block">
+<div class="line">Find a database simple enough</div>
+<div class="line">and a good enough fit for you</div>
+<div class="line">that you are not afraid to USE it</div>
+</div>
+</div>
+<div class="section" id="orms">
+<h1>ORMs</h1>
+<div class="line-block">
+<div class="line">Too often, an ORM is a symptom</div>
+<div class="line">of the fact that you have chosen</div>
+<div class="line">too complex a database for your</div>
+<div class="line">own capabilities</div>
+</div>
+</div>
+<div class="section" id="seek-out">
+<h1>Seek out…</h1>
+<div class="line-block">
+<div class="line">…a database that makes <em>you</em> happy</div>
+<div class="line">to look inside and manipulate</div>
+<div class="line">records directly!</div>
+</div>
+</div>
+<div class="section" id="thank-you">
+<h1>Thank you!</h1>
+<div class="line-block">
+<div class="line">(To get the Maxwell T-shirt:</div>
+<div class="line">cafepress.com)</div>
+</div>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides.js"></script>
+<style type="text/css">
+  pre { background: none; box-shadow: none; font-size: 22px; }
+</style></div>
+</div>
+</body>
+</html>

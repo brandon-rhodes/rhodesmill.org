@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osculating Orbital Elements</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="osculating-orbital-elements">
+<h1>Osculating Orbital Elements<a class="headerlink" href="#osculating-orbital-elements" title="Permalink to this headline">¶</a></h1>
+<p>Skyfield is able to calculate osculating orbital elements for any
+Geometric, Barycentric, or Geocentric position with respect to either
+the ecliptic or equatorial plane. The data produced by Skyfield matches
+the data produced by JPL’s HORIZONS system.</p>
+<div class="section" id="generating-elements">
+<h2>Generating Elements<a class="headerlink" href="#generating-elements" title="Permalink to this headline">¶</a></h2>
+<p>Call <a class="reference internal" href="api-elements.html#skyfield.elementslib.osculating_elements_of" title="skyfield.elementslib.osculating_elements_of"><code class="xref py py-func docutils literal notranslate"><span class="pre">osculating_elements_of()</span></code></a> to generate
+an <a class="reference internal" href="api-elements.html#skyfield.elementslib.OsculatingElements" title="skyfield.elementslib.OsculatingElements"><code class="xref py py-class docutils literal notranslate"><span class="pre">OsculatingElements</span></code></a> object.  For
+example, here is how to find the osculating elements of the moon
+orbiting earth:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">skyfield.elementslib</span> <span class="kn">import</span> <span class="n">osculating_elements_of</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">))</span>
+
+<span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">earth</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
+<span class="n">moon</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;moon&#39;</span><span class="p">]</span>
+
+<span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">moon</span> <span class="o">-</span> <span class="n">earth</span><span class="p">)</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">elements</span> <span class="o">=</span> <span class="n">osculating_elements_of</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The elements are then attributes of the Elements object:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="n">elements</span><span class="o">.</span><span class="n">inclination</span><span class="o">.</span><span class="n">degrees</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">elements</span><span class="o">.</span><span class="n">eccentricity</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">elements</span><span class="o">.</span><span class="n">semi_major_axis</span><span class="o">.</span><span class="n">km</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="attributes-of-osculatingelements-objects">
+<h2>Attributes of OsculatingElements objects<a class="headerlink" href="#attributes-of-osculatingelements-objects" title="Permalink to this headline">¶</a></h2>
+<p>Here is a list of the attributes of the Elements object and their types:</p>
+<pre class="literal-block">
+<strong>OsculatingElements object</strong>
+ │   <strong>Element describing the shape of the orbit:</strong>
+ ├── eccentricity                → <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html">numpy.ndarray</a>
+ │
+ │   <strong>Element describing the tilt of the orbital plane:</strong>
+ ├── inclination                 → <a class="reference external" href="api-units.html">Angle object</a>
+ │
+ │   <strong>Element describing the direction in which the orbital plane is tilted:</strong>
+ ├── longitude_of_ascending_node → <a class="reference external" href="api-units.html">Angle object</a>
+ │
+ │   <strong>Elements describing direction of periapsis:</strong>
+ ├── argument_of_periapsis       → <a class="reference external" href="api-units.html">Angle object</a>
+ ├── longitude_of_periapsis      → <a class="reference external" href="api-units.html">Angle object</a>
+ ├── periapsis_time              → <a class="reference external" href="api.html#time-objects">Time object</a>
+ │
+ │   <strong>Elements describing the size of the orbit:</strong>
+ ├── apoapsis_distance           → <a class="reference external" href="api-units.html">Distance object</a>
+ ├── mean_motion_per_day         → <a class="reference external" href="api-units.html">Angle object</a>
+ ├── periapsis_distance          → <a class="reference external" href="api-units.html">Distance object</a>
+ ├── period_in_days              → <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html">numpy.ndarray</a>
+ ├── semi_latus_rectum           → <a class="reference external" href="api-units.html">Distance object</a>
+ ├── semi_major_axis             → <a class="reference external" href="api-units.html">Distance object</a>
+ ├── semi_minor_axis             → <a class="reference external" href="api-units.html">Distance object</a>
+ │
+ │   <strong>Elements describing the secondary's position in the orbit:</strong>
+ ├── argument_of_latitude        → <a class="reference external" href="api-units.html">Angle object</a>
+ ├── eccentric_anomaly           → <a class="reference external" href="api-units.html">Angle object</a>
+ ├── mean_anomaly                → <a class="reference external" href="api-units.html">Angle object</a>
+ ├── mean_longitude              → <a class="reference external" href="api-units.html">Angle object</a>
+ ├── true_anomaly                → <a class="reference external" href="api-units.html">Angle object</a>
+ ├── true_longitude              → <a class="reference external" href="api-units.html">Angle object</a>
+ ├── (the secondary's position can be implicit in periapsis_time
+ │        because at periapsis all anomalies are 0)
+ │
+ │   <strong>Other attributes:</strong>
+ └── time                        → <a class="reference external" href="api.html#time-objects">Time object</a>
+</pre>
+<p>To fully define an object’s location and orbit, one element is required from each of the above categories.</p>
+</div>
+<div class="section" id="reference-planes">
+<h2>Reference Planes<a class="headerlink" href="#reference-planes" title="Permalink to this headline">¶</a></h2>
+<p>By default the <code class="docutils literal notranslate"><span class="pre">elements()</span></code> method produces elements using the <em>xy</em>
+plane of the ICRF as the reference plane.  This is equivalent to the
+J2000.0 equatorial plane within the tolerance of J2000.0.  If you
+instead want elements using the J2000.0 ecliptic as the reference plane,
+pass it as the second argument:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.data.spice</span> <span class="kn">import</span> <span class="n">inertial_frames</span>
+<span class="n">ecliptic</span> <span class="o">=</span> <span class="n">inertial_frames</span><span class="p">[</span><span class="s1">&#39;ECLIPJ2000&#39;</span><span class="p">]</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">25</span><span class="p">))</span>
+<span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">moon</span> <span class="o">-</span> <span class="n">earth</span><span class="p">)</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">elements</span> <span class="o">=</span> <span class="n">osculating_elements_of</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">ecliptic</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+
+  </body>
+</html>

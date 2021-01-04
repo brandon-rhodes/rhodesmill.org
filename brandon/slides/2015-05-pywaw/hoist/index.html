@@ -1,0 +1,890 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>&lt;stdin&gt;</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="slide">
+
+<style>
+  .section {position: relative;}
+  .reading-mode .note {font-style: italic;}
+  .reading-mode .admonition-title {display: none;}
+  .presentation-mode .note {position: absolute; left: 101%; top: 0;}
+  .presentation-mode .note {color: white; top: 250px; font-size: 0.5em;
+    width: 300px}
+  .small {font-size: 0.75em;}
+  .strike {text-decoration: line-through;}
+</style>
+
+<style>
+  em {font-size: 1.04em;}
+</style><!-- Goal - 30 minutes * 2 or 3 slides = 60 or 90 slides -->
+<div class="line-block">
+<div class="line"><strong>Hoisting Your I/O</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">&#64;brandon_rhodes</div>
+<div class="line"><em>PyWaw Summit 2015</em></div>
+<div class="line"><em>Warszawa</em></div>
+</div>
+</div>
+<div class="section" id="id1">
+
+<div class="line-block">
+<div class="line">We run software</div>
+<div class="line">for the sake of</div>
+<div class="line">its <strong>side effects</strong></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All else in RAM is lost —
+if your code produces NO side-effects,
+it will generate only heat — only Brownian motion!</p>
+</div>
+</div>
+<div class="section" id="id2">
+
+<div class="line-block">
+<div class="line">Yet we routinely</div>
+<div class="line"><em>criticize</em> sub-routines</div>
+<div class="line">for having <strong>side effects</strong></div>
+</div>
+</div>
+<div class="section" id="id3">
+
+<p><strong>Q:</strong> What does this code do?</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_hosts_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">host</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_hosts_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">host</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+</pre></div>
+
+<p><strong>A:</strong> It returns <tt class="docutils literal">None</tt></p>
+</div>
+<div class="section" id="id5">
+
+<div class="highlight"><pre><span></span><span class="c1"># Servers</span>
+
+<span class="n">www1</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+<span class="n">www2</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+<span class="n">mq</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+
+<span class="c1"># Admin machines</span>
+
+<span class="n">merry</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+<span class="n">pippin</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+</pre></div>
+
+</div>
+<div class="section" id="id6">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_hosts_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                    <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id7">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_hosts_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id8">
+
+<div class="highlight"><pre><span></span><span class="n">parse_hosts_file</span><span class="p">(</span><span class="s1">&#39;good_hosts.txt&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="new-requirement">
+<h1>New requirement</h1>
+<div class="line-block">
+<div class="line">We now need to POST</div>
+<div class="line">each hostname to an API</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;allow&#39;</span><span class="p">:</span> <span class="n">host</span><span class="p">})</span>
+</pre></div>
+
+</div>
+<div class="section" id="q">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">How can our code support</div>
+<div class="line">both <tt class="docutils literal">print()</tt> and <tt class="docutils literal">post()</tt>?</div>
+</div>
+</div>
+<div class="section" id="id9">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_hosts_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</pre></div>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The hostnames still need to be printed
+when called from the original location —
+but now the text needs to be POSTed
+to an API as well.</p>
+</div>
+</div>
+<div class="section" id="id10">
+
+<p><strong>Q:</strong> How will we change our code?</p>
+<div class="line-block">
+<div class="line"><strong>A:</strong> Well — do we <em>need</em> to?</div>
+<div class="line">This is Python!</div>
+<div class="line">It’s dynamic!</div>
+</div>
+</div>
+<div class="section" id="id11">
+
+<p><em>One solution</em></p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mock</span> <span class="kn">import</span> <span class="n">patch</span>
+
+<span class="n">hosts</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;builtins.print&#39;</span><span class="p">,</span> <span class="n">hosts</span><span class="o">.</span><span class="n">append</span><span class="p">):</span>
+    <span class="n">parse_hosts_file</span><span class="p">(</span><span class="s1">&#39;good_hosts.txt&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">hosts</span><span class="p">:</span>
+    <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;allow&#39;</span><span class="p">:</span> <span class="n">host</span><span class="p">})</span>
+</pre></div>
+
+</div>
+<div class="section" id="id12">
+
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+
+<span class="n">sio</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;sys.stdout&#39;</span><span class="p">,</span> <span class="n">sio</span><span class="p">):</span>
+    <span class="n">parse_hosts_file</span><span class="p">(</span><span class="s1">&#39;hosts.txt&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">sio</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+   <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;allow&#39;</span><span class="p">:</span> <span class="n">host</span><span class="p">})</span>
+</pre></div>
+
+<p><em>Another solution</em></p>
+</div>
+<div class="section" id="id13">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">Would you use</div>
+<div class="line"><tt class="docutils literal">mock.patch()</tt> to support</div>
+<div class="line">code re-use in production?</div>
+</div>
+</div>
+<div class="section" id="a">
+<h1>A:</h1>
+<div class="line-block">
+<div class="line"><strong>No!</strong></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id14">
+<h1>A:</h1>
+<div class="line-block">
+<div class="line"><strong>No!</strong></div>
+<div class="line">You would make the</div>
+<div class="line">code more general</div>
+</div>
+</div>
+<div class="section" id="id15">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">If you consider <tt class="docutils literal">patch()</tt> an</div>
+<div class="line">anti-pattern in production code—</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id16">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">If you consider <tt class="docutils literal">patch()</tt> an</div>
+<div class="line">anti-pattern in production code—</div>
+</div>
+<div class="line-block">
+<div class="line">—<em>why are you doing</em></div>
+<div class="line"><em>it in your tests?</em></div>
+</div>
+</div>
+<div class="section" id="id17">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">If you consider <tt class="docutils literal">patch()</tt> an</div>
+<div class="line">anti-pattern in production code—</div>
+</div>
+<div class="line-block">
+<div class="line">—<em>can you hold your unit tests</em></div>
+<div class="line"><em>to the same high standard?</em></div>
+</div>
+</div>
+<div class="section" id="id18">
+
+<div class="line-block">
+<div class="line">How you <em>really</em> solve</div>
+<div class="line">the problem of needing</div>
+<div class="line">not only <tt class="docutils literal">print()</tt> but <tt class="docutils literal">post()</tt>?</div>
+</div>
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line"><em>n</em>=1 → <em>n</em>=2</div>
+<div class="line">or</div>
+<div class="line"><em>n</em>=1 → any <em>n</em></div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="highlight"><pre><span></span><span class="n">total_shares</span> <span class="o">+=</span> <span class="n">s</span>
+</pre></div>
+
+</div>
+<div class="section" id="id21">
+
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">symbol</span> <span class="o">==</span> <span class="s1">&#39;IBM&#39;</span><span class="p">:</span>
+    <span class="n">ibm_shares</span> <span class="o">+=</span> <span class="n">s</span>
+<span class="k">elif</span> <span class="n">symbol</span> <span class="o">==</span> <span class="s1">&#39;APPL&#39;</span><span class="p">:</span>
+    <span class="n">apple_shares</span> <span class="o">+=</span> <span class="n">s</span>
+</pre></div>
+
+</div>
+<div class="section" id="id22">
+
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">symbol</span> <span class="o">==</span> <span class="s1">&#39;IBM&#39;</span><span class="p">:</span>
+    <span class="n">ibm_shares</span> <span class="o">+=</span> <span class="n">s</span>
+<span class="k">elif</span> <span class="n">symbol</span> <span class="o">==</span> <span class="s1">&#39;APPL&#39;</span><span class="p">:</span>
+    <span class="n">apple_shares</span> <span class="o">+=</span> <span class="n">s</span>
+<span class="k">elif</span> <span class="n">symbol</span> <span class="o">==</span> <span class="s1">&#39;GOOG&#39;</span><span class="p">:</span>
+    <span class="n">google_shares</span> <span class="o">+=</span> <span class="n">s</span>
+<span class="k">elif</span> <span class="n">symbol</span> <span class="o">==</span> <span class="s1">&#39;FB&#39;</span><span class="p">:</span>
+    <span class="n">facebook_shares</span> <span class="o">+=</span> <span class="n">s</span>
+</pre></div>
+
+</div>
+<div class="section" id="id23">
+
+<div class="line-block">
+<div class="line"><em>n</em>=1 → <em>n</em>=2 → <em>n</em>=3 → <em>n</em>=4</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id24">
+
+<div class="line-block">
+<div class="line"><em>n</em>=1 → <em>n</em>=2 → <em>n</em>=3 → <em>n</em>=4</div>
+<div class="line">Only winning move is <strong>not to play</strong></div>
+</div>
+</div>
+<div class="section" id="id25">
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><em>n</em>=1 → any <em>n</em></div>
+</div>
+</div>
+<div class="section" id="id26">
+
+<p>any <em>n</em></p>
+<div class="highlight"><pre><span></span><span class="n">shares</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="o">...</span><span class="p">:</span>
+    <span class="n">shares</span><span class="p">[</span><span class="n">symbol</span><span class="p">]</span> <span class="o">=</span> <span class="n">shares</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">n</span>
+</pre></div>
+
+</div>
+<div class="section" id="id27">
+
+<div class="line-block">
+<div class="line">For <tt class="docutils literal">parse_hosts_file()</tt>,</div>
+<div class="line">what do <em>n</em>=2 and “any <em>n</em>” look like?</div>
+</div>
+</div>
+<div class="section" id="id28">
+
+<p><em>n</em>=2</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_hosts_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="o">...</span>
+        <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;allow&#39;</span><span class="p">:</span> <span class="n">host</span><span class="p">}</span>
+            <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id29">
+
+<p><strong>Several</strong> “any <em>n</em>” solutions</p>
+</div>
+<div class="section" id="id30">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_hosts_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">hosts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">hosts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">hosts</span>
+</pre></div>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">But if there are billions of hosts,
+this can exhaust RAM, and offers high latency.</p>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_hosts_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">use_host</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">use_host</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id32">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_hosts_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">yield</span> <span class="n">line</span>
+</pre></div>
+
+</div>
+<div class="section" id="id33">
+
+<p>Top-level glue code</p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">parse_hosts_file</span><span class="p">(</span><span class="s1">&#39;hosts.txt&#39;</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+
+<span class="c1"># or</span>
+
+<span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">parse_hosts_file</span><span class="p">(</span><span class="s1">&#39;hosts.txt&#39;</span><span class="p">):</span>
+    <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;allow&#39;</span><span class="p">:</span> <span class="n">host</span><span class="p">})</span>
+</pre></div>
+
+</div>
+<div class="section" id="id34">
+
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">parse_hosts_file</span><span class="p">(</span><span class="s1">&#39;hosts.txt&#39;</span><span class="p">):</span>
+    <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;allow&#39;</span><span class="p">:</span> <span class="n">host</span><span class="p">})</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">We have <em>Hoisted</em> our I/O = “Input/Output”</div>
+<div class="line">code up to the program’s top level</div>
+</div>
+</div>
+<div class="section" id="coupled-i-o">
+<h1>Coupled I/O</h1>
+<div class="highlight"><pre><span></span><span class="n">top</span> <span class="err">────────┐</span>           <span class="err">┌─────────</span>
+            <span class="err">│</span>           <span class="err">│</span>
+            <span class="err">│↓</span> <span class="n">call</span>     <span class="err">│↑</span> <span class="k">return</span>
+            <span class="err">│</span>           <span class="err">│</span>
+<span class="n">subroutine</span>  <span class="err">└──</span><span class="k">print</span><span class="p">()</span><span class="err">──┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="hoisted-i-o">
+<h1>Hoisted I/O</h1>
+<div class="highlight"><pre><span></span><span class="n">top</span> <span class="err">────────┐</span>       <span class="err">┌──</span><span class="k">print</span><span class="p">()</span><span class="err">──</span>
+            <span class="err">│</span>       <span class="err">│</span>
+            <span class="err">│</span>       <span class="err">│</span>    <span class="err">↑</span>
+            <span class="err">│</span>       <span class="err">│</span>
+<span class="n">subroutine</span>  <span class="err">└───────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id35">
+<h1>Hoisted I/O</h1>
+<div class="highlight"><pre><span></span><span class="n">top</span> <span class="err">────────┐</span>       <span class="err">┌──</span><span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="err">…</span><span class="p">)</span><span class="err">──</span>
+            <span class="err">│</span>       <span class="err">│</span>
+            <span class="err">│</span>       <span class="err">│</span>
+            <span class="err">│</span>       <span class="err">│</span>
+<span class="n">subroutine</span>  <span class="err">└───────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="note">
+<h1>Note</h1>
+<div class="line-block">
+<div class="line">The <tt class="docutils literal">parse_hosts_file()</tt> routine</div>
+<div class="line">is <em>still</em> tightly coupled to I/O!</div>
+</div>
+</div>
+<div class="section" id="id36">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_hosts_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">yield</span> <span class="n">line</span>
+</pre></div>
+
+</div>
+<div class="section" id="pattern">
+<h1>pattern</h1>
+<div class="line-block">
+<div class="line">If you see a <tt class="docutils literal">filename</tt></div>
+<div class="line">try passing a <em>file</em> instead</div>
+</div>
+</div>
+<div class="section" id="id37">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_hosts_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">yield</span> <span class="n">line</span>
+</pre></div>
+
+</div>
+<div class="section" id="id38">
+
+<div class="highlight"><pre><span></span><span class="c1"># Simpler: let caller do the open()</span>
+
+<span class="k">def</span> <span class="nf">parse_hosts_file</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">yield</span> <span class="n">line</span>
+</pre></div>
+
+</div>
+<div class="section" id="id39">
+
+<div class="highlight"><pre><span></span><span class="c1"># But, wait - it is no longer</span>
+<span class="c1"># limited to working with files!</span>
+
+<span class="k">def</span> <span class="nf">parse_hosts</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">yield</span> <span class="n">line</span>
+</pre></div>
+
+</div>
+<div class="section" id="id40">
+<h1>Coupled I/O</h1>
+<div class="highlight"><pre><span></span><span class="n">top</span> <span class="err">────────┐</span>                 <span class="err">┌─────────</span>
+            <span class="err">│</span>                 <span class="err">│</span>
+            <span class="err">│</span>                 <span class="err">│</span>
+            <span class="err">│</span>                 <span class="err">│</span>
+<span class="n">subroutine</span>  <span class="err">└─</span><span class="nb">open</span><span class="p">()</span><span class="err">──</span><span class="k">print</span><span class="p">()</span><span class="err">─┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id41">
+<h1>Hoisted I/O</h1>
+<div class="highlight"><pre><span></span><span class="n">top</span> <span class="err">──</span><span class="nb">open</span><span class="p">()</span><span class="err">──┐</span>           <span class="err">┌──</span><span class="k">print</span><span class="p">()</span><span class="err">──</span>
+              <span class="err">│</span>           <span class="err">│</span>
+        <span class="err">↑</span>     <span class="err">│</span>           <span class="err">│</span>    <span class="err">↑</span>
+              <span class="err">│</span>           <span class="err">│</span>
+<span class="n">subroutine</span>    <span class="err">└───────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id42">
+
+<p><strong>All I/O</strong> now lives in top-level glue code</p>
+<div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;hosts.txt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">parse_hosts</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="patterns">
+<h1>3 patterns</h1>
+<ol class="arabic simple">
+<li>Data structures.</li>
+<li>Generators and iterators.</li>
+<li>Database facades.</li>
+</ol>
+</div>
+<div class="section" id="data-structures">
+<h1>Data Structures</h1>
+<div class="line-block">
+<div class="line">Check out the architecture</div>
+<div class="line">of <tt class="docutils literal">django</tt> <tt class="docutils literal">migrate</tt></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Andrew Godwin</p>
+</div>
+</div>
+<div class="section" id="id43">
+
+<!-- http://www.aeracode.org/2013/5/22/south-08-migrations-and-djangocon/ -->
+<p><em>2013 blog post</em></p>
+<div class="line-block">
+<div class="line">“Last week I was at DjangoCon EU,</div>
+<div class="line">in Warsaw, Poland, and I had</div>
+<div class="line">a fantastic time—</div>
+</div>
+<p>— <em>Andrew Godwin</em></p>
+</div>
+<div class="section" id="id44">
+
+<p><em>2013 blog post</em></p>
+<div class="line-block">
+<div class="line">“good discussions with fellow core</div>
+<div class="line">developers and Django and South users,</div>
+<div class="line">to clear up some more thoughts”</div>
+</div>
+<p>— <em>Andrew Godwin</em></p>
+</div>
+<div class="section" id="id45">
+
+<p class="small"><a class="reference external" href="http://www.aeracode.org/2013/5/30/what-operation/">http://www.aeracode.org/2013/5/30/what-operation/</a>
+<a class="reference external" href="http://www.aeracode.org/2013/10/23/flat-pancake/">http://www.aeracode.org/2013/10/23/flat-pancake/</a></p>
+<div class="line-block">
+<div class="line">Andrew wound up re-imagining</div>
+<div class="line">database migrations, which often drive</div>
+<div class="line"><strong>side-effects</strong> directly, as transformations</div>
+<div class="line">of in-memory <em>data structures</em></div>
+</div>
+</div>
+<div class="section" id="generators-and-iterators">
+<h1>Generators and iterators</h1>
+<div class="line-block">
+<div class="line">As we have already glimpsed,</div>
+<div class="line">generators let you compose <em>data</em></div>
+<div class="line"><em>processing</em> steps like you would</div>
+<div class="line">on the <strong>Unix command line</strong></div>
+</div>
+</div>
+<div class="section" id="database-facades">
+<h1>Database facades</h1>
+<div class="line-block">
+<div class="line">For the complex situation</div>
+<div class="line">where an initial data fetch</div>
+<div class="line">drives further operations</div>
+</div>
+</div>
+<div class="section" id="id46">
+
+<div class="highlight"><pre><span></span><span class="n">What</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">user</span> <span class="n">ID</span>
+<span class="k">for</span> <span class="n">this</span> <span class="n">username</span><span class="err">?</span>    <span class="err">↘</span>
+                        <span class="n">DB</span>
+<span class="n">To</span> <span class="n">which</span> <span class="n">team</span> <span class="n">does</span>    <span class="err">↙</span>
+<span class="n">user</span> <span class="mi">94914</span> <span class="n">belong</span><span class="err">?</span>    <span class="err">↘</span>
+                        <span class="n">DB</span>
+<span class="n">Which</span> <span class="n">other</span> <span class="n">users</span>     <span class="err">↙</span>
+<span class="n">belong</span> <span class="n">to</span> <span class="n">team</span> <span class="mi">38135</span><span class="err">?</span>
+</pre></div>
+
+</div>
+<div class="section" id="id47">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UserStorage</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_user_by_username</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+        <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">get_team_by_user_id</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+        <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">get_members_by_team_id</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+        <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="database-facade">
+<h1>Database Facade</h1>
+<div class="line-block">
+<div class="line">One implementation of the facade</div>
+<div class="line">will lets a test give <em>scripted</em> responses,</div>
+<div class="line">while another will talk to a <strong>real DB</strong></div>
+</div>
+</div>
+<div class="section" id="id48">
+<h1>3 patterns</h1>
+<ol class="arabic simple">
+<li>Data structures.</li>
+<li>Generators and iterators.</li>
+<li>Database facades.</li>
+</ol>
+</div>
+<div class="section" id="problems-with-design-patterns">
+<h1>Problems with Design Patterns</h1>
+<ol class="arabic">
+<li><div class="first line-block">
+<div class="line">You can <strong>miss</strong> a good</div>
+<div class="line">chance to use them</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">You can use them when</div>
+<div class="line">they have <em>no benefit</em></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="id49">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line"><em>What will signal</em> to you</div>
+<div class="line">that a routine is <strong>tightly</strong></div>
+<div class="line"><strong>coupled</strong> to its I/O?</div>
+</div>
+</div>
+<div class="section" id="id50">
+<h1>A:</h1>
+<p>Your unit tests</p>
+</div>
+<div class="section" id="unit-tests">
+<h1>Unit Tests</h1>
+<div class="line-block">
+<div class="line"><em>maintain correctness</em></div>
+<div class="line"><strong>and—</strong></div>
+</div>
+</div>
+<div class="section" id="id51">
+<h1>Unit Tests</h1>
+<div class="line-block">
+<div class="line"><em>maintain correctness</em></div>
+<div class="line"><em>inspire re-usability</em></div>
+</div>
+</div>
+<div class="section" id="id52">
+
+<div class="line-block">
+<div class="line"><em>n</em>=1 → <em>n</em>=2</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id53">
+
+<div class="strike line-block">
+<div class="line"><em>n</em>=1 → <em>n</em>=2</div>
+</div>
+<div class="line-block">
+<div class="line"><em>n</em>=1 → any <em>n</em></div>
+</div>
+</div>
+<div class="section" id="id54">
+
+<div class="line-block">
+<div class="line">When you see <tt class="docutils literal">patch()</tt> in</div>
+<div class="line">a unit test, it is signaling you</div>
+<div class="line"><em>“the code under test is tightly coupled”</em></div>
+</div>
+</div>
+<div class="section" id="id55">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">Are your unit tests</div>
+<div class="line"><em>first-class code?</em></div>
+</div>
+<div class="line-block">
+<div class="line">Or are they <strong>second-class</strong> code</div>
+<div class="line">that plays by different rules?</div>
+</div>
+<!-- notes: An interesting psychological barrier at work here -->
+</div>
+<div class="section" id="id56">
+
+<p>Python is a <strong>dynamic language</strong></p>
+</div>
+<div class="section" id="dynamic">
+<h1>Dynamic</h1>
+<div class="line-block">
+<div class="line">Python lets you <em>test</em> and <em>re-use</em></div>
+<div class="line">code that <strong>does not deserve it</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id57">
+<h1>Dynamic</h1>
+<div class="line-block">
+<div class="line">Python lets you <em>test</em> and <em>re-use</em></div>
+<div class="line">code that <strong>does not deserve it</strong></div>
+</div>
+<div class="line-block">
+<div class="line">This has been <em>so important</em> these</div>
+<div class="line">last 25 years, because we are <strong>still</strong></div>
+<div class="line"><strong>learning</strong> how to decouple code</div>
+</div>
+</div>
+<div class="section" id="id58">
+<h1>Dynamic</h1>
+<div class="line-block">
+<div class="line">Lets you treat a <strong>tightly</strong></div>
+<div class="line"><strong>coupled</strong> architecture <em>as though</em></div>
+<div class="line">it were parameterized</div>
+</div>
+</div>
+<div class="section" id="id59">
+<h1>Dynamic</h1>
+<div class="line-block">
+<div class="line">In Python, <em>everything</em> is a parameter!</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>modules</strong></div>
+<div class="line"><strong>built-ins</strong></div>
+<div class="line"><strong>methods</strong></div>
+</div>
+</div>
+<div class="section" id="id60">
+<h1>Dynamic</h1>
+<div class="line-block">
+<div class="line"><em>Good:</em> Enjoy flexibility and</div>
+<div class="line">code re-use without having to</div>
+<div class="line">have a <strong>perfect architecture</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id61">
+<h1>Dynamic</h1>
+<div class="line-block">
+<div class="line"><em>Good:</em> Enjoy flexibility and</div>
+<div class="line">code re-use without having to</div>
+<div class="line">have a <strong>perfect architecture</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><em>Bad:</em> Python itself will place</div>
+<div class="line"><strong>little pressure</strong> upon your</div>
+<div class="line">code to be decoupled</div>
+</div>
+</div>
+<div class="section" id="id62">
+
+<div class="line-block">
+<div class="line"><strong>Integration</strong> tests exercise your</div>
+<div class="line">code with the couplings <em>in place</em></div>
+</div>
+<div class="line-block">
+<div class="line">So they will offer <strong>little</strong> pressure</div>
+<div class="line">on your code to flip <em>n</em>=1 → any <em>n</em></div>
+</div>
+</div>
+<div class="section" id="id63">
+<h1>Unit tests</h1>
+<div class="line-block">
+<div class="line">Are <em>your</em> chance to write every</div>
+<div class="line">routine so that it faces <em>n</em>=2 uses</div>
+<div class="line">from the <strong>very moment of its birth</strong></div>
+</div>
+</div>
+<div class="section" id="big-q">
+<h1>Big Q:</h1>
+<div class="line-block">
+<div class="line">Are you taking advantage of unit tests</div>
+<div class="line">to <em>weigh upon</em> your code architecture</div>
+<div class="line">as the <strong>second caller</strong> that every routine</div>
+<div class="line">has from the moment it is first written?</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id64">
+<h1>Big Q:</h1>
+<div class="line-block">
+<div class="line">Are you taking advantage of unit tests</div>
+<div class="line">to <em>weigh upon</em> your code architecture</div>
+<div class="line">as the <strong>second caller</strong> that every routine</div>
+<div class="line">has from the moment it is first written?</div>
+</div>
+<div class="line-block">
+<div class="line">Thank you!</div>
+<div class="line">&#64;brandon_rhodes</div>
+</div>
+<!-- single quote: ’
+double quotes: x“”x
+em-dash: —
+vertical ellipsis: ⋮
+arrows: ←, ↑, →, ↓, ↔, ↕, ↖, ↗, ↘, ↙ -->
+<script>
+  window.slide_transition_time = 0;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

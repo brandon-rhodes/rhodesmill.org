@@ -1,0 +1,317 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Notes</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="design-notes">
+<h1>Design Notes<a class="headerlink" href="#design-notes" title="Permalink to this headline">¶</a></h1>
+<p>This document collects various notes
+about the API design of the Skyfield library,
+as well as the code samples that illustrate them
+and make sure that they keep working.</p>
+<div class="section" id="position-classes-with-coordinate-methods">
+<h2>Position classes with coordinate methods<a class="headerlink" href="#position-classes-with-coordinate-methods" title="Permalink to this headline">¶</a></h2>
+<p>One of the biggest sources of confusion in PyEphem was that it offered
+only a single routine to generate right ascension and declination
+coordinates, whose arguments selected both what kind of position to
+compute — astrometric or apparent — and also what coordinate system to
+use to represent those different positions in the sky.</p>
+<p>Users were chronically confused about which position they were asking
+for, and what kind of coordinates were being used to name that position.</p>
+<p>Skyfield therefore keeps these concepts strictly separate, by following
+these rules in its API design:</p>
+<ul class="simple">
+<li>Positions are a big deal.  After all, in real life, two different
+positions are two different places up in the sky.  If beneath the
+night sky you point with your arm at one position, and then at another
+position that is not equal to the first, you will have to physically
+move your arm from the first to the second.</li>
+<li>Coordinates are not as big a deal.  They are merely names.  Given a
+position, you can name it with ICRS coordinates or equinox-of-date
+coordinates; with equatorial or ecliptic or galactic coordinates; but
+even as you step through all of those choices of coordinate, rattling
+off different numbers for your audience, your arm will remain in the
+exact same position.  Your finger will be pointing at exactly one
+place in the sky that all those different coordinates designate.</li>
+</ul>
+<p>Therefore Skyfield deems each position as substantial enough to deserve
+its own Python object.  If you convert an astrometric position into an
+apparent position, you will be returned a new object to represent that
+different place in the sky:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apparent</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>But coordinates are mere names and so do not earn a separate object for
+each choice of coordinate.  Instead, each kind of coordinate is simply a
+different method call on the position you have generated:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
+<span class="n">astrometric</span><span class="o">.</span><span class="n">ecliptic_latlon</span><span class="p">()</span>
+<span class="n">astrometric</span><span class="o">.</span><span class="n">galactic_latlon</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This approach stands in contrast to both PyEphem and its one method that
+generated all combinations of position and coordinate, and with AstroPy,
+which dignifies different coordinates with different objects even if
+those two coordinates designate exactly the same place in the sky.
+Skyfield instead tries to use the object-versus-method distinction in
+Python to provide extra signal to the amateur about when a program is
+talking about a truly different location in the sky, versus when it is
+merely generating different numbers to designate a single location.</p>
+</div>
+<div class="section" id="angle-classes">
+<h2>Angle Classes<a class="headerlink" href="#angle-classes" title="Permalink to this headline">¶</a></h2>
+<p>Years of experience with maintaining PyEphem suggested that many users
+who are first dabbling in astronomy do not realize that right ascension
+is not typically expressed in degrees, and that users will frequently
+become confused — generating a long support tail — if the API makes it
+too natural to express right ascension using degrees.</p>
+<p>Therefore, when faced with a request for degrees or hours, the
+<a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> class tries to protect the user from accessing the wrong
+one unless they have indicated that it is the value they really want.
+By default, all angles assume that degrees are the proper unit, and have
+no problem with the user accessing them as degrees:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.units</span> <span class="kn">import</span> <span class="n">Angle</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="n">degrees</span><span class="o">=-</span><span class="mf">54.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">degrees</span>
+<span class="go">-54.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
+<span class="go">-54deg 00&#39; 00.0&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">dms</span><span class="p">()</span>
+<span class="go">(-54.0, -0.0, -0.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">signed_dms</span><span class="p">()</span>
+<span class="go">(-1.0, 54.0, 0.0, 0.0)</span>
+</pre></div>
+</div>
+<p>But exceptions will trigger if we try to express the angle in hours:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">hours</span>
+<span class="gt">Traceback (most recent call last):</span>
+  <span class="c">...</span>
+<span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in degrees, not hours; if you want to use hours anyway, then please use the attribute _hours</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">hstr</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+  <span class="c">...</span>
+<span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in degrees, not hours; if you want to use hours anyway, then call signed_hms() with warn=False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">hms</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+  <span class="c">...</span>
+<span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in degrees, not hours; if you want to use hours anyway, then call signed_hms() with warn=False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">signed_hms</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+  <span class="c">...</span>
+<span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in degrees, not hours; if you want to use hours anyway, then call signed_hms() with warn=False</span>
+</pre></div>
+</div>
+<p>The remedies suggested by these exceptions indeed work:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">_hours</span><span class="p">)</span>
+<span class="go">-3.6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">hstr</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="go">-03h 36m 00.00s</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">hms</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="go">(-3.0, -36.0, -0.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">signed_hms</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="go">(-1.0, 3.0, 36.0, 0.0)</span>
+</pre></div>
+</div>
+<p>An angle has the opposite behavior if it is given a preference of hours
+when it is created.  In that case, fetching its value in hours values
+becomes the easy operation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="n">degrees</span><span class="o">=-</span><span class="mf">54.0</span><span class="p">,</span> <span class="n">preference</span><span class="o">=</span><span class="s1">&#39;hours&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">hours</span><span class="p">)</span>
+<span class="go">-3.6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">hstr</span><span class="p">())</span>
+<span class="go">-03h 36m 00.00s</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">hms</span><span class="p">()</span>
+<span class="go">(-3.0, -36.0, -0.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">signed_hms</span><span class="p">()</span>
+<span class="go">(-1.0, 3.0, 36.0, 0.0)</span>
+</pre></div>
+</div>
+<p>And it is now degrees that take a bit of extra effort to retrieve.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">degrees</span>
+<span class="gt">Traceback (most recent call last):</span>
+  <span class="c">...</span>
+<span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in hours, not degrees; if you want to use degrees anyway, then please use the attribute _degrees</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">dstr</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+  <span class="c">...</span>
+<span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in hours, not degrees; if you want to use degrees anyway, then call dstr() with warn=False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">dms</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+  <span class="c">...</span>
+<span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in hours, not degrees; if you want to use hours anyway, then call signed_hms() with warn=False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">signed_dms</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+  <span class="c">...</span>
+<span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in hours, not degrees; if you want to use hours anyway, then call signed_hms() with warn=False</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">_degrees</span>
+<span class="go">-54.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">dstr</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="go">-54deg 00&#39; 00.0&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">dms</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="go">(-54.0, -0.0, -0.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">signed_dms</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="go">(-1.0, 54.0, 0.0, 0.0)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="importing-numpy">
+<h2>Importing NumPy<a class="headerlink" href="#importing-numpy" title="Permalink to this headline">¶</a></h2>
+<p>Code examples in the Skyfield documentation that need NumPy
+will always import it as <code class="docutils literal notranslate"><span class="pre">np</span></code>
+as that is the standard practice in the wider SciPy community.
+Examples will then use NumPy features
+through fully qualified names like <code class="docutils literal notranslate"><span class="pre">np.array</span></code>
+since that is how users —
+especially users new to the scientific Python ecosystem —
+should be advised to structure their own code.</p>
+<p>However, because Skyfield code itself
+is presumed to always use NumPy
+in preference to built-in Python numerics,
+the hundreds of <code class="docutils literal notranslate"><span class="pre">np.</span></code> prefixes would add only noise.
+As a consequence, Skyfield’s modules themselves simply do a
+<code class="docutils literal notranslate"><span class="pre">from</span></code> <code class="docutils literal notranslate"><span class="pre">numpy</span></code> <code class="docutils literal notranslate"><span class="pre">import</span></code> of any names that they need.</p>
+<p>Skyfield strives to support old versions of both Python and of NumPy,
+because many users in industry and government
+cannot upgrade their supporting libraries whenever they want.
+So the unit tests in CI are run against NumPy 1.11.3
+to maintain compatibility with that older version.</p>
+</div>
+<div class="section" id="rotation-matrices-or-state-transformation-matrices">
+<h2>Rotation matrices or state transformation matrices?<a class="headerlink" href="#rotation-matrices-or-state-transformation-matrices" title="Permalink to this headline">¶</a></h2>
+<p>Instead of keeping position and velocity in separate 3-vectors of
+floats, the SPICE library from the JPL concatenates them both into a
+single 6-vector.  It can then express the transform of one reference
+frame into another by a single 6×6 matrix.  This is clever, because a
+transformed velocity is the sum of both the frame’s native velocity and
+also a contribution from the angle through which the position vector is
+swept.  This is very cleverly captured by the 6×6 matrix; the comments
+in <code class="docutils literal notranslate"><span class="pre">frmchg</span></code> illustrate its structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="o">-</span>               <span class="o">-</span>
+<span class="o">|</span>                 <span class="o">|</span>
+<span class="o">|</span>    <span class="n">R</span>        <span class="mi">0</span>   <span class="o">|</span>
+<span class="o">|</span>                 <span class="o">|</span>
+<span class="o">|</span>                 <span class="o">|</span>
+<span class="o">|</span>   <span class="n">dR</span>            <span class="o">|</span>
+<span class="o">|</span>   <span class="o">--</span>        <span class="n">R</span>   <span class="o">|</span>
+<span class="o">|</span>   <span class="n">dt</span>            <span class="o">|</span>
+<span class="o">|</span>                 <span class="o">|</span>
+ <span class="o">-</span>               <span class="o">-</span>
+</pre></div>
+</div>
+<p>The top rows say “the position is simply rotated, with no contribution
+from the velocity,” while the bottom rows say “the velocity is rotated,
+then added to the position × the rate the frame is rotating.”</p>
+<p>Since an aggregate frame transform can then be constructed by simply
+multiplying a series of these 6×6 matrices, a temptation arises: if
+Skyfield frame objects adopted the same convention, they would only have
+to carry a single transformation matrix.</p>
+<p>The answer is no.  Skyfield does not use this technique.</p>
+<p>To understand why, observe the waste that happens when using the above
+matrix: fully one-quarter of the multiplies and something like one-half
+the adds always create zeros.  The SPICE system corrects this by using a
+one-off implementation of matrix multiplication <code class="docutils literal notranslate"><span class="pre">zzmsxf</span></code> that in fact
+treats the operation as smaller 3×3 operations.  Its comments note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="o">-</span>            <span class="o">-</span>    <span class="o">-</span>            <span class="o">-</span>
+<span class="o">|</span>      <span class="o">|</span>       <span class="o">|</span>  <span class="o">|</span>      <span class="o">|</span>       <span class="o">|</span>
+<span class="o">|</span>   <span class="n">R2</span> <span class="o">|</span>   <span class="mi">0</span>   <span class="o">|</span>  <span class="o">|</span>   <span class="n">R1</span> <span class="o">|</span>   <span class="mi">0</span>   <span class="o">|</span>
+<span class="o">|</span>      <span class="o">|</span>       <span class="o">|</span>  <span class="o">|</span>      <span class="o">|</span>       <span class="o">|</span>
+<span class="o">|</span> <span class="o">-----+------</span> <span class="o">|</span>  <span class="o">|</span> <span class="o">-----+------</span> <span class="o">|</span>  <span class="o">=</span>
+<span class="o">|</span>      <span class="o">|</span>       <span class="o">|</span>  <span class="o">|</span>      <span class="o">|</span>       <span class="o">|</span>
+<span class="o">|</span>   <span class="n">D2</span> <span class="o">|</span>   <span class="n">R2</span>  <span class="o">|</span>  <span class="o">|</span>   <span class="n">D1</span> <span class="o">|</span>   <span class="n">R1</span>  <span class="o">|</span>
+<span class="o">|</span>      <span class="o">|</span>       <span class="o">|</span>  <span class="o">|</span>      <span class="o">|</span>       <span class="o">|</span>
+ <span class="o">-</span>            <span class="o">-</span>    <span class="o">-</span>            <span class="o">-</span>
+
+ <span class="o">-</span>                              <span class="o">-</span>
+<span class="o">|</span>                  <span class="o">|</span>             <span class="o">|</span>
+<span class="o">|</span>   <span class="n">R2</span><span class="o">*</span><span class="n">R1</span>          <span class="o">|</span>     <span class="mi">0</span>       <span class="o">|</span>
+<span class="o">|</span>                  <span class="o">|</span>             <span class="o">|</span>
+<span class="o">|</span> <span class="o">-----------------+------------</span> <span class="o">|</span>
+<span class="o">|</span>                  <span class="o">|</span>             <span class="o">|</span>
+<span class="o">|</span>   <span class="n">D2</span><span class="o">*</span><span class="n">R1</span> <span class="o">+</span> <span class="n">R2</span><span class="o">*</span><span class="n">D1</span>  <span class="o">|</span>   <span class="n">R2</span><span class="o">*</span><span class="n">R1</span>     <span class="o">|</span>
+<span class="o">|</span>                  <span class="o">|</span>             <span class="o">|</span>
+ <span class="o">-</span>                              <span class="o">-</span>
+</pre></div>
+</div>
+<p>If the cost of efficiency is the additional cost and complication of
+breaking down the 6×6 so as to discard one-quarter of it and do pairwise
+operations between the remaining three quarters, then Skyfield chooses
+to not perform the aggregation in the first place.</p>
+<p>So in Skyfield let’s keep the matrices <code class="docutils literal notranslate"><span class="pre">R</span></code> and <code class="docutils literal notranslate"><span class="pre">dR/dt</span></code> in the first
+diagram always separate.  Then we can perform the exact 3×3 operations
+that SPICE does but without what in Skyfield would be a disaggregation
+step beforehand plus an aggregation step after.</p>
+</div>
+<div class="section" id="cross-products">
+<h2>Cross products<a class="headerlink" href="#cross-products" title="Permalink to this headline">¶</a></h2>
+<p>How can we compute a cross product while remaining agnostic about
+whether the two vectors we have been handed have a second dimension?</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">cross</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The simple cross product between our 3-vectors:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cross</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="go">array([-6, 12, -6])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cross</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="go">array([ 8, -7, -4])</span>
+</pre></div>
+</div>
+<p>Now we combine our vectors into stacks of values across the final
+dimension of a matrix:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ab</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ab</span>
+<span class="go">array([[1, 6],</span>
+<span class="go">       [2, 4],</span>
+<span class="go">       [3, 5]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pq</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pq</span>
+<span class="go">array([[7, 1],</span>
+<span class="go">       [8, 0],</span>
+<span class="go">       [9, 2]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cross</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">pq</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="go">array([[-6,  8],</span>
+<span class="go">       [12, -7],</span>
+<span class="go">       [-6, -4]])</span>
+</pre></div>
+</div>
+<p>(Wondering how to do fundamental_arguments() without reshape:)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">cross</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">float64</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">4.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">,</span><span class="mf">6.0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arg1</span> <span class="o">=</span> <span class="n">float64</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">argn</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arg1</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,)</span>
+<span class="go">array([ 8., 10., 12.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">argn</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">array([[ 8., 12.],</span>
+<span class="go">       [10., 15.],</span>
+<span class="go">       [12., 18.]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+  </body>
+</html>

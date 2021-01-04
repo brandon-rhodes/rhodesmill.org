@@ -1,0 +1,835 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>&lt;stdin&gt;</title>
+<link rel="stylesheet" href="/css/slides.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="httplib-and-its-discontents">
+<h1>httplib and its discontents</h1>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line">──────────────────</div>
+<div class="line"><tt class="docutils literal">PyOhio</tt></div>
+<div class="line">2011 July 31st</div>
+<div class="line">Brandon Craig Rhodes</div>
+<div class="line">──────────────────</div>
+</div>
+</div>
+<div class="section" id="slide">
+
+<div class="line-block">
+<div class="line">This is a talk</div>
+<div class="line">about what can go wrong</div>
+<div class="line">during programming</div>
+</div>
+</div>
+<div class="section" id="id1">
+
+<div class="line-block">
+<div class="line"><em>Not</em> a talk about how</div>
+<div class="line">to use <tt class="docutils literal">httplib</tt> or <tt class="docutils literal">urllib2</tt></div>
+</div>
+<div class="line-block">
+<div class="line">For that, use the new wrapper</div>
+<div class="line">library by Kenneth Reitz:</div>
+</div>
+<p><a class="reference external" href="http://pypi.python.org/pypi/requests">http://pypi.python.org/pypi/requests</a></p>
+</div>
+<div class="section" id="public-service-announcement">
+<h1>Public Service Announcement</h1>
+<div class="line-block">
+<div class="line">Never install Python packages</div>
+<div class="line">system-wide except for <tt class="docutils literal">virtualenv</tt></div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">virtualenv</span> <span class="n">playground</span>
+<span class="err">$</span> <span class="n">cd</span> <span class="n">playground</span>
+<span class="err">$</span> <span class="n">ls</span>
+<span class="nb">bin</span><span class="o">/</span>  <span class="n">include</span><span class="o">/</span>  <span class="n">lib</span><span class="o">/</span>
+<span class="err">$</span> <span class="o">.</span> <span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="p">(</span><span class="n">playground</span><span class="p">)</span><span class="err">$</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">requests</span>
+<span class="p">(</span><span class="n">playground</span><span class="p">)</span><span class="err">$</span> <span class="n">python</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">requests</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://google.com&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="oo">
+<h1>“OO”</h1>
+</div>
+<div class="section" id="id2">
+
+<p><strong>OO</strong> = Object-Oriented Programming</p>
+</div>
+<div class="section" id="id3">
+
+<p>What is an “Object”?</p>
+</div>
+<div class="section" id="history">
+<h1>History</h1>
+<p>There were variables:</p>
+<div class="highlight"><pre><span></span><span class="n">firstname</span> <span class="o">=</span> <span class="s1">&#39;Guido&#39;</span>
+<span class="n">lastname</span> <span class="o">=</span> <span class="s1">&#39;van Rossum&#39;</span>
+<span class="n">state</span> <span class="o">=</span> <span class="s1">&#39;CA&#39;</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">55</span>
+<span class="n">genre</span> <span class="o">=</span> <span class="s1">&#39;Dutch&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id4">
+
+<div class="highlight"><pre><span></span><span class="n">firstnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;George&#39;</span><span class="p">,</span> <span class="s1">&#39;John&#39;</span><span class="p">,</span> <span class="s1">&#39;Thomas&#39;</span><span class="p">]</span>
+<span class="n">lastnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Washington&#39;</span><span class="p">,</span> <span class="s1">&#39;Adams&#39;</span><span class="p">,</span> <span class="s1">&#39;Jefferson&#39;</span><span class="p">]</span>
+<span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;VA&#39;</span><span class="p">,</span> <span class="s1">&#39;MA&#39;</span><span class="p">,</span> <span class="s1">&#39;VA&#39;</span><span class="p">]</span>
+<span class="n">terms</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">But how do you pass</div>
+<div class="line">a <em>whole person</em> as a parameter?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">ignorant_function</span><span class="p">(</span><span class="n">firstnames</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lastnames</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                  <span class="n">states</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">terms</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+<span class="n">aware_function</span><span class="p">(</span><span class="n">firstnames</span><span class="p">,</span> <span class="n">lastnames</span><span class="p">,</span>
+               <span class="n">states</span><span class="p">,</span> <span class="n">terms</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="records-structures">
+<h1>Records / Structures</h1>
+<div class="highlight"><pre><span></span><span class="n">presidents</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s1">&#39;George&#39;</span><span class="p">,</span>
+           <span class="n">lastname</span><span class="o">=</span><span class="s1">&#39;Washington,</span>
+           <span class="n">state</span><span class="o">=</span><span class="s1">&#39;VA&#39;</span><span class="p">,</span>
+           <span class="n">terms</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+    <span class="p">]</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">presidents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">p</span><span class="o">.</span><span class="n">firstname</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">lastname</span>
+
+<span class="n">designate_holiday_for</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="quick-digression">
+<h1>Quick Digression</h1>
+<div class="highlight"><pre><span></span><span class="n">presidents</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s1">&#39;George&#39;</span><span class="p">,</span>
+           <span class="n">lastname</span><span class="o">=</span><span class="s1">&#39;Washington,</span>
+           <span class="n">state</span><span class="o">=</span><span class="s1">&#39;VA&#39;</span><span class="p">,</span>
+           <span class="n">terms</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+    <span class="p">]</span>              <span class="err">↑</span>
+       <span class="c1">#    Why did I insert</span>
+       <span class="c1"># this unnecessary comma?</span>
+</pre></div>
+
+</div>
+<div class="section" id="a">
+<h1>A:</h1>
+<div class="line-block">
+<div class="line">It creates perfect symmetry in a long list</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">some_primes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mi">6311</span><span class="p">,</span>
+    <span class="mi">6317</span><span class="p">,</span>
+    <span class="mi">6323</span><span class="p">,</span>
+    <span class="mi">6329</span><span class="p">,</span>
+    <span class="mi">6337</span><span class="p">,</span>
+    <span class="mi">6343</span><span class="p">,</span>
+    <span class="p">]</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">You can cut, paste,</div>
+<div class="line">and rearrange code with</div>
+<div class="line">the most wild abandon</div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<p>Terminal commas are always allowed</p>
+<p>♥ Python</p>
+</div>
+<div class="section" id="id6">
+
+<p>So, records are great</p>
+<div class="highlight"><pre><span></span><span class="n">p</span><span class="o">.</span><span class="n">firstname</span><span class="o">=</span><span class="s1">&#39;George&#39;</span>
+<span class="n">p</span><span class="o">.</span><span class="n">lastname</span><span class="o">=</span><span class="s1">&#39;Washington</span>
+<span class="n">p</span><span class="o">.</span><span class="n">state</span><span class="o">=</span><span class="s1">&#39;VA&#39;</span>
+<span class="n">p</span><span class="o">.</span><span class="n">terms</span><span class="o">=</span><span class="mi">2</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">They fixed our problem with data.</div>
+<div class="line">But what about our code?</div>
+</div>
+</div>
+<div class="section" id="id7">
+
+<div class="line-block">
+<div class="line">We wrote many procedures</div>
+<div class="line">for processing records</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_person</span><span class="p">():</span> <span class="err">…</span>
+<span class="k">def</span> <span class="nf">delete_person</span><span class="p">(</span><span class="n">p</span><span class="p">):</span> <span class="err">…</span>
+<span class="k">def</span> <span class="nf">send_paycheck_to</span><span class="p">(</span><span class="n">p</span><span class="p">):</span> <span class="err">…</span>
+<span class="k">def</span> <span class="nf">designate_retiree</span><span class="p">(</span><span class="n">p</span><span class="p">):</span> <span class="err">…</span>
+<span class="k">def</span> <span class="nf">record_contribution</span><span class="p">(</span><span class="n">p</span><span class="p">):</span> <span class="err">…</span>
+<span class="k">def</span> <span class="nf">produce_obituary</span><span class="p">(</span><span class="n">p</span><span class="p">):</span> <span class="err">…</span>
+</pre></div>
+
+</div>
+<div class="section" id="id8">
+
+<div class="line-block">
+<div class="line">These procedures became very complex</div>
+<div class="line">as more varieties of each record appeared</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">send_paycheck_to</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="s2">&quot;Produce a paycheck for person `p`.&quot;</span>
+    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s1">&#39;student&#39;</span><span class="p">:</span>
+        <span class="err">…</span>
+    <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s1">&#39;employee&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;biweekly&#39;</span><span class="p">:</span>
+            <span class="err">…</span>
+        <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;salary&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="s1">&#39;emeritus&#39;</span><span class="p">:</span>
+                <span class="err">…</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="err">…</span>
+</pre></div>
+
+</div>
+<div class="section" id="id9">
+
+<div class="line-block">
+<div class="line">These great forests of</div>
+<div class="line"><tt class="docutils literal">if</tt> statement were chopped down</div>
+<div class="line">in the great OO revolution</div>
+</div>
+</div>
+<div class="section" id="id10">
+
+<div class="line-block">
+<div class="line">In OO, we do for code</div>
+<div class="line">what records did for data</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>“method”</strong></div>
+</div>
+<div class="line-block">
+<div class="line">a function <em>attached</em> to data</div>
+</div>
+</div>
+<div class="section" id="id11">
+
+<div class="highlight"><pre><span></span><span class="n">myperson</span><span class="o">.</span><span class="n">process_payroll</span><span class="p">()</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Now our programming language</div>
+<div class="line">implements the <tt class="docutils literal">if</tt> forest for us</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Employee</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">process_payroll</span><span class="p">(</span><span class="err">…</span><span class="p">):</span> <span class="err">…</span>
+    <span class="k">def</span> <span class="nf">move_to_retirement</span><span class="p">(</span><span class="err">…</span><span class="p">):</span> <span class="err">…</span>
+
+<span class="k">class</span> <span class="nc">BiweeklyStaff</span><span class="p">(</span><span class="n">Employee</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">process_payroll</span><span class="p">(</span><span class="err">…</span><span class="p">):</span> <span class="err">…</span>
+
+<span class="k">class</span> <span class="nc">EmeritusProf</span><span class="p">(</span><span class="n">Employee</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">move_to_retirement</span><span class="p">(</span><span class="err">…</span><span class="p">):</span> <span class="err">…</span>
+</pre></div>
+
+</div>
+<div class="section" id="id12">
+
+<div class="line-block">
+<div class="line">OO languages give the method</div>
+<div class="line">the object on which it was invoked</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">myperson</span><span class="o">.</span><span class="n">process_payroll</span><span class="p">()</span>
+</pre></div>
+
+<p>↓</p>
+<div class="highlight"><pre><span></span><span class="n">Employee</span><span class="o">.</span><span class="n">process_payroll</span><span class="p">(</span><span class="n">myperson</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Python, of course, makes this</div>
+<div class="line"><em>explicit</em> rather than <em>implicit</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">process_payroll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="err">…</span>
+</pre></div>
+
+</div>
+<div class="section" id="id13">
+<h1>OO</h1>
+<div class="line-block">
+<div class="line">Not just convenient, but</div>
+<div class="line">powerful in important ways</div>
+</div>
+<div class="line-block">
+<div class="line">Packaging data and code together</div>
+<div class="line">makes it much easier to <strong>abstract</strong></div>
+</div>
+</div>
+<div class="section" id="id14">
+
+<p>But could OO have a dark side?</p>
+</div>
+<div class="section" id="the-case-of-the-http-parser">
+<h1>“The Case of the HTTP Parser”</h1>
+</div>
+<div class="section" id="stack-overflow-question">
+<h1>Stack Overflow question:</h1>
+<div class="line-block">
+<div class="line">&quot;Does Python have a module for parsing</div>
+<div class="line">HTTP requests and responses?&quot;</div>
+</div>
+</div>
+<div class="section" id="http">
+<h1>HTTP</h1>
+<p>“Hypertext Transfer Protocol”</p>
+<p>(<em>hypertext</em> means <em>text with links</em>)</p>
+</div>
+<div class="section" id="your-web-browser-uses-http">
+<h1>Your web browser uses HTTP</h1>
+<p>“fetch <tt class="docutils literal"><span class="pre">http://google.com</span></tt> for me!”</p>
+<p>Your browser:</p>
+<ul class="simple">
+<li>Sends an HTTP Request to <tt class="docutils literal">google.com</tt></li>
+<li>Receives an HTTP Response from <tt class="docutils literal">google.com</tt></li>
+</ul>
+</div>
+<div class="section" id="an-http-request-is-just-text">
+<h1>An HTTP request is just text</h1>
+<div class="highlight"><pre><span></span><span class="n">GET</span> <span class="o">/</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+<span class="n">Accept</span><span class="p">:</span> <span class="n">text</span><span class="o">/</span><span class="n">html</span><span class="p">,</span><span class="n">application</span><span class="o">/</span><span class="n">xhtml</span><span class="o">+</span><span class="n">xml</span><span class="p">,</span><span class="err">…</span>
+<span class="n">Accept</span><span class="o">-</span><span class="n">Charset</span><span class="p">:</span> <span class="n">ISO</span><span class="o">-</span><span class="mi">8859</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span><span class="p">;</span><span class="n">q</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span><span class="o">*</span><span class="p">;</span><span class="n">q</span><span class="o">=</span><span class="mf">0.3</span>
+<span class="n">Accept</span><span class="o">-</span><span class="n">Encoding</span><span class="p">:</span> <span class="n">gzip</span><span class="p">,</span><span class="n">deflate</span><span class="p">,</span><span class="n">sdch</span>
+<span class="n">Accept</span><span class="o">-</span><span class="n">Language</span><span class="p">:</span> <span class="n">en</span><span class="o">-</span><span class="n">US</span><span class="p">,</span><span class="n">en</span><span class="p">;</span><span class="n">q</span><span class="o">=</span><span class="mf">0.8</span>
+<span class="n">Cache</span><span class="o">-</span><span class="n">Control</span><span class="p">:</span> <span class="nb">max</span><span class="o">-</span><span class="n">age</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">Connection</span><span class="p">:</span> <span class="n">keep</span><span class="o">-</span><span class="n">alive</span>
+<span class="n">Cookie</span><span class="p">:</span>  <span class="err">…</span>
+<span class="n">Host</span><span class="p">:</span> <span class="n">www</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span>
+<span class="n">User</span><span class="o">-</span><span class="n">Agent</span><span class="p">:</span> <span class="n">Mozilla</span><span class="o">/</span><span class="mf">5.0</span> <span class="p">(</span><span class="n">X11</span><span class="p">;</span> <span class="n">Linux</span> <span class="n">i686</span><span class="p">)</span>
+    <span class="n">AppleWebKit</span><span class="o">/</span><span class="mf">535.1</span> <span class="p">(</span><span class="n">KHTML</span><span class="p">,</span> <span class="n">like</span> <span class="n">Gecko</span><span class="p">)</span>
+    <span class="n">Chrome</span><span class="o">/</span><span class="mf">13.0</span><span class="o">.</span><span class="mf">782.41</span> <span class="n">Safari</span><span class="o">/</span><span class="mf">535.1</span>
+</pre></div>
+
+</div>
+<div class="section" id="id15">
+
+<div class="highlight"><pre><span></span><span class="n">Q</span><span class="p">:</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">&quot;Does Python have a module for parsing</div>
+<div class="line">HTTP requests and responses?&quot;</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">A</span><span class="p">:</span>
+</pre></div>
+
+<p>∵ <tt class="docutils literal">SimpleHTTPServer</tt></p>
+<p>∴ Python MUST have a parser!</p>
+</div>
+<div class="section" id="python-s-built-in-web-server">
+<h1>Python's built-in web server</h1>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">SimpleHTTPServer</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">serves static files from</div>
+<div class="line">the current directory</div>
+</div>
+</div>
+<div class="section" id="two-questions">
+<h1>Two questions</h1>
+<ol class="arabic">
+<li><div class="first line-block">
+<div class="line">Where in the Standard Library</div>
+<div class="line"><em>is</em> this parser?</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">How can I run it on a string?</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="id16">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">Server</tt> classes take</div>
+<div class="line">care of sockets for you</div>
+</div>
+<div class="line-block">
+<div class="line">(For all of the details, see</div>
+<div class="line"><em>Foundations of Python Network Programming</em></div>
+<div class="line">by Brandon Rhodes and John Goerzen)</div>
+</div>
+</div>
+<div class="section" id="server-classes">
+<h1>Server classes</h1>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">SocketServer.BaseServer</tt></div>
+<div class="line">↑</div>
+<div class="line"><tt class="docutils literal">SocketServer.TCPServer</tt></div>
+<div class="line">↑</div>
+<div class="line"><tt class="docutils literal">BaseHTTPServer.HTTPServer</tt></div>
+</div>
+<div class="line-block">
+<div class="line">These open a socket,</div>
+<div class="line">set its IP address, run listen(),</div>
+<div class="line">then run accept() over and over</div>
+<div class="line">again accepting connections</div>
+</div>
+</div>
+<div class="section" id="id17">
+
+<div class="line-block">
+<div class="line">But once the connection is</div>
+<div class="line">established, the <tt class="docutils literal">Server</tt> classes</div>
+<div class="line">have no idea what to do next</div>
+</div>
+<div class="line-block">
+<div class="line">So they pass the open</div>
+<div class="line">connection to a <tt class="docutils literal">Handler</tt></div>
+<div class="line">to do the actual talking</div>
+</div>
+</div>
+<div class="section" id="handler-classes">
+<h1>Handler classes</h1>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">SocketServer.BaseRequestHandler</tt></div>
+<div class="line">↑</div>
+<div class="line"><tt class="docutils literal">SocketServer.StreamRequestHandler</tt></div>
+<div class="line">↑</div>
+<div class="line"><tt class="docutils literal">BaseHTTPServer.BaseHTTPRequestHandler</tt></div>
+</div>
+<div class="line-block">
+<div class="line">The HTTP handler is an <em>extensible</em> class</div>
+</div>
+<div class="line-block">
+<div class="line">The Standard Library invites you</div>
+<div class="line">to create your own subclass of the handler</div>
+<div class="line">and add methods like <tt class="docutils literal">do_GET()</tt> or <tt class="docutils literal">do_POST()</tt></div>
+</div>
+</div>
+<div class="section" id="id18">
+
+<div class="highlight"><pre><span></span><span class="n">GET</span> <span class="o">/</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+<span class="n">Accept</span><span class="p">:</span> <span class="n">text</span><span class="o">/</span><span class="n">html</span><span class="p">,</span><span class="n">text</span><span class="o">/</span><span class="n">plain</span>
+<span class="n">Host</span><span class="p">:</span> <span class="n">www</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">If this request came in, the</div>
+<div class="line">server would call your <tt class="docutils literal">do_GET()</tt></div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">POST</span> <span class="o">/</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+<span class="n">Accept</span><span class="p">:</span> <span class="n">text</span><span class="o">/</span><span class="n">html</span><span class="p">,</span><span class="n">text</span><span class="o">/</span><span class="n">plain</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length</span><span class="p">:</span> <span class="mi">12</span>
+<span class="n">Host</span><span class="p">:</span> <span class="n">www</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+
+<span class="n">query</span><span class="o">=</span><span class="n">Python</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">For this the server would call <tt class="docutils literal">do_POST()</tt></div>
+</div>
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line">Note that here OO is not being</div>
+<div class="line">used merely to provide a container</div>
+</div>
+<div class="line-block">
+<div class="line">Instead, the module author thinks</div>
+<div class="line">that OO is a party and <em>you</em> are invited</div>
+</div>
+<div class="line-block">
+<div class="line">You are invited to write new methods</div>
+<div class="line">on the author's class</div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<p><em>Hint: this was probably a bad idea!</em></p>
+<div class="line-block">
+<div class="line">Classes — as we will soon see — can</div>
+<div class="line">be quite complex pieces of machinery.</div>
+</div>
+<p>Why invite another programmer in?</p>
+<div class="line-block">
+<div class="line">It breaks the clean barrier</div>
+<div class="line">that lets us do abstraction</div>
+</div>
+</div>
+<div class="section" id="modern-alternatives">
+<h1>Modern alternatives</h1>
+<ul class="simple">
+<li>You could supply callback functions</li>
+<li>You could supply your own object</li>
+<li>You could consume requests by iterating</li>
+</ul>
+</div>
+<div class="section" id="id21">
+
+<div class="highlight"><pre><span></span>                <span class="c1">#inheritance</span>
+
+            <span class="n">BaseHTTPRequestHandler</span>
+                      <span class="err">↑</span>
+<span class="n">HTTPServer</span> <span class="err">→</span> <span class="n">MyHTTPRequestHandler</span>
+
+         <span class="c1"># API</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Mightn't it have been better</div>
+<div class="line">to also have an API between</div>
+<div class="line">HTTP parser and handler?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">HTTPServer</span> <span class="err">→</span> <span class="n">HTTPParser</span> <span class="err">→</span> <span class="n">MyHandler</span>
+</pre></div>
+
+</div>
+<div class="section" id="id22">
+
+<div class="line-block">
+<div class="line">So how does <tt class="docutils literal">BaseHTTPRequestHandler</tt></div>
+<div class="line">actually parse the HTTP protocol?</div>
+</div>
+</div>
+<div class="section" id="id23">
+
+<div class="highlight"><pre><span></span><span class="n">BaseRequestHandler</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">client_address</span><span class="err">…</span><span class="p">)</span>
+</pre></div>
+
+<ul class="simple">
+<li>Stores params on <tt class="docutils literal">self</tt></li>
+<li>Calls <tt class="docutils literal">self.setup()</tt></li>
+<li>Calls <tt class="docutils literal">self.handle()</tt></li>
+<li>Calls <tt class="docutils literal">self.finish()</tt></li>
+</ul>
+</div>
+<div class="section" id="id24">
+
+<div class="highlight"><pre><span></span><span class="n">StreamRequestHandler</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+<ul class="simple">
+<li>Wraps socket in file-like objects</li>
+<li>Creates <tt class="docutils literal">self.rfile</tt> stream</li>
+<li>Creates <tt class="docutils literal">self.wfile</tt> stream</li>
+</ul>
+</div>
+<div class="section" id="id25">
+
+<div class="highlight"><pre><span></span><span class="n">BaseHTTPRequestHandler</span><span class="o">.</span><span class="n">handle_one_request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+<ul class="simple">
+<li>26 lines of code</li>
+<li>Calls <tt class="docutils literal">rfile.readline()</tt></li>
+<li>Checks that it is really a line of text</li>
+<li>Saves it as <tt class="docutils literal">self.raw_requestline</tt></li>
+<li>Calls <tt class="docutils literal">self.parse_request()</tt></li>
+<li>Calls <tt class="docutils literal">self.do_GET()</tt> or <tt class="docutils literal">self.do_POST()</tt></li>
+</ul>
+</div>
+<div class="section" id="id26">
+
+<div class="highlight"><pre><span></span><span class="n">BaseHTTPRequestHandler</span><span class="o">.</span><span class="n">parse_request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+<ul class="simple">
+<li>60 lines</li>
+<li>Finally — the parsing goodness!</li>
+<li>Parses <tt class="docutils literal">self.raw_requestline</tt></li>
+<li>Reads and parses headers from <tt class="docutils literal">self.rfile</tt></li>
+</ul>
+</div>
+<div class="section" id="great-how-do-i-use-it">
+<h1>Great! How do I use it?</h1>
+</div>
+<div class="section" id="id27">
+
+<div class="highlight"><pre><span></span><span class="n">Q</span><span class="p">:</span>
+</pre></div>
+
+<p>What does <tt class="docutils literal">parse_request()</tt> need?</p>
+<div class="highlight"><pre><span></span><span class="n">A</span><span class="p">:</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Its needs are not documentated <em>anywhere</em>.</div>
+<div class="line">Why?</div>
+<div class="line">Because in Object-Oriented programming,</div>
+<div class="line">your conscience is taught that you can</div>
+<div class="line">use any attributes or methods on <tt class="docutils literal">self</tt></div>
+<div class="line"><em>for free</em> and <em>without</em> apologizing.</div>
+</div>
+</div>
+<div class="section" id="id28">
+
+<div class="highlight"><pre><span></span><span class="n">A</span><span class="p">:</span>
+</pre></div>
+
+<p>Freebies:</p>
+<div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">default_request_version</span> <span class="o">=</span> <span class="s2">&quot;HTTP/0.9&quot;</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">protocol_version</span> <span class="o">=</span> <span class="s2">&quot;HTTP/1.0&quot;</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">MessageClass</span> <span class="o">=</span> <span class="n">mimetools</span><span class="o">.</span><span class="n">Message</span>
+</pre></div>
+
+<p>Needs:</p>
+<div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">raw_requestline</span> <span class="c1"># string</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">rfile</span> <span class="c1"># used by self.MessageClass</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">send_error</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span> <span class="c1"># HTTP response!</span>
+</pre></div>
+
+</div>
+<div class="section" id="id29">
+
+<div class="line-block">
+<div class="line">That's quite an invocation protocol!</div>
+<div class="line">You have to set <em>several</em> object attributes.</div>
+</div>
+<div class="line-block">
+<div class="line">This is called <em>tight coupling</em></div>
+</div>
+</div>
+<div class="section" id="useful-phrase">
+<h1>Useful phrase</h1>
+<div class="line-block">
+<div class="line">“You've written some pretty</div>
+<div class="line">tightly coupled code there!”</div>
+</div>
+<div class="line-block">
+<div class="line"><em>(use the same tone of voice</em></div>
+<div class="line"><em>as when you step in something)</em></div>
+</div>
+</div>
+<div class="section" id="id30">
+
+<div class="highlight"><pre><span></span><span class="n">Q</span><span class="p">:</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">So what does the Standard Library do</div>
+<div class="line">when they want to test <tt class="docutils literal">parse_request()</tt>?</div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="highlight"><pre><span></span><span class="n">A</span><span class="p">:</span>
+</pre></div>
+
+<p>“Well, you start by opening a socket…”</p>
+</div>
+<div class="section" id="id32">
+
+<p>test/test_httpservers.py</p>
+<div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_handler</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">test_object</span><span class="o">.</span><span class="n">PORT</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="lesson">
+<h1>Lesson</h1>
+<div class="line-block">
+<div class="line">Python's Standard Library</div>
+<div class="line"><em>will not</em> parse an HTTP request …</div>
+</div>
+<div class="line-block">
+<div class="line">… <em>unless</em> you submit it through</div>
+<div class="line">a real live socket</div>
+</div>
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line">(… or, unless you are willing to write code</div>
+<div class="line">that depends on the internal details</div>
+<div class="line">of the <tt class="docutils literal">BaseHTTPRequestHandler</tt>)</div>
+</div>
+</div>
+<div class="section" id="id34">
+
+<p>I was willing.</p>
+</div>
+<div class="section" id="id35">
+
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">BaseHTTPServer</span> <span class="kn">import</span> <span class="n">BaseHTTPRequestHandler</span>
+<span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+
+<span class="k">class</span> <span class="nc">HTTPRequest</span><span class="p">(</span><span class="n">BaseHTTPRequestHandler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_text</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rfile</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">request_text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_requestline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rfile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_message</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_request</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">send_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_code</span> <span class="o">=</span> <span class="n">code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_message</span> <span class="o">=</span> <span class="n">message</span>
+</pre></div>
+
+</div>
+<div class="section" id="id36">
+
+<div class="highlight"><pre><span></span><span class="c1"># Simply instantiate with the request text</span>
+
+<span class="n">request</span> <span class="o">=</span> <span class="n">HTTPRequest</span><span class="p">(</span><span class="n">request_text</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">request</span><span class="o">.</span><span class="n">error_code</span>      <span class="c1"># None</span>
+<span class="k">print</span> <span class="n">request</span><span class="o">.</span><span class="n">command</span>         <span class="c1"># &quot;GET&quot;</span>
+<span class="k">print</span> <span class="n">request</span><span class="o">.</span><span class="n">path</span>         <span class="c1"># &quot;/who/ken/trust.html&quot;</span>
+<span class="k">print</span> <span class="n">request</span><span class="o">.</span><span class="n">request_version</span> <span class="c1"># &quot;HTTP/1.1&quot;</span>
+<span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>    <span class="c1"># 3</span>
+<span class="k">print</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;host&#39;</span><span class="p">]</span> <span class="c1"># &quot;cm.bell-labs.com&quot;</span>
+
+<span class="c1"># Parsing can result in an error code and message</span>
+
+<span class="n">request</span> <span class="o">=</span> <span class="n">HTTPRequest</span><span class="p">(</span><span class="n">bad_request_text</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">request</span><span class="o">.</span><span class="n">error_code</span>     <span class="c1"># 400</span>
+<span class="k">print</span> <span class="n">request</span><span class="o">.</span><span class="n">error_message</span>  <span class="c1"># &quot;Bad request syntax&quot;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id37">
+<h1>Lesson</h1>
+<p>What have we learned?</p>
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line">OO is an <em>incredible</em> tool</div>
+<div class="line">for doing abstraction</div>
+</div>
+<p><tt class="docutils literal">BaseHTTPServer</tt> hides sockets really well!</p>
+</div>
+<div class="section" id="id39">
+
+<div class="line-block">
+<div class="line">But OO <em>deadens the conscience</em></div>
+</div>
+<div class="line-block">
+<div class="line">It lets programmers</div>
+<div class="line">write <em>heavily</em> coupled code because</div>
+<div class="line">“These are internal details of my class!</div>
+<div class="line">I can use anything on <tt class="docutils literal">self</tt> that I want!”</div>
+</div>
+</div>
+<div class="section" id="two-remedies">
+<h1>Two remedies</h1>
+<ol class="arabic simple">
+<li>Testing</li>
+<li>Procedures</li>
+</ol>
+</div>
+<div class="section" id="what-if">
+<h1>What if?</h1>
+<div class="line-block">
+<div class="line">What if the HTTP parser had been written</div>
+<div class="line">as a good old-fashioned procedure?</div>
+</div>
+</div>
+<div class="section" id="id40">
+
+<div class="line-block">
+<div class="line">The <em>argument list</em> and <em>return statement</em></div>
+<div class="line">would provide <em>clear documentation</em> of what</div>
+<div class="line">data entered and exited the procedure</div>
+</div>
+<div class="line-block">
+<div class="line">The code would have been prevented</div>
+<div class="line">from accumulating more and more</div>
+<div class="line">fiddly dependencies upon <tt class="docutils literal">self</tt></div>
+</div>
+</div>
+<div class="section" id="id41">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_http_request</span><span class="p">(</span>
+      <span class="n">infile</span><span class="p">,</span>
+      <span class="n">request</span><span class="p">,</span>
+      <span class="n">version</span><span class="o">=</span><span class="s1">&#39;HTTP/1.0&#39;</span><span class="p">,</span>
+      <span class="n">default_version</span><span class="o">=</span><span class="s1">&#39;HTTP/0.9&#39;</span><span class="p">):</span>
+    <span class="err">…</span>
+    <span class="k">if</span> <span class="n">failure</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPError</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;Bad request&quot;</span><span class="p">)</span>
+    <span class="err">…</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="err">…</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="err">…</span>
+    <span class="err">…</span>
+    <span class="k">return</span>
+</pre></div>
+
+</div>
+<div class="section" id="cherrypy">
+<h1>CherryPy</h1>
+<p>Robert Brewer is pretty awesome</p>
+</div>
+<div class="section" id="id42">
+
+<p>From <tt class="docutils literal">_cperror.py</tt>:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HTTPError</span><span class="p">(</span><span class="n">CherryPyException</span><span class="p">):</span>
+    <span class="err">⋮</span>
+    <span class="k">def</span> <span class="nf">get_error_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="err">…</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">get_error_page</span><span class="p">(</span><span class="err">…</span><span class="p">)</span>
+
+<span class="err">⋮</span>
+
+<span class="k">def</span> <span class="nf">get_error_page</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="err">…</span><span class="p">):</span>
+    <span class="err">⋮</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">He defines the procedure separately,</div>
+<div class="line"><em>then</em> writes the method that invokes</div>
+<div class="line">the procedure with data from <tt class="docutils literal">self</tt></div>
+</div>
+</div>
+<div class="section" id="id43">
+<h1>Two remedies</h1>
+<ol class="arabic simple">
+<li>Testing</li>
+<li>Procedures</li>
+</ol>
+<div class="line-block">
+<div class="line">I recommend <em>dependency injection</em></div>
+</div>
+<div class="line-block">
+<div class="line">It can help our procedures like it</div>
+<div class="line">is already helping our classes</div>
+</div>
+</div>
+<div class="section" id="dependency-injection">
+<h1>Dependency injection</h1>
+<p>Martin Fowler</p>
+<div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">martinfowler</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">articles</span><span class="o">/</span><span class="n">injection</span><span class="o">.</span><span class="n">html</span>
+</pre></div>
+
+</div>
+<div class="section" id="thank-you">
+<h1>Thank you!</h1>
+<p>Any questions?</p>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides.js"></script></div>
+</div>
+</body>
+</html>

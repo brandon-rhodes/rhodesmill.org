@@ -1,0 +1,253 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kepler Orbits</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="kepler-orbits">
+<h1>Kepler Orbits<a class="headerlink" href="#kepler-orbits" title="Permalink to this headline">¶</a></h1>
+<p>Skyfield now offers basic support for computing the position
+of a comet or minor planet
+whose elliptical, parabolic, or hyperbolic orbit
+is provided as Kepler orbital elements.</p>
+<p>Beware that the internal routines supporting Kepler orbits
+are rudimentary and subject to change —
+only the interface documented here
+is guaranteed to work in future Skyfield versions.</p>
+<p>Skyfield loads orbital elements from text files using the Pandas library.
+Install it before trying any of the the examples below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pandas</span>
+</pre></div>
+</div>
+<div class="section" id="comets">
+<h2>Comets<a class="headerlink" href="#comets" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="https://www.minorplanetcenter.net/">IAU Minor Planet Center</a>
+distributes a <code class="docutils literal notranslate"><span class="pre">CometEls.txt</span></code> file
+of orbital elements for predicting comet positions.
+The file is plain text,
+so feel free to open it with a text editor
+to see the comets for which it offers orbital elements.
+To build a dataframe of comets:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">skyfield.data</span> <span class="kn">import</span> <span class="n">mpc</span>
+
+<span class="k">with</span> <span class="n">load</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">mpc</span><span class="o">.</span><span class="n">COMET_URL</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">comets</span> <span class="o">=</span> <span class="n">mpc</span><span class="o">.</span><span class="n">load_comets_dataframe</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">comets</span><span class="p">),</span> <span class="s1">&#39;comets loaded&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>864 comets loaded
+</pre></div>
+</div>
+<p>Since the comets file has no explicit expiration date,
+<code class="docutils literal notranslate"><span class="pre">load.open()</span></code> will only download the file once.
+Subsequent calls re-open the copy of the file already on your filesystem.
+To force a fresh download and receive updated orbits and new comets,
+pass <code class="docutils literal notranslate"><span class="pre">reload=True</span></code>.</p>
+<p>To generate a comet’s position,
+first select its row from dataframe.
+There are several Pandas techniques for selecting rows,
+but most Skyfield users will simply index their dataframe by comet designation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Keep only the most recent orbit for each comet,</span>
+<span class="c1"># and index by designation for fast lookup.</span>
+<span class="n">comets</span> <span class="o">=</span> <span class="p">(</span><span class="n">comets</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;designation&#39;</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="p">()</span>
+          <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;designation&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="c1"># Sample lookups.</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">comets</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;1P/Halley&#39;</span><span class="p">]</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">comets</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;C/1995 O1 (Hale-Bopp)&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>When computing the position of a comet from Earth,
+there is a complication:
+cometary orbits are not measured from the Solar System barycenter
+but are instead centered on the Sun.
+You will therefore need to add the <em>barycenter→Sun</em> vector
+to the <em>Sun→comet</em> vector
+to produce a position that you can pass to the <code class="docutils literal notranslate"><span class="pre">observe()</span></code> method,
+which always measures positions from the Solar System barycenter.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generating a position.</span>
+
+<span class="kn">from</span> <span class="nn">skyfield.constants</span> <span class="kn">import</span> <span class="n">GM_SUN_Pitjeva_2005_km3_s2</span> <span class="k">as</span> <span class="n">GM_SUN</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">sun</span><span class="p">,</span> <span class="n">earth</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;sun&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
+
+<span class="n">comet</span> <span class="o">=</span> <span class="n">sun</span> <span class="o">+</span> <span class="n">mpc</span><span class="o">.</span><span class="n">comet_orbit</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">GM_SUN</span><span class="p">)</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span>
+<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">comet</span><span class="p">)</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>23h 59m 16.85s
+-84deg 46&#39; 57.8&quot;
+</pre></div>
+</div>
+<p>Hopefully Skyfield will in the future support generating positions
+for whole arrays of comets in a single efficient operation,
+but for now your code should expect to operate on one comet at a time.</p>
+</div>
+<div class="section" id="minor-planets">
+<h2>Minor Planets<a class="headerlink" href="#minor-planets" title="Permalink to this headline">¶</a></h2>
+<p>There are nearly a million minor planets
+in the <a class="reference external" href="https://www.minorplanetcenter.net/">IAU Minor Planet Center</a>’s
+database of orbital elements,
+thanks to the prodigious output of automated sky surveys
+over the past few decades.</p>
+<p>The database can be downloaded as a single <code class="docutils literal notranslate"><span class="pre">MPCORB</span></code> —
+“Minor Planet Center orbits” —
+file that offers each minor planet’s orbital elements as plain text.
+But the raw file requires a bit of preprocessing
+before Skyfield is ready to load it:</p>
+<ul class="simple">
+<li>The first 43 lines of the file are paragraphs that explain its contents,
+state the terms under which software programs may include the data,
+and provide links to documentation.
+Skyfield will need these non-data lines ignored or removed.</li>
+<li>While an uncompressed version of the file is available for download,
+most users opt to download the 55&nbsp;MB compressed version
+from the Minor Planet Center
+to save bandwidth and storage.
+Decompressing the full 190&nbsp;MB of data stored inside
+can require more than 1&nbsp;second of computing time
+depending on your platform and processing speed.</li>
+<li>The complete catalog lists nearly 1&nbsp;million objects,
+which can take several seconds to load and index.</li>
+</ul>
+<p>For all of these reasons,
+it usually makes the most sense to download, uncompress, and filter the file
+before starting your application.</p>
+<p>If your operating system provides tools for pattern matching,
+they might be the fastest tool for selecting specific orbits.
+Here’s how to extract the orbits
+for the first four asteroids to be discovered —
+(1)&nbsp;Ceres, (2)&nbsp;Pallas, (3)&nbsp;Juno, and (4)&nbsp;Vesta —
+on a Linux system:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">zgrep</span> <span class="o">-</span><span class="n">P</span> <span class="s1">&#39;^(00001|00002|00003|00004) &#39;</span> <span class="n">MPCORB</span><span class="o">.</span><span class="n">DAT</span><span class="o">.</span><span class="n">gz</span> <span class="o">&gt;</span> <span class="n">MPCORB</span><span class="o">.</span><span class="n">excerpt</span><span class="o">.</span><span class="n">DAT</span>
+</pre></div>
+</div>
+<p>If your operating system lacks such tools,
+you can build them yourself using Python.
+Note that mass operations that Python implements in C,
+like reading an entire file’s contents with <code class="docutils literal notranslate"><span class="pre">read()</span></code>
+and scanning the full contents with a regular expression <code class="docutils literal notranslate"><span class="pre">findall()</span></code>,
+will be much faster than using a Python loop to read every line.
+Here’s an example script for performing the same search
+as the <code class="docutils literal notranslate"><span class="pre">zgrep</span></code> command shown above:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># mpc_make_excerpt.py</span>
+
+<span class="sd">&quot;&quot;&quot;Search the MPCORB file for minor planets, given their packed designations.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">zlib</span>
+
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">skyfield.data</span> <span class="kn">import</span> <span class="n">mpc</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="p">):</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Grep MPCORB.DAT.gz&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;designations&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;packed designations&#39;</span>
+                        <span class="s1">&#39; of the minor planets whose orbits you need&#39;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+
+    <span class="n">designations</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">designations</span><span class="p">]</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">rb</span><span class="s1">&#39;^((?:</span><span class="si">%s</span><span class="s1">) .*\n)&#39;</span> <span class="o">%</span> <span class="sa">rb</span><span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">designations</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">mpc</span><span class="o">.</span><span class="n">MPCORB_URL</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">wbits</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">MAX_WBITS</span> <span class="o">|</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+</pre></div>
+</div>
+<p>The same four asteroid orbits could then be extracted with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">mpc_make_excerpt</span><span class="o">.</span><span class="n">py</span> <span class="mi">00001</span> <span class="mi">00002</span> <span class="mi">00003</span> <span class="mi">00004</span> <span class="o">&gt;</span> <span class="n">MPCORB</span><span class="o">.</span><span class="n">excerpt</span><span class="o">.</span><span class="n">DAT</span>
+</pre></div>
+</div>
+<p>Note that the minor planets file has no explicit expiration date,
+so <code class="docutils literal notranslate"><span class="pre">load.open()</span></code> in the above script
+will only download the file once.
+Subsequent calls re-open the copy of the file already on your filesystem.
+To force a fresh download, pass <code class="docutils literal notranslate"><span class="pre">reload=True</span></code>.</p>
+<p>In either case, the resulting file — shorn of its text header,
+and containing only minor planet orbits —
+is ready for Skyfield to load.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">load</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;MPCORB.excerpt.DAT&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">minor_planets</span> <span class="o">=</span> <span class="n">mpc</span><span class="o">.</span><span class="n">load_mpcorb_dataframe</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">minor_planets</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;minor planets loaded&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>4 minor planets loaded
+</pre></div>
+</div>
+<p>Some Skyfield users have encountered Minor Planet Center files
+with bodies whose <a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/449">orbital elements are incomplete</a>,
+presumably because their orbits are still being determined.
+To avoid receiving an <code class="docutils literal notranslate"><span class="pre">EphemerisRangeError</span></code> exception
+when Skyfield tries to compute a position for these bodies,
+you can ask Pandas to filter them out of your dataframe:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Filtering the orbits dataframe to avoid triggering</span>
+<span class="c1"># an `EphemerisRangeError` on ill-defined orbits.</span>
+
+<span class="n">bad_orbits</span> <span class="o">=</span> <span class="n">minor_planets</span><span class="o">.</span><span class="n">semimajor_axis_au</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span>
+<span class="n">minor_planets</span> <span class="o">=</span> <span class="n">minor_planets</span><span class="p">[</span><span class="o">~</span><span class="n">bad_orbits</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>As was demonstrated in the previous section on comets,
+you can ask Pandas to index the dataframe by minor planet designation
+for quick lookup.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Index by designation for fast lookup.</span>
+<span class="n">minor_planets</span> <span class="o">=</span> <span class="n">minor_planets</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;designation&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Sample lookups.</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">minor_planets</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;(1) Ceres&#39;</span><span class="p">]</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">minor_planets</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;(4) Vesta&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Finally,
+generating a position involves the same maneuver necessary for comets:
+since minor planet orbits are centered on the Sun,
+the Sun’s position vector must be added to theirs
+to build a complete position.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ceres</span> <span class="o">=</span> <span class="n">sun</span> <span class="o">+</span> <span class="n">mpc</span><span class="o">.</span><span class="n">mpcorb_orbit</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">GM_SUN</span><span class="p">)</span>
+<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">ceres</span><span class="p">)</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>05h 51m 45.85s
++22deg 38&#39; 50.2&quot;
+</pre></div>
+</div>
+</div>
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — Almanac</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-almanac">
+<h1>API Reference — Almanac<a class="headerlink" href="#api-reference-almanac" title="Permalink to this headline">¶</a></h1>
+<p>See <a class="reference internal" href="almanac.html"><span class="doc">Almanac Computation</span></a> for a guide to using these routines to search for the
+times of sunrise, sunset, and the phases of the moon.</p>
+<dl class="function">
+<dt id="skyfield.almanac.phase_angle">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">phase_angle</code><span class="sig-paren">(</span><em>ephemeris</em>, <em>body</em>, <em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.phase_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the phase angle of a body viewed from Earth.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">body</span></code> should be an integer or string that can be looked up in
+the given <code class="docutils literal notranslate"><span class="pre">ephemeris</span></code>, which will also be asked to provide
+positions for the Earth and Sun.  The return value will be an
+<a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> object.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.almanac.fraction_illuminated">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">fraction_illuminated</code><span class="sig-paren">(</span><em>ephemeris</em>, <em>body</em>, <em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.fraction_illuminated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the illuminated fraction of a body viewed from Earth.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">body</span></code> should be an integer or string that can be looked up in
+the given <code class="docutils literal notranslate"><span class="pre">ephemeris</span></code>, which will also be asked to provide
+positions for the Earth and Sun.  The return value will be a
+floating point number between zero and one.  This simple routine
+assumes that the body is a perfectly uniform sphere.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.almanac.find_discrete">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">find_discrete</code><span class="sig-paren">(</span><em>start_time</em>, <em>end_time</em>, <em>f</em>, <em>epsilon=1.1574074074074074e-08</em>, <em>num=12</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.find_discrete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the times at which a discrete function of time changes value.</p>
+<p>This routine is used to find instantaneous events like sunrise,
+transits, and the seasons.  See <a class="reference internal" href="searches.html"><span class="doc">Searching for the dates of astronomical events</span></a> for how to use it
+yourself.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.almanac.seasons">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">seasons</code><span class="sig-paren">(</span><em>ephemeris</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.seasons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a function of time that returns the quarter of the year.</p>
+<p>The function that this returns will expect a single argument that is
+a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> and will return 0 through 3 for
+the seasons Spring, Summer, Autumn, and Winter.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.almanac.moon_phase">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">moon_phase</code><span class="sig-paren">(</span><em>ephemeris</em>, <em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.moon_phase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Moon phase 0°–360° at time <code class="docutils literal notranslate"><span class="pre">t</span></code>, where 180° is Full Moon.</p>
+<p>More precisely: this returns an <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a>
+giving the difference between the geocentric apparent ecliptic
+longitudes of the Moon and Sun, constrained to the interval 0°–360°
+(0–𝜏 radians) where 0° is New Moon and 180° is Full Moon.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.almanac.moon_phases">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">moon_phases</code><span class="sig-paren">(</span><em>ephemeris</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.moon_phases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a function of time that returns the moon phase 0 through 3.</p>
+<p>The function that this returns will expect a single argument that is
+a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> and will return the phase of the
+moon as an integer.  See the accompanying array <code class="docutils literal notranslate"><span class="pre">MOON_PHASES</span></code> if
+you want to give string names to each phase.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.almanac.moon_nodes">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">moon_nodes</code><span class="sig-paren">(</span><em>ephemeris</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.moon_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a function of time that identifies lunar nodes.</p>
+<p>This returns a function taking a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> and
+returning <code class="docutils literal notranslate"><span class="pre">True</span></code> if the Moon is above the ecliptic else <code class="docutils literal notranslate"><span class="pre">False</span></code>.
+See <a class="reference internal" href="almanac.html#lunar-nodes"><span class="std std-ref">Lunar Nodes</span></a> for how to use this routine.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.almanac.oppositions_conjunctions">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">oppositions_conjunctions</code><span class="sig-paren">(</span><em>ephemeris</em>, <em>target</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.oppositions_conjunctions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a function to find oppositions and conjunctions with the Sun.</p>
+<p>See <a class="reference internal" href="almanac.html#oppositions-conjunctions"><span class="std std-ref">Opposition and Conjunction</span></a> for how to call this routine and
+interpret the results.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.almanac.meridian_transits">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">meridian_transits</code><span class="sig-paren">(</span><em>ephemeris</em>, <em>target</em>, <em>topos</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.meridian_transits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a function of time for finding when a body transits the meridian.</p>
+<p>The returned function accepts a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a>
+argument and returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the <code class="docutils literal notranslate"><span class="pre">target</span></code> body is west of the
+observer’s meridian at that time, and otherwise returns <code class="docutils literal notranslate"><span class="pre">False.</span></code>
+See <a class="reference internal" href="almanac.html#transits"><span class="std std-ref">Meridian Transits</span></a> for how to use this to search for a body’s
+meridian transits and antimeridian transits.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.almanac.sunrise_sunset">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">sunrise_sunset</code><span class="sig-paren">(</span><em>ephemeris</em>, <em>topos</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.sunrise_sunset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a function of time that returns whether the Sun is up.</p>
+<p>The function that is returned will expect a single argument that is
+a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a>, and will return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the
+sun is up, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>Skyfield uses the same definition as the United States Naval
+Observatory: the Sun is up when its center is 0.8333 degrees below
+the horizon, which accounts for both its apparent radius of around
+16 arcminutes and also for the 34&nbsp;arcminutes by which atmospheric
+refraction on average lifts the image of the Sun.</p>
+<p>If you need to provide a custom value for refraction, adjust the
+estimate of the Sun’s radius, or account for a vantage point above
+the Earth’s surface, see <a class="reference internal" href="almanac.html#risings-and-settings"><span class="std std-ref">Risings and Settings</span></a> to learn about
+the more versatile <a class="reference internal" href="#skyfield.almanac.risings_and_settings" title="skyfield.almanac.risings_and_settings"><code class="xref py py-func docutils literal notranslate"><span class="pre">risings_and_settings()</span></code></a>
+routine.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.almanac.dark_twilight_day">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">dark_twilight_day</code><span class="sig-paren">(</span><em>ephemeris</em>, <em>topos</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.dark_twilight_day" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a function of time returning whether it is dark, twilight, or day.</p>
+<p>The function that this returns will expect a single argument that is
+a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> and will return:</p>
+<div class="line-block">
+<div class="line">0 — Dark of night.</div>
+<div class="line">1 — Astronomical twilight.</div>
+<div class="line">2 — Nautical twilight.</div>
+<div class="line">3 — Civil twilight.</div>
+<div class="line">4 — Sun is up.</div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.almanac.risings_and_settings">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">risings_and_settings</code><span class="sig-paren">(</span><em>ephemeris</em>, <em>target</em>, <em>topos</em>, <em>horizon_degrees=-0.5666666666666667</em>, <em>radius_degrees=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.risings_and_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a function of time that returns whether a body is up.</p>
+<p>This returns a function taking a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a>
+argument returning <code class="docutils literal notranslate"><span class="pre">True</span></code> if the body’s altazimuth altitude angle
+plus <code class="docutils literal notranslate"><span class="pre">radius_degrees</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">horizon_degrees</span></code>, else
+<code class="docutils literal notranslate"><span class="pre">False</span></code>.  See <a class="reference internal" href="almanac.html#risings-and-settings"><span class="std std-ref">Risings and Settings</span></a> to learn about how to
+search for risings and settings, and to see more about using the
+parameters <code class="docutils literal notranslate"><span class="pre">horizon_degrees</span></code> and <code class="docutils literal notranslate"><span class="pre">radius_degrees</span></code>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.eclipselib.lunar_eclipses">
+<code class="descclassname">skyfield.eclipselib.</code><code class="descname">lunar_eclipses</code><span class="sig-paren">(</span><em>start_time</em>, <em>end_time</em>, <em>eph</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.eclipselib.lunar_eclipses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the lunar eclipses between <code class="docutils literal notranslate"><span class="pre">start_time</span></code> and <code class="docutils literal notranslate"><span class="pre">end_time</span></code>.</p>
+<p>Returns a three-item tuple:</p>
+<ul class="simple">
+<li>A <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> giving the dates of each eclipse.</li>
+<li>An integer array of codes identifying how complete each eclipse is.</li>
+<li>A dictionary of further supplementary details about each eclipse.</li>
+</ul>
+<p>This routine is adapted from the Explanatory Supplement to the
+Astronomical Almanac 11.2.3.  See <a class="reference internal" href="almanac.html#lunar-eclipses"><span class="std std-ref">Lunar eclipses</span></a> for the details
+of how to call this function.</p>
+</dd></dl>
+
+</div>
+
+  </body>
+</html>

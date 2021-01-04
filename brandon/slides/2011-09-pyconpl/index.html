@@ -1,0 +1,1370 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>know-thy-database.rst</title>
+<link rel="stylesheet" href="/css/slides.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="know-thy-database">
+<h1>Know Thy Database</h1>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line">──────────────────</div>
+<div class="line">Brandon Rhodes</div>
+<div class="line"><tt class="docutils literal">PyCon PL</tt></div>
+<div class="line">Mąchocice, Poland</div>
+<div class="line">2011 September 24</div>
+<div class="line">──────────────────</div>
+</div>
+</div>
+<div class="section" id="the-argument">
+<h1>The Argument.</h1>
+<ul class="simple">
+<li>Easier to read <em>data</em> than <em>code</em></li>
+<li>Your data should be <em>visible</em></li>
+<li>Your data should be <em>easy to read</em></li>
+<li>Your data should be <em>easy to change</em></li>
+<li><em>NoSQL document databases</em> can help</li>
+</ul>
+</div>
+<div class="section" id="the-test">
+<h1>The Test</h1>
+<div class="line-block">
+<div class="line">You have <em>5 seconds</em> to study</div>
+<div class="line">the following Python code</div>
+<div class="line">that creates a <tt class="docutils literal">dict</tt></div>
+</div>
+</div>
+<div class="section" id="slide">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map1</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">hostname</span> <span class="o">=</span> <span class="s1">&#39;www.google.com&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">parts</span> <span class="o">=</span> <span class="n">hostname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)):</span>
+<span class="o">...</span>     <span class="n">subparts</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+<span class="o">...</span>     <span class="n">subname</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subparts</span><span class="p">)</span>
+<span class="o">...</span>     <span class="n">map1</span><span class="p">[</span><span class="n">subname</span><span class="p">]</span> <span class="o">=</span> <span class="n">subparts</span>
+</pre></div>
+
+</div>
+<div class="section" id="id1">
+
+<div class="line-block">
+<div class="line">So — do you know how the</div>
+<div class="line">resulting <tt class="docutils literal">dict</tt> looks?</div>
+</div>
+</div>
+<div class="section" id="id2">
+
+<p>I <em>think</em> the code was clear</p>
+<div class="line-block">
+<div class="line">But just in case,</div>
+<div class="line">here is different code</div>
+<div class="line">that creates the same <tt class="docutils literal">dict</tt></div>
+</div>
+<p><em>(You will have 5 seconds)</em></p>
+</div>
+<div class="section" id="id3">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map2</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">hostname</span> <span class="o">=</span> <span class="s1">&#39;www.google.com&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">while</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">hostname</span><span class="p">:</span>
+<span class="o">...</span>     <span class="n">map2</span><span class="p">[</span><span class="n">hostname</span><span class="p">]</span> <span class="o">=</span> <span class="n">hostname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="o">...</span>     <span class="n">hostname</span> <span class="o">=</span> <span class="n">hostname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+<span class="o">...</span> <span class="k">else</span><span class="p">:</span>
+<span class="o">...</span>     <span class="n">map2</span><span class="p">[</span><span class="n">hostname</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span> <span class="n">hostname</span> <span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line">Do you know how the</div>
+<div class="line">resulting <tt class="docutils literal">dict</tt> looks?</div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<div class="line-block">
+<div class="line">Finally, here is a third</div>
+<div class="line">example of how to build the <tt class="docutils literal">dict</tt></div>
+</div>
+<p><em>(You will have 5 seconds)</em></p>
+</div>
+<div class="section" id="id6">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map3</span> <span class="o">=</span> <span class="p">{</span>
+<span class="o">...</span>     <span class="s1">&#39;www.google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;www&#39;</span><span class="p">,</span> <span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id7">
+
+<p>All right!</p>
+<div class="line-block">
+<div class="line">You had equal time</div>
+<div class="line">with all three slides</div>
+</div>
+</div>
+<div class="section" id="id8">
+
+<div class="line-block">
+<div class="line">Those three slides</div>
+<div class="line">describe the <em>exact same</em> data</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map1</span> <span class="o">==</span> <span class="n">map2</span> <span class="o">==</span> <span class="n">map3</span>
+<span class="bp">True</span>
+</pre></div>
+
+</div>
+<div class="section" id="id9">
+
+<div class="line-block">
+<div class="line">What is this data structure?</div>
+</div>
+<div class="line-block">
+<div class="line">A <tt class="docutils literal">dict</tt> whose keys are the hostname</div>
+<div class="line"><tt class="docutils literal">www.google.com</tt> and the domains above it,</div>
+<div class="line">and whose values are the <tt class="docutils literal">'.'</tt> separated</div>
+<div class="line">components of each domain name</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map3</span> <span class="o">=</span> <span class="p">{</span>
+<span class="o">...</span>     <span class="s1">&#39;www.google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;www&#39;</span><span class="p">,</span> <span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id10">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map1</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">hostname</span> <span class="o">=</span> <span class="s1">&#39;www.google.com&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">parts</span> <span class="o">=</span> <span class="n">hostname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)):</span>
+<span class="o">...</span>     <span class="n">subparts</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+<span class="o">...</span>     <span class="n">subname</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subparts</span><span class="p">)</span>
+<span class="o">...</span>     <span class="n">map1</span><span class="p">[</span><span class="n">subname</span><span class="p">]</span> <span class="o">=</span> <span class="n">subparts</span>
+</pre></div>
+
+<p>Compare the code ↑ with the data ↓</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map3</span> <span class="o">=</span> <span class="p">{</span>
+<span class="o">...</span>     <span class="s1">&#39;www.google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;www&#39;</span><span class="p">,</span> <span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id11">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map1</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">hostname</span> <span class="o">=</span> <span class="s1">&#39;www.google.com&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">parts</span> <span class="o">=</span> <span class="n">hostname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)):</span>
+<span class="o">...</span>     <span class="n">subparts</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+<span class="o">...</span>     <span class="n">subname</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subparts</span><span class="p">)</span>
+<span class="o">...</span>     <span class="n">map1</span><span class="p">[</span><span class="n">subname</span><span class="p">]</span> <span class="o">=</span> <span class="n">subparts</span>
+</pre></div>
+
+<p>The code and the data are <em>isomorphic</em></p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map3</span> <span class="o">=</span> <span class="p">{</span>
+<span class="o">...</span>     <span class="s1">&#39;www.google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;www&#39;</span><span class="p">,</span> <span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id12">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map1</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">hostname</span> <span class="o">=</span> <span class="s1">&#39;www.google.com&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">parts</span> <span class="o">=</span> <span class="n">hostname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)):</span>
+<span class="o">...</span>     <span class="n">subparts</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+<span class="o">...</span>     <span class="n">subname</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subparts</span><span class="p">)</span>
+<span class="o">...</span>     <span class="n">map1</span><span class="p">[</span><span class="n">subname</span><span class="p">]</span> <span class="o">=</span> <span class="n">subparts</span>
+</pre></div>
+
+<p>But the data can be read more quickly!</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map3</span> <span class="o">=</span> <span class="p">{</span>
+<span class="o">...</span>     <span class="s1">&#39;www.google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;www&#39;</span><span class="p">,</span> <span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id13">
+
+<img alt="../2011-09-pyatl/mythical-cover.jpg" src="../2011-09-pyatl/mythical-cover.jpg" style="height: 500px;" />
+</div>
+<div class="section" id="the-mythical-man-month-by-fred-brooks">
+<h1><em>The Mythical Man-Month</em> by Fred Brooks</h1>
+<div class="line-block">
+<div class="line">Famous book about software project</div>
+<div class="line">management, famous for several quotes</div>
+</div>
+</div>
+<div class="section" id="id14">
+<h1><em>The Mythical Man-Month</em> by Fred Brooks</h1>
+<div class="line-block">
+<div class="line"><em>“The bearing of a child takes nine months,</em></div>
+<div class="line"><em>no matter how many women are assigned.”</em></div>
+</div>
+</div>
+<div class="section" id="id15">
+
+<div class="line-block">
+<div class="line">Fred Books also talks</div>
+<div class="line">about <em>code</em> and <em>data</em></div>
+</div>
+</div>
+<div class="section" id="id16">
+<h1><em>The Mythical Man-Month</em> by Fred Brooks</h1>
+<div class="line-block">
+<div class="line">“Show me your <em>flowchart</em></div>
+<div class="line">and conceal your tables,</div>
+<div class="line">and I shall continue to be mystified.</div>
+</div>
+<div class="line-block">
+<div class="line">Show me your <em>tables</em>,</div>
+<div class="line">and I won't usually need your flowchart;</div>
+<div class="line">it'll be obvious.”</div>
+</div>
+<div class="line-block">
+<div class="line"><em>(1975)</em></div>
+</div>
+</div>
+<div class="section" id="what-is-a-flowchart">
+<h1>What is a flowchart?</h1>
+</div>
+<div class="section" id="id17">
+
+<img alt="tech_support_cheat_sheet.png" src="tech_support_cheat_sheet.png" style="height: 560px;" />
+</div>
+<div class="section" id="what-is-a-table">
+<h1>What is a table?</h1>
+<div class="line-block">
+<div class="line">A picture of how your data</div>
+<div class="line">is laid out in memory or disk</div>
+</div>
+</div>
+<div class="section" id="id18">
+<h1><em>The Mythical Man-Month</em> by Fred Brooks</h1>
+<div class="line-block">
+<div class="line">“Show me your <em>flowchart</em></div>
+<div class="line">and conceal your tables,</div>
+<div class="line">and I shall continue to be mystified.</div>
+</div>
+<div class="line-block">
+<div class="line">Show me your <em>tables</em>,</div>
+<div class="line">and I won't usually need your flowchart;</div>
+<div class="line">it'll be obvious.”</div>
+</div>
+<div class="line-block">
+<div class="line"><em>(1975)</em></div>
+</div>
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line">I will, in fact, claim that the difference</div>
+<div class="line">between a <em>bad</em> programmer and a <em>good</em> one</div>
+<div class="line">is whether they consider their <em>code</em> or</div>
+<div class="line">their <em>data structures</em> more important.</div>
+</div>
+<div class="line-block">
+<div class="line">Bad programmers worry about the code.</div>
+<div class="line"><em>Good</em> programmers worry about <em>data structures</em></div>
+<div class="line">and their relationships.</div>
+</div>
+<p><strong>— Linus Torvalds</strong></p>
+</div>
+<div class="section" id="interesting-fact">
+<h1>Interesting Fact:</h1>
+<div class="line-block">
+<div class="line">Fred Brooks was comparing</div>
+<div class="line">a <em>picture</em> (“your flowchart”)</div>
+<div class="line">with <em>another picture</em> (“your tables”)</div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="line-block">
+<div class="line">Back then, programmers worked</div>
+<div class="line">with <em>three</em> things at once!</div>
+</div>
+<ul class="simple">
+<li>Flowcharts</li>
+<li>Tables</li>
+<li>Code</li>
+</ul>
+</div>
+<div class="section" id="what-does-this-mean">
+<h1>What does this mean?</h1>
+<div class="line-block">
+<div class="line">Code was <em>so ugly</em> in</div>
+<div class="line">Assembler, Fortran, PL/I, and COBOL</div>
+<div class="line">that you needed separate pictures</div>
+<div class="line">of <em>both</em> your algorithm</div>
+<div class="line">and your data!</div>
+</div>
+</div>
+<div class="section" id="id21">
+
+<div class="line-block">
+<div class="line">Fred Brooks talks about</div>
+<div class="line">a <em>flowchart</em> and <em>tables</em></div>
+</div>
+<p><strong>but</strong></p>
+<div class="line-block">
+<div class="line">Our example simply</div>
+<div class="line">used <em>Python</em> and <em>Python</em>!</div>
+</div>
+</div>
+<div class="section" id="id22">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map1</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">hostname</span> <span class="o">=</span> <span class="s1">&#39;www.google.com&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">parts</span> <span class="o">=</span> <span class="n">hostname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)):</span>
+<span class="o">...</span>     <span class="n">subparts</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+<span class="o">...</span>     <span class="n">subname</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subparts</span><span class="p">)</span>
+<span class="o">...</span>     <span class="n">map1</span><span class="p">[</span><span class="n">subname</span><span class="p">]</span> <span class="o">=</span> <span class="n">subparts</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map3</span> <span class="o">=</span> <span class="p">{</span>
+<span class="o">...</span>     <span class="s1">&#39;www.google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;www&#39;</span><span class="p">,</span> <span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id23">
+
+<div class="line-block">
+<div class="line">Python is <em>so beautiful</em></div>
+<div class="line">that you can use it to draw</div>
+<div class="line">pretty pictures of both</div>
+<div class="line">algorithms <em>and</em> data</div>
+</div>
+</div>
+<div class="section" id="id24">
+
+<p>Beautiful ideas are important</p>
+</div>
+<div class="section" id="id25">
+
+<img alt="../2011-09-pyatl/feynman.jpg" src="../2011-09-pyatl/feynman.jpg" />
+</div>
+<div class="section" id="feynman">
+<h1>Feynman</h1>
+</div>
+<div class="section" id="id26">
+
+<object data="../2011-09-pyatl/Feynmann_Diagram_Gluon_Radiation.svg" style="width: 300px; height: 200px;" type="image/svg+xml">
+../2011-09-pyatl/Feynmann_Diagram_Gluon_Radiation.svg</object>
+</div>
+<div class="section" id="feynman-diagram">
+<h1>Feynman diagram</h1>
+</div>
+<div class="section" id="the-nobel-prize-in-physics-1965">
+<h1>The Nobel Prize in Physics 1965</h1>
+<div class="line-block">
+<div class="line">Sin-Itiro Tomonaga</div>
+<div class="line">Julian Schwinger</div>
+<div class="line">Richard P. Feynman</div>
+</div>
+<div class="line-block">
+<div class="line"><em>was awarded jointly</em></div>
+<div class="line"><em>“for their fundamental work</em></div>
+<div class="line"><em>in quantum electrodynamics (QED),</em></div>
+</div>
+<div class="line-block">
+<div class="line"><em>with deep-ploughing consequences for the</em></div>
+<div class="line"><em>physics of elementary particles.”</em></div>
+</div>
+</div>
+<div class="section" id="id27">
+
+<div class="line-block">
+<div class="line">All three scientists</div>
+<div class="line">had the same <em>idea</em></div>
+<div class="line">the same <em>math</em></div>
+</div>
+</div>
+<div class="section" id="id28">
+
+<div class="line-block">
+<div class="line">But physics students still use</div>
+<div class="line"><strong>Feynman diagrams</strong></div>
+</div>
+</div>
+<div class="section" id="why">
+<h1>Why?</h1>
+<div class="line-block">
+<div class="line">Because all three scientists</div>
+<div class="line">were working on the same ideas,</div>
+<div class="line">but <em>Feynman</em> made those</div>
+<div class="line">ideas easy to <em>see</em></div>
+</div>
+</div>
+<div class="section" id="id29">
+
+<div class="line-block">
+<div class="line"><em>Visualization</em> is a</div>
+<div class="line">key component of <em>thinking</em></div>
+</div>
+</div>
+<div class="section" id="id30">
+
+<div class="line-block">
+<div class="line">See the recent book</div>
+<div class="line"><em>Creating Scientific Concepts</em></div>
+<div class="line">by Nancy Nersessian</div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<img alt="../2011-09-pyatl/maxwell-light.jpg" src="../2011-09-pyatl/maxwell-light.jpg" style="height: 560px;" />
+</div>
+<div class="section" id="nersessian">
+<h1>Nersessian:</h1>
+<div class="line-block">
+<div class="line">To produce <em>abstract</em> differential equations</div>
+<div class="line">Maxwell had to use <em>visual</em> physical analogies</div>
+</div>
+</div>
+<div class="section" id="important-python-feature">
+<h1>Important Python feature</h1>
+<div class="line-block">
+<div class="line">You do not have to leave</div>
+<div class="line">Python to see your data</div>
+</div>
+</div>
+<div class="section" id="id32">
+
+<div class="line-block">
+<div class="line">Python offers</div>
+<div class="line"><strong>syntactic support</strong></div>
+<div class="line">for fundamental containers</div>
+</div>
+<p><tt class="docutils literal">tuple</tt>, <tt class="docutils literal">list</tt>, <tt class="docutils literal">set</tt>, <tt class="docutils literal">dict</tt></p>
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line">Right in your code,</div>
+<div class="line">you <em>can draw picture</em> of the</div>
+<div class="line">data structure you want Python to build</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map3</span> <span class="o">=</span> <span class="p">{</span>
+<span class="o">...</span>     <span class="s1">&#39;www.google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;www&#39;</span><span class="p">,</span> <span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id34">
+
+<div class="line-block">
+<div class="line">Python programmers share a <em>common picture</em></div>
+<div class="line">in their heads of how the data types look</div>
+</div>
+<div class="line-block">
+<div class="line"><em>and therefore</em></div>
+</div>
+<div class="line-block">
+<div class="line">we all share a <em>common visual language</em></div>
+<div class="line">for our articles, diagrams, and debugging</div>
+</div>
+</div>
+<div class="section" id="declarative">
+<h1>“Declarative”</h1>
+<div class="line-block">
+<div class="line">Means <em>showing</em> what you want</div>
+<div class="line">instead of writing a procedure</div>
+<div class="line">that <em>produces</em> what you want</div>
+</div>
+</div>
+<div class="section" id="it-is-the-difference-between">
+<h1>It is the difference between:</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map1</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">hostname</span> <span class="o">=</span> <span class="s1">&#39;www.google.com&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">parts</span> <span class="o">=</span> <span class="n">hostname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)):</span>
+<span class="o">...</span>     <span class="n">subparts</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+<span class="o">...</span>     <span class="n">subname</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subparts</span><span class="p">)</span>
+<span class="o">...</span>     <span class="n">map1</span><span class="p">[</span><span class="n">subname</span><span class="p">]</span> <span class="o">=</span> <span class="n">subparts</span>
+</pre></div>
+
+<p>↑ procedural / declarative ↓</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">map3</span> <span class="o">=</span> <span class="p">{</span>
+<span class="o">...</span>     <span class="s1">&#39;www.google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;www&#39;</span><span class="p">,</span> <span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;google.com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;google&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="s1">&#39;com&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;com&#39;</span><span class="p">],</span>
+<span class="o">...</span>     <span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id35">
+<h1>“Declarative”</h1>
+<div class="line-block">
+<div class="line">Do you want to be popular?</div>
+</div>
+<div class="line-block">
+<div class="line">Write an API</div>
+<div class="line">that lets programmers</div>
+<div class="line"><em>draw a picture</em> with code</div>
+</div>
+</div>
+<div class="section" id="sqlalchemy">
+<h1>SQLAlchemy</h1>
+<div class="line-block">
+<div class="line">Once upon a time,</div>
+<div class="line">you had to build tables and classes</div>
+<div class="line"><em>then</em> connect them up with code</div>
+</div>
+</div>
+<div class="section" id="id36">
+
+<div class="line-block">
+<div class="line">Even back then, table definitions</div>
+<div class="line">were pretty declarative</div>
+</div>
+</div>
+<div class="section" id="id37">
+
+<div class="highlight"><pre><span></span><span class="n">users_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;group_id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">),</span>
+    <span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line">But using the ORM to connect tables</div>
+<div class="line">to classes was <em>not</em> declarative</div>
+</div>
+</div>
+<div class="section" id="id39">
+
+<div class="highlight"><pre><span></span><span class="n">users_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;group_id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">),</span>
+    <span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">mapper</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">users_table</span><span class="p">,</span> <span class="n">properties</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="n">relation</span><span class="p">(</span><span class="n">Group</span><span class="p">),</span>
+    <span class="p">})</span>
+</pre></div>
+
+</div>
+<div class="section" id="id40">
+
+<div class="line-block">
+<div class="line">Jonathan LaCour became famous</div>
+<div class="line">for <em>Exilir</em>, a declarative layer</div>
+<div class="line">written on top of SQLAlchemy</div>
+</div>
+<div class="line-block">
+<div class="line">So Mike Bayer added a <tt class="docutils literal">declarative</tt></div>
+<div class="line">layer to SQLAlchemy itself!</div>
+</div>
+</div>
+<div class="section" id="id41">
+
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sqlalchemy.ext.declarative</span> \
+    <span class="kn">import</span> <span class="n">declarative_base</span>
+
+<span class="n">Base</span> <span class="o">=</span> <span class="n">declarative_base</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">&#39;users&#39;</span>
+
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">)</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">)</span>
+    <span class="n">group_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">)</span>
+
+    <span class="n">group</span> <span class="o">=</span> <span class="n">relation</span><span class="p">(</span><span class="n">Group</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id42">
+
+<div class="line-block">
+<div class="line">It seems that</div>
+<div class="line">everyone wants a <em>picture</em></div>
+<div class="line">not a <em>procedure</em></div>
+</div>
+</div>
+<div class="section" id="declarative-syntax">
+<h1>Declarative syntax</h1>
+<ul class="simple">
+<li>People are excited about it</li>
+<li>SQLAlchemy has a declarative syntax</li>
+<li>Django ORM has a declarative syntax</li>
+<li>But Python has been supporting declarative since 1991!</li>
+</ul>
+</div>
+<div class="section" id="id43">
+
+<p>This is really a <em>declaration</em>:</p>
+<div class="highlight"><pre><span></span><span class="n">mydict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Fibonacci&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]}</span>
+</pre></div>
+
+<p>vs languages that force you to write:</p>
+<div class="highlight"><pre><span></span><span class="n">mylist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">mylist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">mylist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">mylist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">mylist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">mylist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">mydict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">mydict</span><span class="p">[</span><span class="s1">&#39;Fibonacci&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mylist</span>
+</pre></div>
+
+</div>
+<div class="section" id="let-s-talk-about-comments">
+<h1>Let's Talk About Comments</h1>
+</div>
+<div class="section" id="id44">
+
+<div class="line-block">
+<div class="line">Example comments</div>
+<div class="line">from Stack Overflow:</div>
+</div>
+</div>
+<div class="section" id="id45">
+
+<div class="highlight"><pre><span></span><span class="c1"># drunk, fix later</span>
+</pre></div>
+
+</div>
+<div class="section" id="id46">
+
+<div class="highlight"><pre><span></span><span class="k">return</span> <span class="mi">1</span>   <span class="c1"># returns 1</span>
+</pre></div>
+
+</div>
+<div class="section" id="id47">
+
+<div class="highlight"><pre><span></span><span class="c1"># I did this the other way</span>
+</pre></div>
+
+</div>
+<div class="section" id="id48">
+
+<div class="highlight"><pre><span></span><span class="c1"># I don&#39;t know why I need this, but it</span>
+<span class="c1"># stops the people being upside-down</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="o">-</span><span class="n">x</span>
+</pre></div>
+
+</div>
+<div class="section" id="id49">
+
+<div class="highlight"><pre><span></span><span class="c1"># Magic, do not touch</span>
+</pre></div>
+
+</div>
+<div class="section" id="id50">
+
+<div class="highlight"><pre><span></span><span class="c1"># If this comment is removed</span>
+<span class="c1"># the program will blow up</span>
+</pre></div>
+
+</div>
+<div class="section" id="id51">
+
+<div class="highlight"><pre><span></span><span class="c1"># Comment this later</span>
+</pre></div>
+
+</div>
+<div class="section" id="id52">
+
+<p>And, my favorite:</p>
+</div>
+<div class="section" id="id53">
+
+<div class="highlight"><pre><span></span><span class="c1"># Always returns true.</span>
+<span class="c1">#</span>
+<span class="k">def</span> <span class="nf">isAvailable</span><span class="p">():</span>
+   <span class="k">return</span> <span class="bp">False</span>
+</pre></div>
+
+</div>
+<div class="section" id="id54">
+
+<p>Comments are controversial</p>
+</div>
+<div class="section" id="extreme-programming-xp">
+<h1>Extreme Programming (XP)</h1>
+<ul class="simple">
+<li>“If a method needs comments it needs to be rewritten”</li>
+<li>“Good code is self-documenting”</li>
+<li>“Comments lie, code doesn’t”</li>
+</ul>
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line">This Extreme Programming advice</div>
+<div class="line">is <em>good</em> if it makes you think about</div>
+<div class="line">how your code might be clearer</div>
+</div>
+</div>
+<div class="section" id="id56">
+
+<div class="highlight"><pre><span></span><span class="c1"># the zero means &quot;not found&quot;</span>
+<span class="n">day_of_week</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="o">...</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">day_of_week</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+
+<p>↑ less clear / more clear ↓</p>
+<div class="highlight"><pre><span></span><span class="n">NOT_FOUND</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">day_of_week</span> <span class="o">=</span> <span class="n">NOT_FOUND</span>
+<span class="o">...</span>
+<span class="k">if</span> <span class="n">day_of_week</span> <span class="o">==</span> <span class="n">NOT_FOUND</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id57">
+
+<div class="line-block">
+<div class="line">But <em>contra</em> the XP people,</div>
+<div class="line">I think comments are sometimes <em>very</em> valuable!</div>
+</div>
+<div class="line-block">
+<div class="line">I have two favorite uses for comments</div>
+</div>
+</div>
+<div class="section" id="id58">
+
+<div class="line-block">
+<div class="line">Comments record important knowledge</div>
+<div class="line">that I learned while using a</div>
+<div class="line">library someone else wrote</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">thirdparty</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">thirdparty</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">dbpath</span><span class="p">)</span>
+
+<span class="c1"># Drat. &quot;thirdparty&quot; ignores the</span>
+<span class="c1"># global encoding on old version-3</span>
+<span class="c1"># databases; so we set it again:</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">set_encoding</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id59">
+
+<div class="line-block">
+<div class="line">But even more important:</div>
+<div class="line">comments can <em>draw pictures</em> of data</div>
+</div>
+</div>
+<div class="section" id="id60">
+
+<div class="line-block">
+<div class="line">Very simple code, easy to read,</div>
+<div class="line">but <em>without</em> pictures:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">simplify_name</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="o">...</span>     <span class="n">w</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="o">...</span>     <span class="k">while</span> <span class="n">w</span> <span class="ow">and</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+<span class="o">...</span>         <span class="k">del</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="o">...</span>     <span class="k">while</span> <span class="n">w</span> <span class="ow">and</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">w</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+<span class="o">...</span>         <span class="k">del</span> <span class="n">w</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="o">...</span>     <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">The <em>operations</em> are simple and clear</div>
+<div class="line">but the <em>purpose</em> of the code is not!</div>
+</div>
+</div>
+<div class="section" id="id61">
+
+<div class="line-block">
+<div class="line"><em>With</em> comment-pictures:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">simplify_name</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="o">...</span>     <span class="n">w</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="c1"># &#39;Dr.&#39; &#39;Ed&#39; &#39;Smith&#39; &#39;Jr.&#39;</span>
+<span class="o">...</span>     <span class="k">while</span> <span class="n">w</span> <span class="ow">and</span>  <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>  <span class="c1"># &#39;Dr.&#39;</span>
+<span class="o">...</span>         <span class="k">del</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="o">...</span>     <span class="k">while</span> <span class="n">w</span> <span class="ow">and</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">w</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># &#39;Jr.&#39;</span>
+<span class="o">...</span>         <span class="k">del</span> <span class="n">w</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="o">...</span>     <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>         <span class="c1"># &#39;Ed Smith&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id62">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">simplify_name</span><span class="p">(</span><span class="s1">&#39;Mr. Gregory M. Jones Sr.&#39;</span><span class="p">)</span>
+<span class="s1">&#39;Gregory M. Jones&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id63">
+
+<div class="line-block">
+<div class="line">You can also use a docstring:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">simplify_name</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="o">...</span>     <span class="s2">&quot;&quot;&quot;Remove titles and suffixes from a name.</span>
+<span class="s2">...</span>
+<span class="s2">...     &gt;&gt;&gt; simplify_name(&#39;Dr. Ed Smith Jr.&#39;)</span>
+<span class="s2">...     &#39;Ed Smith&#39;</span>
+<span class="s2">...</span>
+<span class="s2">...     &quot;&quot;&quot;</span>
+<span class="o">...</span>     <span class="n">w</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="o">...</span>     <span class="k">while</span> <span class="n">w</span> <span class="ow">and</span>  <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>  <span class="c1"># &#39;Dr.&#39;</span>
+<span class="o">...</span>         <span class="k">del</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="o">...</span>     <span class="k">while</span> <span class="n">w</span> <span class="ow">and</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">w</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># &#39;Jr.&#39;</span>
+<span class="o">...</span>         <span class="k">del</span> <span class="n">w</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="o">...</span>     <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id64">
+
+<div class="highlight"><pre><span></span><span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>  <span class="c1"># &#39;Ed Smith&#39;</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Note that these comments use the</div>
+<div class="line">canonical <tt class="docutils literal">repr()</tt> syntax for strings</div>
+</div>
+<div class="line-block">
+<div class="line">Because Python gives us a <em>standard way</em></div>
+<div class="line">to represent data, our comments will mean</div>
+<div class="line">the <em>same thing</em> to all Python programmers</div>
+</div>
+</div>
+<div class="section" id="id65">
+
+<div class="line-block">
+<div class="line">So Python's powerful data syntax</div>
+<div class="line">leads both to clear <em>code</em> and to</div>
+<div class="line">clear communication <em>about</em> code</div>
+</div>
+</div>
+<div class="section" id="id66">
+
+<p>So let us return to Fred Brooks</p>
+</div>
+<div class="section" id="id67">
+<h1><em>The Mythical Man-Month</em> by Fred Brooks</h1>
+<div class="line-block">
+<div class="line">“Show me your <em>flowchart</em></div>
+<div class="line">and conceal your tables,</div>
+<div class="line">and I shall continue to be mystified.</div>
+</div>
+<div class="line-block">
+<div class="line">Show me your <em>tables</em>,</div>
+<div class="line">and I won't usually need your flowchart;</div>
+<div class="line">it'll be obvious.”</div>
+</div>
+<div class="line-block">
+<div class="line"><em>(1975)</em></div>
+</div>
+</div>
+<div class="section" id="what-about-your-database">
+<h1>What about your database?</h1>
+</div>
+<div class="section" id="id68">
+
+<p>Can you honestly say this?</p>
+<div class="line-block">
+<div class="line"><em>Show me your code,</em></div>
+<div class="line"><em>and I shall be mystified.</em></div>
+</div>
+<div class="line-block">
+<div class="line"><em>Show me your database,</em></div>
+<div class="line"><em>and your code will be obvious!</em></div>
+</div>
+</div>
+<div class="section" id="id69">
+
+<p>Is your <em>database</em> clear and simple?</p>
+</div>
+<div class="section" id="id70">
+
+<p>If Fred Brooks is right,</p>
+<p><em>data</em></p>
+<div class="line-block">
+<div class="line">should be the simplest</div>
+<div class="line">part of your software</div>
+</div>
+</div>
+<div class="section" id="do-you-understand-your-database">
+<h1>Do you understand your database?</h1>
+</div>
+<div class="section" id="id71">
+
+<ul class="simple">
+<li>Do you dare to look inside?</li>
+<li>Do you consult its schema?</li>
+<li>Can you load data directly?</li>
+</ul>
+</div>
+<div class="section" id="my-claim">
+<h1>My claim:</h1>
+</div>
+<div class="section" id="id72">
+
+<div class="line-block">
+<div class="line"><strong>SQL scares people away</strong></div>
+<div class="line"><strong>from their own data</strong></div>
+</div>
+</div>
+<div class="section" id="the-sql-inversion">
+<h1>The SQL Inversion</h1>
+<div class="line-block">
+<div class="line">Python code — <em>readable but complex</em></div>
+<div class="line">ORM — <em>declarative and simple</em></div>
+<div class="line">Database — <em>complex mystery!</em></div>
+</div>
+</div>
+<div class="section" id="sql">
+<h1>SQL</h1>
+<ul class="simple">
+<li><em>Powerful</em> language</li>
+<li><em>Excellent</em> support for relational thinking</li>
+<li><em>Declarative</em> (!) description of query</li>
+</ul>
+</div>
+<div class="section" id="id73">
+
+<div class="line-block">
+<div class="line">I am a SQL expert,</div>
+<div class="line">I have used it for 10 years,</div>
+<div class="line">I can do things with SQL that</div>
+<div class="line">I cannot do in other languages!</div>
+</div>
+</div>
+<div class="section" id="i-sql">
+<h1>I ♥ SQL</h1>
+</div>
+<div class="section" id="but-sql">
+<h1>But SQL:</h1>
+<p><em>Different</em> paradigm than Python</p>
+<p>Uses a completely <em>different</em> syntax</p>
+<div class="line-block">
+<div class="line">Makes you learn</div>
+<div class="line">a <em>whole new language</em></div>
+<div class="line">if you want direct access</div>
+<div class="line">to your own data</div>
+</div>
+</div>
+<div class="section" id="no-wonder-people-avoid-sql">
+<h1>No wonder people avoid SQL!</h1>
+<div class="line-block">
+<div class="line">But hiding behind an ORM deprives</div>
+<div class="line">you of your database's true power</div>
+</div>
+<ul class="simple">
+<li>Cannot do <em>bulk operations</em></li>
+<li>Cannot see <em>raw</em> table rows</li>
+<li>Cannot use other tools</li>
+</ul>
+</div>
+<div class="section" id="what-about-zodb">
+<h1>What about ZODB?</h1>
+</div>
+<div class="section" id="id74">
+
+<div class="line-block">
+<div class="line">I owe an <em>apology</em></div>
+<div class="line">to <em>Martijn Faassen</em></div>
+</div>
+</div>
+<div class="section" id="id75">
+
+<img alt="faassen.jpg" src="faassen.jpg" />
+</div>
+<div class="section" id="id76">
+
+<div class="line-block">
+<div class="line">I owe an <em>apology</em></div>
+<div class="line">to <em>Martijn Faassen</em></div>
+</div>
+<div class="line-block">
+<div class="line">(And since I will be</div>
+<div class="line">in Holland on Monday,</div>
+<div class="line">I had better give my</div>
+<div class="line">apology <em>now</em>!)</div>
+</div>
+</div>
+<div class="section" id="grok">
+<h1>Grok</h1>
+<div class="line-block">
+<div class="line"><em>Declarative</em> (!) web framework built</div>
+<div class="line">on top of <em>Zope Component Framework</em></div>
+<div class="line">(“Bluebream”)</div>
+</div>
+</div>
+<div class="section" id="id77">
+
+<div class="line-block">
+<div class="line">I was so active in Grok,</div>
+<div class="line">Martijn invited me to the week-long</div>
+</div>
+<div class="line-block">
+<div class="line"><em>2009 Cave Sprint</em></div>
+</div>
+<div class="line-block">
+<div class="line">with other developers at his house!</div>
+</div>
+</div>
+<div class="section" id="martijn-faassen">
+<h1>Martijn Faassen</h1>
+<ul class="simple">
+<li><em>Good</em> programmer</li>
+<li><em>Wonderful</em> host</li>
+<li><em>Very</em> generous</li>
+</ul>
+</div>
+<div class="section" id="but-i-never-used-grok-again">
+<h1>But I never used Grok again</h1>
+</div>
+<div class="section" id="sorry-martijn">
+<h1>Sorry, Martijn</h1>
+</div>
+<div class="section" id="id78">
+<h1>Why?</h1>
+<p>Easy excuses:</p>
+<ul class="simple">
+<li><em>Not popular</em> in United States</li>
+<li>Not a <em>good fit</em> for my projects</li>
+<li>Projects had <em>legacy databases</em></li>
+</ul>
+</div>
+<div class="section" id="id79">
+
+<p>But what is the real reason?</p>
+</div>
+<div class="section" id="too-much-magic">
+<h1>Too Much Magic</h1>
+</div>
+<div class="section" id="id80">
+
+<div class="line-block">
+<div class="line">At the sprint I watched</div>
+<div class="line">Christian Theune, a very good programmer,</div>
+<div class="line">fix a problem in a client's ZODB</div>
+</div>
+</div>
+<div class="section" id="id81">
+
+<p><em>It was terrible</em></p>
+<p>His code looked like line noise</p>
+</div>
+<div class="section" id="id82">
+<h1>Why?</h1>
+<div class="line-block">
+<div class="line">Because at the foundation of the ZODB</div>
+<div class="line">is the complexity of Python objects</div>
+<div class="line">(<tt class="docutils literal">__dict__</tt>, <tt class="docutils literal">__getattr__</tt>, …)</div>
+</div>
+<div class="line-block">
+<div class="line">+</div>
+</div>
+<div class="line-block">
+<div class="line">the ZODB's own C-language extensions</div>
+<div class="line">that make objects <em>even more complex</em></div>
+</div>
+</div>
+<div class="section" id="id83">
+
+<p>What is beneath your objects?</p>
+<p><strong>C code like:</strong></p>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">-&gt;</span><span class="n">cache</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">/*</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">ring</span>
+       <span class="k">for</span> <span class="n">this</span> <span class="n">unghostified</span> <span class="nb">object</span><span class="o">.</span> <span class="o">*/</span>
+    <span class="bp">self</span><span class="o">-&gt;</span><span class="n">cache</span><span class="o">-&gt;</span><span class="n">non_ghost_count</span><span class="o">++</span><span class="p">;</span>
+    <span class="bp">self</span><span class="o">-&gt;</span><span class="n">cache</span><span class="o">-&gt;</span><span class="n">total_estimated_size</span> <span class="o">+=</span>
+      <span class="n">_estimated_size_in_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">-&gt;</span><span class="n">estimated_size</span><span class="p">);</span>
+    <span class="n">ring_add</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="o">-&gt;</span><span class="n">cache</span><span class="o">-&gt;</span><span class="n">ring_home</span><span class="p">,</span> <span class="o">&amp;</span><span class="bp">self</span><span class="o">-&gt;</span><span class="n">ring</span><span class="p">);</span>
+    <span class="n">Py_INCREF</span><span class="p">(</span><span class="bp">self</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="zodb">
+<h1>ZODB</h1>
+<ul class="simple">
+<li>Stores pickles of your Python objects</li>
+<li>References save both <tt class="docutils literal">(classname, id)</tt></li>
+<li>So <tt class="docutils literal">classname</tt> is duplicated <em>everywhere</em></li>
+<li>Cannot load your object without the class</li>
+<li>So your class can <em>never</em> change names</li>
+</ul>
+</div>
+<div class="section" id="but-worst-of-all">
+<h1>But worst of all</h1>
+<div class="line-block">
+<div class="line">Because the ZODB stores <em>objects</em></div>
+<div class="line">you can never get <em>outside</em> of the Python</div>
+<div class="line">object system to see something <em>simpler</em></div>
+</div>
+</div>
+<div class="section" id="id84">
+<h1><em>The Mythical Man-Month</em> by Fred Brooks</h1>
+<div class="line-block">
+<div class="line">“Show me your <em>flowchart</em></div>
+<div class="line">and conceal your tables,</div>
+<div class="line">and I shall continue to be mystified.</div>
+</div>
+<div class="line-block">
+<div class="line">Show me your <em>tables</em>,</div>
+<div class="line">and I won't usually need your flowchart;</div>
+<div class="line">it'll be obvious.”</div>
+</div>
+<div class="line-block">
+<div class="line"><em>(1975)</em></div>
+</div>
+</div>
+<div class="section" id="sorry-fred-brooks">
+<h1>Sorry, Fred Brooks</h1>
+<p><em>ZODB has no “tables”!</em></p>
+</div>
+<div class="section" id="id85">
+<h1>ZODB</h1>
+<div class="line-block">
+<div class="line">No native data representation</div>
+<div class="line">that can be examined or manipulated</div>
+<div class="line">outside your Python application</div>
+</div>
+</div>
+<div class="section" id="nosql">
+<h1>NoSQL</h1>
+</div>
+<div class="section" id="id86">
+
+<div class="line-block">
+<div class="line">People <em>want</em> NoSQL!</div>
+</div>
+<div class="line-block">
+<div class="line">How do we know?</div>
+</div>
+<div class="line-block">
+<div class="line">Because of the <em>vast popularity</em> of the</div>
+<div class="line"><em>very first</em> NoSQL database ever!</div>
+</div>
+</div>
+<div class="section" id="id87">
+
+<img alt="mysql-logo.jpg" src="mysql-logo.jpg" />
+</div>
+<div class="section" id="id88">
+
+<img alt="mysql-logo.jpg" src="mysql-logo.jpg" />
+<p>When it first came out:</p>
+<ul class="simple">
+<li>No transactions</li>
+<li>No joins</li>
+<li>No sub-queries</li>
+<li>That's <em>NoSQL!</em></li>
+</ul>
+</div>
+<div class="section" id="id89">
+
+<img alt="mysql-logo.jpg" src="mysql-logo.jpg" />
+<div class="line-block">
+<div class="line">The majority of programmers</div>
+<div class="line">have <em>always</em> wanted something simple</div>
+<div class="line">that helps them remember indexed values</div>
+</div>
+</div>
+<div class="section" id="id90">
+
+<p>Why is NoSQL exciting?</p>
+</div>
+<div class="section" id="example">
+<h1>Example</h1>
+<p>MongoDB — a document database</p>
+</div>
+<div class="section" id="mongodb">
+<h1>MongoDB</h1>
+<div class="line-block">
+<div class="line">Exciting because it makes your <em>database</em></div>
+<div class="line">as simple as your <em>variables</em> in Python</div>
+</div>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Rosa californica&quot;</span><span class="p">,</span>
+  <span class="n">attrs</span><span class="p">:</span> <span class="p">{</span>
+    <span class="n">habitat</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chaparral&quot;</span><span class="p">,</span> <span class="s2">&quot;woodlands&quot;</span><span class="p">],</span>
+    <span class="n">flower_color</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;pink&quot;</span><span class="p">,</span> <span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="s2">&quot;magenta&quot;</span><span class="p">],</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="mongodb-documents">
+<h1>MongoDB documents</h1>
+<ul class="simple">
+<li>Use public JSON standard</li>
+<li>No separate schema to maintain</li>
+<li>Look like Python <tt class="docutils literal">dict</tt> and <tt class="docutils literal">list</tt></li>
+<li>Language independent</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Rosa californica&quot;</span><span class="p">,</span>
+  <span class="n">attrs</span><span class="p">:</span> <span class="p">{</span>
+    <span class="n">habitat</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chaparral&quot;</span><span class="p">,</span> <span class="s2">&quot;woodlands&quot;</span><span class="p">],</span>
+    <span class="n">flower_color</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;pink&quot;</span><span class="p">,</span> <span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="s2">&quot;magenta&quot;</span><span class="p">],</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id91">
+
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Department of Engineering&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;employee_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">24</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">381</span><span class="p">,</span> <span class="mi">382</span><span class="p">,</span> <span class="mi">561</span><span class="p">]}</span>
+</pre></div>
+
+<p>↑ MongoDB / SQL ↓</p>
+<div class="highlight"><pre><span></span><span class="s2">&quot;department&quot;</span> <span class="s2">&quot;department_employee&quot;</span>
+  <span class="nb">id</span>  <span class="n">name</span>      <span class="n">dept_id</span> <span class="n">empl_id</span>
+<span class="err">┌──────────┐</span>      <span class="err">┌─────────┐</span>
+<span class="err">│</span>     <span class="p">:</span>    <span class="err">│</span>      <span class="err">│</span>     <span class="p">:</span>   <span class="err">│</span>
+<span class="err">│</span><span class="mi">34</span> <span class="s1">&#39;Dept…&#39;</span><span class="err">│</span>      <span class="err">│</span> <span class="mi">34</span>  <span class="mi">24</span>  <span class="err">│</span>
+<span class="err">│</span>     <span class="p">:</span>    <span class="err">│</span>      <span class="err">│</span> <span class="mi">34</span>  <span class="mi">51</span>  <span class="err">│</span>
+<span class="err">└──────────┘</span>      <span class="err">│</span> <span class="mi">34</span>  <span class="mi">381</span> <span class="err">│</span>
+                  <span class="err">│</span> <span class="mi">34</span>  <span class="mi">382</span> <span class="err">│</span>
+                  <span class="err">│</span> <span class="mi">34</span>  <span class="mi">561</span> <span class="err">│</span>
+                  <span class="err">│</span>     <span class="p">:</span>   <span class="err">│</span>
+                  <span class="err">└─────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="relations">
+<h1>Relations</h1>
+<ul class="simple">
+<li>Schemas, mass migration</li>
+<li>Break data into small pieces</li>
+<li>Need <em>SQL</em> or <em>ORM</em> to reassemble</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="s2">&quot;department&quot;</span> <span class="s2">&quot;department_employee&quot;</span>
+  <span class="nb">id</span>  <span class="n">name</span>      <span class="n">dept_id</span> <span class="n">empl_id</span>
+<span class="err">┌──────────┐</span>      <span class="err">┌─────────┐</span>
+<span class="err">│</span>     <span class="p">:</span>    <span class="err">│</span>      <span class="err">│</span>     <span class="p">:</span>   <span class="err">│</span>
+<span class="err">│</span><span class="mi">34</span> <span class="s1">&#39;Dept…&#39;</span><span class="err">│</span>      <span class="err">│</span> <span class="mi">34</span>  <span class="mi">24</span>  <span class="err">│</span>
+<span class="err">│</span>     <span class="p">:</span>    <span class="err">│</span>      <span class="err">│</span> <span class="mi">34</span>  <span class="mi">51</span>  <span class="err">│</span>
+<span class="err">└──────────┘</span>      <span class="err">│</span> <span class="mi">34</span>  <span class="mi">381</span> <span class="err">│</span>
+                  <span class="err">│</span> <span class="mi">34</span>  <span class="mi">382</span> <span class="err">│</span>
+                  <span class="err">│</span> <span class="mi">34</span>  <span class="mi">561</span> <span class="err">│</span>
+                  <span class="err">│</span>     <span class="p">:</span>   <span class="err">│</span>
+                  <span class="err">└─────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id92">
+
+<div class="line-block">
+<div class="line">(Also, putting this data in <em>one place</em></div>
+<div class="line">instead of in <em>two tables</em> plus an index</div>
+<div class="line">can vastly improve your <em>I/O</em> performance!)</div>
+</div>
+<div class="highlight"><pre><span></span><span class="s2">&quot;department&quot;</span> <span class="s2">&quot;department_employee&quot;</span>
+  <span class="nb">id</span>  <span class="n">name</span>      <span class="n">dept_id</span> <span class="n">empl_id</span>
+<span class="err">┌──────────┐</span>      <span class="err">┌─────────┐</span>
+<span class="err">│</span>     <span class="p">:</span>    <span class="err">│</span>      <span class="err">│</span>     <span class="p">:</span>   <span class="err">│</span>
+<span class="err">│</span><span class="mi">34</span> <span class="s1">&#39;Dept…&#39;</span><span class="err">│</span>      <span class="err">│</span> <span class="mi">34</span>  <span class="mi">24</span>  <span class="err">│</span>
+<span class="err">│</span>     <span class="p">:</span>    <span class="err">│</span>      <span class="err">│</span> <span class="mi">34</span>  <span class="mi">51</span>  <span class="err">│</span>
+<span class="err">└──────────┘</span>      <span class="err">│</span> <span class="mi">34</span>  <span class="mi">381</span> <span class="err">│</span>
+                  <span class="err">│</span> <span class="mi">34</span>  <span class="mi">382</span> <span class="err">│</span>
+                  <span class="err">│</span> <span class="mi">34</span>  <span class="mi">561</span> <span class="err">│</span>
+                  <span class="err">│</span>     <span class="p">:</span>   <span class="err">│</span>
+                  <span class="err">└─────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id93">
+
+<p>In conclusion,</p>
+<p><strong>♥ Your Database</strong></p>
+<div class="line-block">
+<div class="line"><em>Learn SQL</em></div>
+<div class="line">or</div>
+<div class="line"><em>Try a Document Database</em></div>
+</div>
+<div class="line-block">
+<div class="line">If Fred Brooks is right,</div>
+<div class="line">data should be the <em>easy</em> part</div>
+<div class="line">and drive understanding of your code</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id94">
+
+<p>In conclusion,</p>
+<p><strong>♥ Your Database</strong></p>
+<div class="line-block">
+<div class="line"><em>Learn SQL</em></div>
+<div class="line">or</div>
+<div class="line"><em>Try a Document Database</em></div>
+</div>
+<div class="line-block">
+<div class="line">If Fred Brooks is right,</div>
+<div class="line">data should be the <em>easy</em> part</div>
+<div class="line">and drive understanding of your code</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Thank you!</strong></div>
+</div>
+</div>
+<div class="section" id="id95">
+
+<p>In conclusion,</p>
+<p><strong>♥ Your Database</strong></p>
+<div class="line-block">
+<div class="line"><em>Learn SQL</em></div>
+<div class="line">or</div>
+<div class="line"><em>Try a Document Database</em></div>
+</div>
+<div class="line-block">
+<div class="line">If Fred Brooks is right,</div>
+<div class="line">data should be the <em>easy</em> part</div>
+<div class="line">and drive understanding of your code</div>
+</div>
+<p><strong>Any questions?</strong></p>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides.js"></script></div>
+</div>
+</body>
+</html>

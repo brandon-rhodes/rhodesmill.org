@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>&lt;stdin&gt;</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<style>
+body.presentation-mode .section {
+  width: 1280px;
+  height: 720px;
+}
+.timer {left: 1280px;}
+.gray {color: #aaa;}
+.strike {text-decoration: line-through;}
+</style><div class="section" id="slide">
+
+<div class="line-block">
+<div class="line"><span class="gray">—</span></div>
+<div class="line"><em>The Antipodes</em></div>
+<div class="line"><span class="gray">—</span></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line">Brandon Rhodes</div>
+<div class="line">Saturday August 3</div>
+<div class="line">PyCon AU 2019</div>
+</div>
+</div>
+<div class="section" id="id1">
+
+<p>anti • podes</p>
+<p>Ancient Greek for the “anti-feet” people</p>
+</div>
+<div class="section" id="id2">
+
+<p>Wikipedia “Antipodes” diagram
+(<a class="reference external" href="https://en.wikipedia.org/wiki/File:Antipodes_LAEA.png">Citynoise</a>):</p>
+</div>
+<div class="section" id="id3">
+
+<img alt="481px-Antipodes_LAEA.png" src="481px-Antipodes_LAEA.png" style="height: 700px;" />
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line">How did the ancient Greeks</div>
+<div class="line">arrive at the concept?</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<div class="line-block">
+<div class="line">How did the ancient Greeks</div>
+<div class="line">arrive at the concept?</div>
+</div>
+<p>Conjecture!</p>
+</div>
+<div class="section" id="id6">
+
+<img alt="fisk07.jpg" src="fisk07.jpg" />
+</div>
+<div class="section" id="id7">
+
+<img alt="599px-Twain1909.jpg" src="599px-Twain1909.jpg" />
+</div>
+<div class="section" id="id8">
+
+<div class="line-block">
+<div class="line">“In the space of 176 years</div>
+<div class="line">the Lower Mississippi has</div>
+<div class="line">shortened itself 242 miles.</div>
+</div>
+</div>
+<div class="section" id="id9">
+
+<div class="line-block">
+<div class="line">“Therefore, any calm person…can see</div>
+<div class="line">that in the Old Oolitic Silurian Period,</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id10">
+
+<div class="line-block">
+<div class="line">“Therefore, any calm person…can see</div>
+<div class="line">that in the Old Oolitic Silurian Period,</div>
+<div class="line">just a million years ago next November,</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id11">
+
+<div class="line-block">
+<div class="line">“Therefore, any calm person…can see</div>
+<div class="line">that in the Old Oolitic Silurian Period,</div>
+<div class="line">just a million years ago next November,</div>
+<div class="line">the Lower Mississippi River was upwards</div>
+<div class="line">of <strong>1,300,000 miles</strong> long…</div>
+</div>
+</div>
+<div class="section" id="id12">
+
+<div class="line-block">
+<div class="line">“And … 742 years from now</div>
+<div class="line">the Lower Mississippi will be</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id13">
+
+<div class="line-block">
+<div class="line">“And … 742 years from now</div>
+<div class="line">the Lower Mississippi will be</div>
+<div class="line">only <strong>1¾ miles long</strong>, and Cairo and</div>
+<div class="line">New Orleans will have joined…</div>
+</div>
+<!-- Cairo and New Orleans are 560 miles apart -->
+</div>
+<div class="section" id="id14">
+
+<div class="line-block">
+<div class="line">“There is something</div>
+<div class="line"><em>fascinating</em> about science.</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id15">
+
+<div class="line-block">
+<div class="line">“There is something</div>
+<div class="line"><em>fascinating</em> about science.</div>
+</div>
+<div class="line-block">
+<div class="line">“One gets such <strong>wholesale returns</strong> of conjecture</div>
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id16">
+
+<div class="line-block">
+<div class="line">“There is something</div>
+<div class="line"><em>fascinating</em> about science.</div>
+</div>
+<div class="line-block">
+<div class="line">“One gets such <strong>wholesale returns</strong> of conjecture</div>
+<div class="line">out of such a <em>trifling investment</em> of fact.”</div>
+</div>
+<div class="line-block">
+<div class="line">— Mark Twain</div>
+</div>
+</div>
+<div class="section" id="id17">
+
+<p>Greek conjecture</p>
+<p><em>Symmetry</em></p>
+</div>
+<div class="section" id="id18">
+
+<div class="line-block">
+<div class="line">Temperate at Greece’s latitude south?</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line">Temperate at Greece’s latitude south</div>
+<div class="line"><strong>Yes!</strong></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="line-block">
+<div class="line">Temperate at Greece’s latitude south</div>
+<div class="line">Would there be both land and water?</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id21">
+
+<div class="line-block">
+<div class="line">Temperate at Greece’s latitude south</div>
+<div class="line">Would there be both land and water</div>
+<div class="line"><strong>Yes!</strong></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id22">
+
+<div class="line-block">
+<div class="line">Temperate at Greece’s latitude south</div>
+<div class="line">Would there be both land and water</div>
+<div class="line">Would there be plants and animals?</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id23">
+
+<div class="line-block">
+<div class="line">Temperate at Greece’s latitude south</div>
+<div class="line">Would there be both land and water</div>
+<div class="line">Would there be plants and animals</div>
+<div class="line"><strong>Yes!</strong></div>
+</div>
+</div>
+<div class="section" id="id24">
+
+<div class="line-block">
+<div class="line">Temperate at Greece’s latitude south</div>
+<div class="line">Would there be both land and water</div>
+<div class="line">Would there be plants and animals</div>
+<div class="line">Would there be humankind?</div>
+</div>
+</div>
+<div class="section" id="id25">
+
+<div class="line-block">
+<div class="line">Temperate at Greece’s latitude south</div>
+<div class="line">Would there be both land and water</div>
+<div class="line">Would there be plants and animals</div>
+<div class="line">Would there be humankind? <strong>Yes!</strong></div>
+</div>
+</div>
+<div class="section" id="id26">
+
+<p><strong>Problem!</strong></p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id27">
+
+<p><strong>Problem!</strong></p>
+<div class="line-block">
+<div class="line">You never meet antipodeans</div>
+<div class="line">at dinner parties</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id28">
+
+<p><strong>Problem!</strong></p>
+<div class="line-block">
+<div class="line">You never meet antipodeans</div>
+<div class="line">at dinner parties</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Why?</em></div>
+</div>
+</div>
+<div class="section" id="theory-of-the-zones">
+<h1>“Theory of the Zones”</h1>
+<ul class="simple">
+<li>frigid (would kill you)</li>
+<li>temperate</li>
+<li>torrid (would kill you)</li>
+</ul>
+</div>
+<div class="section" id="id29">
+
+<div class="highlight"><pre><span></span><span class="n">Maine</span>            <span class="err">—</span>   <span class="n">Glasgow</span><span class="p">,</span> <span class="n">Denmark</span>
+<span class="n">Pennsylvania</span>     <span class="err">—</span>   <span class="n">N</span> <span class="n">France</span>
+<span class="n">North</span> <span class="n">Carolina</span>   <span class="err">—</span>   <span class="n">S</span> <span class="n">France</span>
+<span class="n">Florida</span>          <span class="err">—</span>   <span class="n">Spain</span><span class="p">,</span> <span class="n">Greece</span>
+</pre></div>
+
+</div>
+<div class="section" id="id30">
+
+<p><em>I was wrong!</em></p>
+</div>
+<div class="section" id="id31">
+
+<div class="line-block">
+<div class="line">I ran across an image</div>
+<div class="line">at the <a class="reference external" href="https://twitter.com/washingtonpost/status/469681384299429888">Washington Post</a> —</div>
+</div>
+</div>
+<div class="section" id="id32">
+
+<img alt="BoSkuv3IIAAV6ng.png" src="BoSkuv3IIAAV6ng.png" style="height: 700px;" />
+</div>
+<div class="section" id="id33">
+
+<div class="highlight"><pre><span></span>                <span class="mi">55</span><span class="err">°</span>  <span class="n">Glasgow</span><span class="p">,</span> <span class="n">Denmark</span>
+                <span class="mi">50</span><span class="err">°</span>  <span class="n">N</span> <span class="n">France</span>
+<span class="n">Maine</span>           <span class="mi">45</span><span class="err">°</span>  <span class="n">S</span> <span class="n">France</span>
+<span class="n">Pennsylvania</span>    <span class="mi">40</span><span class="err">°</span>  <span class="n">Spain</span><span class="p">,</span> <span class="n">Greece</span>
+<span class="n">North</span> <span class="n">Carolina</span>  <span class="mi">35</span><span class="err">°</span>
+<span class="n">Florida</span>         <span class="mi">30</span><span class="err">°</span>
+                <span class="mi">25</span><span class="err">°</span>
+                <span class="mi">20</span><span class="err">°</span>
+</pre></div>
+
+</div>
+<div class="section" id="id34">
+
+<div class="highlight"><pre><span></span>                <span class="mi">55</span><span class="err">°</span>  <span class="n">Glasgow</span><span class="p">,</span> <span class="n">Denmark</span>
+<span class="n">Newfoundland</span>    <span class="mi">50</span><span class="err">°</span>  <span class="n">N</span> <span class="n">France</span>
+<span class="n">Maine</span>           <span class="mi">45</span><span class="err">°</span>  <span class="n">S</span> <span class="n">France</span>
+<span class="n">Pennsylvania</span>    <span class="mi">40</span><span class="err">°</span>  <span class="n">Spain</span><span class="p">,</span> <span class="n">Greece</span>
+<span class="n">North</span> <span class="n">Carolina</span>  <span class="mi">35</span><span class="err">°</span>
+<span class="n">Florida</span>         <span class="mi">30</span><span class="err">°</span>
+                <span class="mi">25</span><span class="err">°</span>
+                <span class="mi">20</span><span class="err">°</span>
+</pre></div>
+
+</div>
+<div class="section" id="id35">
+
+<div class="highlight"><pre><span></span><span class="n">Inuit</span> <span class="n">villages</span>  <span class="mi">55</span><span class="err">°</span>  <span class="n">Glasgow</span><span class="p">,</span> <span class="n">Denmark</span>
+<span class="n">Newfoundland</span>    <span class="mi">50</span><span class="err">°</span>  <span class="n">N</span> <span class="n">France</span>
+<span class="n">Maine</span>           <span class="mi">45</span><span class="err">°</span>  <span class="n">S</span> <span class="n">France</span>
+<span class="n">Pennsylvania</span>    <span class="mi">40</span><span class="err">°</span>  <span class="n">Spain</span><span class="p">,</span> <span class="n">Greece</span>
+<span class="n">North</span> <span class="n">Carolina</span>  <span class="mi">35</span><span class="err">°</span>
+<span class="n">Florida</span>         <span class="mi">30</span><span class="err">°</span>
+                <span class="mi">25</span><span class="err">°</span>
+                <span class="mi">20</span><span class="err">°</span>
+</pre></div>
+
+</div>
+<div class="section" id="id36">
+
+<div class="highlight"><pre><span></span><span class="n">Inuit</span> <span class="n">villages</span>  <span class="mi">55</span><span class="err">°</span>  <span class="n">Glasgow</span><span class="p">,</span> <span class="n">Denmark</span>
+<span class="n">Newfoundland</span>    <span class="mi">50</span><span class="err">°</span>  <span class="n">N</span> <span class="n">France</span>
+<span class="n">Maine</span>           <span class="mi">45</span><span class="err">°</span>  <span class="n">S</span> <span class="n">France</span>
+<span class="n">Pennsylvania</span>    <span class="mi">40</span><span class="err">°</span>  <span class="n">Spain</span><span class="p">,</span> <span class="n">Greece</span>
+<span class="n">North</span> <span class="n">Carolina</span>  <span class="mi">35</span><span class="err">°</span>  <span class="n">Tunisia</span>
+<span class="n">Florida</span>         <span class="mi">30</span><span class="err">°</span>
+                <span class="mi">25</span><span class="err">°</span>
+                <span class="mi">20</span><span class="err">°</span>
+</pre></div>
+
+</div>
+<div class="section" id="id37">
+
+<div class="highlight"><pre><span></span><span class="n">Inuit</span> <span class="n">villages</span>  <span class="mi">55</span><span class="err">°</span>  <span class="n">Glasgow</span><span class="p">,</span> <span class="n">Denmark</span>
+<span class="n">Newfoundland</span>    <span class="mi">50</span><span class="err">°</span>  <span class="n">N</span> <span class="n">France</span>
+<span class="n">Maine</span>           <span class="mi">45</span><span class="err">°</span>  <span class="n">S</span> <span class="n">France</span>
+<span class="n">Pennsylvania</span>    <span class="mi">40</span><span class="err">°</span>  <span class="n">Spain</span><span class="p">,</span> <span class="n">Greece</span>
+<span class="n">North</span> <span class="n">Carolina</span>  <span class="mi">35</span><span class="err">°</span>  <span class="n">Tunisia</span>
+<span class="n">Florida</span>         <span class="mi">30</span><span class="err">°</span>  <span class="n">Sahara</span><span class="p">,</span> <span class="n">Cairo</span>
+                <span class="mi">25</span><span class="err">°</span>
+                <span class="mi">20</span><span class="err">°</span>
+</pre></div>
+
+</div>
+<div class="section" id="id38">
+
+<div class="highlight"><pre><span></span><span class="n">Inuit</span> <span class="n">villages</span>  <span class="mi">55</span><span class="err">°</span>  <span class="n">Glasgow</span><span class="p">,</span> <span class="n">Denmark</span>
+<span class="n">Newfoundland</span>    <span class="mi">50</span><span class="err">°</span>  <span class="n">N</span> <span class="n">France</span>
+<span class="n">Maine</span>           <span class="mi">45</span><span class="err">°</span>  <span class="n">S</span> <span class="n">France</span>
+<span class="n">Pennsylvania</span>    <span class="mi">40</span><span class="err">°</span>  <span class="n">Spain</span><span class="p">,</span> <span class="n">Greece</span>
+<span class="n">North</span> <span class="n">Carolina</span>  <span class="mi">35</span><span class="err">°</span>  <span class="n">Tunisia</span>
+<span class="n">Florida</span>         <span class="mi">30</span><span class="err">°</span>  <span class="n">Sahara</span><span class="p">,</span> <span class="n">Cairo</span>
+                <span class="mi">25</span><span class="err">°</span>  <span class="n">Sahara</span>
+                <span class="mi">20</span><span class="err">°</span>
+</pre></div>
+
+</div>
+<div class="section" id="id39">
+
+<div class="highlight"><pre><span></span><span class="n">Inuit</span> <span class="n">villages</span>  <span class="mi">55</span><span class="err">°</span>  <span class="n">Glasgow</span><span class="p">,</span> <span class="n">Denmark</span>
+<span class="n">Newfoundland</span>    <span class="mi">50</span><span class="err">°</span>  <span class="n">N</span> <span class="n">France</span>
+<span class="n">Maine</span>           <span class="mi">45</span><span class="err">°</span>  <span class="n">S</span> <span class="n">France</span>
+<span class="n">Pennsylvania</span>    <span class="mi">40</span><span class="err">°</span>  <span class="n">Spain</span><span class="p">,</span> <span class="n">Greece</span>
+<span class="n">North</span> <span class="n">Carolina</span>  <span class="mi">35</span><span class="err">°</span>  <span class="n">Tunisia</span>
+<span class="n">Florida</span>         <span class="mi">30</span><span class="err">°</span>  <span class="n">Sahara</span><span class="p">,</span> <span class="n">Cairo</span>
+                <span class="mi">25</span><span class="err">°</span>  <span class="n">Sahara</span>
+                <span class="mi">20</span><span class="err">°</span>  <span class="n">Sahara</span>
+</pre></div>
+
+</div>
+<div class="section" id="id40">
+
+<div class="line-block">
+<div class="line">What if you wanted to start</div>
+<div class="line">in Cairo and cross the desert?</div>
+</div>
+</div>
+<div class="section" id="id41">
+
+<p>30° N → 30° S</p>
+<div class="line-block">
+<div class="line">6,500 km of <em>desert</em></div>
+</div>
+</div>
+<div class="section" id="id42">
+
+<div class="line-block">
+<div class="line"><em>Spoiler alert:</em></div>
+<div class="line">there’s <strong>no desert</strong></div>
+<div class="line">at the equator</div>
+</div>
+</div>
+<div class="section" id="id43">
+
+<img alt="africa.jpg" src="africa.jpg" style="height: 700px;" />
+</div>
+<div class="section" id="id44">
+
+<img alt="africa-equator.jpg" src="africa-equator.jpg" style="height: 700px;" />
+</div>
+<div class="section" id="id45">
+
+<p>30° N → 30° S</p>
+<div class="line-block">
+<div class="line">6,500 km of <em>desert</em> provided</div>
+<div class="line">a plausible cause for isolation</div>
+<div class="line">from the peoples of the South</div>
+</div>
+</div>
+<div class="section" id="id46">
+
+<div class="line-block">
+<div class="line">This let the Greeks retain their belief</div>
+<div class="line">in Nature’s <em>symmetry</em> while explaining</div>
+<div class="line">why you never see Antipodeans at parties</div>
+</div>
+</div>
+<div class="section" id="id47">
+
+<div class="line-block">
+<div class="line"><em>Rational consequence</em></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id48">
+
+<div class="line-block">
+<div class="line"><em>Rational consequence</em></div>
+</div>
+<div class="line-block">
+<div class="line">Debates with “theory</div>
+<div class="line">of common descent”</div>
+</div>
+</div>
+<div class="section" id="id49">
+
+<div class="line-block">
+<div class="line"><em>Imaginative consequence</em></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id50">
+
+<div class="line-block">
+<div class="line"><em>Imaginative consequence</em></div>
+</div>
+<div class="line-block">
+<div class="line">• Poetry</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id51">
+
+<div class="line-block">
+<div class="line"><em>Imaginative consequence</em></div>
+</div>
+<div class="line-block">
+<div class="line">• Poetry</div>
+<div class="line">• Comedies</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id52">
+
+<div class="line-block">
+<div class="line"><em>Imaginative consequence</em></div>
+</div>
+<div class="line-block">
+<div class="line">• Poetry</div>
+<div class="line">• Comedies</div>
+<div class="line">• Relativity</div>
+</div>
+</div>
+<div class="section" id="id53">
+
+<p><strong>Q:</strong></p>
+<p>When am I upside down?</p>
+</div>
+<div class="section" id="id54">
+
+<p><a class="reference external" href="https://www.youtube.com/watch?v=DJtef410XaM">Clean Architecture</a></p>
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line">I always try to <strong>hide</strong></div>
+<div class="line">I/O at the lowest level</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">main</span><span class="p">()</span>
+<span class="err">└──</span><span class="n">subroutine</span><span class="p">()</span>
+   <span class="err">└──</span><span class="n">helper</span><span class="p">()</span>
+      <span class="err">└──</span><span class="n">I</span><span class="o">/</span><span class="n">O</span>
+</pre></div>
+
+</div>
+<div class="section" id="id56">
+
+<div class="line-block">
+<div class="line">But this leaves the I/O</div>
+<div class="line"><strong>coupled</strong> with <tt class="docutils literal">main()</tt></div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">main</span><span class="p">()</span>
+<span class="err">└──</span><span class="n">subroutine</span><span class="p">()</span>
+   <span class="err">└──</span><span class="n">helper</span><span class="p">()</span>
+      <span class="err">└──</span><span class="n">I</span><span class="o">/</span><span class="n">O</span>
+</pre></div>
+
+</div>
+<div class="section" id="id57">
+
+<div class="highlight"><pre><span></span><span class="n">main</span><span class="p">()</span> <span class="n">I</span><span class="o">/</span><span class="n">O</span>
+<span class="err">└──</span><span class="n">subroutine</span><span class="p">()</span>
+   <span class="err">└──</span><span class="n">helper</span><span class="p">()</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Solution: turn it</div>
+<div class="line">right-side up</div>
+</div>
+</div>
+<div class="section" id="id58">
+
+<div class="line-block">
+<div class="line">But I’ve already given</div>
+<div class="line">talks about that</div>
+</div>
+</div>
+<div class="section" id="id59">
+
+<div class="line-block">
+<div class="line">I also sometimes write</div>
+<div class="line">Python modules upside down</div>
+</div>
+</div>
+<div class="section" id="id60">
+
+<p>Where in a module does <tt class="docutils literal">main()</tt> go?</p>
+</div>
+<div class="section" id="id61">
+
+<ul class="simple">
+<li><tt class="docutils literal">main()</tt></li>
+<li>subroutine 1</li>
+<li>subroutine 2</li>
+<li>helper A</li>
+<li>helper B</li>
+<li>helper C</li>
+</ul>
+</div>
+<div class="section" id="id62">
+
+<div class="highlight"><pre><span></span><span class="c1">#include &lt;stdio.h&gt;</span>
+
+<span class="nb">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+     <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%f</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">square</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="nb">float</span> <span class="n">square</span><span class="p">(</span><span class="nb">float</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+     <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id63">
+
+<div class="highlight"><pre><span></span><span class="c1">#include &lt;stdio.h&gt;</span>
+
+<span class="nb">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+     <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%f</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">square</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="nb">float</span> <span class="n">square</span><span class="p">(</span><span class="nb">float</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+     <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><tt class="docutils literal">error: conflicting types for ‘square’</tt></p>
+</div>
+<div class="section" id="id64">
+
+<div class="highlight"><pre><span></span><span class="c1">#include &lt;stdio.h&gt;</span>
+
+<span class="o">/*</span> <span class="err">“</span><span class="n">Forward</span> <span class="n">Declaration</span><span class="err">”</span> <span class="o">*/</span>
+<span class="nb">float</span> <span class="n">square</span><span class="p">(</span><span class="nb">float</span> <span class="n">n</span><span class="p">);</span>
+
+<span class="nb">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+     <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%f</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">square</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="nb">float</span> <span class="n">square</span><span class="p">(</span><span class="nb">float</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+     <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id65">
+
+<div class="highlight"><pre><span></span><span class="c1">#include &lt;stdio.h&gt;</span>
+
+<span class="nb">float</span> <span class="n">square</span><span class="p">(</span><span class="nb">float</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+     <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nb">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+     <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%f</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">square</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id66">
+
+<div class="line-block">
+<div class="line">This gave those of us</div>
+<div class="line">who used to be C programmers</div>
+<div class="line">an ingrained habit:</div>
+</div>
+<ul class="simple">
+<li>helper C</li>
+<li>helper B</li>
+<li>helper A</li>
+<li>subroutine 2</li>
+<li>subroutine 1</li>
+<li><tt class="docutils literal">main()</tt></li>
+</ul>
+</div>
+<div class="section" id="id67">
+
+<div class="line-block">
+<div class="line">And I could find</div>
+<div class="line">lots of other examples of</div>
+<div class="line">technical upside-down-ness</div>
+</div>
+</div>
+<div class="section" id="id68">
+
+<div class="line-block">
+<div class="line">But instead of talking</div>
+<div class="line">about architecture or modules,</div>
+<div class="line">I want to talk about a <em>personal</em></div>
+<div class="line">upside-down-ness</div>
+</div>
+</div>
+<div class="section" id="id69">
+
+<p>Personal communication</p>
+</div>
+<div class="section" id="id70">
+
+<div class="line-block">
+<div class="line">I was the volunteer Chair</div>
+<div class="line">of PyCon in Portland</div>
+</div>
+</div>
+<div class="section" id="id71">
+
+<div class="line-block">
+<div class="line">This turned me into a supplier</div>
+<div class="line">of a limited conference resource</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id72">
+
+<div class="line-block">
+<div class="line">This turned me into a supplier</div>
+<div class="line">of a limited conference resource</div>
+</div>
+<div class="line-block">
+<div class="line"><em>decisions</em></div>
+</div>
+</div>
+<div class="section" id="id73">
+
+<p>How do I make a decision?</p>
+</div>
+<div class="section" id="id74">
+
+<ol class="arabic simple">
+<li>Wait one day</li>
+<li>Reply to the email</li>
+</ol>
+</div>
+<div class="section" id="id75">
+
+<p>I adopted a guiding principle</p>
+</div>
+<div class="section" id="id76">
+
+<div class="line-block">
+<div class="line"><em>A volunteer</em></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id77">
+
+<div class="line-block">
+<div class="line"><em>A volunteer</em></div>
+<div class="line"><em>waiting for my answer</em></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id78">
+
+<div class="line-block">
+<div class="line"><em>A volunteer</em></div>
+<div class="line"><em>waiting for my answer</em></div>
+<div class="line"><em>is in pain</em></div>
+</div>
+</div>
+<div class="section" id="id79">
+
+<ol class="arabic simple">
+<li><strong>Wait one day</strong></li>
+<li>Reply to the email</li>
+</ol>
+</div>
+<div class="section" id="id80">
+
+<p>Turns out?</p>
+</div>
+<div class="section" id="id81">
+
+<div class="line-block">
+<div class="line">I wasn’t waiting one day</div>
+<div class="line">because it usually made</div>
+<div class="line">my answer better</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id82">
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">I was waiting one day</div>
+<div class="line">because I was a coward</div>
+</div>
+</div>
+<div class="section" id="id83">
+
+<ol class="arabic simple">
+<li><span class="strike">Wait one day</span></li>
+<li>Reply to the email</li>
+</ol>
+</div>
+<div class="section" id="id84">
+
+<ul class="simple">
+<li>Consideration #1</li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+</ul>
+</div>
+<div class="section" id="id85">
+
+<ul class="simple">
+<li>Consideration #1</li>
+<li>Consideration #2</li>
+<li></li>
+<li></li>
+<li></li>
+</ul>
+</div>
+<div class="section" id="id86">
+
+<ul class="simple">
+<li>Consideration #1</li>
+<li>Consideration #2</li>
+<li>Consideration #3</li>
+<li></li>
+<li></li>
+</ul>
+</div>
+<div class="section" id="id87">
+
+<ul class="simple">
+<li>Consideration #1</li>
+<li>Consideration #2</li>
+<li>Consideration #3</li>
+<li>Consideration #4</li>
+<li></li>
+</ul>
+</div>
+<div class="section" id="id88">
+
+<ul class="simple">
+<li>Consideration #1</li>
+<li>Consideration #2</li>
+<li>Consideration #3</li>
+<li>Consideration #4</li>
+<li>Decision</li>
+</ul>
+</div>
+<div class="section" id="id89">
+
+<div class="line-block">
+<div class="line">If waiting is <strong>painful</strong>,</div>
+<div class="line">shouldn’t my answer come <em>first?</em></div>
+</div>
+</div>
+<div class="section" id="id90">
+
+<div class="line-block">
+<div class="line">Why do I put my <em>arguments</em> first?</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id91">
+
+<div class="line-block">
+<div class="line">Why do I put my <em>arguments</em> first?</div>
+</div>
+<div class="line-block">
+<div class="line">1. Usually I <em>think</em> of them first</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id92">
+
+<div class="line-block">
+<div class="line">Why do I put my <em>arguments</em> first?</div>
+</div>
+<div class="line-block">
+<div class="line">1. Usually I <em>think</em> of them first</div>
+<div class="line">2. Because they’re my <strong>defense</strong></div>
+</div>
+</div>
+<div class="section" id="id93">
+
+<div class="line-block">
+<div class="line">I don’t <em>like</em> people to know my</div>
+<div class="line">opinion until I’ve surrounded it</div>
+<div class="line">with a <strong>fortress</strong> of rationale</div>
+</div>
+</div>
+<div class="section" id="id94">
+
+<ul class="simple">
+<li>Consideration #1</li>
+<li>Consideration #2</li>
+<li>Consideration #3</li>
+<li>Consideration #4</li>
+<li>Decision</li>
+</ul>
+</div>
+<div class="section" id="id95">
+
+<ul class="simple">
+<li>Consideration #1</li>
+<li>Consideration #2</li>
+<li>Consideration #3</li>
+<li>Consideration #4</li>
+<li><span class="strike">Decision</span></li>
+</ul>
+</div>
+<div class="section" id="id96">
+
+<ul class="simple">
+<li><strong>Decision</strong></li>
+<li>Consideration #1</li>
+<li>Consideration #2</li>
+<li>Consideration #3</li>
+<li>Consideration #4</li>
+</ul>
+</div>
+<div class="section" id="id97">
+
+<div class="line-block">
+<div class="line">In putting the decision first,</div>
+<div class="line">I was deciding to be <em>vulnerable</em></div>
+</div>
+</div>
+<div class="section" id="id98">
+
+<div class="line-block">
+<div class="line">Where could I find the <em>courage</em></div>
+<div class="line">to put my decision <strong>first?</strong></div>
+</div>
+</div>
+<div class="section" id="id99">
+
+<img alt="WilliamAdama.jpg" src="WilliamAdama.jpg" style="height: 700px;" />
+</div>
+<div class="section" id="id100">
+
+<div class="line-block">
+<div class="line">“It’s an integrated computer network,</div>
+<div class="line">and I will not have it aboard this ship.”</div>
+</div>
+</div>
+<div class="section" id="id101">
+
+<div class="line-block">
+<div class="line">Adopting that <strong>gravelly decisive voice</strong></div>
+<div class="line">helped me avoid burying my decisions</div>
+<div class="line">beneath too deep an avalanche</div>
+<div class="line">of <em>reasons</em></div>
+</div>
+</div>
+<div class="section" id="id102">
+
+<div class="line-block">
+<div class="line">(Side note: I never composed</div>
+<div class="line">conference email in Gmail)</div>
+</div>
+</div>
+<div class="section" id="id103">
+
+<div class="line-block">
+<div class="line">Never compose a <strong>high stakes</strong> email</div>
+<div class="line">in an application with a <em>Send</em> button!</div>
+</div>
+</div>
+<div class="section" id="id104">
+
+<p>Editor</p>
+<p><tt class="docutils literal">Ctrl C</tt> ↓ <em>copy</em></p>
+<div class="highlight"><pre><span></span><span class="n">xclip</span> <span class="o">...</span> <span class="o">-</span><span class="n">t</span> <span class="n">text</span><span class="o">/</span><span class="n">plain</span>
+<span class="o">|</span> <span class="n">pandoc</span>
+<span class="o">|</span> <span class="n">xclip</span> <span class="o">...</span> <span class="o">-</span><span class="n">t</span> <span class="n">text</span><span class="o">/</span><span class="n">html</span>
+</pre></div>
+
+<p><tt class="docutils literal">Ctrl V</tt> ↓ <em>paste</em></p>
+<p>Gmail</p>
+</div>
+<div class="section" id="id105">
+
+<div class="line-block">
+<div class="line">Having put the <em>reader</em> first,</div>
+<div class="line">I developed <strong>two more</strong> habits</div>
+</div>
+</div>
+<div class="section" id="id106">
+
+<ul class="simple">
+<li>Decision</li>
+<li>Consideration #1</li>
+<li>Consideration #2</li>
+<li>Consideration #3</li>
+<li>Consideration #4</li>
+</ul>
+</div>
+<div class="section" id="id107">
+
+<ul class="simple">
+<li><strong>Thanks</strong></li>
+<li>Decision</li>
+<li>Consideration #1</li>
+<li>Consideration #2</li>
+<li>Consideration #3</li>
+<li>Consideration #4</li>
+</ul>
+</div>
+<div class="section" id="id108">
+
+<ul class="simple">
+<li>Thanks</li>
+<li>Decision</li>
+<li><strong>Next steps</strong></li>
+<li>Consideration #1</li>
+<li>Consideration #2</li>
+<li>Consideration #3</li>
+<li>Consideration #4</li>
+</ul>
+</div>
+<div class="section" id="id109">
+
+<ul class="simple">
+<li>Thanks</li>
+<li>Decision</li>
+<li><strong>Next steps</strong></li>
+<li>Consideration #1</li>
+<li><span class="strike">Consideration #2</span></li>
+<li>Consideration #3</li>
+<li><span class="strike">Consideration #4</span></li>
+</ul>
+</div>
+<div class="section" id="id110">
+
+<ul class="simple">
+<li>Thanks</li>
+<li>Decision</li>
+<li>Next steps</li>
+<li>Consideration #1</li>
+<li>Consideration #3</li>
+</ul>
+</div>
+<div class="section" id="id111">
+
+<p>Is there a bigger pattern here?</p>
+</div>
+<div class="section" id="id112">
+
+<p>me me me me <strong>you</strong></p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id113">
+
+<p>me me me me <strong>you</strong></p>
+<p>↓</p>
+<p><em>you</em> <em>you</em> me me me</p>
+</div>
+<div class="section" id="id114">
+
+<p><em>Example</em></p>
+<p>let’s look at a single tweet</p>
+</div>
+<div class="section" id="id115">
+
+<p>I received a “thank you” email!</p>
+</div>
+<div class="section" id="id116">
+
+<div class="line-block">
+<div class="line">“Yesterday’s NASA</div>
+<div class="line">Astronomy Picture of the Day</div>
+<div class="line">was made possible by PyEphem”</div>
+</div>
+</div>
+<div class="section" id="id117">
+
+<div class="line-block">
+<div class="line">The galactic core is hidden</div>
+<div class="line">by dust, but is visible</div>
+<div class="line">to radio telescopes</div>
+</div>
+</div>
+<div class="section" id="id118">
+
+<p>2°×1° = 1000×500 light years</p>
+</div>
+<div class="section" id="id119">
+
+<img alt="meerkat-galactic-core.jpg" src="meerkat-galactic-core.jpg" style="width: 1260px;" />
+</div>
+<div class="section" id="id120">
+
+<img alt="SKA_site,_South_Africa_2014_51.jpg" src="SKA_site,_South_Africa_2014_51.jpg" style="height: 700px;" />
+</div>
+<div class="section" id="id121">
+
+<img alt="Meerkat_(Suricata_suricatta)_Tswalu.jpg" src="Meerkat_(Suricata_suricatta)_Tswalu.jpg" style="height: 700px;" />
+</div>
+<div class="section" id="id122">
+
+<p>Wikipedia image links:</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://commons.wikimedia.org/wiki/File:SKA_site,_South_Africa_2014_51.jpg">Telescope</a> — Mike Peel</div>
+<div class="line"><a class="reference external" href="https://commons.wikimedia.org/wiki/File:Meerkat_(Suricata_suricatta)_Tswalu.jpg">Meerkat mob</a> — Charles J Sharp</div>
+</div>
+</div>
+<div class="section" id="draft-tweet">
+<h1>Draft tweet</h1>
+<div class="line-block">
+<div class="line">“PyEphem was used to create</div>
+<div class="line">today’s NASA picture of the day!”</div>
+<div class="line"><em>&lt;link&gt;</em> <em>&lt;image&gt;</em></div>
+</div>
+</div>
+<div class="section" id="id123">
+
+<div class="line-block">
+<div class="line">Here are <strong>8 improvements</strong></div>
+<div class="line">that I made to the draft</div>
+</div>
+</div>
+<div class="section" id="id124">
+
+<ol class="arabic simple">
+<li>Provide context</li>
+</ol>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id125">
+
+<ol class="arabic simple">
+<li>Provide context</li>
+</ol>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<ul class="simple">
+<li>What’s PyEphem?</li>
+<li>Why am I tweeting about it?</li>
+</ul>
+</div>
+<div class="section" id="id126">
+
+<div class="line-block">
+<div class="line">“My <span class="gray">PyEphem</span> library <span class="gray">was used to create</span></div>
+<div class="line"><span class="gray">today’s NASA picture of the day!”</span></div>
+</div>
+</div>
+<div class="section" id="id127">
+
+<ol class="arabic simple" start="2">
+<li>Make modest claims</li>
+</ol>
+</div>
+<div class="section" id="id128">
+
+<div class="line-block">
+<div class="line">“…was used to create…”</div>
+</div>
+</div>
+<div class="section" id="id129">
+
+<div class="line-block">
+<div class="line"><span class="gray">“My PyEphem library</span> helped produce</div>
+<div class="line"><span class="gray">today’s NASA picture of the day!”</span></div>
+</div>
+</div>
+<div class="section" id="id130">
+
+<ol class="arabic simple" start="3">
+<li>Expand into a narrative</li>
+</ol>
+</div>
+<div class="section" id="id131">
+
+<div class="line-block">
+<div class="line">How did I know</div>
+<div class="line">about the photo?</div>
+</div>
+</div>
+<div class="section" id="id132">
+
+<div class="line-block">
+<div class="line">It’s not like I <em>personally</em></div>
+<div class="line">monitor the NASA photo of the day</div>
+<div class="line">for photos that use my libraries</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id133">
+
+<div class="line-block">
+<div class="line">It’s not like I <em>personally</em></div>
+<div class="line">monitor the NASA photo of the day</div>
+<div class="line">for photos that use my libraries</div>
+</div>
+<div class="line-block">
+<div class="line">We have <strong>280 characters</strong></div>
+</div>
+<div class="line-block">
+<div class="line">Let’s tell the full story!</div>
+</div>
+</div>
+<div class="section" id="id134">
+
+<div class="line-block">
+<div class="line">“I just got a ‘thanks’</div>
+<div class="line">email letting me know that</div>
+<div class="line"><span class="gray">my PyEphem library helped produce</span></div>
+<div class="line"><span class="gray">today’s NASA picture of the day!”</span></div>
+</div>
+</div>
+<div class="section" id="id135">
+
+<ol class="arabic simple" start="4">
+<li>Offer credit to the email’s author</li>
+</ol>
+</div>
+<div class="section" id="id136">
+
+<div class="line-block">
+<div class="line"><span class="gray">“I just got a ‘thanks’ email</span></div>
+<div class="line">from &#64;llude and the MeerKAT team <span class="gray">letting me</span></div>
+<div class="line"><span class="gray">know that my PyEphem library helped produce</span></div>
+<div class="line"><span class="gray">today’s NASA picture of the day!”</span></div>
+</div>
+</div>
+<div class="section" id="id137">
+
+<ol class="arabic simple" start="5">
+<li>Offer my congratulations</li>
+</ol>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id138">
+
+<ol class="arabic simple" start="5">
+<li>Offer my congratulations</li>
+</ol>
+<div class="line-block">
+<div class="line">So far, the tweet leaves</div>
+<div class="line">my own reaction implicit</div>
+<div class="line">rather than explicit</div>
+</div>
+</div>
+<div class="section" id="id139">
+
+<img alt="meerkat-galactic-core.jpg" src="meerkat-galactic-core.jpg" style="width: 1260px;" />
+</div>
+<div class="section" id="id140">
+
+<div class="line-block">
+<div class="line"><span class="gray">“I just got a ‘thanks’ email</span></div>
+<div class="line"><span class="gray">from &#64;llude and the MeerKAT team letting me</span></div>
+<div class="line"><span class="gray">know that my PyEphem library helped produce</span></div>
+<div class="line"><span class="gray">today’s NASA picture of the day.</span></div>
+<div class="line">Stunning work, MeerKAT!”</div>
+</div>
+</div>
+<div class="section" id="id141">
+
+<ol class="arabic simple" start="6">
+<li>Bring in the audience</li>
+</ol>
+</div>
+<div class="section" id="id142">
+
+<div class="line-block">
+<div class="line">Let’s <em>invite</em> the audience</div>
+<div class="line">to <strong>become part</strong> of this</div>
+<div class="line">cycle of thanks</div>
+</div>
+</div>
+<div class="section" id="id143">
+
+<div class="line-block">
+<div class="line"><span class="gray">“I just got a ‘thanks’ email</span></div>
+<div class="line"><span class="gray">from &#64;llude and the MeerKAT team letting me</span></div>
+<div class="line"><span class="gray">know that my PyEphem library helped produce</span></div>
+<div class="line"><span class="gray">today’s NASA picture of the day.</span></div>
+<div class="line"><span class="gray">Stunning work, MeerKAT!</span></div>
+<div class="line">Remember to thank the authors</div>
+<div class="line">of open source projects you use.”</div>
+</div>
+</div>
+<div class="section" id="id144">
+
+<div class="line-block">
+<div class="line">Let’s step back</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id145">
+
+<p>Q: How does the tweet look?</p>
+</div>
+<div class="section" id="id146">
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">Upside-down</div>
+</div>
+</div>
+<div class="section" id="id147">
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line">Antipodean</div>
+</div>
+</div>
+<div class="section" id="id148">
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><em>Where have I put the audience?</em></div>
+</div>
+</div>
+<div class="section" id="id149">
+
+<div class="line-block">
+<div class="line">“I just got a ‘thanks’ email</div>
+<div class="line">from &#64;llude and the MeerKAT team letting me</div>
+<div class="line">know that my PyEphem library helped produce</div>
+<div class="line">today’s NASA picture of the day.</div>
+<div class="line">Stunning work, MeerKAT!</div>
+<div class="line"><br /></div>
+<div class="line">Remember to thank the authors</div>
+<div class="line">of open source projects you use.”</div>
+</div>
+</div>
+<div class="section" id="id150">
+
+<ul class="simple">
+<li>Me</li>
+<li>Me</li>
+<li>Me</li>
+<li>You</li>
+</ul>
+</div>
+<div class="section" id="id151">
+
+<ol class="arabic simple" start="7">
+<li>Let’s put the audience first</li>
+</ol>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id152">
+
+<ol class="arabic simple" start="7">
+<li>Let’s put the audience first</li>
+</ol>
+<div class="line-block">
+<div class="line">• Lead with the general principle</div>
+<div class="line">• Follow up with this specific example</div>
+</div>
+</div>
+<div class="section" id="id153">
+
+<div class="line-block">
+<div class="line">“Remember to thank the authors</div>
+<div class="line">of open source projects you use.</div>
+<div class="line"><br /></div>
+<div class="line"><span class="gray">I just got a ‘thanks’ email</span></div>
+<div class="line"><span class="gray">from &#64;llude and the MeerKAT team letting me</span></div>
+<div class="line"><span class="gray">know that my PyEphem library helped produce</span></div>
+<div class="line"><span class="gray">today’s NASA picture of the day.</span></div>
+<div class="line"><span class="gray">Stunning work, MeerKAT!”</span></div>
+</div>
+</div>
+<div class="section" id="id154">
+
+<div class="line-block">
+<div class="line">This promotes</div>
+<div class="line">the general pattern —</div>
+<div class="line">the <em>practice of giving thanks</em> —</div>
+<div class="line">as the <strong>most important</strong></div>
+<div class="line"><strong>part</strong> of the tweet</div>
+</div>
+</div>
+<div class="section" id="id155">
+
+<ol class="arabic simple" start="8">
+<li>Switch to telling <em>myself</em> what to do</li>
+</ol>
+</div>
+<div class="section" id="id156">
+
+<div class="line-block">
+<div class="line">“Remember to thank the authors</div>
+<div class="line">of open source projects you use. …”</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id157">
+
+<div class="line-block">
+<div class="line">“Remember to thank the authors</div>
+<div class="line">of open source projects you use. …”</div>
+</div>
+<div class="line-block">
+<div class="line">• <em>Judgy</em> (assumes they’re <strong>not</strong> already)</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id158">
+
+<div class="line-block">
+<div class="line">“Remember to thank the authors</div>
+<div class="line">of open source projects you use. …”</div>
+</div>
+<div class="line-block">
+<div class="line">• <em>Judgy</em> (assumes they’re <strong>not</strong> already)</div>
+<div class="line">• <em>Preachy</em> (me <strong>telling them</strong> what to do)</div>
+</div>
+</div>
+<div class="section" id="id159">
+
+<p>A neat rule about being human:</p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id160">
+
+<p>A neat rule about being human:</p>
+<div class="line-block">
+<div class="line"><em>Anything</em> you do</div>
+<div class="line">will be interpreted as <strong>judging</strong></div>
+<div class="line">everyone who does something else!</div>
+</div>
+</div>
+<div class="section" id="id161">
+
+<p>Examples —</p>
+</div>
+<div class="section" id="id162">
+
+<div class="line-block">
+<div class="line">“I always add docstrings”</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id163">
+
+<div class="line-block">
+<div class="line">“I always add docstrings”</div>
+<div class="line">“My projects still support 2.7”</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id164">
+
+<div class="line-block">
+<div class="line">“I always add docstrings”</div>
+<div class="line">“My projects still support 2.7”</div>
+<div class="line">“I use Emacs”</div>
+</div>
+</div>
+<div class="section" id="id165">
+
+<div class="line-block">
+<div class="line"><strong>“Remember</strong> to thank the authors</div>
+<div class="line">of open source projects <em>you</em> use!”</div>
+</div>
+<p>↓</p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id166">
+
+<div class="line-block">
+<div class="line"><strong>“Remember</strong> to thank the authors</div>
+<div class="line">of open source projects <em>you</em> use!”</div>
+</div>
+<p>↓</p>
+<div class="line-block">
+<div class="line"><strong>“I should</strong> take more time</div>
+<div class="line">to thank the open source</div>
+<div class="line">projects <em>I</em> use!”</div>
+</div>
+</div>
+<div class="section" id="id167">
+
+<div class="line-block">
+<div class="line">“I should take more time…”</div>
+</div>
+<div class="line-block">
+<div class="line">• <strong>Humble:</strong> admits that I am <em>not perfect</em></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id168">
+
+<div class="line-block">
+<div class="line">“I should take more time…”</div>
+</div>
+<div class="line-block">
+<div class="line">• <strong>Humble:</strong> admits that I am <em>not perfect</em></div>
+<div class="line">• While still implying everyone else should</div>
+</div>
+</div>
+<div class="section" id="id169">
+
+<div class="line-block">
+<div class="line">Now the tweet is ready!</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id170">
+
+<div class="line-block">
+<div class="line">Now the tweet is ready!</div>
+<div class="line">It’s no longer upside down</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id171">
+
+<div class="line-block">
+<div class="line">Now the tweet is ready!</div>
+<div class="line">It’s no longer upside down</div>
+<div class="line">but right-side up</div>
+</div>
+</div>
+<div class="section" id="finished-tweet">
+<h1>Finished tweet</h1>
+<div class="line-block">
+<div class="line">“I should take more time to thank</div>
+<div class="line">the open source projects I use!</div>
+<div class="line"><br /></div>
+<div class="line">I just got a ‘thanks’ email</div>
+<div class="line">from &#64;llude and the MeerKAT team letting me</div>
+<div class="line">know that my PyEphem library helped produce</div>
+<div class="line">today’s NASA picture of the day.</div>
+</div>
+<div class="line-block">
+<div class="line">Stunning work, MeerKAT!”</div>
+</div>
+</div>
+<div class="section" id="id172">
+
+<img alt="meerkat-galactic-core.jpg" src="meerkat-galactic-core.jpg" style="width: 1260px;" />
+</div>
+<div class="section" id="id173">
+
+<p>Thank you!</p>
+<p>&#64;brandon_rhodes</p>
+<!-- more ideas:
+which would you rather see first, main idea, or tiny detail?
+when I write emails “backwards”, I’m doing the subroutines first! -->
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

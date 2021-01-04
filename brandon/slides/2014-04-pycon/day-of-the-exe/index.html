@@ -1,0 +1,1050 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>slides.rst</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="slide">
+
+<div class="line-block">
+<div class="line"><strong>The Day of the EXE Is Upon Us</strong></div>
+</div>
+<div class="line-block">
+<div class="line">&#64;brandon_rhodes</div>
+</div>
+<div class="line-block">
+<div class="line"><em>PyCon 2014</em></div>
+<div class="line"><em>Montréal</em></div>
+</div>
+</div>
+<div class="section" id="id1">
+
+<p>von Neumann</p>
+</div>
+<div class="section" id="id2">
+
+<p><tt class="docutils literal">0x86</tt></p>
+</div>
+<div class="section" id="id3">
+
+<p>LDA #134</p>
+<p><tt class="docutils literal">0x86 0x86</tt></p>
+</div>
+<div class="section" id="id4">
+
+<p>Code &nbsp; Data</p>
+<p><tt class="docutils literal">0x86 0x86</tt></p>
+</div>
+<div class="section" id="id5">
+
+<div class="line-block">
+<div class="line">Ambiguous</div>
+<div class="line">Dangerous</div>
+</div>
+</div>
+<div class="section" id="id6">
+
+<div class="line-block">
+<div class="line"><em>homoiconic</em></div>
+</div>
+</div>
+<div class="section" id="id7">
+
+<div class="line-block">
+<div class="line">Bare metal</div>
+</div>
+</div>
+<div class="section" id="id8">
+
+<p><strong>lie</strong></p>
+</div>
+<div class="section" id="id9">
+
+<p>x86.js</p>
+</div>
+<div class="section" id="id10">
+
+<p><strong>compiler</strong>, <em>n.</em> &nbsp; data → code</p>
+</div>
+<div class="section" id="problem">
+<h1>Problem</h1>
+</div>
+<div class="section" id="id11">
+
+<div class="line-block">
+<div class="line">Targeting processors</div>
+<div class="line">with machine code is</div>
+</div>
+<div class="line-block">
+<div class="line"><em>slow</em></div>
+<div class="line"><em>difficult</em></div>
+<div class="line"><em>specialized</em></div>
+</div>
+</div>
+<div class="section" id="id12">
+
+<div class="line-block">
+<div class="line">Python wants to <em>run</em></div>
+<div class="line">on every single processor</div>
+</div>
+</div>
+<div class="section" id="id13">
+
+<div class="line-block">
+<div class="line">But <em>without</em> having to</div>
+<div class="line"><strong>know everything</strong> about</div>
+<div class="line">every single processor</div>
+</div>
+</div>
+<div class="section" id="id14">
+
+</div>
+<div class="section" id="id15">
+
+<div class="line-block">
+<div class="line">“<em>All problems</em> in computer</div>
+<div class="line">science can be <strong>solved</strong></div>
+<div class="line">by another level</div>
+<div class="line">of indirection”</div>
+</div>
+<div class="line-block">
+<div class="line">— David Wheeler</div>
+</div>
+</div>
+<div class="section" id="bytecode">
+<h1>Bytecode</h1>
+</div>
+<div class="section" id="id16">
+
+<div class="line-block">
+<div class="line">Python compiles to a <em>pretend</em></div>
+<div class="line">machine language that it runs</div>
+<div class="line">inside of a <strong>pretend processor</strong></div>
+</div>
+</div>
+<div class="section" id="id17">
+
+<p><em>secret:</em></p>
+<div class="line-block">
+<div class="line">CPython does <em>not</em>,</div>
+<div class="line">by my earlier definition,</div>
+<div class="line">do actual <strong>compiling</strong></div>
+</div>
+</div>
+<div class="section" id="id18">
+
+<div class="highlight"><pre><span></span>     <span class="n">code</span>               <span class="n">data</span>
+<span class="err">┌─────────────┐</span>     <span class="err">┌──────────┐</span>
+<span class="err">│</span>             <span class="err">│</span>  <span class="err">←</span>  <span class="err">│</span>   <span class="n">text</span>   <span class="err">│</span> <span class="err">←</span> <span class="s1">&#39;file.py&#39;</span>
+<span class="err">│</span>   <span class="n">CPython</span>   <span class="err">│</span>  <span class="err">→</span>  <span class="err">│</span> <span class="n">code</span> <span class="n">obj</span> <span class="err">│</span> <span class="err">→</span> <span class="s1">&#39;file.pyc&#39;</span>
+<span class="err">│</span>             <span class="err">│</span>  <span class="err">←</span>  <span class="err">│</span> <span class="n">bytecode</span> <span class="err">│</span>
+<span class="err">└─────────────┘</span>     <span class="err">└──────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id19">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">export</span> <span class="n">PYTHONDONTWRITEBYTECODE</span><span class="o">=</span><span class="mi">1</span>
+</pre></div>
+
+</div>
+<div class="section" id="id20">
+
+<div class="highlight"><pre><span></span>     <span class="n">code</span>               <span class="n">data</span>
+<span class="err">┌─────────────┐</span>     <span class="err">┌──────────┐</span>
+<span class="err">│</span>             <span class="err">│</span>  <span class="err">←</span>  <span class="err">│</span>   <span class="n">text</span>   <span class="err">│</span> <span class="err">←</span> <span class="s1">&#39;file.py&#39;</span>
+<span class="err">│</span>   <span class="n">CPython</span>   <span class="err">│</span>  <span class="err">→</span>  <span class="err">│</span> <span class="n">code</span> <span class="n">obj</span> <span class="err">│</span>
+<span class="err">│</span>             <span class="err">│</span>  <span class="err">←</span>  <span class="err">│</span> <span class="n">bytecode</span> <span class="err">│</span>
+<span class="err">└─────────────┘</span>     <span class="err">└──────────┘</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">At <strong>no point</strong> does your Python script</div>
+<div class="line">gain the dignity of becoming <em>code</em></div>
+<div class="line">from the machine’s point of view</div>
+</div>
+</div>
+<div class="section" id="id21">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="c1"># Infinite paraboloid</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="o">...</span>     <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">f</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="mi">25</span>
+</pre></div>
+
+</div>
+<div class="section" id="id22">
+
+<img alt="Hp16c.jpg" src="Hp16c.jpg" style="width: 960px;" />
+</div>
+<div class="section" id="id23">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">dis</span> <span class="kn">import</span> <span class="n">dis</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">dis</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+  <span class="mi">2</span>           <span class="mi">0</span> <span class="n">LOAD_FAST</span>                <span class="mi">0</span> <span class="p">(</span><span class="n">x</span><span class="p">)</span>
+              <span class="mi">3</span> <span class="n">LOAD_FAST</span>                <span class="mi">0</span> <span class="p">(</span><span class="n">x</span><span class="p">)</span>
+              <span class="mi">6</span> <span class="n">BINARY_MULTIPLY</span>
+              <span class="mi">7</span> <span class="n">LOAD_FAST</span>                <span class="mi">1</span> <span class="p">(</span><span class="n">y</span><span class="p">)</span>
+             <span class="mi">10</span> <span class="n">LOAD_FAST</span>                <span class="mi">1</span> <span class="p">(</span><span class="n">y</span><span class="p">)</span>
+             <span class="mi">13</span> <span class="n">BINARY_MULTIPLY</span>
+             <span class="mi">14</span> <span class="n">BINARY_ADD</span>
+             <span class="mi">15</span> <span class="n">RETURN_VALUE</span>
+</pre></div>
+
+</div>
+<div class="section" id="id24">
+
+<p><em>see</em></p>
+<div class="line-block">
+<div class="line"><strong>“All-Singing All-Dancing</strong></div>
+<div class="line"><strong>Python Bytecode”</strong></div>
+</div>
+<div class="line-block">
+<div class="line">Larry Hastings</div>
+<div class="line"><em>PyCon 2013</em></div>
+</div>
+</div>
+<div class="section" id="id25">
+
+<p><tt class="docutils literal">ceval.c</tt></p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+    <span class="o">...</span>
+    <span class="n">opcode</span> <span class="o">=</span> <span class="n">NEXTOP</span><span class="p">();</span>
+    <span class="o">...</span>
+    <span class="n">switch</span> <span class="p">(</span><span class="n">opcode</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">TARGET</span><span class="p">(</span><span class="n">NOP</span><span class="p">)</span> <span class="o">...</span>
+    <span class="n">TARGET</span><span class="p">(</span><span class="n">LOAD_FAST</span><span class="p">)</span> <span class="o">...</span>
+    <span class="n">TARGET</span><span class="p">(</span><span class="n">BINARY_MULTIPLY</span><span class="p">)</span> <span class="o">...</span>
+        <span class="n">PyNumber_Multiply</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">);</span> <span class="o">...</span>
+    <span class="n">TARGET</span><span class="p">(</span><span class="n">BINARY_ADD</span><span class="p">)</span> <span class="o">...</span>
+    <span class="n">TARGET</span><span class="p">(</span><span class="n">RETURN_VALUE</span><span class="p">)</span> <span class="o">...</span>
+    <span class="p">}</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id26">
+
+<p><tt class="docutils literal">abstract.c</tt></p>
+<div class="highlight"><pre><span></span><span class="n">PyObject</span> <span class="o">*</span>
+<span class="n">PyNumber_Multiply</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">w</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">binary_op1</span><span class="p">(</span>
+          <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">NB_SLOT</span><span class="p">(</span><span class="n">nb_multiply</span><span class="p">));</span>
+    <span class="o">...</span>
+    <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id27">
+
+<p><tt class="docutils literal">floatobject.c</tt></p>
+<div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">PyNumberMethods</span> <span class="n">float_as_number</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">float_add</span><span class="p">,</span>          <span class="o">/*</span><span class="n">nb_add</span><span class="o">*/</span>
+    <span class="n">float_sub</span><span class="p">,</span>          <span class="o">/*</span><span class="n">nb_subtract</span><span class="o">*/</span>
+    <span class="n">float_mul</span><span class="p">,</span>          <span class="o">/*</span><span class="n">nb_multiply</span><span class="o">*/</span>
+    <span class="n">float_rem</span><span class="p">,</span>          <span class="o">/*</span><span class="n">nb_remainder</span><span class="o">*/</span>
+    <span class="n">float_divmod</span><span class="p">,</span>       <span class="o">/*</span><span class="n">nb_divmod</span><span class="o">*/</span>
+    <span class="n">float_pow</span><span class="p">,</span>          <span class="o">/*</span><span class="n">nb_power</span><span class="o">*/</span>
+</pre></div>
+
+</div>
+<div class="section" id="id28">
+
+<p><tt class="docutils literal">floatobject.c</tt></p>
+<div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">PyObject</span> <span class="o">*</span>
+<span class="n">float_mul</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">w</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">double</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">;</span>
+    <span class="n">CONVERT_TO_DOUBLE</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+    <span class="n">CONVERT_TO_DOUBLE</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+    <span class="n">PyFPE_START_PROTECT</span><span class="p">(</span><span class="s2">&quot;multiply&quot;</span><span class="p">,</span> <span class="k">return</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span><span class="p">;</span>
+    <span class="n">PyFPE_END_PROTECT</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">PyFloat_FromDouble</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id29">
+
+<p>code &nbsp; data</p>
+</div>
+<div class="section" id="id30">
+
+<div class="highlight"><pre><span></span>         <span class="n">code</span>                <span class="n">data</span>
+<span class="err">───────────────────────</span>  <span class="err">─────────────</span>
+
+<span class="n">PyEval_EvalFrameEx</span><span class="p">()</span>     <span class="err">↴</span>
+                         <span class="nb">next</span> <span class="n">bytecode</span>
+<span class="n">TARGET</span><span class="p">(</span><span class="n">BINARY_MULTIPLY</span><span class="p">)</span>  <span class="err">↵</span>
+<span class="n">PyNumber_Multiply</span><span class="p">()</span>      <span class="err">↴</span>
+                         <span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;float&#39;</span><span class="o">&gt;</span>
+<span class="n">float_mul</span><span class="p">()</span>              <span class="err">↵</span>
+</pre></div>
+
+<!-- See exe-from-python/experiments/cython for details on these numbers
+
+$ python harmonic.py
+16.6953112659
+1.37662196159
+
+$ python run.py
+16.6953112659
+16.6953112659
+0.965557098389
+0.143328905106
+
+First speedup: 1.37662196159 / 0.965557098389 = 1.4257281769113894
+Second speedup: 0.965557098389 / 0.143328905106 = 6.736652998743796
+
+For curiosity:
+$ pypy harmonic.py
+16.6953112659
+0.141994953156 -->
+</div>
+<div class="section" id="q">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">Is Python <strong>slow</strong></div>
+<div class="line">because it is</div>
+<div class="line"><em>interpreted</em>?</div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="line-block">
+<div class="line">Or, is Python <strong>slow</strong></div>
+<div class="line">because it is</div>
+<div class="line"><em>dynamic</em>?</div>
+</div>
+</div>
+<div class="section" id="id32">
+
+<div class="highlight"><pre><span></span>         <span class="n">code</span>                <span class="n">data</span>
+<span class="err">───────────────────────</span>  <span class="err">─────────────</span>
+
+<span class="n">PyEval_EvalFrameEx</span><span class="p">()</span>     <span class="err">↴</span>
+                         <span class="nb">next</span> <span class="n">bytecode</span>
+<span class="n">TARGET</span><span class="p">(</span><span class="n">BINARY_MULTIPLY</span><span class="p">)</span>  <span class="err">↵</span>
+<span class="n">PyNumber_Multiply</span><span class="p">()</span>      <span class="err">↴</span>
+                         <span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;float&#39;</span><span class="o">&gt;</span>
+<span class="n">float_mul</span><span class="p">()</span>              <span class="err">↵</span>
+</pre></div>
+
+</div>
+<div class="section" id="skip-interpretation">
+<h1>Skip Interpretation</h1>
+<div class="highlight"><pre><span></span><span class="n">PyObject</span> <span class="o">*</span><span class="n">res1</span><span class="p">,</span> <span class="n">res2</span><span class="p">;</span>
+<span class="n">res1</span> <span class="o">=</span> <span class="n">PyNumber_Multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">);</span>
+<span class="n">res2</span> <span class="o">=</span> <span class="n">PyNumber_Multiply</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+<span class="n">res3</span> <span class="o">=</span> <span class="n">PyNumber_Add</span><span class="p">(</span><span class="n">res1</span><span class="p">,</span> <span class="n">res2</span><span class="p">);</span>
+<span class="n">Py_DECREF</span><span class="p">(</span><span class="n">res1</span><span class="p">);</span>
+<span class="n">Py_DECREF</span><span class="p">(</span><span class="n">res2</span><span class="p">);</span>
+<span class="k">return</span> <span class="n">res3</span><span class="p">;</span>
+</pre></div>
+
+</div>
+<div class="section" id="at-best">
+<h1>at best</h1>
+<p><strong>40%</strong> speedup</p>
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line">CPython incurs <em>at worst</em> a <strong>30%</strong></div>
+<div class="line">overhead from interpretation</div>
+</div>
+</div>
+<div class="section" id="skip-allocation-dynamic-dispatch">
+<h1>Skip Allocation &amp; Dynamic Dispatch</h1>
+<div class="highlight"><pre><span></span><span class="nb">float</span> <span class="n">res1</span><span class="p">,</span> <span class="n">res2</span><span class="p">;</span>
+<span class="n">res1</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">;</span>
+<span class="n">res2</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="p">;</span>
+<span class="k">return</span> <span class="n">res1</span> <span class="o">+</span> <span class="n">res2</span><span class="p">;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id34">
+
+<div class="highlight"><pre><span></span>         <span class="n">code</span>                <span class="n">data</span>
+<span class="err">───────────────────────</span>  <span class="err">─────────────</span>
+
+<span class="n">PyEval_EvalFrameEx</span><span class="p">()</span>     <span class="err">↴</span>
+                         <span class="nb">next</span> <span class="n">bytecode</span>
+<span class="n">TARGET</span><span class="p">(</span><span class="n">BINARY_MULTIPLY</span><span class="p">)</span>  <span class="err">↵</span>
+<span class="n">PyNumber_Multiply</span><span class="p">()</span>      <span class="err">↴</span>
+                         <span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;float&#39;</span><span class="o">&gt;</span>
+<span class="n">float_mul</span><span class="p">()</span>              <span class="err">↵</span>
+</pre></div>
+
+</div>
+<div class="section" id="result">
+<h1>result</h1>
+<div class="line-block">
+<div class="line">Gives an <em>additional</em></div>
+<div class="line"><strong>574%</strong> speedup</div>
+</div>
+</div>
+<div class="section" id="id35">
+
+<div class="line-block">
+<div class="line">CPython can spend <strong>85%</strong></div>
+<div class="line">of its time <em>dispatching</em></div>
+</div>
+</div>
+<div class="section" id="moral">
+<h1>Moral</h1>
+<div class="line-block">
+<div class="line">If you want Python <em>fast</em>,</div>
+<div class="line">fix <strong>dynamic</strong> not <em>interpreted</em></div>
+</div>
+</div>
+<div class="section" id="id36">
+
+<div class="line-block">
+<div class="line">Fix <strong>dynamic</strong>?</div>
+</div>
+<div class="line-block">
+<div class="line">Explicit — <em>Numba</em></div>
+</div>
+</div>
+<div class="section" id="id37">
+
+<div class="line-block">
+<div class="line">Fix <strong>dynamic</strong>?</div>
+</div>
+<div class="line-block">
+<div class="line">Magic — <strong>PyPy</strong></div>
+</div>
+</div>
+<div class="section" id="numba">
+<h1>Numba</h1>
+<div class="highlight"><pre><span></span><span class="nd">@numba.jit</span><span class="p">(</span><span class="s1">&#39;f8,f8&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span>
+</pre></div>
+
+</div>
+<div class="section" id="id38">
+
+<p><em>see also</em> MicroPython</p>
+<div class="highlight"><pre><span></span><span class="nd">@micropython.native</span>
+<span class="o">...</span>
+
+<span class="nd">@micropython.viper</span>
+<span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="magic">
+<h1>Magic</h1>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head"><em>Old:</em></th>
+<th class="head"><em>Reigning:</em></th>
+<th class="head"><em>Announced:</em></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Psyco</td>
+<td>PyPy</td>
+<td>Pyston</td>
+</tr>
+<tr><td>Unladen Swallow</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>(ShedSkin)</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="exe">
+<h1>EXE</h1>
+<p>Why?</p>
+</div>
+<div class="section" id="distribution">
+<h1>Distribution</h1>
+</div>
+<div class="section" id="id39">
+
+<div class="highlight"><pre><span></span><span class="n">python</span><span class="o">.</span><span class="n">exe</span>
+<span class="n">app</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
+<span class="n">app</span><span class="o">/</span><span class="n">module_a</span><span class="o">.</span><span class="n">py</span>
+<span class="n">app</span><span class="o">/</span><span class="n">module_b</span><span class="o">.</span><span class="n">py</span>
+<span class="n">app</span><span class="o">/</span><span class="n">startup</span><span class="o">.</span><span class="n">py</span>
+<span class="n">otherlib</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
+<span class="n">otherlib</span><span class="o">/</span><span class="n">module</span><span class="o">.</span><span class="n">py</span>
+<span class="n">binlib1</span><span class="o">.</span><span class="n">pyd</span>
+<span class="n">binlib2</span><span class="o">.</span><span class="n">pyd</span>
+<span class="n">dependency1</span><span class="o">.</span><span class="n">dll</span>
+<span class="n">dependency2</span><span class="o">.</span><span class="n">dll</span>
+<span class="n">start</span><span class="o">.</span><span class="n">bat</span>
+  <span class="c1"># python.exe -m app.startup</span>
+</pre></div>
+
+</div>
+<div class="section" id="id40">
+
+<div class="line-block">
+<div class="line">Python can import <tt class="docutils literal">.py</tt> and <tt class="docutils literal">.pyc</tt> files</div>
+<div class="line">from a ZIP archive, and will execute</div>
+<div class="line"><tt class="docutils literal">__main__.py</tt> if given a ZIP to run</div>
+</div>
+</div>
+<div class="section" id="id41">
+
+<div class="highlight"><pre><span></span><span class="n">python</span><span class="o">.</span><span class="n">exe</span>
+<span class="n">source</span><span class="o">.</span><span class="n">zip</span>
+<span class="n">binlib1</span><span class="o">.</span><span class="n">pyd</span>
+<span class="n">binlib2</span><span class="o">.</span><span class="n">pyd</span>
+<span class="n">dependency1</span><span class="o">.</span><span class="n">dll</span>
+<span class="n">dependency2</span><span class="o">.</span><span class="n">dll</span>
+<span class="n">start</span><span class="o">.</span><span class="n">bat</span>
+  <span class="c1"># python.exe source.zip</span>
+</pre></div>
+
+</div>
+<div class="section" id="id42">
+
+<div class="line-block">
+<div class="line">On Unix, you can roll the <em>source</em> ZIP</div>
+<div class="line">together with the <em>startup</em> script:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="p">(</span><span class="n">echo</span> <span class="s1">&#39;#!/usr/bin/env python2&#39;</span><span class="p">;</span>
+   <span class="n">cat</span> <span class="n">source</span><span class="o">.</span><span class="n">zip</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">app</span>
+<span class="err">$</span> <span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">app</span>
+<span class="err">$</span> <span class="o">./</span><span class="n">app</span>
+</pre></div>
+
+</div>
+<div class="section" id="id43">
+
+<div class="line-block">
+<div class="line">But everywhere: you can append <em>ZIP files</em></div>
+<div class="line">to <strong>binaries</strong> without harming them</div>
+</div>
+<p><tt class="docutils literal">$ cat python.exe source.zip &gt; app.exe</tt></p>
+<div class="highlight"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">exe</span>
+<span class="n">binlib1</span><span class="o">.</span><span class="n">pyd</span>
+<span class="n">binlib2</span><span class="o">.</span><span class="n">pyd</span>
+<span class="n">dependency1</span><span class="o">.</span><span class="n">dll</span>
+<span class="n">dependency2</span><span class="o">.</span><span class="n">dll</span>
+<span class="n">start</span><span class="o">.</span><span class="n">bat</span>
+  <span class="c1"># app.exe app.exe</span>
+</pre></div>
+
+</div>
+<div class="section" id="id44">
+
+<div class="line-block">
+<div class="line">Or you can add a module</div>
+<div class="line">that Python auto-imports</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">exe</span>
+<span class="n">binlib1</span><span class="o">.</span><span class="n">pyd</span>
+<span class="n">binlib2</span><span class="o">.</span><span class="n">pyd</span>
+<span class="n">dependency1</span><span class="o">.</span><span class="n">dll</span>
+<span class="n">dependency2</span><span class="o">.</span><span class="n">dll</span>
+<span class="n">sitecustomize</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+
+</div>
+<div class="section" id="id45">
+
+<div class="line-block">
+<div class="line">But if you are going</div>
+<div class="line">to go to all of this <em>trouble</em>,</div>
+<div class="line">why not compile an interpreter</div>
+<div class="line">to <strong>auto-start</strong> your app?</div>
+</div>
+</div>
+<div class="section" id="id46">
+
+<div class="line-block">
+<div class="line"><strong>py2exe</strong></div>
+<div class="line"><strong>py2app</strong></div>
+<div class="line"><strong>bbFreeze</strong></div>
+<div class="line"><strong>cx_Freeze</strong></div>
+<div class="line"><strong>PyInstaller</strong></div>
+</div>
+<ul class="simple">
+<li>Rig interpreter to auto-execute app</li>
+<li>Recursively include app dependencies</li>
+<li>Build both together into an EXE file</li>
+</ul>
+</div>
+<div class="section" id="id47">
+
+<p>What is left?</p>
+</div>
+<div class="section" id="id48">
+
+<div class="highlight"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">exe</span>
+<span class="n">binlib1</span><span class="o">.</span><span class="n">pyd</span>
+<span class="n">binlib2</span><span class="o">.</span><span class="n">pyd</span>
+<span class="n">dependency1</span><span class="o">.</span><span class="n">dll</span>
+<span class="n">dependency2</span><span class="o">.</span><span class="n">dll</span>
+</pre></div>
+
+<p><strong>Binary modules and DLLs</strong></p>
+</div>
+<div class="section" id="binary-modules-and-dlls">
+<h1>Binary modules and DLLs</h1>
+<ol class="arabic simple">
+<li>Leave them alongside EXE</li>
+</ol>
+</div>
+<div class="section" id="id49">
+<h1>Binary modules and DLLs</h1>
+<ol class="arabic simple">
+<li>Leave them alongside EXE</li>
+<li>Secretly unpack at runtime</li>
+</ol>
+</div>
+<div class="section" id="id50">
+<h1>Binary modules and DLLs</h1>
+<ol class="arabic simple">
+<li>Leave them alongside EXE</li>
+<li>Secretly unpack at runtime</li>
+<li><strong>Use this one weird trick</strong></li>
+</ol>
+</div>
+<div class="section" id="py2exe">
+<h1>py2exe</h1>
+<div class="line-block">
+<div class="line">“<strong>emulate</strong> the Portable</div>
+<div class="line">Executable loader—”</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">DWORD</span> <span class="o">*</span><span class="n">patchAddrHL</span><span class="p">;</span>
+<span class="nb">int</span> <span class="nb">type</span><span class="p">,</span> <span class="n">offset</span><span class="p">;</span>
+
+<span class="o">//</span> <span class="n">the</span> <span class="n">upper</span> <span class="mi">4</span> <span class="n">bits</span> <span class="n">define</span> <span class="n">the</span> <span class="nb">type</span> <span class="n">of</span> <span class="n">relocation</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="o">*</span><span class="n">relInfo</span> <span class="o">&gt;&gt;</span> <span class="mi">12</span><span class="p">;</span>
+<span class="o">//</span> <span class="n">the</span> <span class="n">lower</span> <span class="mi">12</span> <span class="n">bits</span> <span class="n">define</span> <span class="n">the</span> <span class="n">offset</span>
+<span class="n">offset</span> <span class="o">=</span> <span class="o">*</span><span class="n">relInfo</span> <span class="o">&amp;</span> <span class="mh">0xfff</span><span class="p">;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id51">
+
+<div class="line-block">
+<div class="line">When it works, only <tt class="docutils literal">py2exe</tt></div>
+<div class="line">provides a truly general</div>
+<div class="line">single-file bundle!</div>
+</div>
+</div>
+<div class="section" id="id52">
+
+<p><strong>Thanks to this one weird trick</strong></p>
+</div>
+<div class="section" id="inline-files">
+<h1>Inline files</h1>
+<p><em>(Text, templates, images)</em></p>
+<div class="line-block">
+<div class="line">If a package uses plain old <tt class="docutils literal">open()</tt></div>
+<div class="line">then you must monkeypatch, <em>or</em> keep</div>
+<div class="line">plain files outside of EXE</div>
+</div>
+</div>
+<div class="section" id="id53">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pkgutil</span>
+<span class="n">textdata</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span>
+    <span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="s1">&#39;templates/layout.html&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id54">
+
+<ul class="simple">
+<li>We have great <strong>interpreters</strong></li>
+<li>We have <em>JIT</em> in several of them</li>
+<li>We can bundle them with our <strong>code</strong></li>
+</ul>
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line">Who would need anything <em>more</em>?</div>
+</div>
+</div>
+<div class="section" id="id56">
+
+<div class="line-block">
+<div class="line">“I myself dared to pass the doors</div>
+<div class="line">of the Necromancer in Dol Guldur</div>
+<div class="line">and secretly explored his ways”</div>
+</div>
+</div>
+<div class="section" id="id57">
+
+<div class="line-block">
+<div class="line">I once worked in the enterprise</div>
+</div>
+</div>
+<div class="section" id="id58">
+
+<div class="line-block">
+<div class="line">The enterprise sometimes</div>
+<div class="line">demands EXE’s specifically</div>
+</div>
+</div>
+<div class="section" id="id59">
+
+<div class="line-block">
+<div class="line">Core language developers see <strong>no point</strong></div>
+<div class="line">in merely eliminating interpretation —</div>
+<div class="line">they are targeting <em>dispatch</em></div>
+</div>
+</div>
+<div class="section" id="id60">
+
+<div class="highlight"><pre><span></span>         <span class="n">code</span>                <span class="n">data</span>
+<span class="err">───────────────────────</span>  <span class="err">─────────────</span>
+
+<span class="n">PyEval_EvalFrameEx</span><span class="p">()</span>     <span class="err">↴</span>
+                         <span class="nb">next</span> <span class="n">bytecode</span>
+<span class="n">TARGET</span><span class="p">(</span><span class="n">BINARY_MULTIPLY</span><span class="p">)</span>  <span class="err">↵</span>
+<span class="n">PyNumber_Multiply</span><span class="p">()</span>      <span class="err">↴</span>
+                         <span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;float&#39;</span><span class="o">&gt;</span>
+<span class="n">float_mul</span><span class="p">()</span>              <span class="err">↵</span>
+</pre></div>
+
+</div>
+<div class="section" id="the-enterprise">
+<h1>The enterprise</h1>
+<div class="line-block">
+<div class="line">Conservative culture</div>
+<div class="line">Look-alike phenomenon</div>
+<div class="line"><strong>Fear of decompilation</strong></div>
+</div>
+</div>
+<div class="section" id="id61">
+
+<ul class="simple">
+<li><a class="reference external" href="http://sourceforge.net/projects/decompyle/">decompyle</a></li>
+<li><a class="reference external" href="https://pypi.python.org/pypi/unpyclib/">unpyclib</a>
+— Python 2.6 — 2009?</li>
+<li><a class="reference external" href="https://bitbucket.org/gstarnberger/uncompyle">uncompyle</a>
+— Python 2.7 — 2012</li>
+<li><a class="reference external" href="https://github.com/wibiti/uncompyle2">uncompyle2</a>
+— Python 2.7 — 2013</li>
+</ul>
+</div>
+<div class="section" id="id62">
+
+</div>
+<div class="section" id="id63">
+
+<p>“This saved my life once”</p>
+</div>
+<div class="section" id="id64">
+
+<p>“+1 another life saved ;)”</p>
+</div>
+<div class="section" id="id65">
+
+<p>“+1 .. and another :)”</p>
+</div>
+<div class="section" id="id66">
+
+<p>“+1 .. and me :P”</p>
+</div>
+<div class="section" id="id67">
+
+<p>“just saved me from a nasty accident”</p>
+</div>
+<div class="section" id="id68">
+
+<div class="line-block">
+<div class="line">“It saved me hours</div>
+<div class="line">of work after a <tt class="docutils literal">rm *.py</tt></div>
+<div class="line">instead of <tt class="docutils literal">rm *.pyc</tt>”</div>
+</div>
+</div>
+<div class="section" id="id69">
+
+<div class="line-block">
+<div class="line">Maybe all of those <tt class="docutils literal">.pyc</tt></div>
+<div class="line">files are <strong>useful after all</strong></div>
+</div>
+</div>
+<div class="section" id="psa">
+<h1>PSA</h1>
+</div>
+<div class="section" id="id70">
+
+<div class="line-block">
+<div class="line"><strong>Do not set</strong></div>
+</div>
+<p><tt class="docutils literal">PYTHONDONTWRITEBYTECODE=1</tt></p>
+<div class="line-block">
+<div class="line"><strong>if they are your only backup</strong></div>
+</div>
+</div>
+<div class="section" id="j-k">
+<h1>j/k</h1>
+<div class="line-block">
+<div class="line">Without the <tt class="docutils literal">.pyc</tt> files you</div>
+<div class="line">won’t <tt class="docutils literal">rm *.pyc</tt> in the first place</div>
+</div>
+</div>
+<div class="section" id="id71">
+
+<p><tt class="docutils literal">git init</tt></p>
+</div>
+<div class="section" id="so">
+<h1>So</h1>
+<p>What if you need a real EXE?</p>
+<div class="highlight"><pre><span></span><span class="n">res1</span> <span class="o">=</span> <span class="n">PyNumber_Multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">);</span>
+<span class="n">res2</span> <span class="o">=</span> <span class="n">PyNumber_Multiply</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+<span class="n">res3</span> <span class="o">=</span> <span class="n">PyNumber_Add</span><span class="p">(</span><span class="n">res1</span><span class="p">,</span> <span class="n">res2</span><span class="p">);</span>
+</pre></div>
+
+</div>
+<div class="section" id="id72">
+
+<div class="line-block">
+<div class="line"><strong>The Day of the EXE Is Upon Us</strong></div>
+</div>
+</div>
+<div class="section" id="two-solutions">
+<h1>Two solutions!</h1>
+</div>
+<div class="section" id="nuitka">
+<h1>Nuitka</h1>
+<ul class="simple">
+<li>by Kay Hayen</li>
+<li>Two talks at EuroPython</li>
+<li>Python 2.6, 2.7, 3.2, 3.3</li>
+</ul>
+<p><strong>Compiler</strong> + <strong>Bundler</strong></p>
+</div>
+<div class="section" id="id73">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">print &quot;Hello, world.&quot;</tt> — <em>worked</em></div>
+</div>
+</div>
+<div class="section" id="id74">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">print &quot;Hello, world.&quot;</tt> — <em>worked</em></div>
+<div class="line"><tt class="docutils literal">import PyCrypto</tt> — <em>worked</em></div>
+</div>
+</div>
+<div class="section" id="id75">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">print &quot;Hello, world.&quot;</tt> — <em>worked</em></div>
+<div class="line"><tt class="docutils literal">import PyCrypto</tt> — <em>worked</em></div>
+<div class="line"><tt class="docutils literal">import M2Crypto</tt> — <em>worked</em></div>
+</div>
+</div>
+<div class="section" id="id76">
+
+<div class="line-block">
+<div class="line">You can <strong>bundle</strong> a dependency or</div>
+<div class="line">put it <em>elsewhere</em> on the <tt class="docutils literal">PYTHONPATH</tt></div>
+</div>
+</div>
+<div class="section" id="id77">
+
+<p>Nuitka has a <strong>competitor</strong></p>
+</div>
+<div class="section" id="cython">
+<h1>Cython</h1>
+<ul class="simple">
+<li>Greg Ewing, William Stein, Robert Bradshaw</li>
+<li>Today: <strong>6</strong> <a class="reference external" href="http://cython.org/#community">core developers</a>!</li>
+<li>Dozens of <em>contributors</em></li>
+<li>Python 2.6, 2.7, 3.2, 3.3</li>
+<li>Google, Enthought funding</li>
+</ul>
+<p><strong>Compiler</strong></p>
+</div>
+<div class="section" id="id78">
+
+<div class="line-block">
+<div class="line">Nuitka → <strong>C++</strong> → Machine code</div>
+<div class="line">Cython → <strong>C</strong> → Machine code</div>
+</div>
+</div>
+<div class="section" id="id79">
+
+<div class="line-block">
+<div class="line">Cython does <em>not</em> bundle</div>
+<div class="line">so you have to roll your</div>
+<div class="line">own single file executable</div>
+</div>
+</div>
+<div class="section" id="id80">
+
+<p><tt class="docutils literal">cascade</tt> imports <tt class="docutils literal">cascade2</tt> import <tt class="docutils literal">cascade3</tt></p>
+</div>
+<div class="section" id="id81">
+
+<div class="highlight"><pre><span></span><span class="n">cdef</span> <span class="n">extern</span><span class="p">:</span>
+    <span class="n">void</span> <span class="n">initcascade</span><span class="p">()</span>
+    <span class="n">void</span> <span class="n">initcascade3</span><span class="p">()</span>
+    <span class="n">void</span> <span class="n">initcascade2</span><span class="p">()</span>
+
+<span class="n">initcascade3</span><span class="p">()</span>
+<span class="n">initcascade2</span><span class="p">()</span>
+<span class="n">initcascade</span><span class="p">()</span>
+
+<span class="kn">import</span> <span class="nn">cascade</span>
+<span class="n">cascade</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id82">
+<h1>Cython</h1>
+<p>Produces Python-version agnostic C</p>
+</div>
+<div class="section" id="id83">
+
+<img alt="superpowers.png" src="superpowers.png" />
+</div>
+<div class="section" id="id84">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="o">~/</span><span class="n">venv</span><span class="o">-</span><span class="mi">27</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">cython</span> <span class="n">boto</span><span class="o">/...</span>
+<span class="err">$</span> <span class="o">...</span><span class="p">(</span><span class="nb">compile</span><span class="p">)</span><span class="o">...</span>
+<span class="err">$</span> <span class="o">~/</span><span class="n">venv</span><span class="o">-</span><span class="mi">33</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import boto&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id85">
+
+<div class="highlight"><pre><span></span><span class="ne">ImportError</span><span class="p">:</span> <span class="n">No</span> <span class="n">module</span> <span class="n">named</span> <span class="n">StringIO</span>
+</pre></div>
+
+</div>
+<div class="section" id="id86">
+
+<div class="highlight"><pre><span></span><span class="ne">ImportError</span><span class="p">:</span> <span class="n">No</span> <span class="n">module</span> <span class="n">named</span> <span class="n">ConfigParser</span>
+</pre></div>
+
+</div>
+<div class="section" id="id87">
+
+<p><em>etc</em></p>
+</div>
+<div class="section" id="id88">
+
+<div class="line-block">
+<div class="line">Monkey patch <tt class="docutils literal">StringIO</tt></div>
+</div>
+</div>
+<div class="section" id="id89">
+
+<div class="line-block">
+<div class="line">Monkey patch <tt class="docutils literal">base64</tt></div>
+</div>
+</div>
+<div class="section" id="id90">
+
+<div class="line-block">
+<div class="line"><em>etc</em></div>
+</div>
+</div>
+<div class="section" id="id91">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">python</span> <span class="n">test_boto</span><span class="o">.</span><span class="n">py</span>
+
+<span class="n">de405</span><span class="o">-</span><span class="mf">1997.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">de406</span><span class="o">-</span><span class="mf">1997.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">de421</span><span class="o">-</span><span class="mf">2008.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">de422</span><span class="o">-</span><span class="mf">2009.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">de423</span><span class="o">-</span><span class="mf">2010.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">novas_de405</span><span class="o">-</span><span class="mf">1997.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">packages</span><span class="o">.</span><span class="n">html</span>
+</pre></div>
+
+</div>
+<div class="section" id="id92">
+<h1>Cython</h1>
+<ul class="simple">
+<li>Build <em>extension</em> or <em>executable</em></li>
+<li>Transparent calls to <strong>C</strong>, <strong>C++</strong></li>
+<li>Numba-style typed functions:</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="n">cdef</span> <span class="nb">float</span> <span class="n">f</span><span class="p">(</span><span class="nb">float</span> <span class="n">x</span><span class="p">,</span> <span class="nb">float</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span>
+</pre></div>
+
+</div>
+<div class="section" id="mashup-of-solutions">
+<h1>Mashup of solutions</h1>
+<p>Cython → <tt class="docutils literal">C</tt> → <tt class="docutils literal">.so</tt> → PyInstaller → <em>single file</em></p>
+</div>
+<div class="section" id="id93">
+
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://github.com/brandon-rhodes/exe-from-python">https://github.com/brandon-rhodes/exe-from-python</a></div>
+</div>
+<p><strong>Sprint!</strong></p>
+</div>
+<div class="section" id="id94">
+
+<div class="line-block">
+<div class="line"><strong>The Day of the EXE Is Upon Us</strong></div>
+</div>
+</div>
+<div class="section" id="thank-you-very-much">
+<h1>Thank you very much!</h1>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://github.com/brandon-rhodes/exe-from-python">https://github.com/brandon-rhodes/exe-from-python</a></div>
+</div>
+<p>&#64;brandon_rhodes</p>
+</div>
+<div class="section" id="id95">
+
+<!-- Potential References
+http://www.evanmiller.org/why-im-betting-on-julia.html
+http://blog.ablepear.com/2012/10/bundling-python-files-into-stand-alone.html
+http://www.voidspace.org.uk/python/weblog/arch_d7_2008_12_06.shtml#e1038
+https://tech.dropbox.com/2014/04/introducing-pyston-an-upcoming-jit-based-python-implementation/ -->
+<!-- single quote: ’
+double quotes: x“”x
+em-dash: —
+vertical ellipsis: ⋮
+arrows: ←, ↑, →, ↓, ↔, ↕, ↖, ↗, ↘, ↙ -->
+<style>
+  pre {
+    border: none;
+    background: none;
+    box-shadow: none;
+  }
+</style>
+<script>
+  window.slide_transition_time = 200;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

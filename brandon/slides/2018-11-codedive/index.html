@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
+<title></title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+ <style>
+ body.presentation-mode .section {
+  width: 960px;
+  height: 540px;
+  font-size: 36px;
+ }
+ body.presentation-mode pre {
+  font-size: 28px;
+  background: none;
+  box-shadow: none;
+ }
+ body.presentation-mode tt {
+  font-size: 28px;
+ }
+ .big {font-size: 2em;}
+ .timer {font-size: 2.0em;}
+ .strike {text-decoration: line-through;}
+ .line-block {margin: 0;}
+</style><div class="section" id="slide">
+
+<div class="line-block">
+<div class="line">Python as C++’s limiting case</div>
+<div class="line"><br /></div>
+<div class="line-block">
+<div class="line">code::dive • Wrocław</div>
+<div class="line-block">
+<div class="line">2018 November 17</div>
+<div class="line-block">
+<div class="line">Brandon Rhodes</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="id1">
+
+<div class="line-block">
+<div class="line">“limiting case”</div>
+</div>
+</div>
+<div class="section" id="id2">
+
+<div class="line-block">
+<div class="line">Polygon of <em>n</em> sides</div>
+<div class="line"><br /></div>
+<div class="line"><em>n</em> = 3, 4, 5, …</div>
+<div class="line">triangle, square, petagon, …</div>
+</div>
+</div>
+<div class="section" id="id3">
+
+<div class="line-block">
+<div class="line">Polygon of <em>n</em> sides</div>
+<div class="line"><br /></div>
+<div class="line">as <em>n</em> → ∞, shape → circle</div>
+<div class="line">“limiting case”</div>
+</div>
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line">“limiting case”</div>
+<div class="line"><br /></div>
+<div class="line">C++ → Python</div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<div class="line-block">
+<div class="line">divestment</div>
+<div class="line"><br /></div>
+<div class="line">IRQs</div>
+</div>
+</div>
+<div class="section" id="id6">
+
+<div class="line-block">
+<div class="line">Simply C++ without repeating the</div>
+<div class="line">sins of the old scripting languages</div>
+</div>
+</div>
+<div class="section" id="id7">
+
+<div class="line-block">
+<div class="line">“scripting language”</div>
+<div class="line"><br /></div>
+<div class="line">• takes source as input</div>
+<div class="line">• compiler remains present</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal"><span class="pre">eval(&quot;3</span> + 3&quot;)</tt></div>
+<div class="line"><tt class="docutils literal"><span class="pre">tokenize(&quot;3</span> + 3&quot;)</tt></div>
+<div class="line"><tt class="docutils literal"><span class="pre">ast.parse(&quot;3</span> + 3&quot;)</tt></div>
+</div>
+</div>
+<div class="section" id="id8">
+
+<div class="line-block">
+<div class="line">Syntax</div>
+</div>
+</div>
+<div class="section" id="id9">
+
+<div class="line-block">
+<div class="line-block">
+<div class="line">Perl</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><tt class="docutils literal">my $email_address = 'a.n&#64;example.com';</tt></div>
+</div>
+</div>
+<div class="section" id="id10">
+
+<div class="line-block">
+<div class="line">Bash</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">echo Hello, $user</tt></div>
+</div>
+</div>
+<div class="section" id="id11">
+
+<div class="line-block">
+<div class="line-block">
+<div class="line">Perl</div>
+<div class="line"><br /></div>
+</div>
+<div class="line"><tt class="docutils literal">my $email_address = 'a.n&#64;example.com';</tt></div>
+</div>
+</div>
+<div class="section" id="id12">
+
+<div class="line-block">
+<div class="line-block">
+<div class="line">Syntax?</div>
+<div class="line"><br /></div>
+</div>
+<div class="line">Let’s use C’s</div>
+</div>
+</div>
+<div class="section" id="id13">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">a = b</tt></div>
+</div>
+</div>
+<div class="section" id="id14">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">a = b</tt></div>
+<div class="line"><br /></div>
+<div class="line">but not an expression</div>
+<div class="line">— a statement!</div>
+</div>
+</div>
+<div class="section" id="id15">
+
+<div class="highlight"><pre><span></span><span class="o">==</span> <span class="o">!=</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="o">&gt;=</span> <span class="o">&lt;=</span>
+<span class="o">+</span> <span class="o">-</span> <span class="o">*</span> <span class="o">/</span> <span class="o">%</span> <span class="o">&amp;</span> <span class="o">|</span> <span class="o">^</span>
+</pre></div>
+
+</div>
+<div class="section" id="id16">
+
+<div class="highlight"><pre><span></span><span class="s1">&#39;Hello, </span><span class="si">%s</span><span class="s1">!&#39;</span> <span class="o">%</span> <span class="n">name</span>
+</pre></div>
+
+</div>
+<div class="section" id="id17">
+
+<div class="highlight"><pre><span></span><span class="mi">123</span> <span class="mh">0x10</span> <span class="mf">1e+100</span>
+</pre></div>
+
+</div>
+<div class="section" id="id18">
+
+<div class="highlight"><pre><span></span><span class="s2">&quot;String syntax.</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id19">
+
+<div class="highlight"><pre><span></span><span class="k">if</span>
+<span class="k">else</span>
+<span class="k">while</span>
+<span class="k">break</span>
+<span class="k">continue</span>
+</pre></div>
+
+</div>
+<div class="section" id="id20">
+
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+<span class="c1"># Iterator-powered range-based “for”,</span>
+<span class="c1"># like C++11</span>
+</pre></div>
+
+</div>
+<div class="section" id="id21">
+
+<div class="line-block">
+<div class="line">Keep exceptions &amp; exception handling</div>
+</div>
+</div>
+<div class="section" id="id22">
+
+<div class="line-block">
+<div class="line">Slicing</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">text[5:10]</tt></div>
+</div>
+</div>
+<div class="section" id="id23">
+
+<div class="line-block">
+<div class="line">Trailing comma</div>
+</div>
+</div>
+<div class="section" id="id24">
+
+<div class="line-block">
+<div class="line">Pascal</div>
+<div class="line"><br /></div>
+<div class="line">“;” is <em>separator</em></div>
+</div>
+</div>
+<div class="section" id="id25">
+
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="n">then</span> <span class="n">begin</span>
+  <span class="n">writeln</span><span class="p">(</span><span class="s1">&#39;N is now zero&#39;</span><span class="p">);</span>
+  <span class="n">func</span> <span class="p">:</span><span class="o">=</span> <span class="mi">1</span>
+<span class="n">end</span>
+</pre></div>
+
+</div>
+<div class="section" id="id26">
+
+<div class="line-block">
+<div class="line">K&amp;R C</div>
+<div class="line"><br /></div>
+<div class="line">“;” is <em>terminator</em></div>
+</div>
+</div>
+<div class="section" id="id27">
+
+<div class="line-block">
+<div class="line">K&amp;R C</div>
+<div class="line"><br /></div>
+<div class="line">“;” is <em>terminator</em></div>
+<div class="line">“,” is <em>separator</em></div>
+</div>
+</div>
+<div class="section" id="id28">
+
+<div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">a</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">};</span>
+</pre></div>
+
+</div>
+<div class="section" id="id29">
+
+<div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">a</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="mi">4</span><span class="p">,</span>
+     <span class="mi">5</span><span class="p">,</span>
+     <span class="mi">6</span>
+<span class="p">};</span>
+</pre></div>
+
+</div>
+<div class="section" id="id30">
+
+<div class="line-block">
+<div class="line">Python</div>
+<div class="line"><br /></div>
+<div class="line">“,” is <em>optional</em></div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="highlight"><pre><span></span><span class="c1"># Leave it off</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mi">4</span><span class="p">,</span>
+    <span class="mi">5</span><span class="p">,</span>
+    <span class="mi">6</span>
+<span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id32">
+
+<div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,]</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mi">4</span><span class="p">,</span>
+    <span class="mi">5</span><span class="p">,</span>
+    <span class="mi">6</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="c1"># Or, put it in</span>
+</pre></div>
+
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line">C99, C++11</div>
+<div class="line"><br /></div>
+<div class="line">“,” became optional!</div>
+</div>
+</div>
+<div class="section" id="id34">
+
+<div class="line-block">
+<div class="line">Go</div>
+<div class="line"><br /></div>
+<div class="line">Trailing “,” <em>mandatory</em> at line</div>
+<div class="line">end, <strong>disallowed</strong> it otherwise</div>
+</div>
+</div>
+<div class="section" id="id35">
+
+<div class="line-block">
+<div class="line">C++ → namespaces!</div>
+<div class="line"><br /></div>
+<div class="line">But simpler: the <tt class="docutils literal">foo.py</tt></div>
+<div class="line">namespace is always named <tt class="docutils literal">foo</tt></div>
+</div>
+</div>
+<div class="section" id="id36">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="n">j</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id37">
+
+<div class="line-block">
+<div class="line"><span class="strike">static</span></div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">_ignore_this</tt></div>
+</div>
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line"><span class="strike">function overloading</span></div>
+<div class="line"><br /></div>
+<div class="line">Instead, <em>optional</em> arguments</div>
+<div class="line">and <em>keyword</em> arguments</div>
+</div>
+</div>
+<div class="section" id="id39">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">write_csv</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">eol</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="s1">&#39;&quot;&#39;</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="n">write_csv</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+<span class="n">write_csv</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>  <span class="c1"># “data, sep”</span>
+<span class="n">write_csv</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id40">
+
+<div class="highlight"><pre><span></span><span class="c1"># Like C++, give full access</span>
+<span class="c1"># to raw UNIX system calls!</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span>
+<span class="n">s</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id41">
+
+<div class="line-block">
+<div class="line">Fixes</div>
+</div>
+</div>
+<div class="section" id="id42">
+
+<div class="line-block">
+<div class="line">undefined behavior</div>
+<div class="line">unspecified behavior</div>
+<div class="line">implementation-defined behavior</div>
+<div class="line"><br /></div>
+<div class="line">“Python evaluates expressions from left to right”</div>
+</div>
+</div>
+<div class="section" id="id43">
+
+<div class="line-block">
+<div class="line">Precedence</div>
+</div>
+</div>
+<div class="section" id="id44">
+
+<div class="highlight"><pre><span></span><span class="n">oflags</span> <span class="o">&amp;</span> <span class="mh">0x80</span> <span class="o">==</span> <span class="n">nflags</span> <span class="o">&amp;</span> <span class="mh">0x80</span>
+</pre></div>
+
+</div>
+<div class="section" id="id45">
+
+<div class="highlight"><pre><span></span><span class="n">oflags</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mh">0x80</span> <span class="o">==</span> <span class="n">nflags</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x80</span>
+
+              <span class="err">→</span> <span class="mi">0</span>
+</pre></div>
+
+</div>
+<div class="section" id="id46">
+
+<div class="line-block">
+<div class="line">In Python</div>
+<div class="line"><tt class="docutils literal">oflags &amp; 0x80 == nflags &amp; 0x80</tt></div>
+<div class="line">means</div>
+<div class="line"><tt class="docutils literal">(oflags &amp; 0x80) == (nflags &amp; 0x80)</tt></div>
+</div>
+</div>
+<div class="section" id="id47">
+
+<div class="line-block">
+<div class="line">Readability</div>
+</div>
+</div>
+<div class="section" id="id48">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">&amp;&amp;</tt> → <tt class="docutils literal">and</tt></div>
+<div class="line"><tt class="docutils literal">||</tt> → <tt class="docutils literal">or</tt></div>
+</div>
+</div>
+<div class="section" id="id49">
+
+<div class="line-block">
+<div class="line">Bonus: <tt class="docutils literal">and</tt> and <tt class="docutils literal">or</tt> will</div>
+<div class="line">short-circuit, like in C/C++</div>
+<div class="line"><br /></div>
+<div class="line"><em>but also</em> will return the final</div>
+<div class="line">value, instead of 0 or 1!</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">s = error.message or 'Error'</tt></div>
+</div>
+</div>
+<div class="section" id="id50">
+
+<div class="line-block">
+<div class="line">Extend C’s good idea</div>
+<div class="line">that <tt class="docutils literal">0</tt> is “false” to empty</div>
+<div class="line">strings and containers</div>
+</div>
+</div>
+<div class="section" id="id51">
+
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="mi">0</span><span class="p">:</span>   <span class="c1"># False</span>
+<span class="k">if</span> <span class="mf">0.0</span><span class="p">:</span> <span class="c1"># False</span>
+<span class="k">if</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>  <span class="c1"># False</span>
+<span class="k">if</span> <span class="p">[]:</span>  <span class="c1"># False</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">my_list</span><span class="p">:</span>
+    <span class="c1"># (list was empty)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id52">
+
+<div class="line-block">
+<div class="line">eliminate overflow</div>
+</div>
+</div>
+<div class="section" id="id53">
+
+<div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2147483647</span><span class="p">;</span>
+<span class="n">i</span><span class="o">++</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+
+<span class="c1"># -2147483648</span>
+</pre></div>
+
+</div>
+<div class="section" id="id54">
+
+<div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="mi">2147483647</span>
+<span class="k">print</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># 2147483648</span>
+</pre></div>
+
+</div>
+<div class="section" id="id55">
+
+<div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">257</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id56">
+
+<div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">257</span><span class="p">)</span>
+
+<span class="mi">2315841784746323</span><span class="o">-</span>
+<span class="mi">9084714197001737</span><span class="o">-</span>
+<span class="mi">5815706539969331</span><span class="o">-</span>
+<span class="mi">2811280789151680</span><span class="o">-</span>
+<span class="mi">15826259279872</span>
+</pre></div>
+
+</div>
+<div class="section" id="id57">
+
+<div class="line-block">
+<div class="line">Type system: loose or strict?</div>
+</div>
+</div>
+<div class="section" id="id58">
+
+<div class="highlight"><pre><span></span><span class="n">js</span><span class="o">&gt;</span> <span class="s1">&#39;4&#39;</span> <span class="o">-</span> <span class="mi">3</span>
+</pre></div>
+
+</div>
+<div class="section" id="id59">
+
+<div class="highlight"><pre><span></span><span class="n">js</span><span class="o">&gt;</span> <span class="s1">&#39;4&#39;</span> <span class="o">-</span> <span class="mi">3</span>
+<span class="mi">1</span>
+</pre></div>
+
+</div>
+<div class="section" id="id60">
+
+<div class="highlight"><pre><span></span><span class="n">js</span><span class="o">&gt;</span> <span class="s1">&#39;4&#39;</span> <span class="o">-</span> <span class="mi">3</span>
+<span class="mi">1</span>
+<span class="n">js</span><span class="o">&gt;</span> <span class="s1">&#39;4&#39;</span> <span class="o">+</span> <span class="mi">3</span>
+</pre></div>
+
+</div>
+<div class="section" id="id61">
+
+<div class="highlight"><pre><span></span><span class="n">js</span><span class="o">&gt;</span> <span class="s1">&#39;4&#39;</span> <span class="o">-</span> <span class="mi">3</span>
+<span class="mi">1</span>
+<span class="n">js</span><span class="o">&gt;</span> <span class="s1">&#39;4&#39;</span> <span class="o">+</span> <span class="mi">3</span>
+<span class="s2">&quot;43&quot;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id62">
+
+<div class="highlight"><pre><span></span><span class="n">js</span><span class="o">&gt;</span> <span class="p">[]</span> <span class="o">+</span> <span class="p">[]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id63">
+
+<div class="highlight"><pre><span></span><span class="n">js</span><span class="o">&gt;</span> <span class="p">[]</span> <span class="o">+</span> <span class="p">[]</span>
+<span class="s2">&quot;&quot;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id64">
+
+<div class="highlight"><pre><span></span><span class="n">js</span><span class="o">&gt;</span> <span class="p">[]</span> <span class="o">+</span> <span class="p">{}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id65">
+
+<div class="highlight"><pre><span></span><span class="n">js</span><span class="o">&gt;</span> <span class="p">[]</span> <span class="o">+</span> <span class="p">{}</span>
+<span class="s2">&quot;[object Object]&quot;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id66">
+
+<div class="highlight"><pre><span></span><span class="n">js</span><span class="o">&gt;</span> <span class="p">[]</span> <span class="o">+</span> <span class="p">{}</span>
+<span class="s2">&quot;[object Object]&quot;</span>
+<span class="n">js</span><span class="o">&gt;</span> <span class="p">{}</span> <span class="o">+</span> <span class="p">[]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id67">
+
+<div class="highlight"><pre><span></span><span class="n">js</span><span class="o">&gt;</span> <span class="p">[]</span> <span class="o">+</span> <span class="p">{}</span>
+<span class="s2">&quot;[object Object]&quot;</span>
+<span class="n">js</span><span class="o">&gt;</span> <span class="p">{}</span> <span class="o">+</span> <span class="p">[]</span>
+<span class="mi">0</span>
+</pre></div>
+
+</div>
+<div class="section" id="id68">
+
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://www.destroyallsoftware.com/talks/wat">“Wat”</a></div>
+<div class="line">Gary Bernhardt</div>
+</div>
+</div>
+<div class="section" id="id69">
+
+<div class="highlight"><pre><span></span><span class="n">perl</span><span class="o">&gt;</span> <span class="s2">&quot;3&quot;</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="mi">4</span>
+</pre></div>
+
+</div>
+<div class="section" id="id70">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">echo</span> <span class="o">|</span> <span class="n">awk</span> <span class="s1">&#39;{print &quot;3&quot; + 1}&#39;</span>
+<span class="mi">4</span>
+</pre></div>
+
+</div>
+<div class="section" id="id71">
+
+<div class="line-block">
+<div class="line">Traditional scripting languages</div>
+<div class="line">thought loose types were <em>convenient</em></div>
+</div>
+</div>
+<div class="section" id="id72">
+
+<div class="line-block">
+<div class="line">The truth: loose types are <strong>terrible</strong></div>
+</div>
+</div>
+<div class="section" id="id73">
+
+<div class="line-block">
+<div class="line">• Locality</div>
+<div class="line">• Readability</div>
+</div>
+</div>
+<div class="section" id="id74">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;4&#39;</span> <span class="o">-</span> <span class="mi">3</span>
+<span class="ne">TypeError</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;4&#39;</span> <span class="o">+</span> <span class="mi">3</span>
+<span class="ne">TypeError</span>
+</pre></div>
+
+</div>
+<div class="section" id="id75">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="s1">&#39;4&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span>
+<span class="mi">7</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;4&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="s1">&#39;43&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id76">
+
+<div class="line-block">
+<div class="line">Explicit is better than implicit</div>
+<div class="line">Errors should never pass silently</div>
+</div>
+</div>
+<div class="section" id="id77">
+
+<div class="line-block">
+<div class="line">Python: strict type system</div>
+</div>
+</div>
+<div class="section" id="id78">
+
+<div class="line-block">
+<div class="line">C++</div>
+<div class="line"><br /></div>
+<div class="line">Values ↔ Pointers</div>
+</div>
+</div>
+<div class="section" id="id79">
+
+<div class="line-block">
+<div class="line">Python</div>
+<div class="line"><br /></div>
+<div class="line"><span class="strike">Values</span> ↔ Pointers</div>
+</div>
+</div>
+<div class="section" id="id80">
+
+<div class="line-block">
+<div class="line">a = 3</div>
+<div class="line">b = a</div>
+</div>
+</div>
+<div class="section" id="id81">
+
+<div class="line-block">
+<div class="line">How many list types?</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id82">
+
+<div class="line-block">
+<div class="line">How many list types?</div>
+<div class="line"><br /></div>
+<div class="line">list&lt;pointer&gt;</div>
+</div>
+</div>
+<div class="section" id="id83">
+
+<div class="line-block">
+<div class="line">How many hash table types?</div>
+<div class="line"><br /></div>
+<div class="line">dict&lt;pointer, pointer&gt;</div>
+</div>
+</div>
+<div class="section" id="id84">
+
+<div class="line-block">
+<div class="line"><span class="strike">template</span></div>
+</div>
+</div>
+<div class="section" id="id85">
+
+<div class="line-block">
+<div class="line">Everything-a-pointer</div>
+<div class="line">means data structures are</div>
+<div class="line">automatically <em>composable</em></div>
+</div>
+</div>
+<div class="section" id="id86">
+
+<div class="highlight"><pre><span></span><span class="p">[{</span><span class="s1">&#39;ext&#39;</span><span class="p">:</span> <span class="s1">&#39;.c&#39;</span><span class="p">,</span> <span class="s1">&#39;binary&#39;</span><span class="p">:</span> <span class="s1">&#39;gcc&#39;</span><span class="p">},</span>
+ <span class="p">{</span><span class="s1">&#39;ext&#39;</span><span class="p">:</span> <span class="s1">&#39;.py&#39;</span><span class="p">,</span> <span class="s1">&#39;binary&#39;</span><span class="p">:</span> <span class="s1">&#39;python3&#39;</span><span class="p">},</span>
+ <span class="p">{</span><span class="s1">&#39;ext&#39;</span><span class="p">:</span> <span class="s1">&#39;.sh&#39;</span><span class="p">,</span> <span class="s1">&#39;binary&#39;</span><span class="p">:</span> <span class="s1">&#39;bash&#39;</span><span class="p">}]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id87">
+
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;linter&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;lint&#39;</span><span class="p">],</span>
+ <span class="s1">&#39;compile&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;gcc&#39;</span><span class="p">,</span> <span class="s1">&#39;strip&#39;</span><span class="p">],</span>
+ <span class="s1">&#39;archive&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;tar&#39;</span><span class="p">]}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id88">
+
+<div class="line-block">
+<div class="line">Q: But what if you want</div>
+<div class="line">compound hash map <em>keys?</em></div>
+</div>
+</div>
+<div class="section" id="id89">
+
+<div class="line-block">
+<div class="line">A: List <tt class="docutils literal">[]</tt> is mutable</div>
+<div class="line">but tuple <tt class="docutils literal">()</tt> immutable</div>
+</div>
+</div>
+<div class="section" id="id90">
+
+<div class="highlight"><pre><span></span><span class="n">errors</span> <span class="o">=</span> <span class="p">{(</span><span class="s1">&#39;load.py&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span> <span class="s1">&#39;&quot;foo&quot; undefined&#39;</span><span class="p">,</span>
+          <span class="p">(</span><span class="s1">&#39;load.py&#39;</span><span class="p">,</span> <span class="mi">47</span><span class="p">):</span> <span class="s1">&#39;unused name &quot;n&quot;&#39;</span><span class="p">,</span>
+          <span class="p">(</span><span class="s1">&#39;store.py&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">):</span> <span class="s1">&#39;syntax error&#39;</span><span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id91">
+
+<div class="line-block">
+<div class="line">Tuple dictionary keys</div>
+<div class="line">solve instantly a <em>terrible</em></div>
+<div class="line">old problem in scripting</div>
+</div>
+</div>
+<div class="section" id="id92">
+
+<div class="highlight"><pre><span></span><span class="s1">&#39;store.py&#39;</span> <span class="mi">12</span>
+<span class="s1">&#39;load.py&#39;</span> <span class="mi">8</span>
+<span class="s1">&#39;load.py&#39;</span> <span class="mi">47</span>
+</pre></div>
+
+</div>
+<div class="section" id="id93">
+
+<div class="highlight"><pre><span></span><span class="s1">&#39;store.py:12&#39;</span>
+<span class="s1">&#39;load.py:8&#39;</span>
+<span class="s1">&#39;load.py:47&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id94">
+
+<div class="highlight"><pre><span></span><span class="s1">&#39;load.py:47&#39;</span>
+<span class="s1">&#39;load.py:8&#39;</span>
+<span class="s1">&#39;store.py:12&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id95">
+
+<div class="highlight"><pre><span></span><span class="s1">&#39;load.py:000008&#39;</span>
+<span class="s1">&#39;load.py:000047&#39;</span>
+<span class="s1">&#39;store.py:0000012&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id96">
+
+<div class="highlight"><pre><span></span><span class="p">{(</span><span class="s1">&#39;load.py&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span> <span class="s1">&#39;&quot;foo&quot; undefined&#39;</span><span class="p">,</span>
+ <span class="p">(</span><span class="s1">&#39;load.py&#39;</span><span class="p">,</span> <span class="mi">47</span><span class="p">):</span> <span class="s1">&#39;unused name &quot;n&quot;&#39;</span><span class="p">,</span>
+ <span class="p">(</span><span class="s1">&#39;store.py&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">):</span> <span class="s1">&#39;Syntax error&#39;</span><span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id97">
+
+<div class="line-block">
+<div class="line">Tuples (and lists) support sorting</div>
+</div>
+</div>
+<div class="section" id="id98">
+
+<div class="highlight"><pre><span></span><span class="p">[(</span><span class="s1">&#39;dropbox.com&#39;</span><span class="p">,</span> <span class="mi">443</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;google.com&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;google.com&#39;</span><span class="p">,</span> <span class="mi">443</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;stackoverflow.com&#39;</span><span class="p">,</span> <span class="mi">443</span><span class="p">)]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id99">
+
+<div class="line-block">
+<div class="line">Return multiple values</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">return (hostname, port)</tt></div>
+</div>
+</div>
+<div class="section" id="id100">
+
+<div class="line-block">
+<div class="line">Unpacking</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">host, port = get_address()</tt></div>
+</div>
+</div>
+<div class="section" id="id101">
+
+<div class="line-block">
+<div class="line">Swapping</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">x, y = y, x</tt></div>
+</div>
+</div>
+<div class="section" id="id102">
+
+<div class="line-block">
+<div class="line">Everything-a-pointer</div>
+<div class="line">means functions and types</div>
+<div class="line">become eligible <em>data!</em></div>
+<div class="line"><br /></div>
+<div class="line"><em>Design Patterns</em></div>
+</div>
+</div>
+<div class="section" id="id103">
+
+<div class="highlight"><pre><span></span><span class="n">openers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;.pdf&#39;</span><span class="p">:</span> <span class="n">pdflib</span><span class="o">.</span><span class="n">parse</span><span class="p">,</span>
+    <span class="s1">&#39;.png&#39;</span><span class="p">:</span> <span class="n">imagelib</span><span class="o">.</span><span class="n">open</span><span class="p">,</span>
+    <span class="s1">&#39;.txt&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="o">.</span><span class="n">read</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id104">
+
+<div class="highlight"><pre><span></span><span class="n">file_types</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;.pdf&#39;</span><span class="p">:</span> <span class="n">PdfDocument</span><span class="p">,</span>
+    <span class="s1">&#39;.png&#39;</span><span class="p">:</span> <span class="n">BitmapImage</span><span class="p">,</span>
+    <span class="s1">&#39;.txt&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id105">
+
+<div class="line-block">
+<div class="line">David Wheeler</div>
+<div class="line"><br /></div>
+<div class="line">“All problems</div>
+<div class="line">in computer science</div>
+<div class="line">can be solved by another</div>
+<div class="line">level of indirection”</div>
+</div>
+</div>
+<div class="section" id="id106">
+
+<div class="line-block">
+<div class="line">Think of Python as C++ but</div>
+<div class="line">with <em>uniform</em> indirection</div>
+</div>
+</div>
+<div class="section" id="id107">
+
+<div class="line-block">
+<div class="line">Everything-a-pointer</div>
+<div class="line"><br /></div>
+<div class="line">But what do the</div>
+<div class="line">pointers point <em>at?</em></div>
+</div>
+</div>
+<div class="section" id="id108">
+
+<div class="line-block">
+<div class="line">C++ — many types</div>
+<div class="line">Python — one type</div>
+</div>
+</div>
+<div class="section" id="id109">
+
+<div class="highlight"><pre><span></span><span class="n">struct</span> <span class="p">{</span>
+   <span class="n">struct</span> <span class="n">_typeobject</span> <span class="o">*</span><span class="n">ob_type</span><span class="p">;</span>
+   <span class="o">/*</span> <span class="n">followed</span> <span class="n">by</span> <span class="nb">object</span><span class="err">’</span><span class="n">s</span> <span class="n">data</span> <span class="o">*/</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id110">
+
+<div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">_typeobject</span> <span class="p">{</span>
+    <span class="o">...</span>
+    <span class="n">getattrfunc</span> <span class="n">tp_getattr</span><span class="p">;</span>
+    <span class="n">setattrfunc</span> <span class="n">tp_setattr</span><span class="p">;</span>
+    <span class="o">...</span>
+    <span class="n">newfunc</span> <span class="n">tp_new</span><span class="p">;</span>
+    <span class="n">freefunc</span> <span class="n">tp_free</span><span class="p">;</span>
+    <span class="o">...</span>
+    <span class="n">binaryfunc</span> <span class="n">nb_add</span><span class="p">;</span>
+    <span class="n">binaryfunc</span> <span class="n">nb_subtract</span><span class="p">;</span>
+    <span class="o">...</span>
+    <span class="n">richcmpfunc</span> <span class="n">tp_richcompare</span><span class="p">;</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id111">
+
+<div class="line-block">
+<div class="line">In C++ types</div>
+<div class="line">belong to <em>names</em></div>
+<div class="line"><tt class="docutils literal">int a = 3</tt></div>
+<div class="line"><br /></div>
+<div class="line">In Python types</div>
+<div class="line">belong to <em>values</em></div>
+<div class="line"><tt class="docutils literal">a = 3</tt></div>
+<div class="line"><br /></div>
+<div class="line"><span class="strike">declarations</span></div>
+</div>
+</div>
+<div class="section" id="id112">
+
+<div class="line-block">
+<div class="line">Only support two pointer operations</div>
+</div>
+</div>
+<div class="section" id="id113">
+
+<div class="line-block">
+<div class="line">#1 Copying</div>
+</div>
+</div>
+<div class="section" id="id114">
+
+<div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">b</span>
+<span class="n">my_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
+<span class="n">my_dict</span><span class="p">[</span><span class="s1">&#39;Wrocław&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;CET&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id115">
+
+<div class="line-block">
+<div class="line">Copying is <em>safe</em></div>
+</div>
+</div>
+<div class="section" id="id116">
+
+<div class="line-block">
+<div class="line">#2 Calling a method</div>
+<div class="line"><br /></div>
+<div class="line">Python code can <strong>only</strong></div>
+<div class="line">interact with a build-in object</div>
+<div class="line">through its <em>methods</em></div>
+</div>
+</div>
+<div class="section" id="id117">
+
+<div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">_typeobject</span> <span class="p">{</span>
+    <span class="o">...</span>
+    <span class="n">getattrfunc</span> <span class="n">tp_getattr</span><span class="p">;</span>
+    <span class="n">setattrfunc</span> <span class="n">tp_setattr</span><span class="p">;</span>
+    <span class="o">...</span>
+    <span class="n">newfunc</span> <span class="n">tp_new</span><span class="p">;</span>
+    <span class="n">freefunc</span> <span class="n">tp_free</span><span class="p">;</span>
+    <span class="o">...</span>
+    <span class="n">binaryfunc</span> <span class="n">nb_add</span><span class="p">;</span>
+    <span class="n">binaryfunc</span> <span class="n">nb_subtract</span><span class="p">;</span>
+    <span class="o">...</span>
+    <span class="n">richcmpfunc</span> <span class="n">tp_richcompare</span><span class="p">;</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id118">
+
+<div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">some_function</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+<span class="c1"># Q: I just passed a pointer!</span>
+<span class="c1"># Could some_function() have changed “3”?</span>
+</pre></div>
+
+</div>
+<div class="section" id="id119">
+
+<div class="line-block">
+<div class="line">A: Python only lets you call methods, and</div>
+<div class="line"><tt class="docutils literal">int</tt>, <tt class="docutils literal">float</tt>, <tt class="docutils literal">str</tt> types are <em>read-only</em> —</div>
+<div class="line">their methods don’t implement “set”!</div>
+</div>
+</div>
+<div class="section" id="id120">
+
+<div class="line-block">
+<div class="line">Immutable <tt class="docutils literal">int</tt>, <tt class="docutils literal">float</tt>, <tt class="docutils literal">str</tt> provide</div>
+<div class="line">the semantics of C++ automatic variables</div>
+<div class="line">in an everything-a-pointer language</div>
+</div>
+</div>
+<div class="section" id="id121">
+
+<div class="line-block">
+<div class="line">Uniform types and methods</div>
+<div class="line">make generic operators easy!</div>
+</div>
+</div>
+<div class="section" id="id122">
+
+<div class="highlight"><pre><span></span><span class="nb">min</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="nb">max</span><span class="p">([</span><span class="mf">3.125</span><span class="p">,</span> <span class="mf">3.16</span><span class="p">,</span> <span class="mf">3.139</span><span class="p">])</span>
+<span class="nb">min</span><span class="p">([</span><span class="s1">&#39;Warszawa&#39;</span><span class="p">,</span> <span class="s1">&#39;Kraków&#39;</span><span class="p">,</span> <span class="s1">&#39;Wrocław&#39;</span><span class="p">])</span>
+</pre></div>
+
+</div>
+<div class="section" id="id123">
+
+<div class="line-block">
+<div class="line">Great idea from C++:</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">newfunc tp_new;</tt></div>
+<div class="line"><br /></div>
+<div class="line">• Arenas</div>
+<div class="line">• Flywheels</div>
+</div>
+</div>
+<div class="section" id="id124">
+
+<div class="line-block">
+<div class="line">Q: <tt class="docutils literal">NULL</tt> ?</div>
+</div>
+</div>
+<div class="section" id="id125">
+
+<div class="line-block">
+<div class="line">A: Nope.</div>
+<div class="line"><br /></div>
+<div class="line">Python <tt class="docutils literal">a = b</tt> syntax provides no</div>
+<div class="line">mechanism for creating a <tt class="docutils literal">NULL</tt> pointer</div>
+</div>
+</div>
+<div class="section" id="id126">
+
+<div class="line-block">
+<div class="line">Python</div>
+<div class="line"><br /></div>
+<div class="line">• Segmentation faults: <strong>impossible</strong></div>
+<div class="line">• Buffer overflows: <strong>impossible</strong></div>
+</div>
+</div>
+<div class="section" id="id127">
+
+<div class="line-block">
+<div class="line">But wait</div>
+<div class="line"><br /></div>
+<div class="line">If the type struct is fixed,</div>
+<div class="line">what about user classes?</div>
+</div>
+</div>
+<div class="section" id="id128">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Address</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+</pre></div>
+
+</div>
+<div class="section" id="id129">
+
+<div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">_typeobject</span> <span class="p">{</span>
+    <span class="o">...</span>
+    <span class="n">getattrfunc</span> <span class="n">tp_getattr</span><span class="p">;</span>
+    <span class="n">setattrfunc</span> <span class="n">tp_setattr</span><span class="p">;</span>
+    <span class="o">...</span>
+    <span class="n">newfunc</span> <span class="n">tp_new</span><span class="p">;</span>
+    <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id130">
+
+<div class="line-block">
+<div class="line">For a user-defined <tt class="docutils literal">class</tt> —</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">tp_new()</tt> creates a hash table</div>
+<div class="line"><tt class="docutils literal">tp_setattr()</tt> calls its set-item</div>
+<div class="line"><tt class="docutils literal">tp_getattr()</tt> calls its get-item</div>
+</div>
+</div>
+<div class="section" id="id131">
+
+<div class="line-block">
+<div class="line">C++ <tt class="docutils literal">private</tt> and <tt class="docutils literal">protected</tt></div>
+</div>
+</div>
+<div class="section" id="id132">
+
+<div class="line-block">
+<div class="line">In Python —</div>
+<div class="line"><span class="strike">private</span> <span class="strike">protected</span></div>
+</div>
+</div>
+<div class="section" id="id133">
+
+<div class="line-block">
+<div class="line">Built-in types: private members</div>
+<div class="line">User class attributes: entirely public</div>
+<div class="line"><br /></div>
+<div class="line"><em>Language integrity</em> is the only</div>
+<div class="line">excuse for <strong>hiding</strong></div>
+</div>
+</div>
+<div class="section" id="id134">
+
+<div class="line-block">
+<div class="line">Q: Memory Management?</div>
+</div>
+</div>
+<div class="section" id="id135">
+
+<div class="line-block">
+<div class="line">A: <tt class="docutils literal">shared_ptr</tt></div>
+</div>
+</div>
+<div class="section" id="id136">
+
+<div class="highlight"><pre><span></span><span class="n">struct</span> <span class="p">{</span>
+   <span class="n">struct</span> <span class="n">_typeobject</span> <span class="o">*</span><span class="n">ob_type</span><span class="p">;</span>
+   <span class="o">/*</span> <span class="n">followed</span> <span class="n">by</span> <span class="nb">object</span><span class="err">’</span><span class="n">s</span> <span class="n">data</span> <span class="o">*/</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id137">
+
+<div class="highlight"><pre><span></span><span class="n">struct</span> <span class="p">{</span>
+   <span class="n">Py_ssize_t</span> <span class="n">ob_refcnt</span><span class="p">;</span>
+   <span class="n">struct</span> <span class="n">_typeobject</span> <span class="o">*</span><span class="n">ob_type</span><span class="p">;</span>
+   <span class="o">/*</span> <span class="n">followed</span> <span class="n">by</span> <span class="nb">object</span><span class="err">’</span><span class="n">s</span> <span class="n">data</span> <span class="o">*/</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id138">
+
+<div class="line-block">
+<div class="line">Reference counting vs GC</div>
+<div class="line"><br /></div>
+<div class="line">Instant — as soon as count drops</div>
+<div class="line">to zero, memory is freed</div>
+</div>
+</div>
+<div class="section" id="id139">
+
+<div class="line-block">
+<div class="line">Reference counting vs GC</div>
+<div class="line"><br /></div>
+<div class="line">Locality — freed memory is often</div>
+<div class="line">re-used immediately, maybe</div>
+<div class="line">while still in-cache!</div>
+</div>
+</div>
+<div class="section" id="id140">
+
+<div class="line-block">
+<div class="line">Caveat</div>
+<div class="line"><br /></div>
+<div class="line">MicroPython: <tt class="docutils literal">int</tt>, <tt class="docutils literal">str</tt> <em>inside</em> pointers</div>
+<div class="line">PyPy: JIT to machine code</div>
+</div>
+</div>
+<div class="section" id="id141">
+
+<div class="line-block">
+<div class="line">Q: What did Python programmers get wrong?</div>
+</div>
+</div>
+<div class="section" id="id142">
+
+<div class="line-block">
+<div class="line">A: Python 2 type system became</div>
+<div class="line">even stronger in Python 3</div>
+</div>
+</div>
+<div class="section" id="id143">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;byte string &#39;</span> <span class="o">+</span> <span class="sa">u</span><span class="s1">&#39;unicode string&#39;</span>
+<span class="sa">u</span><span class="s1">&#39;byte string unicode string&#39;</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="sa">b</span><span class="s1">&#39;byte string &#39;</span> <span class="o">+</span> <span class="sa">u</span><span class="s1">&#39;unicode string&#39;</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="n">can</span><span class="s1">&#39;t concat bytes to str</span>
+</pre></div>
+
+</div>
+<div class="section" id="id144">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="nb">sorted</span><span class="p">([</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">sorted</span><span class="p">([</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="n">unorderable</span> <span class="n">types</span><span class="p">:</span> <span class="nb">int</span><span class="p">()</span> <span class="o">&lt;</span> <span class="nb">str</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id145">
+
+<div class="line-block">
+<div class="line">A: Programmers <strong>over-used</strong> dynamic features</div>
+</div>
+</div>
+<div class="section" id="id146">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Address</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+
+<span class="c1"># But what if the port wasn’t specified?</span>
+</pre></div>
+
+</div>
+<div class="section" id="id147">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Address</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="k">if</span> <span class="n">port</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span> <span class="c1"># So terrible</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+</pre></div>
+
+</div>
+<div class="section" id="id148">
+
+<div class="highlight"><pre><span></span><span class="c1"># Code was forced to use introspection</span>
+<span class="c1"># (terrible!)</span>
+
+<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="s1">&#39;port&#39;</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">addr</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id149">
+
+<div class="highlight"><pre><span></span><span class="c1"># Today’s best practice:</span>
+<span class="c1"># every attribute always present</span>
+
+<span class="k">if</span> <span class="n">addr</span><span class="o">.</span><span class="n">port</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">addr</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id150">
+
+<div class="line-block">
+<div class="line">With respect to stability</div>
+<div class="line">of a class’s attribute lists:</div>
+<div class="line"><br /></div>
+<div class="line">Python classes → C++ classes</div>
+</div>
+</div>
+<div class="section" id="id151">
+
+<div class="line-block">
+<div class="line">Another bad habit:</div>
+<div class="line"><br /></div>
+<div class="line">Python routines that tried to</div>
+<div class="line">support <em>many</em> argument types</div>
+<div class="line">instead of just <strong>one</strong></div>
+</div>
+</div>
+<div class="section" id="id152">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Dataframe</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span>
+
+<span class="n">Dataframe</span><span class="p">([</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">])</span>
+<span class="n">Dataframe</span><span class="p">(</span><span class="s1">&#39;date,x,y&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id153">
+
+<div class="line-block">
+<div class="line">Code that supports several types</div>
+<div class="line">can be tempting because of <em>convenience</em> —</div>
+<div class="line">but is usually harder to <strong>test</strong>,</div>
+<div class="line"><strong>modify</strong>, and <strong>debug</strong></div>
+<div class="line"><br /></div>
+<div class="line">Python code → C++ code</div>
+</div>
+</div>
+<div class="section" id="id154">
+
+<div class="line-block">
+<div class="line">It’s usually a design bug</div>
+<div class="line">if you need <tt class="docutils literal">eval()</tt></div>
+</div>
+</div>
+<div class="section" id="id155">
+
+<div class="line-block">
+<div class="line"><em>Unless</em> you’re writing the</div>
+<div class="line">Python language server for</div>
+<div class="line">the IPython Notebook</div>
+<div class="line"><br /></div>
+<div class="line">Then, <tt class="docutils literal">eval()</tt> away!</div>
+</div>
+</div>
+<div class="section" id="id156">
+
+<div class="line-block">
+<div class="line">What in general is the</div>
+<div class="line">value of introspection?</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">getattr()</tt></div>
+<div class="line"><tt class="docutils literal">hasattr()</tt></div>
+<div class="line"><tt class="docutils literal">isinstance()</tt></div>
+</div>
+</div>
+<div class="section" id="id157">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">getattr()</tt></div>
+<div class="line"><tt class="docutils literal">hasattr()</tt></div>
+<div class="line"><tt class="docutils literal">isinstance()</tt></div>
+<div class="line"><br /></div>
+<div class="line">Python’s support for introspection</div>
+<div class="line">is a huge <strong>win</strong> for <em>code about code:</em></div>
+<div class="line"><br /></div>
+<div class="line">loggers, linters, debuggers, tests</div>
+</div>
+</div>
+<div class="section" id="id158">
+
+<div class="line-block">
+<div class="line">We are living through a great age of</div>
+<div class="line">consolidation of programming practice</div>
+</div>
+</div>
+<div class="section" id="id159">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">shared_ptr</tt> prevalence in Tensorflow</div>
+</div>
+<img alt="tensorflot-shared-ptrs.png" src="tensorflot-shared-ptrs.png" />
+</div>
+<div class="section" id="id160">
+
+<div class="line-block">
+<div class="line">Limiting case</div>
+<div class="line"><br /></div>
+<div class="line">t → ∞</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id161">
+
+<div class="line-block">
+<div class="line">Limiting case</div>
+<div class="line"><br /></div>
+<div class="line">t → ∞</div>
+<div class="line">C++ → Python</div>
+</div>
+</div>
+<div class="section" id="id162">
+
+<div class="line-block">
+<div class="line"><span class="strike">declarations</span></div>
+<div class="line"><span class="strike">new</span> <span class="strike">delete</span> <span class="strike">template</span></div>
+<div class="line"><span class="strike">private</span> <span class="strike">protected</span></div>
+<div class="line"><span class="strike">NULL</span> <span class="strike">static</span></div>
+<div class="line"><span class="strike">function overloading</span></div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">&#64;brandon_rhodes</tt></div>
+</div>
+</div>
+<div class="section" id="id163">
+
+<div class="line-block">
+<div class="line">dispatch only on obj, not other args</div>
+<div class="line">everything “virtual” (is that what they’re called) in inheritance</div>
+</div>
+<!-- TODO
+closures?
+Python bets: speed; privacy; complexity
+dunder methods? -->
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script>
+  window.slide_transition_time = 2000;
+  $('video').map(function(i, el) {el.play()});
+</script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

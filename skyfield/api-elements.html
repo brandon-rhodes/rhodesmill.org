@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — Orbital Elements</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-orbital-elements">
+<h1>API Reference — Orbital Elements<a class="headerlink" href="#api-reference-orbital-elements" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="skyfield.elementslib.osculating_elements_of">
+<code class="descclassname">skyfield.elementslib.</code><code class="descname">osculating_elements_of</code><span class="sig-paren">(</span><em>position</em>, <em>reference_frame=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.elementslib.osculating_elements_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce the osculating orbital elements for a position.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">position</span></code> should be an <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a>
+instance like that returned by the <code class="docutils literal notranslate"><span class="pre">at()</span></code> method of any Solar
+System body, specifying a position, a velocity, and a time.  An
+instance of <a class="reference internal" href="#skyfield.elementslib.OsculatingElements" title="skyfield.elementslib.OsculatingElements"><code class="xref py py-class docutils literal notranslate"><span class="pre">OsculatingElements</span></code></a> is
+returned.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="skyfield.elementslib.OsculatingElements">
+<em class="property">class </em><code class="descclassname">skyfield.elementslib.</code><code class="descname">OsculatingElements</code><span class="sig-paren">(</span><em>position</em>, <em>velocity</em>, <em>time</em>, <em>mu_km_s</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.elementslib.OsculatingElements" title="Permalink to this definition">¶</a></dt>
+<dd><p>One or more sets of osculating orbital elements.</p>
+<p>An <code class="docutils literal notranslate"><span class="pre">OsculatingElements</span></code> object can be initialized with the
+following parameters:</p>
+<dl class="docutils">
+<dt>position <span class="classifier-delimiter">:</span> <span class="classifier">Distance object</span></dt>
+<dd>Position vector with shape (3,) or (3, n)</dd>
+<dt>velocity <span class="classifier-delimiter">:</span> <span class="classifier">Velocity object</span></dt>
+<dd>Velocity vector with shape (3,) or (3, n)</dd>
+<dt>time: Time object</dt>
+<dd>The times of the position and velocity vectors</dd>
+<dt>mu_km_s: float</dt>
+<dd>Gravitational parameter (G*M) in units of km^3/s^2</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+  </body>
+</html>

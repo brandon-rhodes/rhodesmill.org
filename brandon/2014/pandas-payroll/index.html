@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learning Pandas through payroll taxes and paystubs</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1 id="Learning-Pandas-through-payroll-taxes-and-paystubs">Learning Pandas through payroll taxes and paystubs<a class="anchor-link" href="#Learning-Pandas-through-payroll-taxes-and-paystubs">&#182;</a></h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>14 February 2014</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">python</td>
+</tr>
+</tbody>
+</table><p>I will admit it:
+I only thought to pull out <a href="http://pandas.pydata.org/">Pandas</a>
+when my Python script was nearly complete,
+because running <code>print</code> on a Pandas data frame
+would save me the trouble of formatting 12 rows of data by hand.</p>
+<p>But as I added the <code>import</code> statement,
+it suddenly struck me
+that Pandas aggregate operations
+might be able to replace some of the steps inside my big <code>for</code> loop.
+Half an hour later,
+my loop had disappeared completely
+and my entire script was reduced
+to a short sequence of Pandas method calls!</p>
+<p>This post is a brief tour of the final script,
+written up as <a href="http://rhodesmill.org/brandon/2014/pandas-payroll.ipynb">an IPython notebook</a>
+and organized around five basic lessons
+that I learned about Pandas by applying it to this problem.</p>
+<h2 id="1.-Pandas-lets-you-bring-your-own-objects">1. Pandas lets you bring your own objects<a class="anchor-link" href="#1.-Pandas-lets-you-bring-your-own-objects">&#182;</a></h2><p>The most surprising feature
+of tools like the NumPy vector library and the Pandas data series
+might be that they let you bring your own objects to the party.</p>
+<p>Since they were invented to efficiently pack
+millions of floating-point values into a single Python object,
+you might think that these libraries would only work
+with numeric types that they themselves can express as vectors.
+But in fact they have a clean fallback behavior
+when faced with alternative numeric types:
+they essentially turn into Python lists,
+and keep a separate reference to each object that you have supplied.
+When asked to perform their famous aggregate operations —
+this is the crucial step —
+they simply turn to the objects
+and call the <code>__add__()</code> or <code>__mul__()</code> method of every single item
+to build the result.</p>
+<p>When doing taxes and pay stubs
+we always want to use Python <code>Decimal</code> objects
+to guarantee correctness and careful rounding to cents,
+which we can implement with a simple <code>c()</code> function:</p>
+
+<div class=" highlight hl-python3"><pre><span class="kn">from</span> <span class="nn">decimal</span> <span class="k">import</span> <span class="n">Decimal</span>
+
+<span class="n">one_cent</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="s">&#39;0.01&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">c</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="s">&quot;Convert `value` to Decimal cents.&quot;</span>
+    <span class="k">return</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">quantize</span><span class="p">(</span><span class="n">one_cent</span><span class="p">)</span></pre></div>
+
+<p>You might think that my next step
+will be building a twelve-element list
+with which to initialize the monthly wages
+in our payroll table.
+But data frames let us do something simpler:
+we can supply a single value for a column,
+and Pandas will automatically broadcast it
+across the whole index that we have defined.
+Here we set up the twelve calendar months of the year
+and imagine the simple case
+of someone who makes the same wage every month:</p>
+
+<div class=" highlight hl-python3"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">calendar</span> <span class="k">import</span> <span class="n">month_abbr</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">month_abbr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+<span class="n">df</span><span class="p">[</span><span class="s">&#39;wage&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s">&#39;11000.00&#39;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">df</span></pre></div>
+
+<pre class="output">
+         wage
+Jan  11000.00
+Feb  11000.00
+Mar  11000.00
+Apr  11000.00
+May  11000.00
+Jun  11000.00
+Jul  11000.00
+Aug  11000.00
+Sep  11000.00
+Oct  11000.00
+Nov  11000.00
+Dec  11000.00
+</pre>
+<p>An example wage of $11,000 per month might sound grandiose,
+but I have chosen it so that this example
+will reach the Social Security wage limit by the end of the year —
+to test whether we model the limit correctly in our data frame.</p>
+<h2 id="2.-Mapping-is-suddenly-worth-it">2. Mapping is suddenly worth it<a class="anchor-link" href="#2.-Mapping-is-suddenly-worth-it">&#182;</a></h2><p>The second surprise of working with Pandas
+is the convenience of its <code>map()</code> method,
+<!--more-->
+which lets us build a new series
+by passing each element of an existing series
+through a transform function.
+Here, for example,
+we compute the federal withholding that will be due
+each month for our employee
+by using the <code>TaxSchedule</code> object of my
+<a href="https://github.com/brandon-rhodes/luca">Luca accounting library</a>:</p>
+
+<div class=" highlight hl-python3"><pre><span class="kn">from</span> <span class="nn">luca.taxes</span> <span class="k">import</span> <span class="n">TaxSchedule</span>
+<span class="n">federal_monthly</span> <span class="o">=</span> <span class="n">TaxSchedule</span><span class="p">([</span>
+    <span class="p">(</span><span class="mi">325</span><span class="p">,</span> <span class="s">&#39;10&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">1023</span><span class="p">,</span> <span class="s">&#39;15&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">3163</span><span class="p">,</span> <span class="s">&#39;25&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">6050</span><span class="p">,</span> <span class="s">&#39;28&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">9050</span><span class="p">,</span> <span class="s">&#39;33&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">15906</span><span class="p">,</span> <span class="s">&#39;35&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">17925</span><span class="p">,</span> <span class="s">&#39;39.6&#39;</span><span class="p">),</span>
+    <span class="p">])</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s">&#39;fedwh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;wage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">federal_monthly</span><span class="o">.</span><span class="n">compute_tax_on</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">df</span></pre></div>
+
+<pre class="output">
+         wage    fedwh
+Jan  11000.00  2596.05
+Feb  11000.00  2596.05
+Mar  11000.00  2596.05
+Apr  11000.00  2596.05
+May  11000.00  2596.05
+Jun  11000.00  2596.05
+Jul  11000.00  2596.05
+Aug  11000.00  2596.05
+Sep  11000.00  2596.05
+Oct  11000.00  2596.05
+Nov  11000.00  2596.05
+Dec  11000.00  2596.05
+</pre>
+<p>It surprised me that mapping was so pleasant,
+because the current Python habit is to avoid <code>map()</code> —
+which, after all, <a href="http://www.artima.com/weblogs/viewpost.jsp?thread=98196">Guido nearly removed from Python 3’s built-ins</a> —
+in favor of list comprehensions.
+Not only are comprehensions far more general
+because they can pivot from calling a function
+to computing any other kind of expression for each input item,
+but they actually look like they are calling a function
+because its name gets followed by parentheses
+just as in any other function call:</p>
+
+<div class=" highlight hl-python3"><pre><span class="c"># List comprehension versus calling map()</span>
+
+<span class="n">line1</span> <span class="o">=</span> <span class="p">[</span><span class="n">federal_monthly</span><span class="o">.</span><span class="n">compute_tax_on</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;wage&#39;</span><span class="p">]]</span>
+<span class="n">line2</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;wage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">federal_monthly</span><span class="o">.</span><span class="n">compute_tax_on</span><span class="p">)</span></pre></div>
+
+<p>But in the particular case of Pandas
+a comprehension has disadvantages.</p>
+<p>First, it adds syntactic noise.
+Line 1 is not simply longer than line 2,
+but visually busier as well.
+Iteration that ought to be quietly implied inside of a vector
+becomes an external and noisy <code>for</code> loop instead.
+The eye has to travel to check that the <code>w</code> loop item
+is indeed the input to the function.
+And an extra pair of square brackets surrounds the whole affair.</p>
+<p>The second disadvantage is small for this particular data set,
+but still conceptually regrettable:
+the list comprehension spins up an extra throw-away <code>list</code>
+as a temporary holding pen
+for the values that are really destined to live
+inside the Pandas data frame.</p>
+<p>Finally, you will soon see
+that chaining Pandas method calls one after another
+is a pretty common way to take an input series,
+perform a useful sequence of operations upon it,
+and be left with a useful result.
+Method calls to <code>map()</code> dovetail perfectly inside of this pattern,
+while list comprehensions make you break out of it.</p>
+<p>So my Pandas code
+not only features my only calls to a <code>map()</code> routine these days,
+but tends to do it pretty often —
+and is simpler and cleaner as a result!</p>
+<h2 id="3.-Pandas-operations-can-go-down,-not-just-across">3. Pandas operations can go down, not just across<a class="anchor-link" href="#3.-Pandas-operations-can-go-down,-not-just-across">&#182;</a></h2><p>My first exposure to Pandas, and to NumPy for that matter,
+involved two kinds of operations.
+First, there were binary operators like <code>a + b</code>
+that we normally think of as involving two numbers,
+but that when applied to whole vectors
+might do thousands or millions of pairwise operations instead.
+Second, there were aggregate operators,
+that take an entire vector and produce its minimum, maximum, sum,
+or even full statistics about the contents.</p>
+<p>But the key to computing payroll taxes
+is to perform a third kind of operation:
+a cumulative sum of the wages paid to date
+so that the result can be compared with the Social Security wage limit,
+the point at which one’s Social Security obligation for the year
+is complete:</p>
+
+<div class=" highlight hl-python3"><pre><span class="c"># For 2014</span>
+<span class="n">ss_limit</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s">&#39;117000.00&#39;</span><span class="p">)</span>
+<span class="n">ss_rate</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="s">&#39;0.062&#39;</span><span class="p">)</span>
+<span class="n">mc_rate</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="s">&#39;0.0145&#39;</span><span class="p">)</span></pre></div>
+
+<p>It turns out that Pandas has a cumulative operator
+that fits this situation perfectly!
+The <code>cumsum()</code> method takes a series as its input
+and produces a series of cumulative totals instead:</p>
+
+<div class=" highlight hl-python3"><pre><span class="nb">print</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;wage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span></pre></div>
+
+<pre class="output">
+Jan     11000.00
+Feb     22000.00
+Mar     33000.00
+Apr     44000.00
+May     55000.00
+Jun     66000.00
+Jul     77000.00
+Aug     88000.00
+Sep     99000.00
+Oct    110000.00
+Nov    121000.00
+Dec    132000.00
+dtype: object
+</pre>
+<p>After computing this cumulative sum,
+we can apply the Social Security limit
+using the convenient <code>clip_upper()</code> method —
+which took me several minutes to find,
+because I somehow thought that <em>minimum</em>
+would have wound up somewhere in its name —
+to assure that we incur no additional tax obligation
+once the limit has been reached.</p>
+<p>Thanks to how cleanly Pandas methods chain together,
+this can simply be added as another step
+beyond the <code>cumsum()</code> call:</p>
+
+<div class=" highlight hl-python3"><pre><span class="n">cum_ss_wage</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;wage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">clip_upper</span><span class="p">(</span><span class="n">ss_limit</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">cum_ss_wage</span></pre></div>
+
+<pre class="output">
+Jan     11000.00
+Feb     22000.00
+Mar     33000.00
+Apr     44000.00
+May     55000.00
+Jun     66000.00
+Jul     77000.00
+Aug     88000.00
+Sep     99000.00
+Oct    110000.00
+Nov    117000.00
+Dec    117000.00
+dtype: object
+</pre>
+<p>Finally, we need to step backwards.
+Having created a cumulative sum involving the wages earned to date,
+we need to split out each month’s earnings
+back into a separate stand-alone value.</p>
+<p>Pandas supports this with a <code>diff()</code> method
+that is the opposite of <code>cumsum()</code>
+except that the first row of the result will be <code>NaN</code>
+(the numerics code for “not a number”)
+because pairwise subtraction between twelve rows of data
+produces only eleven values.
+No problem!
+Not-a-number comes up so often in data operations
+that Pandas provides a <code>fillna()</code> method
+that lets us restore that first value
+from our original series of monthly wages.</p>
+
+<div class=" highlight hl-python3"><pre><span class="n">ss_wage</span> <span class="o">=</span> <span class="n">cum_ss_wage</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">&#39;wage&#39;</span><span class="p">])</span>
+<span class="nb">print</span> <span class="n">ss_wage</span></pre></div>
+
+<pre class="output">
+Jan    11000.00
+Feb    11000.00
+Mar    11000.00
+Apr    11000.00
+May    11000.00
+Jun    11000.00
+Jul    11000.00
+Aug    11000.00
+Sep    11000.00
+Oct    11000.00
+Nov     7000.00
+Dec        0.00
+dtype: object
+</pre>
+<p>We now know exactly how many dollars
+are susceptible to Social Security tax each month,
+and are ready to finish out our data frame.</p>
+<h2 id="4.-Throwaway-series-need-not-live-in-your-data-frame">4. Throwaway series need not live in your data frame<a class="anchor-link" href="#4.-Throwaway-series-need-not-live-in-your-data-frame">&#182;</a></h2><p>In an early version of this computation,
+I was faithfully attaching each of the intermediate series
+that we computed above as new columns to my growing data frame.
+Between the <code>fedwh</code> column and the <code>ss_tax</code> column in the table below,
+imagine seeing all of my intermediate results —
+extra columns with names like <code>cumwage</code>, <code>cumw_clipped</code>,
+<code>clipped_diff</code>, and <code>ss_wage</code>.
+To make a reasonable display of the table,
+I had to cut more than half of its columns out!</p>
+<p>It was therefore something of an epiphany
+to realize that intermediate data series
+need not be stored in the data frame at all.
+Look at <code>ss_wage</code> from the previous section as a perfect example:
+even though I have kept it outside my data frame as a stand-alone series,
+it follows all the same rules as data frame columns,
+participates in aggregate operations,
+and even gets to use the data frame’s own index.</p>
+<p>Stand-alone series keep my data frame clean.
+I save as columns only the outputs that need to be displayed,
+like the Social Security and Medicare taxes
+that get printed on a monthly pay stub:</p>
+
+<div class=" highlight hl-python3"><pre><span class="n">df</span><span class="p">[</span><span class="s">&#39;ss_tax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ss_wage</span> <span class="o">*</span> <span class="n">ss_rate</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s">&#39;mc_tax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">&#39;wage&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">mc_rate</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">df</span></pre></div>
+
+<pre class="output">
+         wage    fedwh  ss_tax  mc_tax
+Jan  11000.00  2596.05  682.00  159.50
+Feb  11000.00  2596.05  682.00  159.50
+Mar  11000.00  2596.05  682.00  159.50
+Apr  11000.00  2596.05  682.00  159.50
+May  11000.00  2596.05  682.00  159.50
+Jun  11000.00  2596.05  682.00  159.50
+Jul  11000.00  2596.05  682.00  159.50
+Aug  11000.00  2596.05  682.00  159.50
+Sep  11000.00  2596.05  682.00  159.50
+Oct  11000.00  2596.05  682.00  159.50
+Nov  11000.00  2596.05  434.00  159.50
+Dec  11000.00  2596.05    0.00  159.50
+</pre>
+<p>At this point our data frame is almost complete!
+We need only compute one last withholding schedule
+and perform the big subtraction
+that figures out how much money
+actually gets sent home with the employee each month,
+and we will be done:</p>
+
+<div class=" highlight hl-python3"><pre><span class="c"># Ohio monthly withholding</span>
+
+<span class="n">ohio_exemption</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s">&#39;650.00&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="n">Decimal</span><span class="p">(</span><span class="s">&#39;12&#39;</span><span class="p">)</span>
+<span class="n">ohio_monthly</span> <span class="o">=</span> <span class="n">TaxSchedule</span><span class="p">(</span>
+    <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;0.5&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">5000</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="s">&#39;2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">15000</span><span class="p">,</span> <span class="s">&#39;2.5&#39;</span><span class="p">),</span>
+     <span class="p">(</span><span class="mi">20000</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">40000</span><span class="p">,</span> <span class="s">&#39;3.5&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">80000</span><span class="p">,</span> <span class="s">&#39;4&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">100000</span><span class="p">,</span> <span class="s">&#39;5&#39;</span><span class="p">)],</span>
+    <span class="n">ohio_exemption</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s">&#39;statewh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;wage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">ohio_monthly</span><span class="o">.</span><span class="n">compute_tax_on</span><span class="p">)</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s">&#39;paycheck&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">&#39;wage&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;fedwh&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;ss_tax&#39;</span><span class="p">]</span>
+                  <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;mc_tax&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;statewh&#39;</span><span class="p">])</span>
+
+<span class="nb">print</span> <span class="n">df</span></pre></div>
+
+<pre class="output">
+         wage    fedwh  ss_tax  mc_tax statewh paycheck
+Jan  11000.00  2596.05  682.00  159.50   95.00  7467.45
+Feb  11000.00  2596.05  682.00  159.50   95.00  7467.45
+Mar  11000.00  2596.05  682.00  159.50   95.00  7467.45
+Apr  11000.00  2596.05  682.00  159.50   95.00  7467.45
+May  11000.00  2596.05  682.00  159.50   95.00  7467.45
+Jun  11000.00  2596.05  682.00  159.50   95.00  7467.45
+Jul  11000.00  2596.05  682.00  159.50   95.00  7467.45
+Aug  11000.00  2596.05  682.00  159.50   95.00  7467.45
+Sep  11000.00  2596.05  682.00  159.50   95.00  7467.45
+Oct  11000.00  2596.05  682.00  159.50   95.00  7467.45
+Nov  11000.00  2596.05  434.00  159.50   95.00  7715.45
+Dec  11000.00  2596.05    0.00  159.50   95.00  8149.45
+</pre>
+<p>Note again that all of this math
+has been performed by real first-class <code>Decimal</code> objects
+doing the same rounding that is implemented by the Internal Revenue Service.
+This is a grid of true decimal objects —
+organized and displayed by Pandas,
+but to which Pandas is always deferring the actual math.</p>
+<h2 id="5.-Reporting-becomes-easy">5. Reporting becomes easy<a class="anchor-link" href="#5.-Reporting-becomes-easy">&#182;</a></h2><p>Finally, my Pandas data frame
+not only did a great job of formatting itself for terminal output —
+exempting me from the fussy job
+of measuring column widths, justifying fields, and adding whitespace —
+but it could effortlessly slice and aggrate the table as well.
+Here, for instance, is an individual pay stub for September:</p>
+
+<div class=" highlight hl-python3"><pre><span class="nb">print</span> <span class="s">&#39;September payroll stub:&#39;</span>
+<span class="nb">print</span> <span class="n">df</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="s">&#39;Sep&#39;</span><span class="p">]</span></pre></div>
+
+<pre class="output">
+September payroll stub:
+wage        11000.00
+fedwh        2596.05
+ss_tax        682.00
+mc_tax        159.50
+statewh        95.00
+paycheck     7467.45
+Name: Sep, dtype: object
+</pre>
+<p>And generating a W-2 for delivery to the employee
+at year’s end is as simple as applying Python’s <code>sum</code> routine to each column
+— the data frame does have a <code>sum()</code> method,
+but it seems to insist on operating in floating point —
+and letting Pandas display the result:</p>
+
+<div class=" highlight hl-python3"><pre><span class="nb">print</span> <span class="s">&#39;End-of-year W-2&#39;</span>
+<span class="nb">print</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span></pre></div>
+
+<pre class="output">
+End-of-year W-2
+wage        132000.00
+fedwh        31152.60
+ss_tax        7254.00
+mc_tax        1914.00
+statewh       1140.00
+paycheck     90539.40
+dtype: object
+</pre>
+<p>When I first saw Pandas touted,
+I planned to use it the next time I had a big problem —
+like a million-line Apache log file.
+But it turns out to do just as well with tiny problems.
+Unlike heavyweight solutions
+that are not worth trotting out and setting up
+unless one has a truly big problem to deploy them against,
+Pandas scaled right down to my twelve-line paystub table
+and made my code simpler and easier to maintain.</p>
+<p>Even on a tiny data set it is more than worth it to import <code>pandas</code>,
+set up your index, and get to work!</p>
+
+
+<p class="byline">©2020</p>
+
+</body>
+</html>

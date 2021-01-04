@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
+<title></title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<!-- ,watch make -C 2017-10-pyconie - - 2017-10-pyconie/*.rst -->
+<!-- (+ 3 13 7 15) 38
+(- 55 38) 17 -->
+<!-- My learning about recursion? -->
+<!-- derivation ≠ explanation
+http://web.mit.edu/8.01t/www/materials/InClass/IC_Sol_W08D2-10.pdf -->
+<!-- resolution "The hotel(thankfully) has upgraded their AV setup for the
+talks. It's full HDMI with 1920 x 1200 res and 16:10 aspect. I think
+the workshop rooms are still VGA but will confirm."
+(/ 1920 2) 960
+(/ 1200 2) 600 -->
+<!-- D12345
+$x + y$
+$$x = {-b\pm\sqrt{b^2-4ac} \over 2a}$$
+This is **Markdown** with `code` inline. -->
+<style>
+ body.presentation-mode .section {
+  width: 960px;
+  height: 540px;
+  font-size: 36px;
+ }
+ body.presentation-mode pre {
+  font-size: 28px;
+ }
+ body.presentation-mode tt {
+  font-size: 28px;
+ }
+ .big {font-size: 2em;}
+ .timer {font-size: 2.0em;}
+ .strike {text-decoration: line-through;}
+</style><div class="section" id="slide">
+
+<div class="big line-block">
+<div class="line"><em>You look at it till</em></div>
+<div class="line"><em>a solution occurs</em></div>
+</div>
+<div class="line-block">
+<div class="line">Brandon Rhodes</div>
+<div class="line"><tt class="docutils literal">&#64;brandon_rhodes</tt></div>
+</div>
+<div class="line-block">
+<div class="line">PyCon IE</div>
+<div class="line">Dublin, Ireland</div>
+<div class="line">2017 October 21</div>
+</div>
+</div>
+<div class="section" id="id1">
+
+<div class="line-block">
+<div class="line">Patterns are <em>everywhere</em></div>
+</div>
+</div>
+<div class="section" id="id2">
+
+<img alt="social-media.png" src="social-media.png" style="height: 520px;" />
+<!-- permalink to social media post is hidden behind date / time! -->
+</div>
+<div class="section" id="id3">
+
+<img alt="address-bar.png" src="address-bar.png" />
+<!-- undo works even in a little text field!
+also can hit Escape to put URL back -->
+</div>
+<div class="section" id="id4">
+
+<img alt="spreadsheet-bad.png" src="spreadsheet-bad.png" />
+</div>
+<div class="section" id="id5">
+
+<img alt="spreadsheet-good.png" src="spreadsheet-good.png" />
+</div>
+<div class="section" id="id6">
+
+<!-- time 7m -->
+<p>McIlroy</p>
+<div class="highlight"><pre><span></span><span class="n">tr</span> <span class="o">-</span><span class="n">cs</span> <span class="n">A</span><span class="o">-</span><span class="n">Za</span><span class="o">-</span><span class="n">z</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">|</span>
+<span class="n">tr</span> <span class="n">A</span><span class="o">-</span><span class="n">Z</span> <span class="n">a</span><span class="o">-</span><span class="n">z</span> <span class="o">|</span>
+<span class="n">sort</span> <span class="o">|</span>
+<span class="n">uniq</span> <span class="o">-</span><span class="n">c</span> <span class="o">|</span>
+<span class="n">sort</span> <span class="o">-</span><span class="n">rn</span> <span class="o">|</span>
+<span class="n">sed</span> <span class="err">$</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="n">q</span>
+</pre></div>
+
+<!-- grep -->
+</div>
+<div class="section" id="id7">
+
+<div class="line-block">
+<div class="line">Pipes!</div>
+</div>
+<div class="line-block">
+<div class="line">Clipboard?</div>
+</div>
+</div>
+<div class="section" id="clipboard-transforms">
+<h1>Clipboard transforms</h1>
+<ul class="simple">
+<li>Links</li>
+<li>Equations</li>
+<li>Markdown</li>
+</ul>
+</div>
+<div class="section" id="id8">
+
+<!-- time 15m -->
+<p>Pattern ↔ Search</p>
+</div>
+<div class="section" id="search">
+<h1>Search</h1>
+<p>Example: sending a string</p>
+<div class="line-block">
+<div class="line">How does the receiver know when</div>
+<div class="line">the whole string has arrived?</div>
+</div>
+</div>
+<div class="section" id="id9">
+
+<div class="highlight"><pre><span></span><span class="err">──┬─</span><span class="o">&gt;</span> <span class="n">close</span> <span class="n">the</span> <span class="n">channel</span>
+</pre></div>
+
+<ul class="simple">
+<li>DCD</li>
+<li>HTTP/0.9 server <tt class="docutils literal">close()</tt></li>
+<li><tt class="docutils literal">shutdown(s, SHUT_WR)</tt></li>
+<li>End of file</li>
+</ul>
+</div>
+<div class="section" id="id10">
+
+<div class="highlight"><pre><span></span><span class="err">──┬─</span><span class="o">&gt;</span> <span class="n">close</span> <span class="n">the</span> <span class="n">channel</span>
+  <span class="err">│</span>
+  <span class="err">└────┬─</span><span class="o">&gt;</span> <span class="n">fixed</span> <span class="n">length</span>
+</pre></div>
+
+<ul class="simple">
+<li>int</li>
+<li>float</li>
+<li>text?</li>
+<li>RPC</li>
+</ul>
+</div>
+<div class="section" id="id11">
+
+<div class="highlight"><pre><span></span><span class="err">──┬──</span> <span class="n">close</span> <span class="n">the</span> <span class="n">channel</span>
+  <span class="err">│</span>
+  <span class="err">└────┬──</span> <span class="n">fixed</span> <span class="n">length</span>
+       <span class="err">│</span>
+       <span class="err">│</span>
+       <span class="err">├──</span> <span class="n">delimit</span> <span class="err">──┤</span>
+</pre></div>
+
+</div>
+<div class="section" id="id12">
+
+<div class="highlight"><pre><span></span><span class="err">──┬──</span> <span class="n">close</span> <span class="n">the</span> <span class="n">channel</span>
+  <span class="err">│</span>
+  <span class="err">└────┬──</span> <span class="n">fixed</span> <span class="n">length</span>
+       <span class="err">│</span>
+       <span class="err">│</span>            <span class="p">(</span><span class="o">&lt;</span><span class="p">)</span><span class="err">────</span> <span class="n">literal</span>
+       <span class="err">├──</span> <span class="n">delimit</span> <span class="err">──┤</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">HTTP Header</div>
+<div class="line"><tt class="docutils literal"><span class="pre">Content-Type:</span> text/html</tt><strong>␍␊</strong></div>
+</div>
+</div>
+<div class="section" id="id13">
+
+<div class="highlight"><pre><span></span><span class="err">──┬──</span> <span class="n">close</span> <span class="n">the</span> <span class="n">channel</span>
+  <span class="err">│</span>
+  <span class="err">└────┬──</span> <span class="n">fixed</span> <span class="n">length</span>
+       <span class="err">│</span>
+       <span class="err">│</span>            <span class="p">(</span><span class="o">&lt;</span><span class="p">)</span><span class="err">────</span> <span class="n">literal</span>
+       <span class="err">├──</span> <span class="n">delimit</span> <span class="err">──┤</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">ASCII: <strong>␍</strong>, <strong>␊</strong>, <tt class="docutils literal">TAB</tt>, but also offers</div>
+<div class="line"><tt class="docutils literal">SOH</tt>, <tt class="docutils literal">STX</tt>, <tt class="docutils literal">ETX</tt>, <tt class="docutils literal">EOT</tt>, <tt class="docutils literal">EM</tt>, <tt class="docutils literal">FS</tt>, <tt class="docutils literal">GS</tt>, <tt class="docutils literal">RS</tt>, <tt class="docutils literal">US</tt></div>
+</div>
+</div>
+<div class="section" id="id14">
+
+<div class="highlight"><pre><span></span><span class="err">──┬──</span> <span class="n">close</span> <span class="n">the</span> <span class="n">channel</span>
+  <span class="err">│</span>
+  <span class="err">└────┬──</span> <span class="n">fixed</span> <span class="n">length</span>
+       <span class="err">│</span>
+       <span class="err">│</span>            <span class="p">(</span><span class="o">&lt;</span><span class="p">)</span><span class="err">────</span> <span class="n">literal</span>
+       <span class="err">├──</span> <span class="n">delimit</span> <span class="err">──┤</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">&quot;You have $count ${noun}s&quot;</tt></div>
+<div class="line">→ “You have 5 apples”</div>
+</div>
+</div>
+<div class="section" id="id15">
+
+<p>“But what if the gym is on fire?”</p>
+</div>
+<div class="section" id="id16">
+
+<div class="highlight"><pre><span></span><span class="err">──┬──</span> <span class="n">close</span> <span class="n">the</span> <span class="n">channel</span>
+  <span class="err">│</span>
+  <span class="err">└────┬──</span> <span class="n">fixed</span> <span class="n">length</span>
+       <span class="err">│</span>
+       <span class="err">│</span>            <span class="p">(</span><span class="o">&lt;</span><span class="p">)</span><span class="err">────</span> <span class="n">literal</span>
+       <span class="err">├──</span> <span class="n">delimit</span> <span class="err">──┤</span>
+                    <span class="p">(</span><span class="err">≥</span><span class="p">)</span><span class="err">─┬──</span> <span class="n">encode</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">b64encode</span><span class="p">(</span><span class="s1">&#39;Null </span><span class="se">\0</span><span class="s1"> SOH </span><span class="se">\001</span><span class="s1"> DEL </span><span class="se">\177</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="s1">&#39;TnVsbCAAIFNPSCABIERFTCB/&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id17">
+
+<div class="highlight"><pre><span></span><span class="err">──┬──</span> <span class="n">close</span> <span class="n">the</span> <span class="n">channel</span>
+  <span class="err">│</span>
+  <span class="err">└────┬──</span> <span class="n">fixed</span> <span class="n">length</span>
+       <span class="err">│</span>
+       <span class="err">│</span>            <span class="p">(</span><span class="o">&lt;</span><span class="p">)</span><span class="err">────</span> <span class="n">literal</span>
+       <span class="err">├──</span> <span class="n">delimit</span> <span class="err">──┤</span>
+                    <span class="p">(</span><span class="err">≥</span><span class="p">)</span><span class="err">─┬──</span> <span class="n">encode</span>
+                        <span class="err">│</span>
+                        <span class="err">└──</span> <span class="n">escape</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">In SQL: <tt class="docutils literal">'I <span class="pre">Won''t</span> Back Down'</tt></div>
+<div class="line">Python: <tt class="docutils literal">'I <span class="pre">Won\'t</span> Back Down'</tt></div>
+</div>
+</div>
+<div class="section" id="id18">
+
+<img alt="pride-and-prejudice.png" src="pride-and-prejudice.png" style="width: 720px;" />
+</div>
+<div class="section" id="id19">
+
+<div class="highlight"><pre><span></span><span class="err">──┬──</span> <span class="n">close</span> <span class="n">the</span> <span class="n">channel</span>
+  <span class="err">│</span>
+  <span class="err">└────┬──</span> <span class="n">fixed</span> <span class="n">length</span>
+       <span class="err">│</span>
+       <span class="err">│</span>            <span class="p">(</span><span class="o">&lt;</span><span class="p">)</span><span class="err">────</span> <span class="n">literal</span>
+       <span class="err">├──</span> <span class="n">delimit</span> <span class="err">──┤</span>
+       <span class="err">│</span>            <span class="p">(</span><span class="err">≥</span><span class="p">)</span><span class="err">─┬──</span> <span class="n">encode</span>
+       <span class="err">│</span>                <span class="err">│</span>
+       <span class="err">│</span>                <span class="err">└──</span> <span class="n">escape</span>
+       <span class="err">│</span>
+       <span class="err">└──</span> <span class="n">length</span> <span class="n">prefix</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">FORTRAN 66 — <tt class="docutils literal">100 FORMAT (11HHELLO WORLD)</tt></div>
+</div>
+</div>
+<div class="section" id="but">
+<h1>But…</h1>
+<div class="line-block">
+<div class="line">How many bytes <em>does</em> it</div>
+<div class="line">take to express a length?</div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="highlight"><pre><span></span><span class="err">──┬──</span> <span class="n">close</span> <span class="n">the</span> <span class="n">channel</span>
+  <span class="err">│</span>
+  <span class="err">└────┬──</span> <span class="n">fixed</span> <span class="n">length</span>
+    <span class="o">^</span>  <span class="err">│</span>
+    <span class="err">│</span>  <span class="err">│</span>            <span class="p">(</span><span class="o">&lt;</span><span class="p">)</span><span class="err">────</span> <span class="n">literal</span>
+    <span class="err">│</span>  <span class="err">├──</span> <span class="n">delimit</span> <span class="err">──┤</span>
+    <span class="err">│</span>  <span class="err">│</span>            <span class="p">(</span><span class="err">≥</span><span class="p">)</span><span class="err">─┬──</span> <span class="n">encode</span>
+    <span class="err">│</span>  <span class="err">│</span>                <span class="err">│</span>
+    <span class="err">│</span>  <span class="err">│</span>                <span class="err">└──</span> <span class="n">escape</span>
+    <span class="err">│</span>  <span class="err">│</span>
+    <span class="err">│</span>  <span class="err">└──</span> <span class="n">length</span> <span class="n">prefix</span>  <span class="err">─┐</span>
+    <span class="err">│</span>                      <span class="err">│</span>
+    <span class="err">└──────────────────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id21">
+
+<div class="highlight"><pre><span></span><span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span> <span class="mi">200</span> <span class="n">OK</span><span class="err">␍␊</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">text</span><span class="o">/</span><span class="n">html</span><span class="p">;</span> <span class="n">charset</span><span class="o">=</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span><span class="err">␍␊</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Encoding</span><span class="p">:</span> <span class="n">UTF</span><span class="o">-</span><span class="mi">8</span><span class="err">␍␊</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length</span><span class="p">:</span> <span class="mi">39</span><span class="err">␍␊</span>
+<span class="err">␍␊</span>
+<span class="o">&lt;</span><span class="n">html</span><span class="o">&gt;&lt;</span><span class="n">body</span><span class="o">&gt;</span><span class="n">Hello</span><span class="p">,</span> <span class="n">world</span><span class="err">!</span><span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id22">
+
+<div class="highlight"><pre><span></span><span class="err">──┬──</span>
+  <span class="err">│</span>
+  <span class="err">└────┬──</span>
+       <span class="err">│</span>
+       <span class="err">│</span>    <span class="err">┌─────</span>
+       <span class="err">├────┤</span>
+       <span class="err">│</span>    <span class="err">└──┬──</span>
+       <span class="err">│</span>       <span class="err">│</span>
+       <span class="err">│</span>       <span class="err">└──</span>
+       <span class="err">└──</span>
+</pre></div>
+
+</div>
+<div class="section" id="id23">
+
+<p>Pattern ↔ Search</p>
+</div>
+<div class="section" id="id24">
+
+<p>General Physics I — Dr. Wiesenfeld</p>
+<img alt="kwiesenfeld_0_2.jpg" src="kwiesenfeld_0_2.jpg" />
+<!-- Doing this as a substitution lets the images stack vertically
+without a big empty paragraph sitting unhappily between them -->
+</div>
+<div class="section" id="id25">
+
+<!-- $$R = {v_0^2 \sin 2\theta \over g}$$ -->
+<img alt="formula.png" src="formula.png" />
+<!-- joke during the presentation, but probably not appropriate
+for the version that goes on my site:
+
+slide
+- - - - -
+
+image:: hamilton.jpg
+:height: 540px -->
+</div>
+<div class="section" id="id26">
+
+<img alt="loudspeaker.png" src="loudspeaker.png" />
+</div>
+<div class="section" id="id27">
+
+<div class="line-block">
+<div class="line">Applied Combinatorics</div>
+<div class="line">Understanding &amp; Constructing Proofs</div>
+<div class="line">Calculus IV</div>
+<div class="line">Calculus V</div>
+</div>
+</div>
+<div class="section" id="id28">
+
+<p>Derivative ≪ Integral ≪ Differential Equations</p>
+</div>
+<div class="section" id="id29">
+
+<p>George Pólya</p>
+<div class="line-block">
+<div class="line">“In order to solve this</div>
+<div class="line">differential equation you look at it</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id30">
+
+<p>George Pólya</p>
+<div class="line-block">
+<div class="line">“In order to solve this</div>
+<div class="line">differential equation you look at it</div>
+<div class="line">till a solution occurs to you.”</div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<p>Pattern ↔ Search ↔ ?</p>
+</div>
+<div class="section" id="id32">
+
+<!-- Saxon Math: possible input to my Pandas tutorial? -->
+<!-- Games? People like games? -->
+<div class="line-block">
+<div class="line"><strong>Zen and the Art</strong></div>
+<div class="line"><strong>of Motorcycle Maintenance</strong></div>
+</div>
+<div class="line-block">
+<div class="line">Robert M. Pirsig</div>
+</div>
+</div>
+<div class="section" id="id33">
+
+<img alt="zen-flyleaf.jpg" src="zen-flyleaf.jpg" style="width: 940px;" />
+</div>
+<div class="section" id="id34">
+
+<img alt="stuck1.png" src="stuck1.png" />
+</div>
+<div class="section" id="id35">
+
+<img alt="stuck2.png" src="stuck2.png" />
+</div>
+<div class="section" id="id36">
+
+<p>Pattern ↔ Search ↔ Stuck</p>
+</div>
+<div class="section" id="claim">
+<h1>Claim</h1>
+<div class="line-block">
+<div class="line">Novices <em>generate</em> programs</div>
+<div class="line">by Pattern and Search</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id37">
+<h1>Claim</h1>
+<div class="line-block">
+<div class="line">Novices <em>generate</em> programs</div>
+<div class="line">by Pattern and Search</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>but once something goes wrong</strong></div>
+</div>
+<div class="line-block">
+<div class="line">they start <em>debugging</em> from</div>
+<div class="line">a default state of <strong>Stuck</strong></div>
+</div>
+</div>
+<div class="section" id="why">
+<h1>Why?</h1>
+<div class="line-block">
+<div class="line">Because <em>anything</em> could</div>
+<div class="line">have gone wrong —</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>nothing</strong> constrains the error to be in</div>
+<div class="line">a part of the system they understand!</div>
+</div>
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line">Example: getting <strong>sidetracked</strong> by</div>
+<div class="line">a problem <em>outside the code itself</em></div>
+</div>
+</div>
+<div class="section" id="id39">
+
+<ul class="simple">
+<li>You saved to the wrong file</li>
+<li>… in the wrong copy of the repository</li>
+<li>… on the wrong computer</li>
+<li>You need to restart the program</li>
+<li>You are reloading the wrong URL</li>
+<li>The traceback names a different line of code</li>
+<li>Your module name is the same as a stdlib module</li>
+</ul>
+</div>
+<div class="section" id="id40">
+
+<p>scientific method</p>
+</div>
+<div class="section" id="id41">
+
+<div class="line-block">
+<div class="line">“The real purpose of</div>
+<div class="line">the <strong>scientific method</strong></div>
+<div class="line">is to make sure nature hasn’t</div>
+<div class="line"><em>misled you</em> into thinking you know</div>
+<div class="line">something you <strong>actually don’t know.”</strong></div>
+</div>
+<p>— Robert Pirsig</p>
+</div>
+<div class="section" id="id42">
+
+<p>Novices get <strong>stuck</strong></p>
+<p><em>Corollary:</em></p>
+<div class="line-block">
+<div class="line">The default emotions of computer</div>
+<div class="line">programming are hope and misery</div>
+</div>
+</div>
+<div class="section" id="id43">
+
+<!-- (do quote from test driven development) -->
+<div class="line-block">
+<div class="line">“Test-driven development is a way of</div>
+<div class="line"><strong>managing fear</strong> during programming.”</div>
+</div>
+<div class="line-block">
+<div class="line">— Kent Beck,</div>
+<div class="line"><em>Test Driven Development By Example</em></div>
+</div>
+</div>
+<div class="section" id="id44">
+
+<div class="line-block">
+<div class="line">How can we support novice programmers?</div>
+</div>
+</div>
+<div class="section" id="id45">
+
+<ol class="arabic simple">
+<li>Encourage writing <em>one line</em> at a time</li>
+<li><strong>Version control</strong> + frequent commits</li>
+<li>Encourage them to call for backup!</li>
+<li>Let them write things <em>twice</em></li>
+</ol>
+</div>
+<div class="section" id="id46">
+
+<p>Fred Brooks</p>
+<div class="line-block">
+<div class="line">“plan to throw one away;</div>
+<div class="line">you will, anyhow”</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id47">
+
+<p>Fred Brooks</p>
+<div class="line-block">
+<div class="line">“plan to throw one away;</div>
+<div class="line">you will, anyhow”</div>
+</div>
+<p>(but not always the first!)</p>
+</div>
+<div class="section" id="djangocon-2014">
+<h1>DjangoCon 2014:</h1>
+</div>
+<div class="section" id="id48">
+
+<div class="line-block">
+<div class="line">Once my code</div>
+<div class="line">is <em>finally</em> working</div>
+<div class="line">it is probably better</div>
+<div class="line">described as <strong>barely working</strong></div>
+</div>
+</div>
+<div class="section" id="id49">
+
+<div class="line-block">
+<div class="line">Once new code <em>works,</em></div>
+<div class="line">I am probably about</div>
+<div class="line"><strong>halfway done</strong></div>
+</div>
+</div>
+<div class="section" id="id50">
+
+<div class="line-block">
+<div class="line">“Even fairly good students,</div>
+<div class="line">when they have obtained the solution of the</div>
+<div class="line">problem and written down neatly the argument,</div>
+<div class="line"><strong>shut their books</strong> and look for something else.</div>
+</div>
+<div class="line-block">
+<div class="line">Doing so, they <strong>miss</strong> an <em>important</em></div>
+<div class="line">and <em>instructive</em> phase of the work.”</div>
+</div>
+<p>— George Pólya, <em>How to Solve It</em></p>
+</div>
+<div class="section" id="id51">
+
+<div class="line-block">
+<div class="line">Encourage novice programmers to</div>
+<div class="line">explore <em>past</em> their first solution</div>
+</div>
+<div class="line-block">
+<div class="line">Why?</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Search</em> is the programmer’s</div>
+<div class="line">defense against <strong>stuck</strong></div>
+</div>
+</div>
+<div class="section" id="id52">
+
+<div class="line-block">
+<div class="line">“Your problem may be <em>modest,</em></div>
+<div class="line">but if it challenges your <strong>curiosity</strong></div>
+<div class="line">and brings into play your inventive faculties,</div>
+<div class="line">and if you solve it by <strong>your own means,</strong></div>
+<div class="line">you may <em>experience the tension</em> and</div>
+<div class="line"><em>enjoy the triumph</em> of discovery.”</div>
+</div>
+<p>— George Pólya, <em>How to Solve It</em></p>
+</div>
+<div class="section" id="id53">
+
+<p>Pattern ↔ <strong>Search</strong> ↔ Stuck</p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id54">
+
+<p>Pattern ↔ <strong>Search</strong> ↔ Stuck</p>
+<div class="line-block">
+<div class="line"><em>Thank you!</em></div>
+<div class="line"><tt class="docutils literal">&#64;brandon_rhodes</tt></div>
+</div>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script>
+  window.slide_transition_time = 2000;
+  $('video').map(function(i, el) {el.play()});
+</script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

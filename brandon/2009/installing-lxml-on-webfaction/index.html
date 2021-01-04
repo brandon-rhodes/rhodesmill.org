@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Installing lxml for Python under your WebFaction account</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>Installing lxml for Python under your WebFaction account</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>1 August 2009</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">computing, python, web notes</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+  Well, drat.
+</p>
+<p>
+  Thanks to more than an hour of work today,
+  I have a pretty list of a few dozen commands
+  that make it easy for a WebFaction account holder
+  to install the powerful
+  <a href="http://codespeak.net/lxml/">lxml</a> Python package
+  for parsing HTML and XML under their hosting account.
+  You can read Ian Bicking's wonderful blog post
+  <a href="http://blog.ianbicking.org/2008/12/10/lxml-an-underappreciated-web-scraping-library/"
+     >“lxml: an underappreciated web scraping library”</a>
+  for more information on why you want to be using lxml
+  instead of any of its alternatives.
+</p>
+<p>
+  So, why do I say “drat”?
+</p>
+<p>
+  First,
+  because I just tried out my instructions on another
+  of my WebFaction accounts,
+  and there the extra steps weren't even necessary;
+  this other server of theirs
+  already had lxml's dependencies installed!
+  I suppose, had I been a bit more patient, that
+  <a href="http://forum.webfaction.com/viewtopic.php?id=2695"
+     >this support ticket that I glanced over this morning</a>
+  would have inspired me to ask WebFaction
+  to install the libraries lxml needs
+  on the server where I myself was working.
+  But it felt like some sort of offense against symmetry
+  to rely on something that WebFaction doesn't install everywhere,
+  and I was perhaps just in too big of a hurry.
+  Which, of course, cost more time in the end.
+</p>
+<p>
+  The other reason I say “drat” is because,
+  now that I look at Ian's post again after all these months,
+  I see that he has instructions for making the package
+  install its own dratted copies of the system libraries it needs!
+  Too bad that
+  <a href="http://codespeak.net/lxml/installation.html"
+     >lxml's own installation instructions</a>
+  omit this crucial piece of information.
+</p>
+<p>
+  How typical, and how predictable.
+  It turns out that I just needed to listen to Ian Bicking more carefully.
+  How often we fail to do that,
+  as individuals and as a Python community.
+  Listen to Ian Bicking, everyone.
+  Listen.
+</p>
+<!--more-->
+<p>
+  In the meantime,
+  here are some successful and unsuccessful ways
+  of installing lxml under your WebFaction account.
+  Consider the following to be a set of choose-your-own adventure
+  scenarios.
+</p>
+<ul>
+  <li>
+    <p>
+      If the WebFaction host your account lives on
+      <b>already has libxml and libxslt installed</b>,
+      then installation is simple:
+    </p>
+    <pre
+>$ easy_install lxml
+Searching for lxml
+Reading http://pypi.python.org/simple/lxml/
+...
+<b>Finished processing dependencies for lxml</b></pre>
+  <li>
+    <p>
+      If your WebFaction host <b>lacks libxml</b>,
+      but you <b>listen to Ian Bicking</b>
+      and <b>download the source code yourself</b>,
+      then your install will succeed:
+    </p>
+    <pre
+>$ wget <a href="http://pypi.python.org/packages/source/l/lxml/lxml-2.2.2.tar.gz"
+          >http://pypi.python.org/.../lxml-2.2.2.tar.gz</a>
+$ tar xfz lxml-2.2.2.tar.gz
+$ cd lxml-2.2.2
+$ STATIC_DEPS=true python setup.py install
+...
+<b>Finished processing dependencies for lxml==2.2.2</b></pre>
+  </li>
+  <li>
+    <p>
+      If your WebFaction host <b>lacks libxml</b>,
+      but you <b>listen to Ian Bicking</b>,
+      but you <b>rely on easy_install to fetch the package</b>,
+      then your install will <b>fail</b>
+      because it tries building inside of a temporary directory
+      that, on WebFaction, you apparently cannot access:
+    </p>
+    <pre
+>$ STATIC_DEPS=true easy_install lxml
+Searching for lxml
+Reading http://pypi.python.org/simple/lxml/
+...
+Running "./configure --without-python --disable-dependency-tracking
+ --disable-shared --prefix=/tmp/easy_install-81ufo5/lxml-2.2.2/buil
+d/tmp/libxml2" in build/tmp/libxml2-2.7.3
+<b>error: Permission denied</b></pre>
+  </li>
+  <li>
+    <p>
+      If your WebFaction host <b>lacks libxml</b>,
+      and you <b>fail to listen to Ian Bicking</b>,
+      then you can at least install lxml and its dependencies manually
+      using the following commands,
+      as I worked out this morning.
+      The trick is that instead of trying to tell <tt>setup.py</tt>
+      where you have installed the libraries
+      by using <tt>CC=</tt> at the beginning of the command line
+      or something like that,
+      you need to make sure that the special command <tt>xslt-config</tt>
+      is on your path somewhere:
+    </p>
+    <pre
+>$ cd ~
+$ mkdir usr
+$ mkdir usr/src
+$ cd usr/src
+$ wget <a href="ftp://xmlsoft.org/libxml2/libxml2-2.7.3.tar.gz"
+           >ftp://xmlsoft.org/.../libxml2-2.7.3.tar.gz</a>
+$ wget <a href="ftp://xmlsoft.org/libxml2/libxslt-1.1.24.tar.gz"
+          >ftp://xmlsoft.org/.../libxslt-1.1.24.tar.gz</a>
+$ tar xfz libxml2-2.7.3.tar.gz
+$ tar xfz libxslt-1.1.24.tar.gz
+$ cd libxml2-2.7.3
+$ ./configure --prefix ~/usr
+$ make install
+$ cd ..
+$ cd libxslt-1.1.24
+$ ./configure --prefix ~/usr
+$ make install
+$ cd ..
+$ PATH=$HOME/usr/bin:$PATH
+$ wget <a href="http://pypi.python.org/packages/source/l/lxml/lxml-2.2.2.tar.gz"
+          >http://pypi.python.org/.../lxml-2.2.2.tar.gz</a>
+$ tar xfz lxml-2.2.2.tar.gz
+$ cd lxml-2.2.2
+$ python setup.py install
+...
+<b>Finished processing dependencies for lxml==2.2.2</b></pre>
+  </li>
+</ul>
+<p>
+  But, as I mentioned, Ian's technique is faster. :-)
+</p>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'rhodesmill';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<p class="byline">©2020</p>
+
+</body>
+</html>

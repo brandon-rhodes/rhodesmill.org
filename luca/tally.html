@@ -1,0 +1,503 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Tallying</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css" />
+  </head>
+  <body>
+    
+    <p><i><a href=".">← return to the Luca home page</a></i></p>
+    
+    <div class="section" id="tallying">
+<h1>Tallying<a class="headerlink" href="#tallying" title="Permalink to this headline">¶</a></h1>
+<p>If Luca knows how to parse your bank statements,
+then all you have to do is write a quick YAML tree of rules,
+and Luca will categorize your transactions
+and tally all of your income and expenses!
+The currently supported statement formats are:</p>
+<ul class="simple">
+<li>Delta Community Credit Union checking</li>
+<li>Delta Community Credit Union Visa Business</li>
+</ul>
+<p>If your bank statements are <strong>not yet supported,</strong>
+please <strong>let us know</strong> the format
+so that we can add a module to the <tt class="docutils literal"><span class="pre">luca.importer</span></tt> sub-package.</p>
+<div class="section" id="quick-reference-to-rules">
+<h2>Quick reference to rules<a class="headerlink" href="#quick-reference-to-rules" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><tt class="docutils literal"><span class="pre">2013</span></tt> — Match a particular year.</div>
+<div class="line"><tt class="docutils literal"><span class="pre">9/16</span></tt> — Match a month and day.</div>
+<div class="line"><tt class="docutils literal"><span class="pre">9/16-10/5</span></tt> — Inclusive range of dates.</div>
+<div class="line"><tt class="docutils literal"><span class="pre">/regex/</span></tt> — Description contains a regular expression.</div>
+<div class="line"><tt class="docutils literal"><span class="pre">~/regex/</span></tt> — Description does not contain a regular expression.</div>
+</div>
+<p>Any other string is considered a category.
+You might start out writing rules by putting categories
+at the bottom of your YAML hierarchy:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/AERLING/</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Travel.Airfare</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/DELTA AIR/</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Travel.Airfare</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/DJANGOCON/</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Travel.Conferences</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/PYCON/</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Travel.Conferences</span>
+</pre></div>
+</div>
+<p>But feel free to pivot category names
+up into the middle of the hierarchy instead.
+When a transaction matches a leaf node successfully,
+it receives the nearest ancestor category:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Travel.Airfare</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/AERLING/</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/DELTA AIR/</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Travel.Conferences</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/DJANGOCON/</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/PYCON/</span>
+</pre></div>
+</div>
+<p>Be sure to include a colon <tt class="docutils literal"><span class="pre">:</span></tt> after a rule or category
+that is followed by further rules or categories.
+If you forget, then YAML will not be kind to you:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="c1"># Whoops! The terminal colon is missing.</span>
+
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Travel.Airfare</span>
+  <span class="l-Scalar-Plain">- /DELTA AIR/</span>
+
+<span class="c1"># YAML parses this as simply a category named:</span>
+
+<span class="p-Indicator">-</span> <span class="s">&quot;Travel.Airfare</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">/DELTA</span><span class="nv"> </span><span class="s">AIR/&quot;</span>
+</pre></div>
+</div>
+<p>A transaction is tested against the rules in the YAML file
+starting at the top and proceeding downward.
+Only by matching a parent rule can a transaction
+proceed to be tested against its children.
+Once a transaction survives all the way out to a leaf node —
+a node that the transaction matches, that has no further children —
+then a match has been made,
+a category is assigned,
+and no further rules are processed for that transaction.</p>
+</div>
+<div class="section" id="invoking-tally">
+<h2>Invoking tally<a class="headerlink" href="#invoking-tally" title="Permalink to this headline">¶</a></h2>
+<p>If you supply PDF files to Luca,
+be sure that you have the <tt class="docutils literal"><span class="pre">pdftotext</span></tt> command installed on your system
+(Ubuntu keeps it in the <tt class="docutils literal"><span class="pre">poppler-utils</span></tt> package)
+so that Luca can turn them into plain text itself:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>luca tally rules.yaml statements/*.pdf
+</pre></div>
+</div>
+<p>Otherwise, you can render the PDFs to plain text manually
+before passing the text files to Luca:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>pdftotext -layout new.pdf &gt; statements/2013-03-checking.txt
+<span class="nv">$ </span>luca tally rules.yaml statements/*.txt
+</pre></div>
+</div>
+<p>If you are going to version control your bank statements
+alongside your rules files,
+then you might find the text versions more convenient anyway.
+In the last section of this document
+you will find an example <tt class="docutils literal"><span class="pre">Makefile</span></tt>
+if you want to automate this process.</p>
+</div>
+<div class="section" id="two-sample-statements">
+<h2>Two sample statements<a class="headerlink" href="#two-sample-statements" title="Permalink to this headline">¶</a></h2>
+<p>The following sections walk you through building a sample rules file.
+To try out the examples yourself,
+simply download these two sample bank statements:</p>
+<ul class="simple">
+<li><a class="reference download internal" href="_downloads/statement-bank.txt"><tt class="xref download docutils literal"><span class="pre">statement-bank.txt</span></tt></a></li>
+<li><a class="reference download internal" href="_downloads/statement-visa.txt"><tt class="xref download docutils literal"><span class="pre">statement-visa.txt</span></tt></a></li>
+</ul>
+<p>These examples have been pared down to the minimum necessary text
+for Luca to recognize and parse
+this particular bank’s checking and Visa statements.</p>
+</div>
+<div class="section" id="starting-your-rules-file">
+<h2>Starting your rules file<a class="headerlink" href="#starting-your-rules-file" title="Permalink to this headline">¶</a></h2>
+<p>You will generally begin a rules file
+with a root selector, to narrow Luca’s attention
+to the specific transactions for which that file is designed.
+To keep things simple I maintain a separate rules file for each year;
+it would be difficult to keep a single rules file
+working against all previous years
+while writing new rules for the current year.
+We might start a 2013 rules file by typing this:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="c1"># rules.yaml</span>
+
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">2013</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Unknown</span>
+</pre></div>
+</div>
+<p>This selects all transactions for the calendar year 2013
+and gives them the category <tt class="docutils literal"><span class="pre">Unknown</span></tt>
+so that we can take a look at them
+and start making decisions about how to divide them up.
+Running a rules file against a set of bank statements is easy:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>luca tally -t rules.yaml statements/*.txt
+</pre></div>
+</div>
+<p>Always use the <tt class="docutils literal"><span class="pre">-t</span></tt> option while working on your rules:
+it asks Luca to display, beneath each category,
+its full list of matching transactions
+so that you can see whether your transactions
+are winding up in the right categories.
+Its output when run with these initial rules is quite simple:</p>
+<pre>
+<span style="color: #00aa00">368.20 </span> <span style="font-weight: bold">Accounts</span>
+        <span style="color: #aa0000"> 32.00-</span> <span style="font-weight: bold">Accounts.DCCU Business Visa</span>
+        <span style="color: #00aa00">  0.06 </span> <span style="font-weight: bold">Accounts.ID 0001 SAVINGS</span>
+        <span style="color: #00aa00">400.14 </span> <span style="font-weight: bold">Accounts.ID 0070 CHECKING</span>
+<span style="color: #aa0000">368.20-</span> <span style="font-weight: bold">Unknown</span>
+
+ 2013-09-11 Foreign Transaction Fee - <span style="color: #aa0000">    2.00-</span>
+            Date 09/10/13
+ 2013-09-11 RESTAURANT TORONTO CA     <span style="color: #aa0000">   55.00-</span>
+ 2013-09-12 VIA RAIL MONTREAL CA      <span style="color: #aa0000">  100.00-</span>
+ 2013-09-13 DELTA TORONTO EAST        <span style="color: #aa0000">   90.00-</span>
+ 2013-09-13 PUB IN TORONTO CA         <span style="color: #aa0000">   45.00-</span>
+ 2013-09-14 DETROIT WINDSOR TUNNEL    <span style="color: #aa0000">    5.00-</span>
+ 2013-10-01 Payment From Share 0070 ( <span style="color: #00aa00">  300.00 </span>
+ 2013-10-01 Withdrawal To Loan        <span style="color: #aa0000">  300.00-</span>
+ 2013-10-10 SOUL CAFE BUADPEST HU     <span style="color: #aa0000">   35.00-</span>
+ 2013-10-15 Deposit at ATM #123       <span style="color: #00aa00">1,200.00 </span>
+ 2013-10-30 Withdrawal PAYCHECK - To  <span style="color: #aa0000">  500.00-</span>
+            SMITH, SANDRA A
+            XXXXXXXXXX
+ 2013-10-31 Deposit Dividend 0.100%   <span style="color: #00aa00">    0.14 </span>
+ 2013-10-31 Deposit Dividend 0.150%   <span style="color: #00aa00">    0.06 </span>
+
+</pre>
+<p>Success — we can now see the transactions that need categorization!
+It is time to start creating specific rules.</p>
+</div>
+<div class="section" id="designing-rules">
+<h2>Designing rules<a class="headerlink" href="#designing-rules" title="Permalink to this headline">¶</a></h2>
+<p>The first step is usually to isolate transactions
+that do not represent real income or expenses,
+but that instead just represent money moving between our own accounts.
+I&nbsp;create a category named <tt class="docutils literal"><span class="pre">Zero</span></tt> for such transactions
+since transactions that move money should sum to exactly zero.</p>
+<p>In this case, a single $300 payment on 10/1
+is showing up twice:
+as both a deduction from our checking account
+and also a payment toward our Visa credit card account.
+To remove these from the <tt class="docutils literal"><span class="pre">Unknown</span></tt> category,
+we simply need to craft a pair of regular expressions to match:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="c1"># rules.yaml</span>
+
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">2013</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Zero</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Withdrawal To Loan/</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Payment From Share 0070/</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Unknown</span>
+</pre></div>
+</div>
+<pre>
+<span style="color: #00aa00">368.20 </span> <span style="font-weight: bold">Accounts</span>
+        <span style="color: #aa0000"> 32.00-</span> <span style="font-weight: bold">Accounts.DCCU Business Visa</span>
+        <span style="color: #00aa00">  0.06 </span> <span style="font-weight: bold">Accounts.ID 0001 SAVINGS</span>
+        <span style="color: #00aa00">400.14 </span> <span style="font-weight: bold">Accounts.ID 0070 CHECKING</span>
+<span style="color: #aa0000">368.20-</span> <span style="font-weight: bold">Unknown</span>
+
+ 2013-09-11 Foreign Transaction Fee - <span style="color: #aa0000">    2.00-</span>
+            Date 09/10/13
+ 2013-09-11 RESTAURANT TORONTO CA     <span style="color: #aa0000">   55.00-</span>
+ 2013-09-12 VIA RAIL MONTREAL CA      <span style="color: #aa0000">  100.00-</span>
+ 2013-09-13 DELTA TORONTO EAST        <span style="color: #aa0000">   90.00-</span>
+ 2013-09-13 PUB IN TORONTO CA         <span style="color: #aa0000">   45.00-</span>
+ 2013-09-14 DETROIT WINDSOR TUNNEL    <span style="color: #aa0000">    5.00-</span>
+ 2013-10-10 SOUL CAFE BUADPEST HU     <span style="color: #aa0000">   35.00-</span>
+ 2013-10-15 Deposit at ATM #123       <span style="color: #00aa00">1,200.00 </span>
+ 2013-10-30 Withdrawal PAYCHECK - To  <span style="color: #aa0000">  500.00-</span>
+            SMITH, SANDRA A
+            XXXXXXXXXX
+ 2013-10-31 Deposit Dividend 0.100%   <span style="color: #00aa00">    0.14 </span>
+ 2013-10-31 Deposit Dividend 0.150%   <span style="color: #00aa00">    0.06 </span>
+
+<span style="color: #00aa00">  0.00 </span> <span style="font-weight: bold">Zero</span>
+
+ 2013-10-01 Payment From Share 0070 (   <span style="color: #00aa00">300.00 </span>
+ 2013-10-01 Withdrawal To Loan          <span style="color: #aa0000">300.00-</span>
+
+</pre>
+<p>Since accounts are alphabetized in the output,
+our new <tt class="docutils literal"><span class="pre">Zero</span></tt> account appears at the bottom.
+It successfully balances to zero!
+We have taken what was really a single transaction
+reported from two different points of view,
+and correctly tallied
+that moving the money from one account to the other
+made us neither richer nor poorer.</p>
+<p>What should we tackle next?
+The sources of income stand out rather obviously in green,
+since they are the only remaining positive amounts.</p>
+<p>The income is of two very different kinds —
+one is a client check that has resulted from a sale,
+while the other two are interest payments from the credit union —
+so we will create an <tt class="docutils literal"><span class="pre">Income</span></tt> account
+with two separate sub-accounts named <tt class="docutils literal"><span class="pre">Interest</span></tt> and <tt class="docutils literal"><span class="pre">Sales</span></tt>.
+Luca understands the idea of a hierarchy of accounts,
+if we separate parent from child accounts with a period:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="c1"># rules.yaml</span>
+
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">2013</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Zero</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Withdrawal To Loan/</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Payment From Share 0070/</span>
+
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Income.Interest</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Deposit Dividend/</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Income.Sales</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Deposit at ATM/</span>
+
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Unknown</span>
+</pre></div>
+</div>
+<pre>
+<span style="color: #00aa00">  368.20 </span> <span style="font-weight: bold">Accounts</span>
+          <span style="color: #aa0000">   32.00-</span> <span style="font-weight: bold">Accounts.DCCU Business Visa</span>
+          <span style="color: #00aa00">    0.06 </span> <span style="font-weight: bold">Accounts.ID 0001 SAVINGS</span>
+          <span style="color: #00aa00">  400.14 </span> <span style="font-weight: bold">Accounts.ID 0070 CHECKING</span>
+<span style="color: #aa0000">1,200.20-</span> <span style="font-weight: bold">Income</span>
+          <span style="color: #aa0000">    0.20-</span> <span style="font-weight: bold">Income.Interest</span>
+
+ 2013-10-31 Deposit Dividend 0.100%       <span style="color: #00aa00">0.14 </span>
+ 2013-10-31 Deposit Dividend 0.150%       <span style="color: #00aa00">0.06 </span>
+
+          <span style="color: #aa0000">1,200.00-</span> <span style="font-weight: bold">Income.Sales</span>
+
+ 2013-10-15 Deposit at ATM #123       <span style="color: #00aa00">1,200.00 </span>
+
+<span style="color: #00aa00">  832.00 </span> <span style="font-weight: bold">Unknown</span>
+
+ 2013-09-11 Foreign Transaction Fee -   <span style="color: #aa0000">  2.00-</span>
+            Date 09/10/13
+ 2013-09-11 RESTAURANT TORONTO CA       <span style="color: #aa0000"> 55.00-</span>
+ 2013-09-12 VIA RAIL MONTREAL CA        <span style="color: #aa0000">100.00-</span>
+ 2013-09-13 DELTA TORONTO EAST          <span style="color: #aa0000"> 90.00-</span>
+ 2013-09-13 PUB IN TORONTO CA           <span style="color: #aa0000"> 45.00-</span>
+ 2013-09-14 DETROIT WINDSOR TUNNEL      <span style="color: #aa0000">  5.00-</span>
+ 2013-10-10 SOUL CAFE BUADPEST HU       <span style="color: #aa0000"> 35.00-</span>
+ 2013-10-30 Withdrawal PAYCHECK - To    <span style="color: #aa0000">500.00-</span>
+            SMITH, SANDRA A XXXXXXXXXX
+
+<span style="color: #00aa00">    0.00 </span> <span style="font-weight: bold">Zero</span>
+
+ 2013-10-01 Payment From Share 0070 (   <span style="color: #00aa00">300.00 </span>
+ 2013-10-01 Withdrawal To Loan          <span style="color: #aa0000">300.00-</span>
+
+</pre>
+<p>Note that Luca has computed a sub-total
+both for the child accounts <tt class="docutils literal"><span class="pre">Interest</span></tt> and <tt class="docutils literal"><span class="pre">Sales</span></tt>,
+while also including those sub-totals
+in the final tally for <tt class="docutils literal"><span class="pre">Income</span></tt> itself.</p>
+<p>At this point we face our expenses.
+I&nbsp;start by addressing expenses
+that need only one or two regular expressions,
+and then tackle expenses that are more complicated.</p>
+<p>When accounting for my S-Corporation,
+I go ahead and name the sub-categories right beneath <tt class="docutils literal"><span class="pre">Expenses</span></tt>
+by whichever line of Form&nbsp;1120S a particular expense belongs&nbsp;on.
+This makes it easy to transfer the totals to Form&nbsp;1120S later.</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="c1"># rules.yaml</span>
+
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">2013</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Zero</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Withdrawal To Loan/</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Payment From Share 0070/</span>
+
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Income.Interest</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Deposit Dividend/</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Income.Sales</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Deposit at ATM/</span>
+
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Expenses.7.Payroll</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/PAYCHECK/</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Expenses.19.Bank fees</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Transaction Fee/</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Expenses.19.Travel</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/DELTA TORONTO EAST/</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/DETROIT WINDSOR TUNNEL/</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/VIA RAIL/</span>
+
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Unknown</span>
+</pre></div>
+</div>
+<pre>
+<span style="color: #00aa00">  368.20 </span> <span style="font-weight: bold">Accounts</span>
+          <span style="color: #aa0000">   32.00-</span> <span style="font-weight: bold">Accounts.DCCU Business Visa</span>
+          <span style="color: #00aa00">    0.06 </span> <span style="font-weight: bold">Accounts.ID 0001 SAVINGS</span>
+          <span style="color: #00aa00">  400.14 </span> <span style="font-weight: bold">Accounts.ID 0070 CHECKING</span>
+<span style="color: #00aa00">  697.00 </span> <span style="font-weight: bold">Expenses</span>
+          <span style="color: #00aa00">  500.00 </span> <span style="font-weight: bold">Expenses.7</span>
+                    <span style="color: #00aa00">  500.00 </span> <span style="font-weight: bold">Expenses.7.Payroll</span>
+
+ 2013-10-30 Withdrawal PAYCHECK - To    <span style="color: #aa0000">500.00-</span>
+            SMITH, SANDRA A XXXXXXXXXX
+
+          <span style="color: #00aa00">  197.00 </span> <span style="font-weight: bold">Expenses.19</span>
+                    <span style="color: #00aa00">    2.00 </span> <span style="font-weight: bold">Expenses.19.Bank fees</span>
+
+ 2013-09-11 Foreign Transaction Fee -     <span style="color: #aa0000">2.00-</span>
+            Date 09/10/13
+
+                    <span style="color: #00aa00">  195.00 </span> <span style="font-weight: bold">Expenses.19.Travel</span>
+
+ 2013-09-12 VIA RAIL MONTREAL CA        <span style="color: #aa0000">100.00-</span>
+ 2013-09-13 DELTA TORONTO EAST          <span style="color: #aa0000"> 90.00-</span>
+ 2013-09-14 DETROIT WINDSOR TUNNEL      <span style="color: #aa0000">  5.00-</span>
+
+<span style="color: #aa0000">1,200.20-</span> <span style="font-weight: bold">Income</span>
+          <span style="color: #aa0000">    0.20-</span> <span style="font-weight: bold">Income.Interest</span>
+
+ 2013-10-31 Deposit Dividend 0.100%       <span style="color: #00aa00">0.14 </span>
+ 2013-10-31 Deposit Dividend 0.150%       <span style="color: #00aa00">0.06 </span>
+
+          <span style="color: #aa0000">1,200.00-</span> <span style="font-weight: bold">Income.Sales</span>
+
+ 2013-10-15 Deposit at ATM #123       <span style="color: #00aa00">1,200.00 </span>
+
+<span style="color: #00aa00">  135.00 </span> <span style="font-weight: bold">Unknown</span>
+
+ 2013-09-11 RESTAURANT TORONTO CA        <span style="color: #aa0000">55.00-</span>
+ 2013-09-13 PUB IN TORONTO CA            <span style="color: #aa0000">45.00-</span>
+ 2013-10-10 SOUL CAFE BUADPEST HU        <span style="color: #aa0000">35.00-</span>
+
+<span style="color: #00aa00">    0.00 </span> <span style="font-weight: bold">Zero</span>
+
+ 2013-10-01 Payment From Share 0070 (   <span style="color: #00aa00">300.00 </span>
+ 2013-10-01 Withdrawal To Loan          <span style="color: #aa0000">300.00-</span>
+
+</pre>
+<p>Finally, we reach a point
+where all remaining expenses belong to a single category —
+in this case, all <tt class="docutils literal"><span class="pre">Unknown</span></tt> transactions
+are restaurant visits during conferences or business travel.</p>
+<p>Instead of trying to write a regular expression for every single one,
+you can simply rewrite your final rule
+so that it puts all remaining transactions
+in the <tt class="docutils literal"><span class="pre">Meals</span></tt> category instead of calling them <tt class="docutils literal"><span class="pre">Unknown</span></tt>.
+So our rules file winds up looking like:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="c1"># rules.yaml</span>
+
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">2013</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Zero</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Withdrawal To Loan/</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Payment From Share 0070/</span>
+
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Income.Interest</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Deposit Dividend/</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Income.Sales</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Deposit at ATM/</span>
+
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Expenses.7.Payroll</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/PAYCHECK/</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Expenses.19.Bank fees</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/Transaction Fee/</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Expenses.19.Travel</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/DELTA TORONTO EAST/</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/DETROIT WINDSOR TUNNEL/</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/VIA RAIL/</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Expenses.19.Meals</span>
+</pre></div>
+</div>
+<p>You might worry that this will mis-categorize future transactions
+as they arrive with new statements from my credit union.
+But since I always version control my <tt class="docutils literal"><span class="pre">tally</span></tt> <tt class="docutils literal"><span class="pre">-t</span></tt> output
+in addition to the rules files themselves,
+a quick <tt class="docutils literal"><span class="pre">diff</span></tt> in my version control system
+will make it easy what new transactions have arrived each month
+so that I can make sure that they land in the right places.</p>
+</div>
+<div class="section" id="running-a-final-report">
+<h2>Running a final report<a class="headerlink" href="#running-a-final-report" title="Permalink to this headline">¶</a></h2>
+<p>When you are happy with where your transactions are landing,
+you can take a deep breath, remove <tt class="docutils literal"><span class="pre">-t</span></tt> from your command line,
+and receive your reward:
+succinct income and expense tallies
+driven directly by your bank statements!</p>
+<pre>
+<span style="color: #00aa00">  368.20 </span> Accounts
+          <span style="color: #aa0000">   32.00-</span> DCCU Business Visa
+          <span style="color: #00aa00">    0.06 </span> ID 0001 SAVINGS
+          <span style="color: #00aa00">  400.14 </span> ID 0070 CHECKING
+<span style="color: #00aa00">  832.00 </span> Expenses
+          <span style="color: #00aa00">  500.00 </span> 7
+                    <span style="color: #00aa00">  500.00 </span> Payroll
+          <span style="color: #00aa00">  332.00 </span> 19
+                    <span style="color: #00aa00">    2.00 </span> Bank fees
+                    <span style="color: #00aa00">  135.00 </span> Meals
+                    <span style="color: #00aa00">  195.00 </span> Travel
+<span style="color: #aa0000">1,200.20-</span> Income
+          <span style="color: #aa0000">    0.20-</span> Interest
+          <span style="color: #aa0000">1,200.00-</span> Sales
+<span style="color: #00aa00">    0.00 </span> Zero
+</pre>
+<p>Remember that the total for each top-level account
+will include both the sub-totals from the sub-accounts
+indented below it,
+as well as for any transactions that you assigned directly to&nbsp;it.</p>
+</div>
+<div class="section" id="automation-and-version-control">
+<h2>Automation and version control<a class="headerlink" href="#automation-and-version-control" title="Permalink to this headline">¶</a></h2>
+<p>A simple <tt class="docutils literal"><span class="pre">make</span></tt> will be enough to run your balances
+if you build a <tt class="docutils literal"><span class="pre">Makefile</span></tt> that contains rules like:</p>
+<div class="highlight-make"><div class="highlight"><pre><span class="nf">tally-2013.txt</span><span class="o">:</span> <span class="m">rules-2013.yaml statements/*.txt</span>
+        luca tally -t <span class="nv">$+</span> &gt; <span class="nv">$@</span>
+</pre></div>
+</div>
+<p>So that you can see exactly which transactions are new
+when you add new bank statements and re-run luca,
+put everything under version control —
+both your input rules, and the resulting output file.</p>
+<div class="highlight-bash"><div class="highlight"><pre>git add Makefile
+git add statements/*.txt
+git add rules-2013.yaml
+git add tally-2013.txt
+git commit
+</pre></div>
+</div>
+<p>Given these files under version control,
+here is my rough algorithm each month
+for getting new information into Luca
+and making sure that I like how my rules have classified
+the new transactions:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c"># As each new statement arrives, I always</span>
+<span class="c"># convert it to *.txt manually to avoid</span>
+<span class="c"># putting huge PDFs under version control:</span>
+
+pdftotext -layout ~/Downloads/stmt.pdf &gt; statements/2013-11-checking.txt
+
+<span class="c"># Prepare to enroll it in version control:</span>
+
+git add statements/*.txt
+
+<span class="c"># To check whether your rules classify the</span>
+<span class="c"># new transactions appropriately:</span>
+
+make
+git diff
+
+<span class="c"># Edit your rules until you like where</span>
+<span class="c"># each transaction is landing, then:</span>
+
+git commit .
+</pre></div>
+</div>
+<p>Of course,
+if you simply wait until the end of the year
+to write your <tt class="docutils literal"><span class="pre">rules.yaml</span></tt> and do all of your accounting
+then you will not need these precautions.
+No new bank statements will be showing up later
+to scatter fresh transactions across your categories!
+Instead, you will write the rules once,
+already knowing every transactions
+that they have to successfully classify.</p>
+</div>
+</div>
+
+  </body>
+</html>

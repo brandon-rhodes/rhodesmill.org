@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Applying PDF watermarks upside down</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>Applying PDF watermarks upside down</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>7 April 2009</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">computing, document-processing</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Now that the excitement
+of PyCon 2009 is over,
+it is time for me to finish this brief series of blog posts
+on watermarking PDF files.
+In the
+<a href="/brandon/2009/graphicsmagick-saved-the-day/"
+   >first post I outlined how GraphicsMagick and Adobe Reader</a>
+proved essential to the project
+for their ability to produce correct PDF files
+and then help me verify their correctness.
+The
+<a href="/brandon/2009/pdf-watermark-margins/"
+   >second post showed how an image can be applied as a watermark</a>
+using the <a href="http://www.pdfhacks.com/pdftk/">pdftk</a>
+PDF Toolkit utility.
+The resulting watermark,
+after some margins had been added using a Python script,
+looked rather attractive:
+</p>
+<div class="figure">
+<a href="http://rhodesmill.org/brandon/static/2009/wmark2.pdf"
+><img src="http://rhodesmill.org/brandon/static/2009/wmark2.png"
+alt="Watermark with margins" />
+</a><p><strong>Watermarked page (click for PDF).</strong>
+The light blue design is a PDF file
+that <tt>pdftk</tt> resizes and centers
+on the target document.</p>
+</div>
+<p>
+My last challenge was that, on certain pages,
+the watermark we were using
+had to be turned upside down.
+“Simple,” I thought, “I'll use <tt>pdftk</tt>
+to turn the watermark over before applying it!”
+I just had to process the watermark image
+with the letter <tt>S</tt> (“south”),
+which tells <tt>pdftk</tt> to rotate the image by 180°,
+and then use the result as the watermark:
+</p>
+<div class="highlight"><pre><span class="err">$</span> <span class="n">pdftk</span> <span class="n">arecibo2</span><span class="p">.</span><span class="n">pdf</span> <span class="n">cat</span> <span class="mi">1</span><span class="n">S</span> <span class="n">output</span> <span class="n">arecibo3</span><span class="p">.</span><span class="n">pdf</span>
+<span class="err">$</span> <span class="n">pdftk</span> <span class="n">in</span><span class="p">.</span><span class="n">pdf</span> <span class="n">background</span> <span class="n">arecibo3</span><span class="p">.</span><span class="n">pdf</span> <span class="n">output</span> <span class="n">wmark3</span><span class="p">.</span><span class="n">pdf</span></pre></div>
+
+<div class="figure">
+<a href="http://rhodesmill.org/brandon/static/2009/wmark3.pdf"
+><img src="http://rhodesmill.org/brandon/static/2009/wmark3.png"
+alt="Watermark with margins" />
+</a><p><strong>Upside-down watermark (click for PDF).</strong>
+Whoops! After turning the watermark upside down,
+<tt>pdftk</tt> lost the ability to properly center it.</p>
+</div>
+<!--more-->
+<p>
+Actually, the situation with my real customer's documents
+was even worse than in this artifical example:
+the real watermark was a bit smaller,
+and positioned differently,
+such that it actually got moved <i>entirely</i> off of the page
+thanks to this misplacement bug in <tt>pdftk</tt>!
+So I did not even start my investigation
+with the knowledge that the watermark was misplaced;
+for all I knew, it was simply missing from the output file.
+</p>
+<p>
+That is why I got to spend an afternoon
+with some coffee and the
+<a href="http://www.adobe.com/devnet/pdf/pdf_reference.html"
+   >PDF specification</a>
+(thank you, Adobe web site!)
+examining the raw files for myself
+to discover what had happened.
+</p>
+<p>
+Actually, <tt>pdftk</tt> proved indispensable
+even while I was investigating its own misbehavior!
+It was its <tt>uncompress</tt> command
+that made the internals of the PDF files visible to my text editor.
+The important difference turned out to be in a simple instruction,
+which you can see for yourself
+if you use <tt>pdftk</tt> to uncompress
+the two PDF files that are linked to from the above images,
+and then use <tt>diff</tt> <tt>-u</tt> to compare them:
+</p>
+<div class="highlight"><pre> <span class="n">q</span>
+<span class="o">-</span><span class="n">q</span> <span class="mf">8.52</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mf">8.52</span> <span class="mf">208.06</span> <span class="mf">85.16</span> <span class="n">cm</span> <span class="o">/</span><span class="n">Xi0</span> <span class="n">Do</span> <span class="n">Q</span>
+<span class="o">+</span><span class="n">q</span> <span class="o">-</span><span class="mf">8.52</span> <span class="mi">0</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">8.52</span> <span class="mf">574.26</span> <span class="mf">877.16</span> <span class="n">cm</span> <span class="o">/</span><span class="n">Xi0</span> <span class="n">Do</span> <span class="n">Q</span>
+ <span class="n">Q</span></pre></div>
+
+<p>
+Here, <tt>diff</tt> is using
+the leading <tt>-</tt> and <tt>+</tt> characters
+to indicate that the first long line has been removed
+and replaced with the second.
+The numbers that you see are a coordinate matrix
+that specifies where the watermark image
+is being placed on the page.
+What has happened is that the offsets
+for the upside down watermark
+are wrong —
+and are wrong by <i>exactly</i> the size
+of the margins that we added in the previous blog post!
+</p>
+<p>
+The problem quickly became clear,
+once I drew some boxes on graph paper and did some sums.
+Very nearly every PDF file in existence
+has a bounding box whose lower-left coordinates are (0,0).
+But in the previous blog post in this series,
+we quickly added margins to our PDF
+by adjusting these coordinates outward so that they lay
+at the very uncommon values of (-10,-10).
+You can check this by running the wonderful <tt>pdfinfo</tt> command
+against the
+<a href="http://rhodesmill.org/brandon/static/2009/arecibo2.pdf"
+   >arecibo2.pdf</a>
+file yourself:
+</p>
+<div class="highlight"><pre><span class="err">$</span> <span class="n">pdfinfo</span> <span class="o">-</span><span class="n">box</span> <span class="n">arecibo2</span><span class="p">.</span><span class="n">pdf</span>
+<span class="p">...</span>
+<span class="n">Page</span> <span class="n">size</span><span class="o">:</span>      <span class="mi">43</span> <span class="n">x</span> <span class="mi">93</span> <span class="n">pts</span>
+<span class="p">...</span>
+<span class="nl">CropBox:</span>          <span class="o">-</span><span class="mf">10.00</span>   <span class="o">-</span><span class="mf">10.00</span>    <span class="mf">33.00</span>    <span class="mf">83.00</span>
+<span class="p">...</span></pre></div>
+
+<p>
+When we ask <tt>pdftk</tt> to apply a watermark that is right side up,
+all is well.
+But when we apply a watermark upside down,
+<tt>pdftk</tt> forgets to apply a negative sign
+to our negative bounding box coordinates,
+and they wind up shifting the image
+in the opposite direction.
+</p>
+<p>
+It took me more than an hour of crazy experiments
+before I realized that I could work around the bug quite simply
+by turning the <i>document</i> upside down with <tt>pdftk</tt>,
+applying the watermark,
+and then turning the document upright again!
+I had spent time looking for a complicated solution
+that would fool <tt>pdftk</tt> into doing the right thing,
+when all I needed to do
+was to step back and figure out how to avoid
+the whole problem of upside down watermarks in the first place.
+How? With upside down documents!
+</p>
+<div class="highlight"><pre><span class="err">$</span> <span class="n">pdftk</span> <span class="n">in</span><span class="p">.</span><span class="n">pdf</span> <span class="n">cat</span> <span class="mi">1</span><span class="n">S</span> <span class="n">output</span> <span class="n">in</span><span class="o">-</span><span class="n">u</span><span class="p">.</span><span class="n">pdf</span>
+<span class="err">$</span> <span class="n">pdftk</span> <span class="n">in</span><span class="o">-</span><span class="n">u</span><span class="p">.</span><span class="n">pdf</span> <span class="n">background</span> <span class="n">arecibo2</span><span class="p">.</span><span class="n">pdf</span> <span class="n">output</span> <span class="n">wmark4</span><span class="o">-</span><span class="n">u</span><span class="p">.</span><span class="n">pdf</span>
+<span class="err">$</span> <span class="n">pdftk</span> <span class="n">wmark4</span><span class="o">-</span><span class="n">u</span><span class="p">.</span><span class="n">pdf</span> <span class="n">cat</span> <span class="mi">1</span><span class="n">N</span> <span class="n">output</span> <span class="n">wmark4</span><span class="p">.</span><span class="n">pdf</span></pre></div>
+
+<div class="figure">
+<a href="http://rhodesmill.org/brandon/static/2009/wmark4.pdf"
+><img src="http://rhodesmill.org/brandon/static/2009/wmark4.png"
+alt="Watermark with margins" />
+</a><p><strong>Upside-down watermark (click for PDF).</strong>
+Why turn your watermark over once,
+when you can turn your whole document over twice instead?
+The obvious solution always takes so long to discover.</p>
+</div>
+<style> img { border: 1px dashed black } </style>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'rhodesmill';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<p class="byline">©2020</p>
+
+</body>
+</html>

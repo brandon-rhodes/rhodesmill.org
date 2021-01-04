@@ -1,0 +1,137 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+            "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>&lt;no title&gt; &#8212; PyEphem home page</title>
+    <link rel="stylesheet" href="_static/pyephem.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+    <img class="alone-logo" src="_static/pyephem-logo-full.png"/>
+    
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">PyEphem home page</a> &#187;</li> 
+      </ul>
+    </div>
+
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ephem</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><strong>Q:</strong></dt>
+<dd><p class="first">Why does an <code class="docutils literal notranslate"><span class="pre">Observer</span></code> not allow assignment to arbitrary attributes?
+I wanted to remember which of my friends lived in which cities,
+but attempting to set a <code class="docutils literal notranslate"><span class="pre">friend</span></code> attribute caused an exception:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">boston</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">Observer</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">boston</span><span class="o">.</span><span class="n">beer</span> <span class="o">=</span> <span class="s1">&#39;Sam Adams&#39;</span>
+<span class="gt">Traceback (most recent call last):</span>
+ <span class="c">...</span>
+<span class="gr">AttributeError</span>: <span class="n">&#39;Observer&#39; object has no attribute &#39;beer&#39;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<p><strong>A:</strong></p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">Observer</span></code> objects restrict which of their attributes can be set
+to prevent users from misspelling attribute names.
+This means that users are immediately informed of their mistake
+when they attempt an assignment like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">boston</span><span class="o">.</span><span class="n">longitude</span> <span class="o">=</span> <span class="s1">&#39;-71.0&#39;</span>
+</pre></div>
+</div>
+<p>If you need an <code class="docutils literal notranslate"><span class="pre">Observer</span></code> object
+that can remember additional attributes,
+simply create your own sub-class of <code class="docutils literal notranslate"><span class="pre">Observer</span></code> and use that instead:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyObserver</span><span class="p">(</span><span class="n">ephem</span><span class="o">.</span><span class="n">Observer</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">pass</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">boston</span> <span class="o">=</span> <span class="n">MyObserver</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">boston</span><span class="o">.</span><span class="n">friend</span> <span class="o">=</span> <span class="s1">&#39;John Adams&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">boston</span><span class="o">.</span><span class="n">friend</span><span class="p">)</span>
+<span class="go">John Adams</span>
+</pre></div>
+</div>
+</div></blockquote>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">PyEphem home page</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer">
+      &copy;2008, Brandon Craig Rhodes.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

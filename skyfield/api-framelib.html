@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — Reference Frames</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-reference-frames">
+<h1>API Reference — Reference Frames<a class="headerlink" href="#api-reference-reference-frames" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">skyfield.framelib</span></code> module
+provides a number of standard reference frames,
+whose use is described in <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</p>
+<dl class="data">
+<dt id="skyfield.framelib.true_equator_and_equinox_of_date">
+<code class="descclassname">skyfield.framelib.</code><code class="descname">true_equator_and_equinox_of_date</code><em class="property"> = &lt;skyfield.framelib.true_equator_and_equinox_of_date object&gt;</em><a class="headerlink" href="#skyfield.framelib.true_equator_and_equinox_of_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>The dynamical frame of the Earth’s true equator and equinox of date.</p>
+<p>This is supplied as an explicit reference frame in case you want
+x,y,z coordinates; if you want angles, it’s better to use the
+standard position method <code class="docutils literal notranslate"><span class="pre">radec(epoch='date')</span></code> since that will
+return the conventional units of hours-of-right-ascension instead of
+the degrees-of-longitude that <code class="docutils literal notranslate"><span class="pre">frame_latlon()</span></code> would return.</p>
+<p>This reference frame combines current theories of the Earth’s
+precession and nutation with a small offset between the ITRS and
+J2000 systems to produce right ascension and declination for a given
+date relative to the Earth’s axis and equator of rotation.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="skyfield.framelib.itrs">
+<code class="descclassname">skyfield.framelib.</code><code class="descname">itrs</code><em class="property"> = &lt;skyfield.framelib.itrs object&gt;</em><a class="headerlink" href="#skyfield.framelib.itrs" title="Permalink to this definition">¶</a></dt>
+<dd><p>The International Terrestrial Reference System (ITRS).</p>
+<p>This is the IAU standard for an Earth-centered Earth-fixed (ECEF)
+coordinate system, anchored to the Earth’s crust and continents.
+This reference frame combines three other reference frames: the
+Earth’s true equator and equinox of date, the Earth’s rotation with
+respect to the stars, and (if your <code class="docutils literal notranslate"><span class="pre">Timescale</span></code> has polar offsets
+loaded) the polar wobble of the crust with respect to the Earth’s
+pole of rotation.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="skyfield.framelib.ecliptic_frame">
+<code class="descclassname">skyfield.framelib.</code><code class="descname">ecliptic_frame</code><em class="property"> = &lt;skyfield.framelib.ecliptic_frame object&gt;</em><a class="headerlink" href="#skyfield.framelib.ecliptic_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference frame of the true ecliptic and equinox of date.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="skyfield.framelib.ecliptic_J2000_frame">
+<code class="descclassname">skyfield.framelib.</code><code class="descname">ecliptic_J2000_frame</code><em class="property"> = &lt;skyfield.framelib.InertialFrame object&gt;</em><a class="headerlink" href="#skyfield.framelib.ecliptic_J2000_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference frame of the true ecliptic and equinox at J2000.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="skyfield.framelib.galactic_frame">
+<code class="descclassname">skyfield.framelib.</code><code class="descname">galactic_frame</code><em class="property"> = &lt;skyfield.framelib.InertialFrame object&gt;</em><a class="headerlink" href="#skyfield.framelib.galactic_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Galactic System II reference frame.</p>
+</dd></dl>
+
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Buildout</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>Buildout</h1>
+<p class="note">Update: these days, I tend to use a simple virtual environment
+in conjunction with <tt class="docutils literal">pip</tt> <tt class="docutils literal"><span class="pre">-e</span></tt> for development
+instead of using buildout.
+But buildout is still a simpler tool than most people realize,
+and I like to think that this old screencast of mine
+does a good job of illustrating a simplest-possible use case!</p>
+<p><em>January 2008</em></p>
+<p>This page is where I am collecting all of the hints
+that I accumulate about using
+<a class="reference external" href="http://pypi.python.org/pypi/zc.buildout">buildout</a>,
+the Python development and deployment technology
+invented by the Zope folks.
+To understand why I'm excited about it,
+try watching my screencast of this talk that I gave at Python Atlanta:</p>
+<div class="figure">
+<iframe width="420" height="315" src="//www.youtube.com/embed/HXvzzK9m2IA" frameborder="0" allowfullscreen></iframe>
+<p><a href="http://www.youtube.com/watch?v=HXvzzK9m2IA"
+  >A Brief Introduction to Buildout</a> (YouTube)</p>
+</div><p><strong>Q:</strong> Where can I get a copy of the example module
+that you used in your PyAtl talk?</p>
+<p><strong>A:</strong> You can download the source code for the <tt class="docutils literal">lunar</tt> module
+that I use as my central example in the talk right here:</p>
+<p><a class="reference external" href="http://rhodesmill.org/brandon/static/2008/lunar.tar.gz">http://rhodesmill.org/brandon/static/2008/lunar.tar.gz</a></p>
+<p><strong>Q:</strong> How can I start developing my Python package with buildout?</p>
+<p><strong>A:</strong> Move into the top-level directory of your package —
+the directory that has your <tt class="docutils literal">setup.py</tt> file inside —
+and place two files there: <tt class="docutils literal">bootstrap.py</tt>,
+which you can get in its most recent official version
+<a class="reference external" href="http://svn.zope.org/*checkout*/zc.buildout/trunk/bootstrap/bootstrap.py">from this link</a>,
+and a <tt class="docutils literal">buildout.cfg</tt>
+that describes the development tools you want available.
+To gain the three tools I discuss in my presentations —
+a Python interpreter,
+access to the command-line scripts defined in your package,
+and a way to invoke your test suite —
+try out this sample <tt class="docutils literal">buildout.cfg</tt>:</p>
+<div class="highlight"><pre><span class="k">[config]</span>
+<span class="na">mypkgs</span> <span class="o">=</span> <span class="s">lunar</span>
+
+<span class="k">[buildout]</span>
+<span class="na">develop</span> <span class="o">=</span> <span class="s">.</span>
+<span class="na">parts</span> <span class="o">=</span> <span class="s">python scripts test</span>
+
+<span class="k">[python]</span>
+<span class="na">recipe</span> <span class="o">=</span> <span class="s">zc.recipe.egg</span>
+<span class="na">interpreter</span> <span class="o">=</span> <span class="s">python</span>
+<span class="na">eggs</span> <span class="o">=</span> <span class="s">{config:mypkgs}</span>
+
+<span class="k">[scripts]</span>
+<span class="na">recipe</span> <span class="o">=</span> <span class="s">zc.recipe.egg:scripts</span>
+<span class="na">eggs</span> <span class="o">=</span> <span class="s">{config:mypkgs}</span>
+
+<span class="k">[test]</span>
+<span class="na">recipe</span> <span class="o">=</span> <span class="s">zc.recipe.testrunner</span>
+<span class="na">eggs</span> <span class="o">=</span> <span class="s">{config:mypkgs}</span></pre></div>
+
+<p>Edit the first section of the file
+(whose name is arbitrary, by the way;
+<tt class="docutils literal">config</tt> just made it easy for me to remember why I put it there)
+and change the package name <tt class="docutils literal">lunar</tt>
+to the name you gave your package
+in the <tt class="docutils literal">name</tt> option of its <tt class="docutils literal">setup.py</tt>.
+Then, run:</p>
+<div class="highlight"><pre><span class="err">$</span> <span class="n">python</span> <span class="n">bootstrap</span><span class="p">.</span><span class="n">py</span>
+<span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">buildout</span></pre></div>
+
+<p>And you should find that a <tt class="docutils literal">./bin/</tt> directory appears
+with a <tt class="docutils literal">python</tt> interpreter, a <tt class="docutils literal">test</tt> runner,
+and any command-line scripts your module
+defines as <tt class="docutils literal">console</tt> entry-points in its <tt class="docutils literal">setup.py</tt>.</p>
+<p><strong>Q:</strong> Does the buildout system destroy anything?</p>
+<p><strong>A:</strong> Yes;
+buildout will consider itself the owner
+of these three directories at the top level of your project,
+so make sure that you are not using directories with these names
+if you do not want them overwritten:</p>
+<div class="highlight"><pre><span class="n">develop</span><span class="o">-</span><span class="n">eggs</span><span class="o">/</span>
+<span class="n">eggs</span><span class="o">/</span>
+<span class="n">parts</span><span class="o">/</span></pre></div>
+
+<p><strong>Q:</strong> What if I need a buildout that pulls eggs
+from other locations than the main Python Package Index?</p>
+<p><strong>A:</strong> Add some URLs to your <tt class="docutils literal">buildout.cfg</tt> —
+they can point to any package index pages
+that the <tt class="docutils literal">easy_install</tt> command would normally be able to digest —
+by adding this parameter (you can list several URLs if you want;
+the following URL is simply for illustration):</p>
+<div class="highlight"><pre><span class="n">find</span><span class="o">-</span><span class="n">links</span> <span class="o">=</span> <span class="n">http</span><span class="o">:</span><span class="c1">//download.zope.org/distribution/</span></pre></div>
+
+<p><strong>Q:</strong> How can I avoid having every buildout on my system
+download a separate copy of each egg it needs?</p>
+<p><strong>A:</strong> You should tell your buildouts to download eggs
+into a single cache somewhere under your home directory.
+The buildouts will still be safely isolated from each other,
+since each version of an egg has its own filename!
+But instead of modifying every single <tt class="docutils literal">buildout.cfg</tt> file
+to accomplish this, just create a <tt class="docutils literal"><span class="pre">~/.buildout/</span></tt> directory
+inside of your home directory,
+and place the following inside of a file named <tt class="docutils literal">default.cfg</tt>:</p>
+<div class="highlight"><pre><span class="k">[buildout]</span>
+<span class="na">eggs-directory</span> <span class="o">=</span> <span class="s">/home/brandon/eggs</span></pre></div>
+
+<p><strong>Q:</strong> How can I develop against another package's source code,
+before it gets packaged up as an egg?</p>
+<p><strong>A:</strong> Download or checkout the other package's source code
+into either a sub-directory of your project,
+or another directory under your account.
+Then, mention that directory's name in the <tt class="docutils literal">develop</tt> declaration
+in the main section of your buildout.
+For example, in my presentation above I check out
+the SQLAlchemy trunk into the directory <tt class="docutils literal">sqlalchemy</tt>,
+and then adjust my <tt class="docutils literal">develop</tt> line to look like:</p>
+<div class="highlight"><pre><span class="k">[buildout]</span>
+<span class="na">develop</span> <span class="o">=</span> <span class="s">. sqlalchemy</span></pre></div>
+
+<p>But sometimes putting other projects
+in a sub-directory of your own project can be annoying.
+Your version control system might then start trying to include
+the other project in your commits,
+and if you have several projects
+that need access to the development version of a particular library,
+it might be annoying to have to check it out several times.
+So I often check out several projects,
+both my own and some others, into a single top-level directory,
+and then have their <tt class="docutils literal">develop</tt> lines look something like:</p>
+<div class="highlight"><pre><span class="k">[buildout]</span>
+<span class="na">develop</span> <span class="o">=</span> <span class="s">. ../sqlalchemy ../gatech.identity</span></pre></div>
+
+<p>This way, a small cluster of applications and libraries
+that I will be releasing as a set of eggs
+can all get developed together.
+But it does have the disadvantage
+that if I actually check in my <tt class="docutils literal">buildout.cfg</tt>
+while it looks this way,
+then other developers will have to mimic
+my directory structure (or re-edit the <tt class="docutils literal">buildout.cfg</tt>)
+before they too can work on the project.</p>
+<p><strong>Q:</strong> Buildout keeps disrupting my development
+by downloading newer versions of dependency packages when they appear,
+which often have slight changes that break my application.</p>
+<p><strong>A:</strong> A quick fix is to add this line
+to the <tt class="docutils literal">buildout</tt> section of your <tt class="docutils literal">buildout.cfg</tt> file:</p>
+<div class="highlight"><pre><span class="k">[buildout]</span>
+<span class="na">newest</span> <span class="o">=</span> <span class="s">false</span></pre></div>
+
+<p>But I argue that this is inadequate protection,
+because if you move to another machine and re-create the buildout,
+then you are still vulnerable to getting
+newer versions of dependencies
+than the ones you were already working with.
+And specifying <tt class="docutils literal">newer</tt> <tt class="docutils literal">=</tt> <tt class="docutils literal">false</tt> provides no protection
+for co-workers on other machines,
+or for your customers who might later be installing
+your product as an egg using <tt class="docutils literal">easy_install</tt>!</p>
+<p>That's why the real solution is
+to always specify absolute version numbers
+in your project's <tt class="docutils literal">setup.py</tt>.
+Instead of just requiring <tt class="docutils literal">'pyephem'</tt>,
+require something specific like:</p>
+<div class="highlight"><pre><span class="n">install_requires</span><span class="o">=</span><span class="p">[</span><span class="err">&#39;</span><span class="n">pyephem</span><span class="o">==</span><span class="mf">3.7.2.3</span><span class="err">&#39;</span><span class="p">],</span></pre></div>
+
+<p>If you are afraid that you or your customers
+might miss out on critical security updates to a package
+by being stuck on a single version,
+then leave the lowest version number unspecified by saying something like:</p>
+<div class="highlight"><pre><span class="n">install_requires</span><span class="o">=</span><span class="p">[</span><span class="err">&#39;</span><span class="n">sqlalchmey</span> <span class="o">&gt;=</span> <span class="mf">0.4</span><span class="p">,</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="err">&#39;</span><span class="p">],</span></pre></div>
+
+
+<p class="byline">©2014</p>
+
+</body>
+</html>

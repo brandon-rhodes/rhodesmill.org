@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skyfield’s Accuracy and Efficiency</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="skyfields-accuracy-and-efficiency">
+<h1>Skyfield’s Accuracy and Efficiency<a class="headerlink" href="#skyfields-accuracy-and-efficiency" title="Permalink to this headline">¶</a></h1>
+<p>This document is a work in progress,
+that will be expanded into a full guide.
+Right now it covers only one topic.</p>
+<div class="section" id="polar-motion">
+<span id="id1"></span><h2>Polar Motion<a class="headerlink" href="#polar-motion" title="Permalink to this headline">¶</a></h2>
+<p>It was discovered more than a century ago
+that the Earth’s crust has a slight freedom
+to wobble with respect to the Earth’s axis of rotation in space,
+because the continents and ocean basis are bound to the planet’s mass
+only through the fluid coupling of our planet’s viscous mantle.
+In Skyfield you can see the size of the effect
+by loading an official data file
+from the International Earth Rotation Service (IERS)
+and measuring the maximum excursions
+of the polar motion parameters 𝑥 and 𝑦:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">skyfield.data</span> <span class="kn">import</span> <span class="n">iers</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="s1">&#39;finals2000A.all&#39;</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">load</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">finals_data</span> <span class="o">=</span> <span class="n">iers</span><span class="o">.</span><span class="n">parse_x_y_dut1_from_finals_all</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">iers</span><span class="o">.</span><span class="n">install_polar_motion_table</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">finals_data</span><span class="p">)</span>
+
+<span class="n">tt</span><span class="p">,</span> <span class="n">x_arcseconds</span><span class="p">,</span> <span class="n">y_arcseconds</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">polar_motion_table</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;x:&#39;</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x_arcseconds</span><span class="p">)),</span> <span class="s1">&#39;arcseconds&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;y:&#39;</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">y_arcseconds</span><span class="p">)),</span> <span class="s1">&#39;arcseconds&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>x: 0.32548 arcseconds
+y: 0.596732 arcseconds
+</pre></div>
+</div>
+<p>In what kinds of Skyfield calculations
+does the exact position of the Earth’s crust come into play?</p>
+<ul class="simple">
+<li>Polar motion affects the position of an observer on the Earth’s surface.</li>
+<li>Polar motion therefore also affects the relative position
+of a target with respect to an observer on the Earth’s surface.</li>
+<li>Polar motion directly affects altazimuth coordinates,
+since the polar angles 𝑥 and 𝑦 tilt the zenith and local horizon
+against which altitude and azimuth are measured for a particular observer.</li>
+<li>Finally,
+polar motion affects the position of any observation target
+that’s located on the Earth’s surface —
+for example, if you are calculating the position of a ground station
+from the perspective of a space probe.</li>
+</ul>
+<p>To have Skyfield apply polar motion when computing positions and coordinates,
+simply install the IERS tables on your timescale object
+as shown in the example code above.
+Polar motion will be used everywhere that it applies.</p>
+</div>
+</div>
+
+  </body>
+</html>

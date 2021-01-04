@@ -1,0 +1,1482 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>slides.rst</title>
+<link rel="stylesheet" href="../css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="../css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<!-- "3:25 P.M.–4:05 P.M."
+So perhaps aim for 35 minutes plus 5 minutes for questions.
+Maybe 35 * 6 = 210 slides? -->
+<div class="section" id="skyfield-and-15-years-of-bad-apis">
+<h1>Skyfield and 15 Years of Bad APIs</h1>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><strong>&#64;brandon_rhodes</strong></div>
+<div class="line"><br /></div>
+<div class="line">PyCon Canada</div>
+<div class="line">August 2013</div>
+</div>
+</div>
+<div class="section" id="goal">
+<h1>Goal</h1>
+<div class="line-block">
+<div class="line">To reflect upon the practice of</div>
+<div class="line"><strong>Python API design</strong> through my recent</div>
+<div class="line">work on the <em>Skyfield</em> astronomy library</div>
+</div>
+</div>
+<div class="section" id="slide">
+
+<p><img alt="a" src="calculator.jpg" style="width: 420px;" /> &nbsp; <img alt="b" src="computer.jpg" style="width: 420px;" /></p>
+</div>
+<div class="section" id="id1">
+
+<div class="line-block">
+<div class="line">Elwood Charles Downey <em>et al</em></div>
+</div>
+<div class="line-block">
+<div class="line"><em>1990</em> <strong>Ephem</strong></div>
+<div class="line"><em>1993</em> <strong>XEphem</strong></div>
+</div>
+</div>
+<div class="section" id="id2">
+
+<div class="line-block">
+<div class="line"><em>e·phem·er·is</em> — A table</div>
+<div class="line">giving the <strong>coordinates</strong> of</div>
+<div class="line">a celestial body at a number</div>
+<div class="line">of specific times</div>
+</div>
+</div>
+<div class="section" id="id3">
+
+<div class="highlight"><pre><span></span><span class="n">CDT</span> <span class="mi">19</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span>  <span class="mi">4</span><span class="o">/</span><span class="mi">30</span><span class="o">/</span><span class="mi">1990</span> <span class="o">|</span> <span class="n">LST</span>    <span class="mi">8</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">50</span> <span class="o">|</span>
+<span class="n">UTC</span>  <span class="mi">0</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span>  <span class="mi">5</span><span class="o">/</span><span class="mo">01</span><span class="o">/</span><span class="mi">1990</span> <span class="o">|</span>                <span class="o">|</span>
+<span class="n">JulianDat</span> <span class="mf">2448012.50000</span> <span class="o">|</span> <span class="n">Dawn</span>      <span class="mi">4</span><span class="p">:</span><span class="mi">10</span> <span class="o">|</span>
+<span class="n">Watch</span>                   <span class="o">|</span> <span class="n">Dusk</span>     <span class="mi">22</span><span class="p">:</span><span class="mi">15</span> <span class="o">|</span>
+<span class="n">Listing</span>             <span class="n">off</span> <span class="o">|</span> <span class="n">NiteLn</span>    <span class="mi">5</span><span class="p">:</span><span class="mi">55</span> <span class="o">|</span>
+<span class="n">Plot</span>                <span class="n">off</span> <span class="o">|</span> <span class="n">NStep</span>        <span class="mi">1</span> <span class="o">|</span>
+<span class="n">Menu</span>        <span class="n">Planet</span> <span class="n">Data</span> <span class="o">|</span> <span class="n">StpSz</span> <span class="n">RT</span> <span class="n">CLOCK</span> <span class="o">|</span>
+<span class="o">---------------------------------------------</span>
+<span class="n">OCX</span>  <span class="n">R</span><span class="o">.</span><span class="n">A</span><span class="o">.</span>    <span class="n">Dec</span>    <span class="n">Az</span>     <span class="n">Alt</span>  <span class="n">H</span> <span class="n">Long</span> <span class="n">H</span> <span class="n">Lat</span>
+<span class="n">Su</span>  <span class="mi">2</span><span class="p">:</span><span class="mf">32.3</span>  <span class="mi">14</span><span class="p">:</span><span class="mi">58</span> <span class="mi">278</span><span class="p">:</span><span class="mi">40</span>  <span class="mi">12</span><span class="p">:</span><span class="mi">38</span> <span class="mi">220</span><span class="p">:</span><span class="mi">22</span>
+<span class="n">Mo</span>  <span class="mi">8</span><span class="p">:</span><span class="mf">09.9</span>  <span class="mi">21</span><span class="p">:</span><span class="mi">11</span> <span class="mi">186</span><span class="p">:</span><span class="mo">06</span>  <span class="mi">65</span><span class="p">:</span><span class="mi">53</span> <span class="mi">119</span><span class="p">:</span><span class="mi">55</span>   <span class="mi">1</span><span class="p">:</span><span class="mo">04</span>
+<span class="n">Me</span>  <span class="mi">2</span><span class="p">:</span><span class="mf">49.4</span>  <span class="mi">17</span><span class="p">:</span><span class="mi">39</span> <span class="mi">277</span><span class="p">:</span><span class="mi">48</span>  <span class="mi">17</span><span class="p">:</span><span class="mi">26</span> <span class="mi">214</span><span class="p">:</span><span class="mi">08</span>   <span class="mi">1</span><span class="p">:</span><span class="mi">43</span>
+<span class="n">Ve</span> <span class="mi">23</span><span class="p">:</span><span class="mf">49.4</span>  <span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">25</span> <span class="mi">296</span><span class="p">:</span><span class="mi">53</span> <span class="o">-</span><span class="mi">27</span><span class="p">:</span><span class="mi">39</span> <span class="mi">282</span><span class="p">:</span><span class="mi">39</span>  <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">30</span>
+<span class="n">Ma</span> <span class="mi">22</span><span class="p">:</span><span class="mf">39.8</span> <span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="mi">09</span> <span class="mi">308</span><span class="p">:</span><span class="mi">17</span> <span class="o">-</span><span class="mi">44</span><span class="p">:</span><span class="mi">14</span> <span class="mi">297</span><span class="p">:</span><span class="mi">56</span>  <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">43</span>
+<span class="n">Ju</span>  <span class="mi">6</span><span class="p">:</span><span class="mf">30.9</span>  <span class="mi">23</span><span class="p">:</span><span class="mi">23</span> <span class="mi">235</span><span class="p">:</span><span class="mi">13</span>  <span class="mi">59</span><span class="p">:</span><span class="mo">04</span> <span class="mi">106</span><span class="p">:</span><span class="mi">16</span>   <span class="mi">0</span><span class="p">:</span><span class="mi">08</span>
+<span class="n">Sa</span> <span class="mi">19</span><span class="p">:</span><span class="mf">49.6</span> <span class="o">-</span><span class="mi">20</span><span class="p">:</span><span class="mi">53</span>  <span class="mi">17</span><span class="p">:</span><span class="mi">24</span> <span class="o">-</span><span class="mi">65</span><span class="p">:</span><span class="mi">14</span> <span class="mi">289</span><span class="p">:</span><span class="mi">45</span>   <span class="mi">0</span><span class="p">:</span><span class="mi">10</span>
+</pre></div>
+
+</div>
+<div class="section" id="id4">
+
+<img alt="xephem.png" src="xephem.png" style="height: 740px;" />
+</div>
+<div class="section" id="id5">
+<h1>©</h1>
+<div class="line-block">
+<div class="line">XEphem’s author reserves</div>
+<div class="line">the right to distribute <em>binaries</em>,</div>
+<div class="line">but allows free download of the <strong>source</strong></div>
+</div>
+</div>
+<div class="section" id="id6">
+
+<div class="line-block">
+<div class="line"><em>Missing header (.h)</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">X11</span><span class="o">/</span><span class="n">Intrinsic</span><span class="o">.</span><span class="n">h</span><span class="p">:</span> <span class="n">No</span> <span class="n">such</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">directory</span>
+<span class="o">...</span>
+<span class="err">$</span> <span class="n">apt</span><span class="o">-</span><span class="nb">file</span> <span class="n">search</span> <span class="n">X11</span><span class="o">/</span><span class="n">Intrinsic</span><span class="o">.</span><span class="n">h</span>
+<span class="n">libxt</span><span class="o">-</span><span class="n">dev</span><span class="p">:</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">X11</span><span class="o">/</span><span class="n">Intrinsic</span><span class="o">.</span><span class="n">h</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><em>Missing library (-l)</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">ld</span><span class="p">:</span> <span class="n">cannot</span> <span class="n">find</span> <span class="o">-</span><span class="n">lXext</span>
+<span class="o">...</span>
+<span class="err">$</span> <span class="n">apt</span><span class="o">-</span><span class="nb">file</span> <span class="n">search</span> <span class="n">libXext</span><span class="o">.</span><span class="n">a</span>
+<span class="n">libxext</span><span class="o">-</span><span class="n">dev</span><span class="p">:</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">i386</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">gnu</span><span class="o">/</span><span class="n">libXext</span><span class="o">.</span><span class="n">a</span>
+</pre></div>
+
+</div>
+<div class="section" id="id7">
+
+<img alt="xephem.png" src="xephem.png" style="height: 740px;" />
+</div>
+<div class="section" id="id8">
+
+<div class="line-block">
+<div class="line">Instead of using a <strong>GUI,</strong></div>
+<div class="line">I wanted to <em>write scripts</em></div>
+</div>
+</div>
+<div class="section" id="id9">
+
+<div class="line-block">
+<div class="line">Inside XEphem’s <strong>C-language</strong></div>
+<div class="line">source code is a computation</div>
+<div class="line">engine called <em>libastro</em></div>
+</div>
+</div>
+<div class="section" id="id10">
+
+<div class="line-block">
+<div class="line"><strong>XEphem</strong> &nbsp;&nbsp; <strong>PyEphem</strong></div>
+<div class="line"><em>libastro</em> &nbsp;→&nbsp; <em>libastro</em></div>
+</div>
+</div>
+<div class="section" id="id11">
+
+<div class="line-block">
+<div class="line"><em>“You have my full permission</em></div>
+<div class="line"><em>to go with what you have.”</em></div>
+</div>
+<div class="line-block">
+<div class="line">— Elwood’s generous reply!</div>
+</div>
+</div>
+<div class="section" id="pyephem-c-code">
+<h1>PyEphem = C code</h1>
+<p>Wrapper around <strong>libastro</strong></p>
+</div>
+<div class="section" id="id12">
+
+<div class="line-block">
+<div class="line"><em>1998</em></div>
+</div>
+<div class="line-block">
+<div class="line">Beazley’s <strong>Simple Wrapper</strong></div>
+<div class="line"><strong>Interface Generator</strong> (SWIG)</div>
+</div>
+</div>
+<div class="section" id="swig">
+<h1>SWIG</h1>
+<div class="line-block">
+<div class="line"><strong>Exposed</strong> awkward details of C structs</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">body</span> <span class="o">=</span> <span class="n">Obj</span><span class="p">()</span>
+<span class="n">body</span><span class="o">.</span><span class="n">any</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">PLANET</span>
+<span class="n">body</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">SUN</span>
+<span class="n">ephem</span><span class="o">.</span><span class="n">computeLocation</span><span class="p">(</span><span class="n">circum</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">ephem</span><span class="o">.</span><span class="n">formatHours</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">any</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="mi">36000</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">ephem</span><span class="o">.</span><span class="n">formatDegrees</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">any</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span> <span class="mi">3600</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id13">
+
+<div class="line-block">
+<div class="line"><em>2003</em></div>
+</div>
+<div class="line-block">
+<div class="line">Hand-written C that uses</div>
+<div class="line"><strong>Python 2.2</strong> superpowers</div>
+</div>
+</div>
+<div class="section" id="id14">
+
+<div class="line-block">
+<div class="line">Python <strong>2.2</strong> made attribute</div>
+<div class="line">access <em>easy</em> to customize</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">PyGetSetDef</span> <span class="n">body_getset</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">{</span><span class="s2">&quot;ra&quot;</span><span class="p">,</span> <span class="n">get_ra</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;right ascension&quot;</span><span class="p">},</span>
+  <span class="p">{</span><span class="s2">&quot;dec&quot;</span><span class="p">,</span> <span class="n">get_dec</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;declination&quot;</span><span class="p">},</span>
+  <span class="p">{</span><span class="s2">&quot;elong&quot;</span><span class="p">,</span> <span class="n">get_elong</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;elongation&quot;</span><span class="p">},</span>
+  <span class="p">{</span><span class="s2">&quot;mag&quot;</span><span class="p">,</span> <span class="n">get_mag</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;magnitude&quot;</span><span class="p">},</span>
+                 <span class="err">⋮</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id15">
+
+<div class="line-block">
+<div class="line">And, I added a <em>pure-Python wrapper</em></div>
+<div class="line">on top like <tt class="docutils literal">hashlib</tt>, <tt class="docutils literal">sqlite3</tt>, and <tt class="docutils literal">ssl</tt></div>
+</div>
+<div class="highlight"><pre><span></span><span class="c1"># ephem/__init__.py</span>
+
+<span class="kn">import</span> <span class="nn">_libastro</span>
+<span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id16">
+
+<div class="line-block">
+<div class="line">More <em>Pythonic</em></div>
+<div class="line">edition of PyEphem</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">mars</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">Mars</span><span class="p">()</span>
+<span class="n">mars</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">mars</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">mars</span><span class="o">.</span><span class="n">dec</span>
+</pre></div>
+
+</div>
+<div class="section" id="id17">
+
+<div class="line-block">
+<div class="line">But, <em>both</em> interfaces</div>
+<div class="line">were still based on C code</div>
+<div class="line">and required <strong>compilation</strong></div>
+</div>
+</div>
+<div class="section" id="id18">
+
+<p><em>Early 2000s</em></p>
+</div>
+<div class="section" id="id19">
+
+<div class="highlight"><pre><span></span><span class="n">Subject</span><span class="p">:</span> <span class="n">PyEphem</span> <span class="n">Win32</span> <span class="n">build</span> <span class="n">errors</span>
+<span class="n">Subject</span><span class="p">:</span> <span class="n">win32</span><span class="p">,</span> <span class="n">does</span> <span class="n">PhEphem</span> <span class="n">work</span> <span class="n">there</span> <span class="n">too</span><span class="err">?</span>
+<span class="n">Subject</span><span class="p">:</span> <span class="n">trying</span> <span class="n">to</span> <span class="n">download</span> <span class="n">but</span> <span class="n">I</span> <span class="n">cant</span> <span class="n">unzip</span> <span class="n">it</span>
+</pre></div>
+
+</div>
+<div class="section" id="id20">
+
+<p><em>Late 2000s</em></p>
+</div>
+<div class="section" id="id21">
+
+<div class="highlight"><pre><span></span><span class="n">Subject</span><span class="p">:</span> <span class="n">pyephem</span> <span class="n">on</span> <span class="n">Mac</span> <span class="n">PPC</span>
+<span class="n">Subject</span><span class="p">:</span> <span class="n">pyEphem</span> <span class="n">won</span><span class="err">’</span><span class="n">t</span> <span class="n">build</span> <span class="n">on</span> <span class="n">Snow</span> <span class="n">Leopard</span>
+<span class="n">Subject</span><span class="p">:</span> <span class="n">PyEphem</span> <span class="err">…</span> <span class="n">Installation</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">opensuse</span>
+<span class="n">Subject</span><span class="p">:</span> <span class="n">PyEphem</span> <span class="n">on</span> <span class="n">Ubuntu</span> <span class="mf">10.10</span>
+<span class="n">Subject</span><span class="p">:</span> <span class="n">Pyephem</span> <span class="n">on</span> <span class="n">a</span> <span class="mi">64</span><span class="o">-</span><span class="n">bit</span> <span class="n">Win</span> <span class="mi">7</span> <span class="n">PC</span><span class="err">?</span>
+</pre></div>
+
+</div>
+<div class="section" id="id22">
+
+<p><strong>Mac</strong></p>
+<div class="line-block">
+<div class="line"><em>Sometimes</em> a problem,</div>
+<div class="line">but now on MacPorts!</div>
+</div>
+<p><strong>Windows</strong></p>
+<div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">bdist_wininst</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><em>mingw</em> — Open, but quirky</div>
+<div class="line"><em>Visual Studio Express</em> — Works!</div>
+</div>
+</div>
+<div class="section" id="c-extensions">
+<h1>C extensions</h1>
+<p>They are difficult to—</p>
+<ul class="simple">
+<li><strong>Install</strong></li>
+<li><strong>Distribute</strong></li>
+<li><strong>Maintain</strong></li>
+</ul>
+</div>
+<div class="section" id="id23">
+
+<div class="line-block">
+<div class="line">I slowly grew open to the idea</div>
+<div class="line">of an alternative approach</div>
+</div>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="an-email">
+<h1>An email</h1>
+<div class="line-block">
+<div class="line">“I’m interested in ephemeris options</div>
+<div class="line">for astrology apps. You probably know</div>
+<div class="line">about the <strong>Swiss Ephemeris.</strong> Do you know</div>
+<div class="line">how it compares in accuracy?”</div>
+</div>
+</div>
+<div class="section" id="libastro">
+<h1>libastro</h1>
+<div class="line-block">
+<div class="line">Predicts planetary</div>
+<div class="line">positions using <strong>VSOP87</strong></div>
+<div class="line"><em>1987</em></div>
+</div>
+</div>
+<div class="section" id="swiss-ephemeris">
+<h1>Swiss Ephemeris</h1>
+<div class="line-block">
+<div class="line">“based upon the DE406,”</div>
+<div class="line">the <strong>JPL Long Ephemeris</strong></div>
+<div class="line"><em>1997</em></div>
+</div>
+</div>
+<div class="section" id="but-wait">
+<h1>But wait!</h1>
+<div class="highlight"><pre><span></span><span class="c1"># ftp://ssd.jpl.nasa.gov/pub/eph/planets/ascii/</span>
+
+<span class="n">Name</span>         <span class="n">Date</span> <span class="n">Modified</span>
+
+<span class="err">⋮</span>
+<span class="n">de405</span><span class="o">/</span>       <span class="mi">10</span><span class="o">/</span><span class="mi">7</span><span class="o">/</span><span class="mo">07</span> <span class="mi">8</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span> <span class="n">PM</span>
+<span class="n">de406</span><span class="o">/</span>       <span class="mi">3</span><span class="o">/</span><span class="mi">22</span><span class="o">/</span><span class="mi">11</span> <span class="mi">8</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span> <span class="n">PM</span>
+<span class="err">⋮</span>
+<span class="n">de421</span><span class="o">/</span>       <span class="mi">2</span><span class="o">/</span><span class="mi">6</span><span class="o">/</span><span class="mi">13</span>  <span class="mi">7</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span> <span class="n">PM</span>
+<span class="n">de422</span><span class="o">/</span>       <span class="mi">8</span><span class="o">/</span><span class="mi">3</span><span class="o">/</span><span class="mi">11</span>  <span class="mi">8</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span> <span class="n">PM</span>
+<span class="n">de423</span><span class="o">/</span>       <span class="mi">3</span><span class="o">/</span><span class="mi">30</span><span class="o">/</span><span class="mi">10</span> <span class="mi">8</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span> <span class="n">PM</span>
+<span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="de421">
+<h1>DE421</h1>
+<div class="line-block">
+<div class="line"><strong>More</strong> recent</div>
+<div class="line"><strong>More</strong> accurate</div>
+</div>
+<div class="line-block">
+<div class="line">“<em>planetary navigation accuracies</em>”</div>
+</div>
+</div>
+<div class="section" id="waitwhat">
+<h1>Wait—what?</h1>
+<div class="line-block">
+<div class="line">DE421 uses the</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>“International Celestial Reference Frame”</strong></div>
+</div>
+</div>
+<div class="section" id="usno-circular-179">
+<h1>USNO Circular 179</h1>
+<div class="line-block">
+<div class="line">George H. Kaplan</div>
+<div class="line"><em>2005</em></div>
+</div>
+</div>
+<div class="section" id="id24">
+
+<div class="line-block">
+<div class="line">“The … resolutions passed by</div>
+<div class="line">the International Astronomical Union</div>
+<div class="line">at its General Assemblies in <em>1997</em> and <em>2000</em></div>
+<div class="line">are the most significant set of international</div>
+<div class="line">agreements in positional astronomy in</div>
+<div class="line">several decades and arguably since</div>
+<div class="line">the <strong>Paris conference of 1896.”</strong></div>
+</div>
+</div>
+<div class="section" id="time-for-a-rewrite">
+<h1>Time for a rewrite!</h1>
+<div class="line-block">
+<div class="line">Not a simple <em>re-implementation</em></div>
+</div>
+<div class="line-block">
+<div class="line">But writing, in Python, a <strong>complete</strong></div>
+<div class="line"><strong>replacement</strong> of the old algorithms</div>
+<div class="line">used throughout PyEphem</div>
+</div>
+</div>
+<div class="section" id="goals">
+<h1>Goals</h1>
+<ul class="simple">
+<li><em>Replace</em> entire API</li>
+<li>Integrate with <strong>scientific Python</strong></li>
+<li>Support <em>vector</em> NumPy computations</li>
+<li>Avoid re-inventing <strong>SciPy</strong> wheels</li>
+</ul>
+</div>
+<div class="section" id="example-sunrise">
+<h1>Example: Sunrise</h1>
+<div class="line-block">
+<div class="line"><strong>PyEphem</strong> — custom <em>hand-written</em></div>
+<div class="line">version of Newton’s Method</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>New approach</strong> — an <em>IPython Notebook</em> that</div>
+<div class="line">finds sunrise with <tt class="docutils literal">scipy.optimize</tt></div>
+</div>
+</div>
+<div class="section" id="skyfield">
+<h1>Skyfield</h1>
+<!-- Notes
+
+Naive users need precision because they don't know their needs.
+And do not understand precision of interpolation vs accuracy of curves
+Users do not understand the idea of error bars versus precision -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="tools">
+<h1>Tools</h1>
+<div class="line-block">
+<div class="line">git</div>
+<div class="line">Jedi</div>
+<div class="line">py.test</div>
+<div class="line">tox</div>
+</div>
+</div>
+<div class="section" id="py-test">
+<h1>py.test</h1>
+<div class="highlight"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">test</span> <span class="o">--</span><span class="n">pyargs</span> <span class="n">skyfield</span> \
+        <span class="o">--</span><span class="n">doctest</span><span class="o">-</span><span class="n">glob</span><span class="o">=</span><span class="s1">&#39;*.rst&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id25">
+<h1>py.test</h1>
+<div class="highlight"><pre><span></span><span class="k">assert</span> <span class="n">c</span><span class="o">.</span><span class="n">cal_date</span><span class="p">(</span><span class="n">jd</span><span class="p">)</span> <span class="o">==</span> <span class="n">timescales</span><span class="o">.</span><span class="n">cal_date</span><span class="p">(</span><span class="n">jd</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="i-distribute-tests">
+<h1>I distribute tests</h1>
+<div class="highlight"><pre><span></span><span class="n">setup</span><span class="p">(</span>
+    <span class="o">...</span>
+    <span class="n">packages</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;skyfield&#39;</span><span class="p">,</span> <span class="s1">&#39;skyfield.tests&#39;</span><span class="p">],</span>
+    <span class="o">...</span>
+    <span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="i-distribute-docs">
+<h1>I distribute docs</h1>
+<div class="highlight"><pre><span></span><span class="n">setup</span><span class="p">(</span>
+    <span class="o">...</span>
+    <span class="n">package_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;skyfield&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;documentation/*.rst&#39;</span><span class="p">]},</span>
+    <span class="o">...</span>
+    <span class="p">)</span>
+</pre></div>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="licensing">
+<h1>Licensing</h1>
+</div>
+<div class="section" id="id26">
+
+<p><strong>GPL</strong> or <strong>MIT?</strong></p>
+</div>
+<div class="section" id="gpl">
+<h1>GPL</h1>
+<div class="highlight"><pre><span></span> <span class="n">Free</span> <span class="n">world</span>          <span class="n">Closed</span> <span class="n">world</span>
+ <span class="err">──────────</span>          <span class="err">────────────</span>
+
+  <span class="n">Awesome</span><span class="err">!</span>           <span class="n">Less</span> <span class="n">awesome</span>
+     <span class="err">↑</span>                    <span class="err">↑</span>
+<span class="n">Your</span> <span class="n">library</span>   <span class="err">→</span> <span class="err">×</span>   <span class="n">Alternative</span><span class="err">?</span>
+                       <span class="n">Rewrite</span><span class="err">?</span>
+</pre></div>
+
+</div>
+<div class="section" id="mit-bsd">
+<h1>MIT/BSD</h1>
+<div class="highlight"><pre><span></span> <span class="n">Free</span> <span class="n">world</span>        <span class="n">Closed</span> <span class="n">world</span>
+ <span class="err">──────────</span>        <span class="err">────────────</span>
+
+  <span class="n">Awesome</span><span class="err">!</span>        <span class="n">Closed</span> <span class="n">awesome</span>
+     <span class="err">↑</span>                  <span class="err">↑</span>
+<span class="n">Your</span> <span class="n">library</span>   <span class="err">→</span>   <span class="n">Your</span> <span class="n">library</span>
+</pre></div>
+
+</div>
+<div class="section" id="id27">
+
+<p>(Look closely — Open Source <em>everywhere!</em>)</p>
+<div class="highlight"><pre><span></span> <span class="n">Free</span> <span class="n">world</span>        <span class="n">Closed</span> <span class="n">world</span>
+ <span class="err">──────────</span>        <span class="err">────────────</span>
+
+  <span class="n">Awesome</span><span class="err">!</span>        <span class="n">Closed</span> <span class="n">awesome</span>
+     <span class="err">↑</span>                  <span class="err">↑</span>
+<span class="n">Your</span> <span class="n">library</span>   <span class="err">→</span>   <span class="n">Your</span> <span class="n">library</span>
+</pre></div>
+
+</div>
+<div class="section" id="id28">
+
+<div class="line-block">
+<div class="line">This is Python’s <strong>own model</strong>,</div>
+<div class="line">and Python is increasingly <em>everywhere</em></div>
+</div>
+</div>
+<div class="section" id="id29">
+<h1>MIT/BSD</h1>
+<div class="line-block">
+<div class="line">The <em>free</em> kind of freedom is what <strong>wins</strong></div>
+</div>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="technique">
+<h1>Technique</h1>
+</div>
+<div class="section" id="id30">
+
+<div class="line-block">
+<div class="line"><em>single code base</em></div>
+<div class="line">that runs on both</div>
+<div class="line"><strong>Python 2</strong> and <strong>Python 3</strong></div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="line-block">
+<div class="line">Release small projects fast</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">jplephem</tt></div>
+<div class="line"><tt class="docutils literal">sgp4</tt></div>
+</div>
+</div>
+<div class="section" id="id32">
+
+<div class="line-block">
+<div class="line">Carefully monitor my <strong>emotions</strong></div>
+</div>
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line"><strong>Emotions</strong> tell me whether</div>
+<div class="line">I am <em>programming right</em></div>
+</div>
+</div>
+<div class="section" id="id34">
+
+<ul class="simple">
+<li><em>Frustration?</em></li>
+<li><em>Clenching teeth?</em></li>
+<li><em>Trapped?</em></li>
+</ul>
+</div>
+<div class="section" id="id35">
+
+<p>Then I might be <strong>doing it wrong</strong></p>
+</div>
+<div class="section" id="id36">
+
+<div class="line-block">
+<div class="line"><em>Frustration</em> often signals</div>
+<div class="line">inadequate <strong>project structure</strong></div>
+</div>
+</div>
+<div class="section" id="id37">
+
+<div class="line-block">
+<div class="line">I notice that <strong>tiny goals</strong></div>
+<div class="line">are easier to reach and</div>
+<div class="line">keep me <em>calm</em></div>
+</div>
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line">“Test-driven development is a way of</div>
+<div class="line"><strong>managing fear</strong> during programming.”</div>
+</div>
+<div class="line-block">
+<div class="line">— Kent Beck,</div>
+<div class="line"><em>Test Driven Development By Example</em></div>
+</div>
+</div>
+<div class="section" id="version-control">
+<h1>Version Control</h1>
+<div class="line-block">
+<div class="line">“How <em>soon</em> can I commit</div>
+<div class="line">so that I can’t <strong>lose</strong> what</div>
+<div class="line">I’ve just typed?”</div>
+</div>
+</div>
+<div class="section" id="id39">
+
+<p><strong>Young</strong></p>
+<div class="line-block">
+<div class="line">“How can I split this task into</div>
+<div class="line">smaller pieces <em>for the computer?”</em></div>
+</div>
+<p><strong>Old</strong></p>
+<div class="line-block">
+<div class="line">“How can I split this task into</div>
+<div class="line">smaller pieces <em>for me?”</em></div>
+</div>
+</div>
+<div class="section" id="id40">
+
+<p><strong>Big slog:</strong> <em>risks everything!</em></p>
+<p>here →→→→→ new feature</p>
+<p>here → • → • → • → • → new feature</p>
+<p><strong>Incremental:</strong> <em>cheap to revert</em></p>
+<!-- Subtleties: an example
+- - - - - - - - - - - - - - - - - - - - - -
+
+| From Allison Kaptur, who
+| helps run the **Hacker School**
+
+::
+
+   half = len(word) // 2
+   word[:half] == "".join(reversed(word[-half:]))
+
+   word[:len(word)//2] == \
+       "".join(reversed(word[-len(word)//2:])) -->
+</div>
+<div class="section" id="id41">
+
+<div class="line-block">
+<div class="line">Always use <tt class="docutils literal">git</tt> <tt class="docutils literal">stash</tt></div>
+<div class="line">to <em>revert</em> and try again</div>
+</div>
+</div>
+<div class="section" id="id42">
+
+<div class="line-block">
+<div class="line">Aim for a <strong>Moon Shot</strong></div>
+</div>
+<div class="line-block">
+<div class="line">Write up an <em>end-to-end example</em></div>
+<div class="line">then move <strong>straight there</strong></div>
+</div>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="the-sins-of-my-apis">
+<h1>The sins of my APIs</h1>
+</div>
+<div class="section" id="sin-inscrutable-names">
+<h1>Sin: Inscrutable names</h1>
+<p>“Explicit is better than implicit”</p>
+<div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="s1">&#39;2012/11/9&#39;</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">mars</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">a_ra</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">a_dec</span><span class="p">)</span>
+
+<span class="c1"># Skyfield, instead:</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">JulianDate</span><span class="p">(</span><span class="s1">&#39;2012/11/9&#39;</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">earth</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">astrometric</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">dec</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="sin-storing-results-on-object">
+<h1>Sin: storing results on object</h1>
+<div class="highlight"><pre><span></span><span class="n">mars</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">Mars</span><span class="p">()</span>
+<span class="n">mars</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s1">&#39;2012/11/9&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">dec</span><span class="p">)</span>
+
+
+<span class="c1"># Mars</span>
+<span class="c1">#   .name</span>
+<span class="c1">#   .date</span>
+<span class="c1">#   .compute() →↘</span>
+<span class="c1">#   .ra  ↖       ↓</span>
+<span class="c1">#   .dec ←←←←←←←↙</span>
+<span class="c1">#   ⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id43">
+
+<div class="highlight"><pre><span></span><span class="c1"># PyEphem:</span>
+
+<span class="n">positions</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">:</span>
+    <span class="n">mars</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">positions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">mars</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">mars</span><span class="o">.</span><span class="n">dec</span><span class="p">))</span>
+
+<span class="c1"># Skyfield:</span>
+
+<span class="n">coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">mars</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">astrometric</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">]</span>
+<span class="n">positions</span> <span class="o">=</span> <span class="p">[(</span><span class="n">c</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">dec</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coords</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id44">
+
+<p>Look familiar?</p>
+</div>
+<div class="section" id="id45">
+
+<div class="highlight"><pre><span></span><span class="n">letters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">message_string</span><span class="p">))</span>
+<span class="n">letters</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="k">print</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">letters</span><span class="p">)</span>
+
+<span class="c1"># vs</span>
+
+<span class="k">print</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">message_string</span><span class="p">)))</span>
+</pre></div>
+
+</div>
+<div class="section" id="id46">
+
+<div class="highlight"><pre><span></span><span class="n">outputs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Making code more <strong>functional</strong></div>
+<div class="line">is a big part of <em>Pythonic</em></div>
+</div>
+</div>
+<div class="section" id="sin-concealing-expense">
+<h1>Sin: Concealing expense</h1>
+<div class="line-block">
+<div class="line">Your API is the <strong>only lifeline</strong></div>
+<div class="line">the programmer has to managing</div>
+<div class="line"><em>complexity</em> and <em>expense!</em></div>
+</div>
+</div>
+<div class="section" id="id47">
+
+<div class="highlight"><pre><span></span><span class="c1"># PyEphem</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">mars</span><span class="p">(</span><span class="s1">&#39;2012/11/9&#39;</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>        <span class="c1"># zero work</span>
+<span class="k">print</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">dec</span><span class="p">)</span>   <span class="c1"># computed</span>
+<span class="k">print</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">rise_time</span><span class="p">)</span>   <span class="c1"># expensive!</span>
+</pre></div>
+
+</div>
+<div class="section" id="guideline">
+<h1>Guideline</h1>
+<div class="line-block">
+<div class="line">It’s okay to hide <em>quick</em></div>
+<div class="line"><em>conveniences</em> behind <strong>properties</strong></div>
+</div>
+<div class="line-block">
+<div class="line">But expensive operations</div>
+<div class="line">should <em>always</em> look like <strong>calls!</strong></div>
+</div>
+</div>
+<div class="section" id="id48">
+
+<div class="highlight"><pre><span></span><span class="n">mars</span><span class="o">.</span><span class="n">name</span>        <span class="c1"># looks cheap</span>
+<span class="n">mars</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>  <span class="c1"># looks expensive!</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><em>Use this difference</em> to</div>
+<div class="line"><strong>train your customers!</strong></div>
+</div>
+</div>
+<div class="section" id="id49">
+
+<div class="highlight"><pre><span></span><span class="c1"># “I can use this over and over again!”</span>
+
+<span class="n">mars</span><span class="o">.</span><span class="n">name</span>
+
+<span class="c1"># “Looks expensive; I’ll save the</span>
+<span class="c1">#  result to a local name instead.”</span>
+
+<span class="n">mars</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id50">
+
+<p><em>The big lesson?</em></p>
+</div>
+<div class="section" id="id51">
+
+<p>Write APIs that <strong>TEACH</strong>!</p>
+</div>
+<div class="section" id="write-apis-that-teach">
+<h1>Write APIs that teach</h1>
+<div class="line-block">
+<div class="line"><strong>You</strong> know how <strong>your</strong> API works</div>
+<div class="line">and how it can best be used</div>
+</div>
+</div>
+<div class="section" id="id52">
+
+<div class="line-block">
+<div class="line"><em>Share as much of that</em></div>
+<div class="line"><em>knowledge as possible</em></div>
+</div>
+</div>
+<div class="section" id="id53">
+<h1>Write APIs that teach</h1>
+<div class="line-block">
+<div class="line">While an API should <strong>hide complexity</strong></div>
+<div class="line">it should also <em>suggest best practices</em></div>
+</div>
+</div>
+<div class="section" id="id54">
+<h1>Write APIs that teach</h1>
+<div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>  <span class="c1"># bad</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>     <span class="c1"># good</span>
+</pre></div>
+
+</div>
+<div class="section" id="why">
+<h1>Why?</h1>
+<div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">The <strong>very first</strong> line of <tt class="docutils literal">requests</tt> code</div>
+<div class="line">teaches users their <strong>first HTTP verb</strong> —</div>
+<div class="line"><em>without their even knowing it</em></div>
+</div>
+<!-- slide
+- - - - -
+
+| API users are often **in the**
+| **dark** about the invisible world —
+| all the hidden state — that lies
+| *abstracted away* behind it
+
+slide
+- - - - -
+
+| Your API
+
+| Write APIs that teach
+
+| Use **every trick we’ve got**
+| to reveal the *relevant details*
+| of your library’s supported operations -->
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line"><strong>PyEphem</strong> made every coordinate</div>
+<div class="line">an attribute — looking <em>exactly the same</em></div>
+<div class="line">with no visible relationship!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">mars</span><span class="o">.</span><span class="n">a_ra</span><span class="p">,</span> <span class="n">mars</span><span class="o">.</span><span class="n">a_dec</span>  <span class="c1"># astrometric</span>
+<span class="n">mars</span><span class="o">.</span><span class="n">g_ra</span><span class="p">,</span> <span class="n">mars</span><span class="o">.</span><span class="n">g_dec</span>  <span class="c1"># apparent geocentric</span>
+<span class="n">mars</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">mars</span><span class="o">.</span><span class="n">dec</span>      <span class="c1"># apparent topocentric</span>
+<span class="n">mars</span><span class="o">.</span><span class="n">alt</span><span class="p">,</span> <span class="n">mars</span><span class="o">.</span><span class="n">az</span>      <span class="c1"># apparent horizontal</span>
+</pre></div>
+
+<!-- alt az does deflection but no indication in args or call name -->
+</div>
+<div class="section" id="id56">
+
+<!-- People who would reverse ra/dec pair and be confused at mismatch
+TODO should a weather or atmosphere object be in charge of
+refracting? -->
+<div class="line-block">
+<div class="line"><strong>Skyfield</strong> has you to <em>build</em> a</div>
+<div class="line">result from smaller operations</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">here</span> <span class="o">=</span> <span class="n">toronto</span><span class="p">(</span><span class="n">jd</span><span class="p">)</span>
+<span class="n">here</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">astrometric</span><span class="p">()</span>
+<span class="n">here</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">equatorial</span><span class="p">()</span>
+<span class="n">here</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">horizontal</span><span class="p">()</span>
+</pre></div>
+
+<!-- Choose a method of composition and stick to it. Which way?
+  h = ggr(t).observe(planet).apparent().horizontal()
+  h = planet.observe_from(ggr(t)).apparent().horizontal()
+  h = ggr(t).observe(planet).apparent().horizontal() -->
+</div>
+<div class="section" id="sin-confusing-functions-and-methods">
+<h1>Sin: Confusing functions and methods</h1>
+<div class="line-block">
+<div class="line">Python support <em>both</em> procedural</div>
+<div class="line">and object-based methods, but</div>
+<div class="line">choosing can be <strong>difficult</strong></div>
+</div>
+</div>
+<div class="section" id="pyephem">
+<h1>PyEphem</h1>
+<div class="highlight"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">Mars</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">constellation</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">dec</span><span class="p">))</span>
+
+<span class="c1"># This function can ONLY EVER be passed</span>
+<span class="c1"># a right ascension and declination; why</span>
+<span class="c1"># not make it a coordinate method?</span>
+</pre></div>
+
+</div>
+<div class="section" id="id57">
+
+<div class="line-block">
+<div class="line">So here are some <em>guidelines</em></div>
+<div class="line">that I have been using lately</div>
+</div>
+</div>
+<div class="section" id="id58">
+
+<ol class="arabic">
+<li><div class="first line-block">
+<div class="line">Methods constitute Python’s</div>
+<div class="line"><strong>built-in</strong> <strong>typecheck</strong> — the one clean</div>
+<div class="line">way to <em>limit the types</em> that a function</div>
+<div class="line">will accept as an argument</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="id59">
+
+<div class="line-block">
+<div class="line">If you are tempted to start a function</div>
+<div class="line">with <tt class="docutils literal">if</tt> <tt class="docutils literal"><span class="pre">isinstance(…)</span></tt> then you</div>
+<div class="line">might want a method instead!</div>
+</div>
+</div>
+<div class="section" id="id60">
+
+<ol class="arabic" start="2">
+<li><div class="first line-block">
+<div class="line"><tt class="docutils literal">f(x)</tt> should by definition touch</div>
+<div class="line"><em>only public features</em> of an <tt class="docutils literal">x</tt></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="id61">
+
+<div class="line-block">
+<div class="line">If <tt class="docutils literal">f(x)</tt> needs internal details,</div>
+<div class="line">then <em>either</em> make it a method itself,</div>
+<div class="line"><em>or</em> create a method that does the</div>
+<div class="line">internal manipulation for it</div>
+</div>
+</div>
+<div class="section" id="id62">
+
+<ol class="arabic" start="3">
+<li><div class="first line-block">
+<div class="line"><tt class="docutils literal">f(x)</tt> should by definition not</div>
+<div class="line"><em>mutate the state</em> of <tt class="docutils literal">x</tt></div>
+</div>
+</li>
+</ol>
+<div class="line-block">
+<div class="line">(If you need to mutate state from</div>
+<div class="line">outside, try the <strong>Adapter Pattern</strong>!)</div>
+</div>
+</div>
+<div class="section" id="id63">
+<h1>PyEphem</h1>
+<div class="highlight"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">Mars</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">m</span><span class="o">.</span><span class="n">ra</span>       <span class="c1"># prints one thing</span>
+
+<span class="n">toronto</span><span class="o">.</span><span class="n">next_rising</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">m</span><span class="o">.</span><span class="n">ra</span>       <span class="c1"># something different!</span>
+</pre></div>
+
+</div>
+<div class="section" id="id64">
+
+<ol class="arabic" start="4">
+<li><div class="first line-block">
+<div class="line">Methods are <em>discoverable</em></div>
+</div>
+</li>
+</ol>
+<p><strong>(Jedi!)</strong></p>
+<!-- Methods answer "what should I do with this?"
+So only GCRS coordinate has .horizontal() -->
+<!-- ADD SOMEWHERE:
+users do not expect it to use UTC -->
+</div>
+<div class="section" id="skyfield-new-tricks">
+<h1>Skyfield: New tricks</h1>
+</div>
+<div class="section" id="id65">
+
+<div class="line-block">
+<div class="line">What about when you <em>do</em> need</div>
+<div class="line">to dynamically compute</div>
+<div class="line">an <strong>attribute?</strong></div>
+</div>
+</div>
+<div class="section" id="id66">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Sample</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">loud</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id67">
+
+<p>Problem: <strong>hidden expense</strong></p>
+<p><em>So, we cache</em></p>
+</div>
+<div class="section" id="id68">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Sample</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="n">_loud</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">loud</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_loud</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loud</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loud</span>
+</pre></div>
+
+</div>
+<div class="section" id="id69">
+
+<div class="line-block">
+<div class="line">Problem: makes <strong>every</strong></div>
+<div class="line"><strong>access</strong> more expensive</div>
+</div>
+</div>
+<div class="section" id="solution-dunder-getattr">
+<h1>Solution: dunder-getattr!</h1>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Sample</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;loud&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loud</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">loud</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id70">
+<h1>Solution: dunder-getattr</h1>
+<div class="line-block">
+<div class="line">For a value <em>frequently</em></div>
+<div class="line">accessed in heavy numeric</div>
+<div class="line">work, <tt class="docutils literal">__getattr__()</tt> runs</div>
+<div class="line">only on the <em>first</em> lookup!</div>
+</div>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="trick-scalar-style">
+<h1>Trick: scalar style</h1>
+<div class="line-block">
+<div class="line"><strong>NumPy</strong> initially excited me</div>
+<div class="line">by letting me write <em>scalar</em> code</div>
+<div class="line">that also works on arrays!</div>
+</div>
+</div>
+<div class="section" id="id71">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="c1"># =&gt; 5</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">60</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">80</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="c1"># =&gt; array([5, 10, 100])</span>
+</pre></div>
+
+</div>
+<div class="section" id="id72">
+
+<div class="highlight"><pre><span></span><span class="c1"># Number!</span>
+
+<span class="n">jd</span> <span class="o">=</span> <span class="n">today</span><span class="p">()</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">earth</span><span class="p">(</span><span class="n">jd</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">planet</span><span class="p">)</span>
+
+<span class="c1"># Vector!</span>
+
+<span class="n">jd</span> <span class="o">=</span> <span class="n">date_range</span><span class="p">(</span><span class="s1">&#39;1980/1/1&#39;</span><span class="p">,</span> <span class="s1">&#39;2010/1/1&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">earth</span><span class="p">(</span><span class="n">jd</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">planet</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id73">
+
+<div class="line-block">
+<div class="line">But scalar style is <strong>hard</strong> to</div>
+<div class="line">maintain across a large code base!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="n">compute_nutation</span><span class="p">(</span><span class="n">jd</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">compute_precession</span><span class="p">(</span><span class="n">jd</span><span class="o">.</span><span class="n">tdb</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">J2000_to_ICRS</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;jin,kjn-&gt;ikn&#39;</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ijn,jk-&gt;ikn&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+<span class="n">pos</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;in,ijn-&gt;jn&#39;</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+<span class="n">vel</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;in,ijn-&gt;jn&#39;</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="one-last-hint">
+<h1>One last hint</h1>
+<p><strong>Vi Hart</strong> says τ = 2𝜋</p>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- TODO: mention that PyEphem *did*, to expose C library abilities -->
+</div>
+<div class="section" id="q">
+<h1>Q:</h1>
+<p>Should <em>dunder-init</em> import things?</p>
+<div class="highlight"><pre><span></span><span class="c1"># __init__.py</span>
+
+<span class="kn">from</span> <span class="nn">.earthlib</span> <span class="kn">import</span> <span class="n">Topos</span>
+<span class="kn">from</span> <span class="nn">.planets</span> <span class="kn">import</span> <span class="n">Jupiter</span>
+</pre></div>
+
+<p>to allow</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">Topos</span><span class="p">,</span> <span class="n">Jupiter</span>
+</pre></div>
+
+</div>
+<div class="section" id="pro">
+<h1>Pro</h1>
+<div class="line-block">
+<div class="line">Simple way to <strong>surface</strong></div>
+<div class="line">your <em>primary interface</em></div>
+</div>
+</div>
+<div class="section" id="cons">
+<h1>Cons</h1>
+<div class="line-block">
+<div class="line">Innocent <tt class="docutils literal">import</tt> <tt class="docutils literal">skyfield</tt></div>
+<div class="line">winds up importing <em>everything</em></div>
+</div>
+</div>
+<div class="section" id="id74">
+<h1>Cons</h1>
+<div class="line-block">
+<div class="line"><em>Imports</em> do not match <strong>messages</strong></div>
+</div>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">Topos</span>
+<span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">Topos</span><span class="p">)</span>
+
+<span class="c1"># =&gt; &lt;class &#39;skyfield.coordinates.Topos&#39;&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="skyfield-decided-against">
+<h1>Skyfield: decided <em>against</em></h1>
+<ul class="simple">
+<li>Not a <em>one-trick-pony</em> library</li>
+<li><em>Teach</em> package structure</li>
+<li>Can always <tt class="docutils literal">skyfield.api</tt></li>
+</ul>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="opinionated-defaults">
+<h1>Opinionated defaults</h1>
+</div>
+<div class="section" id="id75">
+
+<div class="line-block">
+<div class="line">Should Skyfield include</div>
+<div class="line">an ephemeris by default?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">setup</span><span class="p">(</span>
+    <span class="err">⋮</span>
+    <span class="n">install_requires</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;de421&#39;</span><span class="p">],</span>
+    <span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="avoid-contrived-tests">
+<h1>Avoid Contrived tests</h1>
+</div>
+<div class="section" id="id76">
+
+<div class="line-block">
+<div class="line">How do you test both</div>
+<div class="line">branches of the <tt class="docutils literal">if</tt>?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+            <span class="err">⋮</span>
+    <span class="c1"># 20 lines of code</span>
+            <span class="err">⋮</span>
+    <span class="k">if</span> <span class="n">final_decision</span><span class="p">():</span>
+        <span class="n">action1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">action2</span>
+</pre></div>
+
+</div>
+<div class="section" id="id77">
+
+<div class="line-block">
+<div class="line"><strong>Do not</strong> contrive complex calls</div>
+<div class="line">to <tt class="docutils literal">f()</tt> that exercise both branches</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Instead</em> factor the function</div>
+<div class="line">into smaller pieces that can be</div>
+<div class="line">exercised <strong>separately</strong></div>
+</div>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="final-trick">
+<h1>Final trick</h1>
+<div class="line-block">
+<div class="line">Choosing a <strong>support forum</strong></div>
+</div>
+</div>
+<div class="section" id="mailing-list-web-forum">
+<h1>Mailing list? Web forum?</h1>
+<div class="line-block">
+<div class="line">What happens <em>4 years later</em> when</div>
+<div class="line">someone has the <strong>same question?</strong></div>
+</div>
+</div>
+<div class="section" id="id78">
+
+<div class="line-block">
+<div class="line"><em>Answer</em> can be <strong>difficult to find</strong></div>
+<div class="line">within a long discussion thread</div>
+</div>
+</div>
+<div class="section" id="id79">
+
+<p>Answers go <strong>out of date</strong></p>
+</div>
+<div class="section" id="stack-overflow">
+<h1>Stack Overflow!</h1>
+<ul class="simple">
+<li>Answer lives on <strong>same page</strong></li>
+<li>Out-of-date answers <em>get fixed</em></li>
+</ul>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="the-last-mile">
+<h1>The last mile</h1>
+</div>
+<div class="section" id="id80">
+<h1>The last mile</h1>
+<p>Lesson #1</p>
+</div>
+<div class="section" id="id81">
+
+<p>New GitHub issue</p>
+</div>
+<div class="section" id="id82">
+
+<div class="line-block">
+<div class="line">“PyEphem <em>works</em> from ssh but it</div>
+<div class="line"><strong>does not work</strong> from the web”</div>
+</div>
+</div>
+<div class="section" id="id83">
+
+<p><strong>I was unhappy</strong></p>
+<ul class="simple">
+<li>Hurts project reputation</li>
+<li>Issue says <em>“you are wrong”</em></li>
+</ul>
+</div>
+<div class="section" id="id84">
+
+<img alt="never-arrived.png" src="never-arrived.png" style="width: 800px;" />
+</div>
+<div class="section" id="id85">
+
+<p>“Can you help me?”</p>
+</div>
+<div class="section" id="id86">
+
+</div>
+<div class="section" id="id87">
+
+<div class="line-block">
+<div class="line">“This question is <strong>not a good</strong></div>
+<div class="line"><strong>fit</strong> to our Q&amp;A format”</div>
+</div>
+</div>
+<div class="section" id="id88">
+
+<p>“Can you help me?”</p>
+</div>
+<div class="section" id="id89">
+
+<p><em>yes</em></p>
+</div>
+<div class="section" id="id90">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="nb">open</span><span class="p">(</span>
+    <span class="s1">&#39;/tmp/emergency.log&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span>
+  <span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+    <span class="nb">str</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+  <span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id91">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+    <span class="s1">&#39;/home/astronomia/.local/lib64&#39;</span>
+    <span class="s1">&#39;/python2.6/site-packages&#39;</span>
+    <span class="p">)</span>
+</pre></div>
+
+<p>It worked</p>
+</div>
+<div class="section" id="id92">
+
+<div class="line-block">
+<div class="line">“FYI the <strong>support solution</strong> is to keep</div>
+<div class="line">that emergency code in <em>every script</em>”</div>
+</div>
+</div>
+<div class="section" id="id93">
+
+<img alt="astronomia.png" src="astronomia.png" style="width: 960px;" />
+</div>
+<div class="section" id="id94">
+
+<div class="line-block">
+<div class="line">“Brandon, <em>thanks a lot</em> for your help.</div>
+<div class="line"><strong>PyEphem</strong> is great.”</div>
+</div>
+</div>
+<div class="section" id="id95">
+<h1>The last mile</h1>
+<p>Lesson #2</p>
+</div>
+<div class="section" id="id96">
+
+<p><em>October 2012</em> — I put NOVAS on PyPI</p>
+<div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">novas</span>
+</pre></div>
+
+</div>
+<div class="section" id="id97">
+<h1>An email</h1>
+<div class="line-block">
+<div class="line">“I have been fiddling around</div>
+<div class="line">with NOVAS_Py-3.1 and have</div>
+<div class="line">had some <strong>problems…”</strong></div>
+</div>
+<p><em>(a list of bugs followed)</em></p>
+</div>
+<div class="section" id="the-temptation">
+<h1>The temptation</h1>
+<p><strong>Not my library — not my problem</strong></p>
+<div class="line-block">
+<div class="line">Provide the <em>email address</em> of USNO?</div>
+<div class="line"><em>Forward</em> it to them myself?</div>
+</div>
+</div>
+<div class="section" id="id98">
+
+</div>
+<div class="section" id="id99">
+
+<div class="highlight"><pre><span></span><span class="n">Assistant</span> <span class="n">Director</span> <span class="k">for</span><span class="err"> </span><span class="n">Exploration</span>
+
+          <span class="o">...</span><span class="nd">@nasa.gov</span>
+</pre></div>
+
+</div>
+<div class="section" id="id100">
+
+<p><strong>USNO</strong> → <em>me</em> → <strong>NASA</strong></p>
+</div>
+<div class="section" id="id101">
+<h1>The last mile</h1>
+</div>
+<div class="section" id="id102">
+<h1>The last mile</h1>
+<div class="line-block">
+<div class="line">In open source, the</div>
+<div class="line"><strong>final component of the API</strong></div>
+<div class="line">is very often <em>you!</em></div>
+</div>
+<div class="line-block">
+<div class="line"><em>You</em> are the the API of <strong>last resort</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="id103">
+<h1>The last mile</h1>
+<div class="line-block">
+<div class="line">In open source, the</div>
+<div class="line"><strong>final component of the API</strong></div>
+<div class="line">is very often <em>you!</em></div>
+</div>
+<div class="line-block">
+<div class="line"><em>You</em> are the the API of <strong>last resort</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>&#64;brandon_rhodes</strong></div>
+<div class="line"><em>Thank you very much!</em></div>
+</div>
+<!-- Sprint
+
+calls to scipy optimizers
+  Sunrise, sunset
+  New moon, full moon
+  Eclipses
+  Equinoxes ("northward" and "southward"?)
+new astronomy
+   moons of Jupiter, Saturn, Mars, etcetera.
+   comets and asteroids
+   auto-download of comet and asteroid data?
+     default of overwrite=False.
+code and cleanup
+  constants module
+  can angles return a list of strings when an array angle is .dms()'d?
+  planets module that has .mars, .jupiter attributes; clean up Planet mess?
+table driven routines
+  Delta-T
+  leap seconds?
+    and then: add TAI and UTC conversions to the Time class
+style: are there numpy experts?
+  Is my math code idiomatic or quirky?
+  Should angles be kept in radians, or what? Or done like JulianDates?
+testing
+  use py.test fixtures to turn loops into parameterized tests
+  turn self.delta in tests into real measurements using real units.
+  we need tests that handle both use_earth True and False.
+    Similarly for other variables.
+  tests of nutationlib that manage to hit/be sensitive to every datum?
+documentation
+  writing up SkyField solutions to PyEphem questions on Stack Overflow
+  section on accuracy of each algorithm involved
+  logo?
+performance
+  Is all this vectorization worth it?
+    Run a loop to compute N planet positions.
+    Do the same computation using a vector of N jd's.
+    Compare the runtimes under both C Python and PyPy.
+    Might have to do numpypy thing; do it in skyfield/__init__.py.
+    If they both show a difference, then YES it is worth it.
+    Could Star() become a whole catalog of stars processed in parallel?
+  need benchmarks!
+  What routines are taking the most time when the tests are run?
+  Try to take advantage of jplephem's ability to use bundles
+
+Whether SGP4 passes the original library's test suite. [huh?] -->
+<!-- Who uses PyEphem
+
+Hróbjartur Þorsteinsson:
+  Weather satellite work at the Icelandic Met. Office. -->
+<!-- single quote: ’
+double quotes: x“”x
+em-dash: —
+vertical ellipsis: ⋮
+arrows: ←, ↑, →, ↓, ↔, ↕, ↖, ↗, ↘, ↙ -->
+<script>
+  window.slide_transition_time = 200;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script>
+<style type="text/css">
+  prex { background: none; box-shadow: none; font-size: 22px; }
+  ol, ul { margin: 0; }
+  pre {
+    margin: 0;
+    box-shadow: 0 0 0.5em #6fafe1;
+    background-color: #f9fdff
+  }
+</style></div>
+</div>
+</body>
+</html>

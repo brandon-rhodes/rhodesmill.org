@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>&lt;stdin&gt;</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<style>
+  body.presentation-mode .section {
+   width: 960px;
+   height: 540px;
+   font-size: 36px;
+  }
+  body.presentation-mode pre {
+   font-size: 28px;
+   background: none;
+   box-shadow: none;
+  }
+  body.presentation-mode tt {
+   font-size: 28px;
+  }
+  .big {font-size: 2em;}
+  .timer {font-size: 2.0em;}
+  .strike {text-decoration: line-through;}
+  .line-block {margin: 0;}
+ </style><div class="section" id="slide">
+
+<div class="line-block">
+<div class="line">—</div>
+<div class="line"><em>When Python Practices Go Wrong</em></div>
+<div class="line">—</div>
+<div class="line"><br /></div>
+<div class="line">code::dive • Wrocław</div>
+<div class="line">2019 November 20</div>
+<div class="line">Brandon Rhodes</div>
+</div>
+</div>
+<div class="section" id="id1">
+
+<div class="line-block">
+<div class="line">Not <em>Python</em>, but Python <strong>practices</strong></div>
+</div>
+</div>
+<div class="section" id="id2">
+
+<ul class="simple">
+<li>The Uses of eval()</li>
+<li>Object Model</li>
+<li>Mutability</li>
+<li>Object Orientation</li>
+</ul>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="id3">
+
+<div class="line-block">
+<div class="line"><em>First Topic</em></div>
+</div>
+<div class="line-block">
+<div class="line">Compiling new code at runtime</div>
+</div>
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">exec</tt> statement</div>
+<div class="line"><tt class="docutils literal">eval()</tt> function</div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="s1">&#39;abc&#39;</span>
+<span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;4 + len(a)&#39;</span>
+
+<span class="nb">eval</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<span class="c1"># string → tokens → AST → bytecode → run</span>
+
+<span class="err">→</span> <span class="mi">7</span>
+</pre></div>
+
+</div>
+<div class="section" id="id6">
+
+<div class="line-block">
+<div class="line">Some beginners use <tt class="docutils literal">eval()</tt></div>
+<div class="line">for any dynamic operation</div>
+</div>
+</div>
+<div class="section" id="id7">
+
+<div class="highlight"><pre><span></span><span class="c1"># “I need to get an attribute whose</span>
+<span class="c1"># name I don’t know until runtime—”</span>
+
+<span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;my_object.&#39;</span> <span class="o">+</span> <span class="n">attribute_name</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id8">
+
+<div class="line-block">
+<div class="line">Many early languages were called “dynamic”</div>
+<div class="line">merely because they offered <tt class="docutils literal">eval()</tt></div>
+</div>
+</div>
+<div class="section" id="id9">
+
+<div class="line-block">
+<div class="line">Python is “dynamic” because</div>
+<div class="line">it offers introspection and data-driven</div>
+<div class="line">object operations <em>without</em> making</div>
+<div class="line">you build strings for <tt class="docutils literal">eval()</tt></div>
+</div>
+</div>
+<div class="section" id="id10">
+
+<div class="highlight"><pre><span></span><span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;my_object.&#39;</span> <span class="o">+</span> <span class="n">attribute_name</span><span class="p">)</span>
+                 <span class="err">↓</span>
+<span class="nb">getattr</span><span class="p">(</span><span class="n">my_object</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id11">
+
+<div class="line-block">
+<div class="line">So we steer new programmers away from <tt class="docutils literal">eval()</tt></div>
+</div>
+<div class="line-block">
+<div class="line">A better mechanism is almost always available</div>
+</div>
+</div>
+<div class="section" id="id12">
+
+<div class="line-block">
+<div class="line">But <tt class="docutils literal">eval()</tt> wound up having</div>
+<div class="line">a great future — just not where</div>
+<div class="line">we first expected it!</div>
+</div>
+</div>
+<div class="section" id="id13">
+
+<div class="line-block">
+<div class="line">Interesting example in Standard Library</div>
+</div>
+</div>
+<div class="section" id="id14">
+
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="n">Point</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Point&#39;</span><span class="p">,</span> <span class="s1">&#39;x y z&#39;</span><span class="p">)</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+
+<span class="err">→</span> <span class="mf">5.0</span>
+</pre></div>
+
+</div>
+<div class="section" id="id15">
+
+<div class="highlight"><pre><span></span><span class="c1"># How is the new class constructed?</span>
+<span class="c1"># It uses exec!</span>
+
+<span class="n">_class_template</span> <span class="o">=</span> <span class="s1">&#39;class {typename}...&#39;</span>
+
+                <span class="err">⋮</span>
+
+<span class="k">exec</span> <span class="n">_class_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id16">
+
+<div class="line-block">
+<div class="line">A contributor once offered an alternative that</div>
+<div class="line">builds the <tt class="docutils literal">namedtuple</tt> class without <tt class="docutils literal">exec</tt></div>
+</div>
+</div>
+<div class="section" id="id17">
+
+<div class="line-block">
+<div class="line">The core developers turned it down!</div>
+<div class="line"><br /></div>
+<div class="line">• Running the string is <em>faster!</em></div>
+<div class="line">• Easier to get <strong>correct</strong></div>
+</div>
+</div>
+<div class="section" id="id18">
+
+<div class="line-block">
+<div class="line">So, templating types was</div>
+<div class="line">judged to be a legitimate use</div>
+</div>
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line">doctests</div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="line-block">
+<div class="line">Documentation often</div>
+<div class="line">includes sample code</div>
+</div>
+</div>
+<div class="section" id="id21">
+
+<div class="highlight"><pre><span></span><span class="err">┌────────────┐</span>
+<span class="err">│</span> <span class="n">README</span><span class="o">.</span><span class="n">txt</span> <span class="err">│</span>
+<span class="err">├────────────┴───────────────────┐</span>
+<span class="err">│</span><span class="n">Adding</span> <span class="n">a</span> <span class="nb">float</span> <span class="ow">and</span> <span class="nb">int</span> <span class="n">together</span> <span class="err">│</span>
+<span class="err">│</span><span class="n">produces</span> <span class="n">a</span> <span class="nb">float</span> <span class="k">as</span> <span class="n">output</span><span class="o">.</span>     <span class="err">│</span>
+<span class="err">│</span>                                <span class="err">│</span>
+<span class="err">│</span><span class="o">&gt;&gt;&gt;</span> <span class="mf">15.0</span> <span class="o">+</span> <span class="mi">1</span>                    <span class="err">│</span>
+<span class="err">│</span><span class="mf">16.0</span>                            <span class="err">│</span>
+<span class="err">│</span>                                <span class="err">│</span>
+<span class="err">│</span><span class="n">This</span> <span class="ow">is</span> <span class="n">also</span> <span class="n">true</span> <span class="k">for</span> <span class="n">multiply</span><span class="o">.</span><span class="err">”│</span>
+<span class="err">└────────────────────────────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id22">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">count_letters</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a dictionary of letter counts.</span>
+
+<span class="sd">    &gt;&gt;&gt; count_letters(&#39;abba&#39;)</span>
+<span class="sd">    {&#39;a&#39;: 2, &#39;b&#39;: 2}</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">letter</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">counts</span><span class="p">[</span><span class="n">letter</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">counts</span>
+</pre></div>
+
+</div>
+<div class="section" id="id23">
+
+<div class="line-block">
+<div class="line">What if we could <em>execute</em></div>
+<div class="line">the code inside documentation?</div>
+</div>
+</div>
+<div class="section" id="id24">
+
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&gt;&gt;&gt; &#39;</span><span class="p">):</span>
+       <span class="n">expr</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+       <span class="n">expected</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+       <span class="n">result</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">scope</span><span class="p">))</span>
+       <span class="k">if</span> <span class="n">expected</span> <span class="o">!=</span> <span class="n">result</span><span class="p">:</span>
+          <span class="k">raise</span> <span class="ne">Exception</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id25">
+
+<div class="line-block">
+<div class="line">Standard Library <tt class="docutils literal">doctests</tt> module</div>
+</div>
+</div>
+<div class="section" id="id26">
+
+<div class="line-block">
+<div class="line">Downsides</div>
+<div class="line"><br /></div>
+<div class="line">• All the code snippets in a file are <strong>coupled</strong></div>
+<div class="line">• <em>Awkward</em> to make excuses for trying edge cases</div>
+<div class="line">• <strong>Not</strong> a good model for real tests</div>
+</div>
+</div>
+<div class="section" id="id27">
+
+<div class="line-block">
+<div class="line">Upside</div>
+<div class="line"><br /></div>
+<div class="line">• Great for testing <em>documentation</em></div>
+</div>
+</div>
+<div class="section" id="id28">
+
+<div class="line-block">
+<div class="line">The greatest success of <tt class="docutils literal">eval()</tt>?</div>
+</div>
+</div>
+<div class="section" id="id29">
+
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<img alt="ipynb-example.png" src="ipynb-example.png" />
+</div>
+<div class="section" id="id30">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">eval()</tt></div>
+<div class="line"><br /></div>
+<div class="line">Wound up having only <strong>limited</strong> use</div>
+<div class="line">for application code but <em>very wide</em></div>
+<div class="line">use in the tools we build</div>
+<div class="line"><em>around</em> code!</div>
+</div>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="id31">
+
+<div class="line-block">
+<div class="line"><em>Second topic</em></div>
+</div>
+<div class="line-block">
+<div class="line">Python’s Object Model</div>
+</div>
+</div>
+<div class="section" id="id32">
+
+<div class="highlight"><pre><span></span><span class="n">Syntax</span>     <span class="err">“</span><span class="n">Dunder</span><span class="err">”</span> <span class="n">Methods</span>
+
+<span class="n">a</span> <span class="o">+</span> <span class="n">b</span>      <span class="n">a</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">-</span> <span class="n">b</span>      <span class="n">a</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span>      <span class="n">a</span><span class="o">.</span><span class="fm">__lt__</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>    <span class="n">a</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+<span class="n">a</span><span class="o">.</span><span class="n">b</span>        <span class="n">a</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="n">a</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>       <span class="n">a</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line">Let’s look at three dunder methods.</div>
+</div>
+</div>
+<div class="section" id="id34">
+
+<div class="line-block">
+<div class="line">#1</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">__bool__()</tt></div>
+</div>
+</div>
+<div class="section" id="id35">
+
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">a</span><span class="p">:</span> <span class="o">...</span>
+<span class="k">elif</span> <span class="n">a</span><span class="p">:</span> <span class="o">...</span>
+<span class="k">while</span> <span class="n">a</span><span class="p">:</span> <span class="o">...</span>
+<span class="s1">&#39;yes&#39;</span> <span class="k">if</span> <span class="n">a</span> <span class="k">else</span> <span class="s1">&#39;no&#39;</span>
+<span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">sequence</span> <span class="k">if</span> <span class="n">a</span><span class="p">]</span>
+<span class="p">(</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">sequence</span> <span class="k">if</span> <span class="n">a</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id36">
+
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="bp">False</span><span class="p">:</span>   <span class="k">if</span> <span class="bp">True</span><span class="p">:</span>
+<span class="k">if</span> <span class="mi">0</span><span class="p">:</span>       <span class="k">if</span> <span class="mi">1</span><span class="p">:</span>
+<span class="k">if</span> <span class="mf">0.0</span><span class="p">:</span>     <span class="k">if</span> <span class="mf">1.0</span><span class="p">:</span>
+<span class="k">if</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>      <span class="k">if</span> <span class="s1">&#39;nonempty string&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="p">[]:</span>      <span class="k">if</span> <span class="p">[</span><span class="s1">&#39;non&#39;</span><span class="p">,</span> <span class="s1">&#39;empty&#39;</span><span class="p">,</span> <span class="s1">&#39;list&#39;</span><span class="p">]:</span>
+<span class="k">if</span> <span class="p">{}:</span>      <span class="k">if</span> <span class="p">{</span><span class="s1">&#39;nonempty&#39;</span><span class="p">:</span> <span class="s1">&#39;dict&#39;</span><span class="p">}:</span>
+<span class="k">if</span> <span class="bp">None</span><span class="p">:</span>    <span class="k">if</span> <span class="p">{</span><span class="s1">&#39;non&#39;</span><span class="p">,</span> <span class="s1">&#39;empty&#39;</span><span class="p">,</span> <span class="s1">&#39;set&#39;</span><span class="p">}:</span>
+</pre></div>
+
+</div>
+<div class="section" id="id37">
+
+<div class="line-block">
+<div class="line">Programmers love brevity</div>
+</div>
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line">PEP 8</div>
+</div>
+</div>
+<div class="section" id="id39">
+
+<div class="line-block">
+<div class="line">“For sequences, (strings, lists, tuples),</div>
+<div class="line">use the fact that empty sequences are false.”</div>
+</div>
+</div>
+<div class="section" id="id40">
+
+<div class="line-block">
+<div class="line">if len(seq) &gt; 0:</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id41">
+
+<div class="line-block">
+<div class="line">if len(seq) &gt; 0:</div>
+<div class="line">↓</div>
+<div class="line">if len(seq):</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id42">
+
+<div class="line-block">
+<div class="line">if len(seq) &gt; 0:</div>
+<div class="line">↓</div>
+<div class="line">if len(seq):</div>
+<div class="line">↓</div>
+<div class="line">if seq:</div>
+</div>
+</div>
+<div class="section" id="id43">
+
+<div class="line-block">
+<div class="line">Problem</div>
+<div class="line"><br /></div>
+<div class="line">Python code</div>
+<div class="line">is <em>always in danger</em></div>
+<div class="line">of becoming a</div>
+<div class="line"><strong>type desert</strong></div>
+</div>
+</div>
+<div class="section" id="id44">
+
+<div class="highlight"><pre><span></span>      <span class="err">┌┐</span>
+      <span class="err">││</span>     <span class="err">┌┐</span>
+    <span class="err">┌┐││┌┐</span>   <span class="err">││┌┐</span>
+    <span class="err">│└┘│││</span>   <span class="err">│└┘│</span>
+    <span class="err">└─┐└┘│</span>   <span class="err">│┌─┘</span>    \<span class="o">|/</span>
+      <span class="err">│┌─┘</span>   <span class="err">││</span>       <span class="o">|</span>
+<span class="err">──────┴┴─────┴┴───────────</span>
+</pre></div>
+
+</div>
+<div class="section" id="id45">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">unfriend</span><span class="p">(</span><span class="n">subject</span><span class="p">,</span> <span class="n">users</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">users</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">remove_edges</span><span class="p">(</span><span class="s1">&#39;friend&#39;</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">users</span><span class="p">)</span>
+
+<span class="c1"># Q: What’s the type of “users”?</span>
+</pre></div>
+
+</div>
+<div class="section" id="id46">
+
+<div class="line-block">
+<div class="line">Because <em>anything</em> can have a <tt class="docutils literal">__bool__()</tt> method,</div>
+<div class="line">the object in <tt class="docutils literal">if</tt> statement can be <strong>anything</strong></div>
+</div>
+</div>
+<div class="section" id="id47">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">&lt;UserCollection&gt;</tt></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id48">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">&lt;UserCollection&gt;</tt></div>
+<div class="line"><tt class="docutils literal">[&lt;User angelica&gt;, &lt;User eliza&gt;]</tt></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id49">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">&lt;UserCollection&gt;</tt></div>
+<div class="line"><tt class="docutils literal">[&lt;User angelica&gt;, &lt;User eliza&gt;]</tt></div>
+<div class="line"><tt class="docutils literal">['angelica', 'eliza']</tt></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id50">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">&lt;UserCollection&gt;</tt></div>
+<div class="line"><tt class="docutils literal">[&lt;User angelica&gt;, &lt;User eliza&gt;]</tt></div>
+<div class="line"><tt class="docutils literal">['angelica', 'eliza']</tt></div>
+<div class="line"><tt class="docutils literal">12</tt></div>
+</div>
+</div>
+<div class="section" id="id51">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">import this</tt></div>
+<div class="line">“Explicit is better than implicit.”</div>
+</div>
+</div>
+<div class="section" id="id52">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">if users:</tt></div>
+<div class="line">↓</div>
+<div class="line"><tt class="docutils literal">if len(users):&nbsp; # for a container</tt></div>
+<div class="line"><tt class="docutils literal">if users &gt; 0:&nbsp;&nbsp; # for an integer</tt></div>
+</div>
+</div>
+<div class="section" id="id53">
+
+<div class="line-block">
+<div class="line">#2</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">__getattr__()</tt></div>
+</div>
+</div>
+<div class="section" id="id54">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">C</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Asked for attribute:&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">5</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">C</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;c.foo equals&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">foo</span><span class="p">)</span>
+
+<span class="err">→</span> <span class="n">Asked</span> <span class="k">for</span> <span class="n">attribute</span><span class="p">:</span> <span class="n">foo</span>
+<span class="err">→</span> <span class="n">c</span><span class="o">.</span><span class="n">foo</span> <span class="n">equals</span> <span class="mi">5</span>
+</pre></div>
+
+</div>
+<div class="section" id="id55">
+
+<div class="highlight"><pre><span></span><span class="c1"># Proxy Pattern</span>
+
+<span class="k">class</span> <span class="nc">Proxy</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id56">
+
+<div class="highlight"><pre><span></span><span class="c1"># A &quot;mock&quot; test object</span>
+
+<span class="k">class</span> <span class="nc">Mock</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calls</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">fake_method</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calls</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">fake_method</span>
+</pre></div>
+
+</div>
+<div class="section" id="id57">
+
+<div class="line-block">
+<div class="line">You get an object that records</div>
+<div class="line">what methods have been invoked</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">Mock</span><span class="p">()</span>
+
+<span class="n">m</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;file.txt&#39;</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">assert</span> <span class="n">m</span><span class="o">.</span><span class="n">calls</span> <span class="o">==</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;file.txt&#39;</span><span class="p">,)),</span> <span class="p">(</span><span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="p">())</span>
+<span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id58">
+
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">unittest.mock</span> <span class="kn">import</span> <span class="n">Mock</span>
+</pre></div>
+
+</div>
+<div class="section" id="id59">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_layout</span><span class="p">():</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">Mock</span><span class="p">()</span>
+    <span class="n">layout_list</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="n">window</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">window</span><span class="o">.</span><span class="n">called</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">),</span>
+    <span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id60">
+
+<div class="line-block">
+<div class="line">Problem?</div>
+</div>
+</div>
+<div class="section" id="id61">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">Mock</tt> encourages tests</div>
+<div class="line">that are not <em>really</em> tests</div>
+</div>
+</div>
+<div class="section" id="id62">
+
+<div class="line-block">
+<div class="line">Ideal tests</div>
+<div class="line"><tt class="docutils literal">unit test ↔ A</tt></div>
+<div class="line"><tt class="docutils literal">unit test ↔ B</tt></div>
+<div class="line"><tt class="docutils literal">integration test ↔ A ↔ B</tt></div>
+<div class="line"><br /></div>
+<div class="line">Mocked test</div>
+<div class="line"><tt class="docutils literal">A ↔ Mock()&nbsp;&nbsp;&nbsp; Mock() ↔ B</tt></div>
+</div>
+</div>
+<div class="section" id="id63">
+
+<div class="line-block">
+<div class="line">My complaints:</div>
+<div class="line"><br /></div>
+<div class="line">Tests start to <strong>lose signal</strong></div>
+<div class="line">when <tt class="docutils literal">Mock</tt> becomes <strong>routine</strong></div>
+<div class="line">instead of a <em>reluctant</em> workaround</div>
+<div class="line"><br /></div>
+<div class="line">Docs and blog posts too often focus</div>
+<div class="line">on <em>how</em> to use rather than <strong>when</strong></div>
+</div>
+</div>
+<div class="section" id="id64">
+
+<div class="line-block">
+<div class="line">#3</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">__call__</tt></div>
+</div>
+</div>
+<div class="section" id="id65">
+
+<div class="line-block">
+<div class="line">The Python syntax <tt class="docutils literal"><span class="pre">f(...)</span></tt></div>
+<div class="line">is an operator named a <em>“call”</em></div>
+</div>
+</div>
+<div class="section" id="id66">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">f</tt> is often a function or method,</div>
+<div class="line"><em>but</em> could be any other object instead</div>
+</div>
+</div>
+<div class="section" id="id67">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Template</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+<span class="n">t</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">city</span><span class="o">=</span><span class="s1">&#39;Wrocłow&#39;</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="s1">&#39;code::dive&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id68">
+
+<div class="line-block">
+<div class="line">Programmers love brevity</div>
+</div>
+</div>
+<div class="section" id="id69">
+
+<div class="line-block">
+<div class="line">“I only have one real method.</div>
+<div class="line">Does it even <em>need</em> a name?”</div>
+</div>
+</div>
+<div class="section" id="id70">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Template</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+<span class="n">t</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">city</span><span class="o">=</span><span class="s1">&#39;Wrocłow&#39;</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="s1">&#39;code::dive&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id71">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Template</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+<span class="n">t</span><span class="p">(</span><span class="n">city</span><span class="o">=</span><span class="s1">&#39;Wrocłow&#39;</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="s1">&#39;code::dive&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id72">
+
+<div class="line-block">
+<div class="line">Problem</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Readability</em></div>
+</div>
+</div>
+<div class="section" id="id73">
+
+<div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">get_template</span><span class="p">(</span><span class="n">args</span><span class="p">)()()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id74">
+
+<div class="highlight"><pre><span></span><span class="c1"># build tree of XML element objects</span>
+                         <span class="err">↓</span>
+<span class="k">return</span> <span class="n">get_template</span><span class="p">(</span><span class="n">args</span><span class="p">)()()</span>
+                           <span class="err">↑</span>
+<span class="c1">#      flatten to plain text</span>
+</pre></div>
+
+</div>
+<div class="section" id="id75">
+
+<div class="line-block">
+<div class="line">I’m sure it felt clever to give</div>
+<div class="line">each of those objects a “default verb”</div>
+<div class="line">with a <tt class="docutils literal">__call__()</tt> method</div>
+</div>
+</div>
+<div class="section" id="id76">
+
+<div class="line-block">
+<div class="line">But I prefer:</div>
+<div class="line"><tt class="docutils literal">return <span class="pre">template.bind(args)()()</span></tt></div>
+<div class="line">↓</div>
+<div class="line"><tt class="docutils literal">return <span class="pre">template.bind(args).build().flatten()</span></tt></div>
+</div>
+</div>
+<div class="section" id="id77">
+
+<div class="line-block">
+<div class="line">But wait!</div>
+</div>
+</div>
+<div class="section" id="id78">
+
+<div class="line-block">
+<div class="line">“But what if an API <em>expects</em> a plain callable?</div>
+<div class="line">Then my class definitely needs a <tt class="docutils literal">__call__()</tt> method!”</div>
+</div>
+</div>
+<div class="section" id="id79">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Template</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+        <span class="o">...</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">Template</span><span class="p">()</span>
+<span class="n">framework</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>  <span class="c1"># Needs a callable</span>
+</pre></div>
+
+</div>
+<div class="section" id="id80">
+
+<div class="line-block">
+<div class="line">So the class needs <tt class="docutils literal">__call__()</tt>, right?</div>
+</div>
+</div>
+<div class="section" id="id81">
+
+<div class="line-block">
+<div class="line">No.</div>
+</div>
+<div class="line-block">
+<div class="line">It doesn’t.</div>
+</div>
+</div>
+<div class="section" id="id82">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Template</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+        <span class="o">...</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">Template</span><span class="p">()</span>
+<span class="n">framework</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">render</span><span class="p">)</span>  <span class="c1"># Needs a callable</span>
+
+<span class="c1"># &quot;t.render&quot; is a &quot;bound method&quot;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id83">
+
+<div class="line-block">
+<div class="line">&lt;/object_model&gt;</div>
+</div>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="id84">
+
+<div class="line-block">
+<div class="line"><em>Third Topic</em></div>
+</div>
+<div class="line-block">
+<div class="line">Python’s mutability</div>
+</div>
+<!-- probably not a big enough deal to include:
+sys.path makes it so easy to dodge repeatable correct build process -->
+</div>
+<div class="section" id="id85">
+
+<div class="line-block">
+<div class="line"><strong>modules</strong> and <strong>classes</strong> are mutable</div>
+</div>
+</div>
+<div class="section" id="id86">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">string</span>
+
+<span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;aąbcćdeęfghijklł&#39;</span>
+                        <span class="s1">&#39;mnńoóprsśtuwyzźż&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id87">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">C</span><span class="p">:</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">C</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="k">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># prints “2”</span>
+</pre></div>
+
+</div>
+<div class="section" id="id88">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">C</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">)</span>
+
+<span class="n">C</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
+
+<span class="n">obj</span> <span class="o">=</span> <span class="n">C</span><span class="p">()</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">method</span><span class="p">()</span>  <span class="c1"># prints “B”</span>
+</pre></div>
+
+</div>
+<div class="section" id="id89">
+
+<div class="line-block">
+<div class="line">This resulted in some</div>
+<div class="line">predictable mayhem</div>
+</div>
+</div>
+<div class="section" id="id90">
+
+<div class="line-block">
+<div class="line">Programmers dislike repetition</div>
+</div>
+</div>
+<div class="section" id="id91">
+
+<div class="line-block">
+<div class="line">DRY</div>
+<div class="line">“Don’t Repeat Yourself”</div>
+</div>
+</div>
+<div class="section" id="id92">
+
+<div class="highlight"><pre><span></span><span class="c1"># your_web_app.py</span>
+
+<span class="k">def</span> <span class="nf">index_view</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="k">def</span> <span class="nf">settings_view</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="k">def</span> <span class="nf">shop_view</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id93">
+
+<div class="line-block">
+<div class="line">“Python global objects are <em>mutable.</em></div>
+<div class="line">Let’s eliminate the repetition!”</div>
+</div>
+</div>
+<div class="section" id="id94">
+
+<div class="highlight"><pre><span></span><span class="c1"># your_web_app.py</span>
+<span class="kn">from</span> <span class="nn">framework</span> <span class="kn">import</span> <span class="n">request</span>
+
+<span class="k">def</span> <span class="nf">index_view</span><span class="p">():</span>
+    <span class="o">...</span>
+
+<span class="k">def</span> <span class="nf">settings_view</span><span class="p">():</span>
+    <span class="o">...</span>
+
+<span class="k">def</span> <span class="nf">shop_view</span><span class="p">():</span>
+    <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id95">
+
+<div class="highlight"><pre><span></span><span class="c1"># The framework loads your module.</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;your_web_app&#39;</span>
+<span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+<span class="c1"># Then mutates `request` with HTTP data.</span>
+<span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;GET&#39;</span>
+<span class="n">request</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;/shop/&#39;</span>
+<span class="n">response</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;shop_view&#39;</span><span class="p">)()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id96">
+
+<div class="line-block">
+<div class="line">This is a bad idea</div>
+</div>
+</div>
+<div class="section" id="id97">
+
+<div class="line-block">
+<div class="line">• Data now enters a function from <strong>two</strong> directions</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id98">
+
+<div class="line-block">
+<div class="line">• Data now enters a function from <strong>two</strong> directions</div>
+<div class="line">• Tests will have to <em>mutate</em> a global</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id99">
+
+<div class="line-block">
+<div class="line">• Data now enters a function from <strong>two</strong> directions</div>
+<div class="line">• Tests will have to <em>mutate</em> a global</div>
+<div class="line">• Threads would overwrite the one <tt class="docutils literal">request</tt> object</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id100">
+
+<div class="line-block">
+<div class="line">• Data now enters a function from <strong>two</strong> directions</div>
+<div class="line">• Tests will have to <em>mutate</em> a global</div>
+<div class="line">• Threads would overwrite the one <tt class="docutils literal">request</tt> object</div>
+<div class="line">• Async framework will need special knowledge</div>
+</div>
+</div>
+<div class="section" id="id101">
+
+<div class="line-block">
+<div class="line">Bad</div>
+<div class="line"><br /></div>
+<div class="line">But can get even worse!</div>
+</div>
+</div>
+<div class="section" id="id102">
+
+<div class="line-block">
+<div class="line">Why import <tt class="docutils literal">request</tt> at all?</div>
+</div>
+</div>
+<div class="section" id="id103">
+
+<div class="highlight"><pre><span></span><span class="c1"># The framework loads your module.</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;your_web_app&#39;</span>
+<span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+<span class="c1"># Then injects a global named `request`!</span>
+<span class="n">module</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">request_object</span>
+</pre></div>
+
+</div>
+<div class="section" id="id104">
+
+<ul class="simple">
+<li><em>Good:</em> Code is shorter</li>
+<li><strong>Bad:</strong> Can’t see where <tt class="docutils literal">request</tt> comes from</li>
+<li><strong>Bad:</strong> Your IDE doesn’t know where it comes from</li>
+</ul>
+</div>
+<div class="section" id="id105">
+
+<div class="line-block">
+<div class="line">Global state</div>
+<div class="line"><br /></div>
+<div class="line">Useful in <em>emergencies</em>,</div>
+<div class="line">but should <strong>not</strong> be used routinely</div>
+</div>
+</div>
+<div class="section" id="id106">
+
+<div class="line-block">
+<div class="line">“Emergency”?</div>
+<div class="line"><br /></div>
+<div class="line"><strong>Gating:</strong> experimental feature chosen by data</div>
+<div class="line">the routine normally would not have</div>
+</div>
+</div>
+<div class="section" id="id107">
+
+<div class="line-block">
+<div class="line">Another use of mutability:</div>
+<div class="line">code that’s <em>about</em> other code</div>
+<div class="line"><br /></div>
+<div class="line">Tests</div>
+</div>
+</div>
+<div class="section" id="id108">
+
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">unittest.mock</span> <span class="kn">import</span> <span class="n">patch</span>
+
+<span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;C.method&#39;</span><span class="p">,</span> <span class="n">replacement_method</span><span class="p">):</span>
+   <span class="c1"># ...</span>
+   <span class="c1"># indented block runs with altered method</span>
+   <span class="c1"># ...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id109">
+
+<div class="line-block">
+<div class="line">So <tt class="docutils literal">patch()</tt> has become the official</div>
+<div class="line">mechanism for testing code that’s</div>
+<div class="line"><strong>coupled</strong> to side effects</div>
+</div>
+</div>
+<div class="section" id="id110">
+
+<div class="highlight"><pre><span></span>   <span class="n">get_books</span><span class="p">()</span>       <span class="n">fetch</span><span class="p">()</span>      <span class="n">download</span><span class="p">()</span>
+<span class="err">────────────────────────────────────────────────</span>
+<span class="k">for</span> <span class="n">isbn</span> <span class="ow">in</span> <span class="n">books</span><span class="p">:</span>
+    <span class="n">fetch</span><span class="p">(</span><span class="n">isbn</span><span class="p">)</span>
+               <span class="err">↘</span>
+                 <span class="n">url</span> <span class="o">=</span> <span class="n">URL</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">isbn</span><span class="p">)</span>
+                 <span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+                              <span class="err">↘</span>
+                                <span class="n">u</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+                                <span class="n">data</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                                <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+
+</div>
+<div class="section" id="id111">
+
+<div class="line-block">
+<div class="line">Q: How much of that code can you</div>
+<div class="line">test <strong>without</strong> triggering real HTTP?</div>
+</div>
+</div>
+<div class="section" id="id112">
+
+<div class="highlight"><pre><span></span>   <span class="n">get_books</span><span class="p">()</span>       <span class="n">fetch</span><span class="p">()</span>      <span class="n">download</span><span class="p">()</span>
+<span class="err">────────────────────────────────────────────────</span>
+<span class="k">for</span> <span class="n">isbn</span> <span class="ow">in</span> <span class="n">books</span><span class="p">:</span>
+    <span class="n">fetch</span><span class="p">(</span><span class="n">isbn</span><span class="p">)</span>
+               <span class="err">↘</span>
+                 <span class="n">url</span> <span class="o">=</span> <span class="n">URL</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">isbn</span><span class="p">)</span>
+                 <span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+                              <span class="err">↘</span>
+                                <span class="n">u</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+                                <span class="n">data</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                                <span class="k">return</span> <span class="n">data</span><span class="p">:</span>
+</pre></div>
+
+</div>
+<div class="section" id="id113">
+
+<div class="line-block">
+<div class="line">A: None of it!</div>
+</div>
+</div>
+<div class="section" id="id114">
+
+<div class="line-block">
+<div class="line">The code <em>abstracts away</em> the I/O</div>
+<div class="line">but fails to actually <strong>decouple</strong> it</div>
+</div>
+</div>
+<div class="section" id="id115">
+
+<div class="line-block">
+<div class="line">Solution?</div>
+</div>
+</div>
+<div class="section" id="id116">
+
+<div class="highlight"><pre><span></span><span class="c1"># Best solution is Clean Architecture / Hexagonal</span>
+
+    <span class="n">get_books</span><span class="p">()</span>       <span class="n">book_urls</span><span class="p">()</span>    <span class="n">build_url</span><span class="p">()</span>
+<span class="err">────────────────────────────────────────────────────</span>
+<span class="n">urls</span> <span class="o">=</span> <span class="n">book_urls</span><span class="p">(</span><span class="n">books</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span>    <span class="err">↘</span>
+    <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>    <span class="k">for</span> <span class="n">isbn</span> <span class="ow">in</span> <span class="n">books</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>     <span class="k">yield</span> <span class="n">build_url</span><span class="p">(</span><span class="n">isbn</span><span class="p">)</span>
+                              <span class="err">↘</span>
+                                <span class="n">u</span> <span class="o">=</span> <span class="n">URL</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">isbn</span><span class="p">)</span>
+                                <span class="k">return</span> <span class="n">u</span>
+</pre></div>
+
+</div>
+<div class="section" id="id117">
+
+<div class="highlight"><pre><span></span><span class="c1"># Second best: patch() only the I/O</span>
+<span class="c1"># get_books() → fetch() → download() → urlopen()</span>
+
+<span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;urlopen&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+    <span class="n">get_books</span><span class="p">([</span><span class="s1">&#39;ISBN1&#39;</span><span class="p">,</span> <span class="s1">&#39;ISBN2&#39;</span><span class="p">])</span>
+</pre></div>
+
+</div>
+<div class="section" id="id118">
+
+<div class="highlight"><pre><span></span><span class="c1"># Worst: disable immediate subroutine</span>
+<span class="c1"># get_books() → fetch() → download() → urlopen()</span>
+
+<span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;fetch&#39;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">):</span>
+    <span class="n">get_books</span><span class="p">([</span><span class="s1">&#39;ISBN1&#39;</span><span class="p">,</span> <span class="s1">&#39;ISBN2&#39;</span><span class="p">])</span>
+
+<span class="k">assert</span> <span class="n">args</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;ISBN1&#39;</span><span class="p">,</span> <span class="s1">&#39;ISBN2&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id119">
+
+<div class="line-block">
+<div class="line">Like testing <em>objects</em> with only <strong>Mocks</strong>,</div>
+<div class="line">testing <em>functions</em> with all of their</div>
+<div class="line">subroutines <strong>patched</strong> falls short</div>
+<div class="line">of being a real test</div>
+</div>
+</div>
+<div class="section" id="id120">
+
+<div class="line-block">
+<div class="line"><em>And</em> you lose <strong>half</strong></div>
+<div class="line">the benefit of testing!</div>
+</div>
+</div>
+<div class="section" id="id121">
+
+<div class="line-block">
+<div class="line">Why write tests?</div>
+<div class="line"><br /></div>
+<div class="line">1. Automated alert when code is broken</div>
+<div class="line">2. Apply pressure to decouple your code</div>
+</div>
+</div>
+<div class="section" id="id122">
+
+<div class="line-block">
+<div class="line">Good: heavily coupled code is</div>
+<div class="line"><em>still testable</em> in Python thanks to <tt class="docutils literal">patch()</tt></div>
+<div class="line"><br /></div>
+<div class="line">Bad: overuse of <tt class="docutils literal">patch()</tt></div>
+<div class="line">not only makes tests less <em>meaningful,</em></div>
+<div class="line">but ruins what the tests would teach us</div>
+<div class="line">about our code’s <strong>architecture</strong></div>
+</div>
+</div>
+<div class="section" id="id123">
+
+<div class="line-block">
+<div class="line">One last danger of mutability:</div>
+<div class="line"><strong>import-time side effects</strong></div>
+</div>
+</div>
+<div class="section" id="id124">
+
+<div class="line-block">
+<div class="line">Python <em>modules</em> are <strong>executed</strong></div>
+<div class="line">top-to-bottom at import time</div>
+<div class="line"><br /></div>
+<div class="line">Each module starts as a blank slate</div>
+<div class="line">and runs its code sequentially</div>
+</div>
+</div>
+<div class="section" id="id125">
+
+<div class="highlight"><pre><span></span><span class="c1"># my_module.py</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="s1">&#39;aąbcć&#39;</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">letter</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id126">
+
+<div class="line-block">
+<div class="line">The ability to execute arbitrary code</div>
+<div class="line">at import time leads to <em>temptation</em></div>
+</div>
+</div>
+<div class="section" id="id127">
+
+<div class="line-block">
+<div class="line">1. Configuration lives in Python code.</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id128">
+
+<div class="line-block">
+<div class="line">1. Configuration lives in Python code.</div>
+<div class="line">2. Switch to loading config from a file.</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id129">
+
+<div class="line-block">
+<div class="line">1. Configuration lives in Python code.</div>
+<div class="line">2. Switch to loading config from a file.</div>
+<div class="line">3. Then, config moves inside a database.</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id130">
+
+<div class="line-block">
+<div class="line">1. Configuration lives in Python code.</div>
+<div class="line">2. Switch to loading config from a file.</div>
+<div class="line">3. Then, config moves inside a database.</div>
+<div class="line">4. Then, database port moves to zookeeper.</div>
+</div>
+</div>
+<div class="section" id="id131">
+
+<div class="line-block">
+<div class="line">Result: a module that can't</div>
+<div class="line">be imported <em>or</em> tested until</div>
+<div class="line">Zookeeper and Postgres are <strong>both</strong> up</div>
+</div>
+</div>
+<div class="section" id="id132">
+
+<div class="line-block">
+<div class="line">Advice:</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Never</em> start down the road.</div>
+<div class="line">Admit <strong>no</strong> import time side effects!</div>
+</div>
+</div>
+<div class="section" id="id133">
+
+<div class="line-block">
+<div class="line">One last thought</div>
+</div>
+</div>
+<div class="section" id="id134">
+
+<div class="highlight"><pre><span></span><span class="n">my_package</span><span class="o">/</span>
+    <span class="err">├</span> <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span> <span class="err">←</span> <span class="n">people</span> <span class="n">keeping</span> <span class="n">putting</span> <span class="n">code</span> <span class="n">here</span>
+    <span class="err">├</span> <span class="n">models</span><span class="o">.</span><span class="n">py</span>
+    <span class="err">└</span> <span class="n">views</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+
+</div>
+<div class="section" id="id135">
+
+<div class="line-block">
+<div class="line">Worse yet, some <tt class="docutils literal">__init__.py</tt> files</div>
+<div class="line">import <strong>all</strong> their package’s modules</div>
+</div>
+</div>
+<div class="section" id="id136">
+
+<div class="line-block">
+<div class="line">Advice: keep <tt class="docutils literal">__init__.py</tt> <strong>empty</strong> of code</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">skyfield</tt> — docstring but no code</div>
+<div class="line"><tt class="docutils literal">skyfield.api</tt> — imports everything</div>
+</div>
+</div>
+<div class="section" id="id137">
+
+<div class="line-block">
+<div class="line">&lt;/mutability&gt;</div>
+</div>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="id138">
+
+<div class="line-block">
+<div class="line"><em>Final Topic</em></div>
+</div>
+<div class="line-block">
+<div class="line">Object Orientation</div>
+</div>
+</div>
+<div class="section" id="id139">
+
+<div class="line-block">
+<div class="line">subclass</div>
+</div>
+</div>
+<div class="section" id="id140">
+
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
+</pre></div>
+
+</div>
+<div class="section" id="id141">
+
+<div class="highlight"><pre><span></span><span class="c1"># Option 1</span>
+
+<span class="k">def</span> <span class="nf">task</span><span class="p">():</span>
+   <span class="o">...</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">task</span><span class="p">)</span>
+<span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id142">
+
+<div class="highlight"><pre><span></span><span class="c1"># Option 2</span>
+
+<span class="k">class</span> <span class="nc">MyThread</span><span class="p">(</span><span class="n">Thread</span><span class="p">):</span>
+   <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="o">...</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">MyThread</span><span class="p">()</span>
+<span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id143">
+
+<div class="line-block">
+<div class="line">Subclassing <tt class="docutils literal">Thread</tt></div>
+<div class="line"><br /></div>
+<div class="line">• Two new objects instead of one</div>
+<div class="line">• Extra 4 spaces of indentation</div>
+<div class="line">• Can’t test task in isolation</div>
+</div>
+</div>
+<div class="section" id="id144">
+
+<div class="line-block">
+<div class="line">Composition</div>
+<div class="line"><em>vs</em></div>
+<div class="line">Specialization</div>
+</div>
+</div>
+<div class="section" id="id145">
+
+<div class="line-block">
+<div class="line"><strong>Composition</strong> — Putting simple things together</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id146">
+
+<div class="line-block">
+<div class="line"><strong>Composition</strong> — Putting simple things together</div>
+<div class="line"><strong>Specialization</strong> — Making one thing more complicated</div>
+</div>
+</div>
+<div class="section" id="id147">
+
+<div class="line-block">
+<div class="line">Problem</div>
+<div class="line"><br /></div>
+<div class="line">Python provides</div>
+<div class="line">an <strong>extra temptation</strong></div>
+<div class="line">toward specialization</div>
+</div>
+</div>
+<div class="section" id="id148">
+
+<div class="line-block">
+<div class="line"><em>m×n</em></div>
+</div>
+</div>
+<div class="section" id="id149">
+
+<div class="line-block">
+<div class="line">Gang of Four book <em>Design Patterns</em></div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">MSWindow</tt> <tt class="docutils literal">MacWindow</tt> <tt class="docutils literal">LinuxWindow</tt></div>
+<div class="line">×</div>
+<div class="line"><tt class="docutils literal">ListWindow</tt> <tt class="docutils literal">IconWindow</tt> <tt class="docutils literal">ImageWindow</tt></div>
+</div>
+<!-- w = 'MS Mac LinuxWindow'.split()
+v = 'List Icon Image'.split()
+for a in w:
+ for b in v:
+  print('{}{}Window'.format(a,b)) -->
+</div>
+<div class="section" id="id150">
+
+<div class="highlight"><pre><span></span><span class="n">MSListWindow</span>
+<span class="n">MSIconWindow</span>
+<span class="n">MSImageWindow</span>
+<span class="n">MacListWindow</span>
+<span class="n">MacIconWindow</span>
+<span class="n">MacImageWindow</span>
+<span class="n">LinuxWindowListWindow</span>
+<span class="n">LinuxWindowIconWindow</span>
+<span class="n">LinuxWindowImageWindow</span>
+</pre></div>
+
+</div>
+<div class="section" id="id151">
+
+<div class="line-block">
+<div class="line"><em>m×n</em></div>
+</div>
+</div>
+<div class="section" id="id152">
+
+<div class="line-block">
+<div class="line">Gang of Four</div>
+</div>
+<div class="line-block">
+<div class="line"><em>m×n</em> → Bridge Pattern</div>
+</div>
+</div>
+<div class="section" id="id153">
+
+<div class="highlight"><pre><span></span><span class="n">Window</span>        <span class="n">Layout</span>
+  <span class="o">|</span>              <span class="o">|</span>
+<span class="n">MSWindow</span>      <span class="n">ListLayout</span>
+<span class="n">MacWindow</span>     <span class="n">IconLayout</span>
+<span class="n">LinuxWindow</span>   <span class="n">ImageLayout</span>
+</pre></div>
+
+</div>
+<div class="section" id="id154">
+
+<div class="highlight"><pre><span></span><span class="c1"># At runtime, two class instances</span>
+<span class="c1"># are composed together</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">MacWindow</span><span class="p">()</span>
+<span class="k">return</span> <span class="n">IconLayout</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id155">
+
+<div class="line-block">
+<div class="line"><em>m×n</em> → <em>m+n</em></div>
+</div>
+</div>
+<div class="section" id="id156">
+
+<div class="line-block">
+<div class="line">Q: <em>m×n</em> → Bridge Pattern → ?</div>
+</div>
+</div>
+<div class="section" id="id157">
+
+<div class="line-block">
+<div class="line">You can use <em>data</em> to couple</div>
+<div class="line">code instead of using <strong>behavior</strong></div>
+</div>
+</div>
+<div class="section" id="id158">
+
+<div class="highlight"><pre><span></span><span class="n">layout</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">information</span><span class="p">)</span>
+           <span class="err">↓</span>
+    <span class="p">[</span><span class="n">Text</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">Line</span><span class="p">,</span>
+     <span class="n">Box</span><span class="p">,</span> <span class="n">Line</span><span class="p">,</span> <span class="n">Text</span><span class="p">]</span>
+           <span class="err">↓</span>
+  <span class="n">Window</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">graphics</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id159">
+
+<div class="line-block">
+<div class="line">Is there any advantage</div>
+<div class="line">to coupling with <em>nouns</em></div>
+<div class="line">instead of <strong>verbs?</strong></div>
+</div>
+</div>
+<div class="section" id="id160">
+
+<div class="line-block">
+<div class="line">“Show me your <em>flowchart</em></div>
+<div class="line">and conceal your tables,</div>
+<div class="line">and I shall continue to be <strong>mystified.</strong></div>
+<div class="line"><br /></div>
+<div class="line">Show me your <em>tables</em>,</div>
+<div class="line">and I won’t usually need your flowchart;</div>
+<div class="line">it’ll be <strong>obvious.”</strong></div>
+<div class="line"><br /></div>
+<div class="line">Fred Brooks <em>(1975)</em></div>
+</div>
+</div>
+<div class="section" id="id161">
+
+<div class="line-block">
+<div class="line">If Fred Brooks was right,</div>
+<div class="line">coupling classes with <em>data structures</em></div>
+<div class="line">will be easier to understand than</div>
+<div class="line">coupling them with <strong>behavior</strong></div>
+</div>
+</div>
+<div class="section" id="id162">
+
+<div class="line-block">
+<div class="line"><em>m×n</em> → Bridge Pattern → Pipeline</div>
+</div>
+</div>
+<div class="section" id="id163">
+
+<div class="line-block">
+<div class="line">Python</div>
+</div>
+</div>
+<div class="section" id="id164">
+
+<div class="line-block">
+<div class="line"><em>m×n</em> → ? → Bridge Pattern → Pipeline</div>
+</div>
+</div>
+<div class="section" id="id165">
+
+<div class="line-block">
+<div class="line"><em>m×n</em> → <strong>mixins</strong> → Bridge Pattern → Pipeline</div>
+</div>
+</div>
+<div class="section" id="id166">
+
+<div class="line-block">
+<div class="line">Let’s look at an early</div>
+<div class="line">experiment that still lingers</div>
+<div class="line">in the Python Standard Library</div>
+</div>
+</div>
+<div class="section" id="id167">
+
+<div class="line-block">
+<div class="line">1990s</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id168">
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">crazy times</div>
+</div>
+</div>
+<div class="section" id="id169">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">from socketserver import BaseServer</tt></div>
+</div>
+</div>
+<div class="section" id="id170">
+
+<div class="highlight"><pre><span></span><span class="n">finish_request</span><span class="p">()</span>
+<span class="n">get_request</span><span class="p">()</span>
+<span class="n">handle_error</span><span class="p">()</span>
+<span class="n">handle_request</span><span class="p">()</span>
+<span class="n">handle_timeout</span><span class="p">()</span>
+<span class="n">process_request</span><span class="p">()</span>
+<span class="n">serve_forever</span><span class="p">()</span>
+<span class="n">server_activate</span><span class="p">()</span>
+<span class="n">server_bind</span><span class="p">()</span>
+<span class="n">server_close</span><span class="p">()</span>
+<span class="n">service_actions</span><span class="p">()</span>
+<span class="n">shutdown</span><span class="p">()</span>
+<span class="n">verify_request</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id171">
+
+<div class="highlight"><pre><span></span><span class="n">finish_request</span><span class="p">()</span>
+<span class="n">get_request</span><span class="p">()</span>
+<span class="n">handle_error</span><span class="p">()</span>
+<span class="n">handle_request</span><span class="p">()</span>
+<span class="n">handle_timeout</span><span class="p">()</span>
+<span class="n">process_request</span><span class="p">()</span>
+<span class="n">serve_forever</span><span class="p">()</span>    <span class="n">API</span>
+<span class="n">server_activate</span><span class="p">()</span>
+<span class="n">server_bind</span><span class="p">()</span>
+<span class="n">server_close</span><span class="p">()</span>     <span class="n">API</span>
+<span class="n">service_actions</span><span class="p">()</span>
+<span class="n">shutdown</span><span class="p">()</span>         <span class="n">API</span>
+<span class="n">verify_request</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id172">
+
+<div class="highlight"><pre><span></span><span class="n">finish_request</span><span class="p">()</span>
+<span class="n">get_request</span><span class="p">()</span>
+<span class="n">handle_error</span><span class="p">()</span>
+<span class="n">handle_request</span><span class="p">()</span>       <span class="n">A</span>
+<span class="n">handle_timeout</span><span class="p">()</span>
+<span class="n">process_request</span><span class="p">()</span>
+<span class="n">serve_forever</span><span class="p">()</span>    <span class="n">API</span>
+<span class="n">server_activate</span><span class="p">()</span>      <span class="n">A</span><span class="o">*</span>
+<span class="n">server_bind</span><span class="p">()</span>          <span class="n">A</span><span class="o">*</span>
+<span class="n">server_close</span><span class="p">()</span>     <span class="n">API</span>
+<span class="n">service_actions</span><span class="p">()</span>      <span class="n">A</span><span class="o">*</span>
+<span class="n">shutdown</span><span class="p">()</span>         <span class="n">API</span>
+<span class="n">verify_request</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id173">
+
+<div class="highlight"><pre><span></span><span class="n">finish_request</span><span class="p">()</span>
+<span class="n">get_request</span><span class="p">()</span>             <span class="n">B</span><span class="o">*</span>
+<span class="n">handle_error</span><span class="p">()</span>
+<span class="n">handle_request</span><span class="p">()</span>       <span class="n">A</span>
+<span class="n">handle_timeout</span><span class="p">()</span>
+<span class="n">process_request</span><span class="p">()</span>         <span class="n">B</span><span class="o">*</span>
+<span class="n">serve_forever</span><span class="p">()</span>    <span class="n">API</span>
+<span class="n">server_activate</span><span class="p">()</span>      <span class="n">A</span><span class="o">*</span>
+<span class="n">server_bind</span><span class="p">()</span>          <span class="n">A</span><span class="o">*</span>
+<span class="n">server_close</span><span class="p">()</span>     <span class="n">API</span>
+<span class="n">service_actions</span><span class="p">()</span>      <span class="n">A</span><span class="o">*</span>
+<span class="n">shutdown</span><span class="p">()</span>         <span class="n">API</span>
+<span class="n">verify_request</span><span class="p">()</span>          <span class="n">B</span><span class="o">*</span>
+</pre></div>
+
+</div>
+<div class="section" id="id174">
+
+<div class="highlight"><pre><span></span><span class="n">finish_request</span><span class="p">()</span>             <span class="n">C</span>
+<span class="n">get_request</span><span class="p">()</span>             <span class="n">B</span><span class="o">*</span>
+<span class="n">handle_error</span><span class="p">()</span>
+<span class="n">handle_request</span><span class="p">()</span>       <span class="n">A</span>
+<span class="n">handle_timeout</span><span class="p">()</span>
+<span class="n">process_request</span><span class="p">()</span>         <span class="n">B</span><span class="o">*</span>
+<span class="n">serve_forever</span><span class="p">()</span>    <span class="n">API</span>
+<span class="n">server_activate</span><span class="p">()</span>      <span class="n">A</span><span class="o">*</span>
+<span class="n">server_bind</span><span class="p">()</span>          <span class="n">A</span><span class="o">*</span>
+<span class="n">server_close</span><span class="p">()</span>     <span class="n">API</span>
+<span class="n">service_actions</span><span class="p">()</span>      <span class="n">A</span><span class="o">*</span>
+<span class="n">shutdown</span><span class="p">()</span>         <span class="n">API</span>
+<span class="n">verify_request</span><span class="p">()</span>          <span class="n">B</span><span class="o">*</span>
+</pre></div>
+
+</div>
+<div class="section" id="id175">
+
+<div class="highlight"><pre><span></span><span class="n">finish_request</span><span class="p">()</span>             <span class="n">C</span>
+<span class="n">get_request</span><span class="p">()</span>             <span class="n">B</span><span class="o">*</span>
+<span class="n">handle_error</span><span class="p">()</span>                 <span class="n">D</span><span class="o">*</span>
+<span class="n">handle_request</span><span class="p">()</span>       <span class="n">A</span>
+<span class="n">handle_timeout</span><span class="p">()</span>               <span class="n">D</span><span class="o">*</span>
+<span class="n">process_request</span><span class="p">()</span>         <span class="n">B</span><span class="o">*</span>
+<span class="n">serve_forever</span><span class="p">()</span>    <span class="n">API</span>
+<span class="n">server_activate</span><span class="p">()</span>      <span class="n">A</span><span class="o">*</span>
+<span class="n">server_bind</span><span class="p">()</span>          <span class="n">A</span><span class="o">*</span>
+<span class="n">server_close</span><span class="p">()</span>     <span class="n">API</span>
+<span class="n">service_actions</span><span class="p">()</span>      <span class="n">A</span><span class="o">*</span>
+<span class="n">shutdown</span><span class="p">()</span>         <span class="n">API</span>
+<span class="n">verify_request</span><span class="p">()</span>          <span class="n">B</span><span class="o">*</span>
+</pre></div>
+
+</div>
+<div class="section" id="id176">
+
+<div class="line-block">
+<div class="line">This <strong>single class</strong> is in fact</div>
+<div class="line">several <em>layers</em> of behavior</div>
+</div>
+</div>
+<div class="section" id="id177">
+
+<div class="highlight"><pre><span></span><span class="n">finish_request</span><span class="p">()</span>             <span class="n">C</span>
+<span class="n">get_request</span><span class="p">()</span>             <span class="n">B</span><span class="o">*</span>
+<span class="n">handle_error</span><span class="p">()</span>                 <span class="n">D</span><span class="o">*</span>
+<span class="n">handle_request</span><span class="p">()</span>       <span class="n">A</span>
+<span class="n">handle_timeout</span><span class="p">()</span>               <span class="n">D</span><span class="o">*</span>
+<span class="n">process_request</span><span class="p">()</span>         <span class="n">B</span><span class="o">*</span>
+<span class="n">serve_forever</span><span class="p">()</span>    <span class="n">API</span>
+<span class="n">server_activate</span><span class="p">()</span>      <span class="n">A</span><span class="o">*</span>
+<span class="n">server_bind</span><span class="p">()</span>          <span class="n">A</span><span class="o">*</span>
+<span class="n">server_close</span><span class="p">()</span>     <span class="n">API</span>
+<span class="n">service_actions</span><span class="p">()</span>      <span class="n">A</span><span class="o">*</span>
+<span class="n">shutdown</span><span class="p">()</span>         <span class="n">API</span>
+<span class="n">verify_request</span><span class="p">()</span>          <span class="n">B</span><span class="o">*</span>
+</pre></div>
+
+</div>
+<div class="section" id="id178">
+
+<div class="line-block">
+<div class="line"><em>Why</em> so many behaviors</div>
+<div class="line">on a single class?</div>
+</div>
+</div>
+<div class="section" id="id179">
+
+<div class="line-block">
+<div class="line">“Modeling”</div>
+</div>
+</div>
+<div class="section" id="id180">
+
+<div class="line-block">
+<div class="line">2 nouns: listening socket, connected socket</div>
+<div class="line">2 classes: <tt class="docutils literal">BaseServer</tt>, <tt class="docutils literal">StreamRequestHandler</tt></div>
+</div>
+</div>
+<div class="section" id="id181">
+
+<div class="line-block">
+<div class="line">If you think of classes</div>
+<div class="line">as <strong>structs</strong> for modeling the world,</div>
+<div class="line">you’ll create one class for one noun</div>
+<div class="line"><em>instead of</em> for each interface = <strong>behavior</strong></div>
+</div>
+</div>
+<div class="section" id="id182">
+
+<div class="line-block">
+<div class="line">Result?</div>
+</div>
+<div class="line-block">
+<div class="line">Generally, <strong>too few</strong> classes</div>
+</div>
+</div>
+<div class="section" id="id183">
+
+<div class="line-block">
+<div class="line">You’ll model patterns of behavior</div>
+<div class="line">with a dense graph of method calls</div>
+<div class="line">instead of clean separate interfaces</div>
+</div>
+</div>
+<div class="section" id="id184">
+
+<div class="line-block">
+<div class="line">You’ll wind up</div>
+<div class="line">with one big <strong>“multi-storey”</strong> class</div>
+<div class="line">instead of several sleek <em>single-storey</em></div>
+<div class="line">classes that cooperate together</div>
+</div>
+</div>
+<div class="section" id="id185">
+
+<div class="line-block">
+<div class="line">Bridge Pattern</div>
+</div>
+<div class="line-block">
+<div class="line">“abstraction and its implementation</div>
+<div class="line">in separate class hierarchies”</div>
+</div>
+</div>
+<div class="section" id="id186">
+
+<div class="line-block">
+<div class="line">“S” in SOLID:</div>
+<div class="line"><br /></div>
+<div class="line">Single Responsibility Principle</div>
+<div class="line">“class should have only one reason to change”</div>
+</div>
+</div>
+<div class="section" id="id187">
+
+<div class="line-block">
+<div class="line">Alas, the <tt class="docutils literal">BaseServer</tt> has</div>
+<div class="line"><em>many</em> reasons to change!</div>
+</div>
+</div>
+<div class="section" id="id188">
+
+<div class="highlight"><pre><span></span><span class="n">finish_request</span><span class="p">()</span>             <span class="n">C</span>
+<span class="n">get_request</span><span class="p">()</span>             <span class="n">B</span><span class="o">*</span>
+<span class="n">handle_error</span><span class="p">()</span>                 <span class="n">D</span><span class="o">*</span>
+<span class="n">handle_request</span><span class="p">()</span>       <span class="n">A</span>
+<span class="n">handle_timeout</span><span class="p">()</span>               <span class="n">D</span><span class="o">*</span>
+<span class="n">process_request</span><span class="p">()</span>         <span class="n">B</span><span class="o">*</span>
+<span class="n">serve_forever</span><span class="p">()</span>    <span class="n">API</span>
+<span class="n">server_activate</span><span class="p">()</span>      <span class="n">A</span><span class="o">*</span>
+<span class="n">server_bind</span><span class="p">()</span>          <span class="n">A</span><span class="o">*</span>
+<span class="n">server_close</span><span class="p">()</span>     <span class="n">API</span>
+<span class="n">service_actions</span><span class="p">()</span>      <span class="n">A</span><span class="o">*</span>
+<span class="n">shutdown</span><span class="p">()</span>         <span class="n">API</span>
+<span class="n">verify_request</span><span class="p">()</span>          <span class="n">B</span><span class="o">*</span>
+</pre></div>
+
+</div>
+<div class="section" id="id189">
+
+<div class="highlight"><pre><span></span><span class="n">Server</span>            <span class="n">Port</span>       <span class="n">Service</span>
+<span class="err">─────────────────</span> <span class="err">──────────</span> <span class="err">─────────────────</span>
+<span class="n">serve_forever</span><span class="p">()</span>   <span class="n">bind</span><span class="p">()</span>     <span class="n">service_actions</span><span class="p">()</span>
+<span class="n">process_request</span><span class="p">()</span> <span class="n">activate</span><span class="p">()</span> <span class="n">verify_request</span><span class="p">()</span>
+<span class="n">shutdown</span><span class="p">()</span>        <span class="n">get</span><span class="p">()</span>      <span class="n">handle_request</span><span class="p">()</span>
+                  <span class="n">close</span><span class="p">()</span>    <span class="n">handle_error</span><span class="p">()</span>
+                             <span class="n">handle_timeout</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id190">
+
+<div class="line-block">
+<div class="line">Yes: three different classes</div>
+<div class="line">to wrap a <strong>single</strong> actual resource!</div>
+</div>
+</div>
+<div class="section" id="id191">
+
+<div class="highlight"><pre><span></span>         <span class="err">↗</span> <span class="o">&lt;</span><span class="n">Port</span><span class="o">&gt;</span> <span class="err">→</span> <span class="o">&lt;</span><span class="n">listening</span> <span class="n">socket</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">Server</span><span class="o">&gt;</span>
+         <span class="err">↘</span> <span class="o">&lt;</span><span class="n">Service</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id192">
+
+<div class="line-block">
+<div class="line">Q: So, how does the <tt class="docutils literal">BaseServer</tt> class</div>
+<div class="line">survive needing to be customized in</div>
+<div class="line">different directions at once?</div>
+</div>
+</div>
+<div class="section" id="id193">
+
+<div class="line-block">
+<div class="line">A: Mixins!</div>
+</div>
+</div>
+<div class="section" id="id194">
+
+<div class="highlight"><pre><span></span><span class="c1"># Mixin does not inherit from anything else</span>
+<span class="k">class</span> <span class="nc">ThreadingMixIn</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="o">...</span>
+
+<span class="c1"># By listing mixin first, its methods get</span>
+<span class="c1"># priority over those of the other class</span>
+<span class="k">class</span> <span class="nc">MyService</span><span class="p">(</span><span class="n">ThreadingMixIn</span><span class="p">,</span> <span class="n">BaseServer</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id195">
+
+<div class="highlight"><pre><span></span>       <span class="n">socketserver</span>
+
+          <span class="err">┐</span>   <span class="err">┌</span>
+<span class="n">TCPServer</span> <span class="err">│</span>   <span class="err">│</span> <span class="n">ForkingMixIn</span>
+<span class="n">UDPServer</span> <span class="err">│</span> <span class="err">×</span> <span class="err">│</span> <span class="n">ThreadingMixIn</span>
+          <span class="err">┘</span>   <span class="err">└</span>
+</pre></div>
+
+</div>
+<div class="section" id="id196">
+
+<div class="line-block">
+<div class="line">Mixins let you extend a class</div>
+<div class="line">in <em>several directions</em> at the same time</div>
+<div class="line">without solving the actual problem:</div>
+<div class="line">that the class is too <strong>complicated</strong></div>
+</div>
+</div>
+<div class="section" id="id197">
+
+<div class="line-block">
+<div class="line"><em>m×n</em> → Mixins → Bridge Pattern → Pipeline</div>
+</div>
+</div>
+<div class="section" id="id198">
+
+<div class="line-block">
+<div class="line">It’s nearly 2020,</div>
+<div class="line">but new Python books are</div>
+<div class="line"><em>still</em> recommending mixins</div>
+</div>
+</div>
+<div class="section" id="id199">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HybridDetailView</span><span class="p">(</span>
+    <span class="n">JSONResponseMixin</span><span class="p">,</span>
+    <span class="n">SingleObjectTemplateResponseMixin</span><span class="p">,</span>
+    <span class="n">BaseDetailView</span>
+<span class="p">):</span> <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id200">
+
+<div class="line-block">
+<div class="line">Poor architecture is going</div>
+<div class="line">to happen despite our best efforts,</div>
+<div class="line">so it’s <em>wonderful</em> that Python has <strong>powerful</strong></div>
+<div class="line">mechanisms for surviving it</div>
+</div>
+</div>
+<div class="section" id="id201">
+
+<div class="line-block">
+<div class="line"><strong>But:</strong> Mixins too often become</div>
+<div class="line"><em>routine</em> instead of an <strong>emergency</strong></div>
+<div class="line">survival mechanism</div>
+</div>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="id202">
+
+<div class="line-block">
+<div class="line">Conclusion</div>
+<div class="line"><br /></div>
+<div class="line">Python is a <em>flexible</em></div>
+<div class="line">and <strong>powerful</strong> language</div>
+</div>
+</div>
+<div class="section" id="id203">
+
+<div class="line-block">
+<div class="line">It’s <em>so powerful</em> that we often</div>
+<div class="line"><strong>work around</strong> poor architecture</div>
+<div class="line">without noticing it</div>
+</div>
+</div>
+<div class="section" id="id204">
+
+<div class="line-block">
+<div class="line">A powerful language <em>by itself</em></div>
+<div class="line">is not enough</div>
+</div>
+</div>
+<div class="section" id="id205">
+
+<div class="line-block">
+<div class="line">The <em>ease</em> and <em>power</em> of the Python language need</div>
+<div class="line">to be combined with the experience of its <strong>community</strong></div>
+<div class="line">for healthy long-term software projects</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">&#64;brandon_rhodes</tt></div>
+</div>
+<!-- Description on their site
+‘Just because a programming pattern or convention becomes popular
+doesn’t always mean it’s a good idea! Let’s dig into the consensus
+the Python community has built around what constitutes “Pythonic”
+code and look at the cases where the conventional wisdom is wrong. In
+the process, we’ll learn how code in a dynamic language can become
+more readable and more effective’ -->
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script>
+  window.slide_transition_time = 2000;
+  $('video').map(function(i, el) {el.play()});
+</script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

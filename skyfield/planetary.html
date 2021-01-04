@@ -1,0 +1,228 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planetary Reference Frames</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="planetary-reference-frames">
+<h1>Planetary Reference Frames<a class="headerlink" href="#planetary-reference-frames" title="Permalink to this headline">¶</a></h1>
+<p>Skyfield has limited support for planetary reference frames
+as defined in Jet Propulsion Lab data files.
+It supports:</p>
+<ul class="simple">
+<li>Loading <code class="docutils literal notranslate"><span class="pre">.tf</span></code> and <code class="docutils literal notranslate"><span class="pre">.tpc</span></code> text files
+defining a wide array of planetary constants.</li>
+<li>Loading <code class="docutils literal notranslate"><span class="pre">.bcp</span></code> binary arrays
+that predict the orientation in space of Solar System bodies
+over a range of dates.</li>
+<li>Given a latitude and longitude on a Solar System body like the Moon that is
+(a)&nbsp;spherical and
+(b)&nbsp;whose orientation is defined by a data series in a <code class="docutils literal notranslate"><span class="pre">.bcp</span></code> file,
+computing that surface position’s location in space —
+allowing observations either from the point of view of that surface position,
+or observations of that surface position
+for other observers in the Solar System.</li>
+</ul>
+<p>This leaves several features of such files still unsupported, though.
+Skyfield:</p>
+<ul class="simple">
+<li><em>Cannot</em> yet support a planetary reference frame
+whose orientation is described as a numeric series
+directly a text file.</li>
+<li><em>Cannot</em> yet compute latitude and longitude positions
+on the surface of non-spherical objects,
+whose three axes in the text file are not the same length.</li>
+</ul>
+<p>It is expected that support for these features will be added someday,
+making Skyfield’s support for planetary constants complete.</p>
+<div class="section" id="observing-a-moon-location">
+<h2>Observing a Moon location<a class="headerlink" href="#observing-a-moon-location" title="Permalink to this headline">¶</a></h2>
+<p>Here is how you would load up enough data
+to predict where in the sky you would point a telescope
+to see a particular latitude and longitude on the Moon —
+in this example, the famous Aristarchus crater.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">PlanetaryConstants</span><span class="p">,</span> <span class="n">load</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+<span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">earth</span><span class="p">,</span> <span class="n">moon</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;moon&#39;</span><span class="p">]</span>
+
+<span class="n">pc</span> <span class="o">=</span> <span class="n">PlanetaryConstants</span><span class="p">()</span>
+<span class="n">pc</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;moon_080317.tf&#39;</span><span class="p">))</span>
+<span class="n">pc</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;pck00008.tpc&#39;</span><span class="p">))</span>
+<span class="n">pc</span><span class="o">.</span><span class="n">read_binary</span><span class="p">(</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;moon_pa_de421_1900-2050.bpc&#39;</span><span class="p">))</span>
+
+<span class="n">frame</span> <span class="o">=</span> <span class="n">pc</span><span class="o">.</span><span class="n">build_frame_named</span><span class="p">(</span><span class="s1">&#39;MOON_ME_DE421&#39;</span><span class="p">)</span>
+<span class="n">aristarchus</span> <span class="o">=</span> <span class="n">moon</span> <span class="o">+</span> <span class="n">pc</span><span class="o">.</span><span class="n">build_latlon_degrees</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="mf">26.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">46.8</span><span class="p">)</span>
+
+<span class="n">apparent</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">aristarchus</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">apparent</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>13h 03m 22.96s
+-00deg 55&#39; 27.3&quot;
+</pre></div>
+</div>
+<p>If your Moon location has a nonzero elevation
+placing it above or below the Moon’s “sea level”,
+you can provide <code class="docutils literal notranslate"><span class="pre">build_latlon_degrees()</span></code>
+with an extra <code class="docutils literal notranslate"><span class="pre">elevation_m</span></code> argument.</p>
+</div>
+<div class="section" id="observing-from-a-moon-location">
+<h2>Observing from a Moon location<a class="headerlink" href="#observing-from-a-moon-location" title="Permalink to this headline">¶</a></h2>
+<p>You can also ask Skyfield:
+where in the sky would an astronaut standing on the Moon look
+to see a particular Solar System body?
+The answer can be provided in either right ascension and declination
+coordinates against the background of stars,
+or in altitude and azimuth measured against the astronaut’s horizon.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">PlanetaryConstants</span><span class="p">,</span> <span class="n">load</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+<span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">earth</span><span class="p">,</span> <span class="n">moon</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;moon&#39;</span><span class="p">]</span>
+
+<span class="n">pc</span> <span class="o">=</span> <span class="n">PlanetaryConstants</span><span class="p">()</span>
+<span class="n">pc</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;moon_080317.tf&#39;</span><span class="p">))</span>
+<span class="n">pc</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;pck00008.tpc&#39;</span><span class="p">))</span>
+<span class="n">pc</span><span class="o">.</span><span class="n">read_binary</span><span class="p">(</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;moon_pa_de421_1900-2050.bpc&#39;</span><span class="p">))</span>
+
+<span class="n">frame</span> <span class="o">=</span> <span class="n">pc</span><span class="o">.</span><span class="n">build_frame_named</span><span class="p">(</span><span class="s1">&#39;MOON_ME_DE421&#39;</span><span class="p">)</span>
+<span class="n">aristarchus</span> <span class="o">=</span> <span class="n">moon</span> <span class="o">+</span> <span class="n">pc</span><span class="o">.</span><span class="n">build_latlon_degrees</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="mf">26.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">46.8</span><span class="p">)</span>
+
+<span class="n">apparent</span> <span class="o">=</span> <span class="n">aristarchus</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">earth</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">apparent</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+
+<span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">apparent</span><span class="o">.</span><span class="n">altaz</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">alt</span><span class="p">,</span> <span class="s1">&#39;degrees above the horizon&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="s1">&#39;degrees around the horizon from north&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>01h 03m 22.96s
++00deg 55&#39; 27.3&quot;
+32deg 27&#39; 09.7&quot; degrees above the horizon
+118deg 12&#39; 55.9&quot; degrees around the horizon from north
+</pre></div>
+</div>
+</div>
+<div class="section" id="computing-the-sub-solar-point-on-the-moon">
+<h2>Computing the sub-solar point on the Moon<a class="headerlink" href="#computing-the-sub-solar-point-on-the-moon" title="Permalink to this headline">¶</a></h2>
+<p>This works not only for the Sun,
+but for any target body.
+You can learn the Moon latitude and longitude directly beneath the body
+by observing the target from the Moon’s center
+and then asking the lunar reference frame
+for the latitude and longitude.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sun</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Sun&#39;</span><span class="p">]</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">moon</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+<span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">frame_latlon</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+<span class="n">lon_degrees</span> <span class="o">=</span> <span class="p">(</span><span class="n">lon</span><span class="o">.</span><span class="n">degrees</span> <span class="o">+</span> <span class="mf">180.0</span><span class="p">)</span> <span class="o">%</span> <span class="mf">360.0</span> <span class="o">-</span> <span class="mf">180.0</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sub-solar latitude: </span><span class="si">{:.1f}</span><span class="s1"> degrees&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sub-solar longitude: </span><span class="si">{:.1f}</span><span class="s1"> degrees&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lon_degrees</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Sub-solar latitude: 0.3 degrees
+Sub-solar longitude: -104.9 degrees
+</pre></div>
+</div>
+</div>
+<div class="section" id="computing-lunar-libration">
+<h2>Computing lunar libration<a class="headerlink" href="#computing-lunar-libration" title="Permalink to this headline">¶</a></h2>
+<p>The Moon’s libration is expressed
+as the latitude and longitude of the Moon location
+that is currently nearest the Earth.
+The convention seems to be that the simple geometric difference
+between the Earth’s and Moon’s positions are used,
+rather than the light-delayed position.
+Thus:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">earth</span> <span class="o">-</span> <span class="n">moon</span><span class="p">)</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">frame_latlon</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+<span class="n">lon_degrees</span> <span class="o">=</span> <span class="p">(</span><span class="n">lon</span><span class="o">.</span><span class="n">degrees</span> <span class="o">+</span> <span class="mf">180.0</span><span class="p">)</span> <span class="o">%</span> <span class="mf">360.0</span> <span class="o">-</span> <span class="mf">180.0</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Libration in latitude: </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Libration in longitude: </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lon_degrees</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Libration in latitude: -6.749
+Libration in longitude: 1.520
+</pre></div>
+</div>
+<p>The only subtlety is that the libration longitude
+is not expressed as a number between 0° and 360°,
+as would be more usual for longitude,
+but instead as an offset positive or negative from zero,
+which the above code accomplishes with some quick subtraction and modulo.</p>
+</div>
+<div class="section" id="computing-a-raw-rotation-matrix">
+<h2>Computing a raw rotation matrix<a class="headerlink" href="#computing-a-raw-rotation-matrix" title="Permalink to this headline">¶</a></h2>
+<p>If you are directly manipulating vectors,
+you might simply want Skyfield to compute the NumPy rotation matrix
+for rotating vectors from the ICRF into the frame of reference
+of the Solar System body.
+The <code class="docutils literal notranslate"><span class="pre">frame</span></code> object returned above
+can return these matrices directly.
+If given a single time <code class="docutils literal notranslate"><span class="pre">t</span></code>,
+the result will be a simple 3×3 matrix.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">PlanetaryConstants</span><span class="p">,</span> <span class="n">load</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+<span class="n">pc</span> <span class="o">=</span> <span class="n">PlanetaryConstants</span><span class="p">()</span>
+<span class="n">pc</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;moon_080317.tf&#39;</span><span class="p">))</span>
+<span class="n">pc</span><span class="o">.</span><span class="n">read_binary</span><span class="p">(</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;moon_pa_de421_1900-2050.bpc&#39;</span><span class="p">))</span>
+
+<span class="n">frame</span> <span class="o">=</span> <span class="n">pc</span><span class="o">.</span><span class="n">build_frame_named</span><span class="p">(</span><span class="s1">&#39;MOON_ME_DE421&#39;</span><span class="p">)</span>
+
+<span class="n">R</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">rotation_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(3, 3)
+</pre></div>
+</div>
+<p>An array of times, by contrast,
+will return an array of matrices
+whose last dimension is as deep as the time vector is long.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">rotation_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(10,)
+(3, 3, 10)
+</pre></div>
+</div>
+<p>The transpose <code class="docutils literal notranslate"><span class="pre">R.T</span></code> of the rotation matrix
+can be used to rotate vectors
+that are already in the reference frame of the body
+back into a standard ICRF vector.</p>
+</div>
+</div>
+
+  </body>
+</html>

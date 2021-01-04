@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — Planetary Ephemerides</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-planetary-ephemerides">
+<h1>API Reference — Planetary Ephemerides<a class="headerlink" href="#api-reference-planetary-ephemerides" title="Permalink to this headline">¶</a></h1>
+<p>See <a class="reference internal" href="planets.html"><span class="doc">Planets, and Choosing an Ephemeris</span></a> for a guide to using the ephemeris objects below
+to compute the positions of planets, moons, and the Sun.</p>
+<div class="section" id="jpl-bsp-ephemeris-files">
+<h2>JPL .bsp ephemeris files<a class="headerlink" href="#jpl-bsp-ephemeris-files" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="skyfield.jpllib.SpiceKernel">
+<em class="property">class </em><code class="descclassname">skyfield.jpllib.</code><code class="descname">SpiceKernel</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.jpllib.SpiceKernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ephemeris file in NASA .bsp format.</p>
+<p>A “Spacecraft and Planet Kernel” (SPK) file from NASA provides
+(x,y,z) coordinates for bodies in the Solar System like the Sun,
+planets, moons, and spacecraft.</p>
+<p>You can download a .bsp file yourself and use this class to open it,
+or use the Skyfield <code class="docutils literal notranslate"><span class="pre">load()</span></code> function to automatically download a
+popular ephemeris.  Once loaded, you can print this object to the
+screen to see a report on the segments that it includes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">planets</span><span class="p">)</span>
+<span class="go">SPICE kernel file &#39;de421.bsp&#39; has 15 segments</span>
+<span class="go">  JD 2414864.50 - JD 2471184.50  (1899-07-28 through 2053-10-08)</span>
+<span class="go">      0 -&gt; 1    SOLAR SYSTEM BARYCENTER -&gt; MERCURY BARYCENTER</span>
+<span class="go">      0 -&gt; 2    SOLAR SYSTEM BARYCENTER -&gt; VENUS BARYCENTER</span>
+<span class="go">      0 -&gt; 3    SOLAR SYSTEM BARYCENTER -&gt; EARTH BARYCENTER</span>
+<span class="go">      0 -&gt; 4    SOLAR SYSTEM BARYCENTER -&gt; MARS BARYCENTER</span>
+<span class="go">      0 -&gt; 5    SOLAR SYSTEM BARYCENTER -&gt; JUPITER BARYCENTER</span>
+<span class="go">      0 -&gt; 6    SOLAR SYSTEM BARYCENTER -&gt; SATURN BARYCENTER</span>
+<span class="go">      0 -&gt; 7    SOLAR SYSTEM BARYCENTER -&gt; URANUS BARYCENTER</span>
+<span class="go">      0 -&gt; 8    SOLAR SYSTEM BARYCENTER -&gt; NEPTUNE BARYCENTER</span>
+<span class="go">      0 -&gt; 9    SOLAR SYSTEM BARYCENTER -&gt; PLUTO BARYCENTER</span>
+<span class="go">      0 -&gt; 10   SOLAR SYSTEM BARYCENTER -&gt; SUN</span>
+<span class="go">      3 -&gt; 301  EARTH BARYCENTER -&gt; MOON</span>
+<span class="go">      3 -&gt; 399  EARTH BARYCENTER -&gt; EARTH</span>
+<span class="go">      1 -&gt; 199  MERCURY BARYCENTER -&gt; MERCURY</span>
+<span class="go">      2 -&gt; 299  VENUS BARYCENTER -&gt; VENUS</span>
+<span class="go">      4 -&gt; 499  MARS BARYCENTER -&gt; MARS</span>
+</pre></div>
+</div>
+<p>To retrieve the one or more vectors necessary to compute the
+position of a body relative to the Solar System barycenter, look up
+the body by its name or official SPICE identifying integer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">planets</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
+<span class="go">&lt;VectorSum of 2 vectors:</span>
+<span class="go"> &#39;de421.bsp&#39; segment 0 SOLAR SYSTEM BARYCENTER -&gt; 3 EARTH BARYCENTER</span>
+<span class="go"> &#39;de421.bsp&#39; segment 3 EARTH BARYCENTER -&gt; 399 EARTH&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">planets</span><span class="p">[</span><span class="mi">499</span><span class="p">]</span>
+<span class="go">&lt;VectorSum of 2 vectors:</span>
+<span class="go"> &#39;de421.bsp&#39; segment 0 SOLAR SYSTEM BARYCENTER -&gt; 4 MARS BARYCENTER</span>
+<span class="go"> &#39;de421.bsp&#39; segment 4 MARS BARYCENTER -&gt; 499 MARS&gt;</span>
+</pre></div>
+</div>
+<p>The result will be a <a class="reference internal" href="api-vectors.html#skyfield.vectorlib.VectorFunction" title="skyfield.vectorlib.VectorFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">VectorFunction</span></code></a>
+instance that you can ask for a position at a given input time.</p>
+<dl class="method">
+<dt id="skyfield.jpllib.SpiceKernel.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.jpllib.SpiceKernel.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close this ephemeris file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.jpllib.SpiceKernel.comments">
+<code class="descname">comments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.jpllib.SpiceKernel.comments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the comments string of this kernel.</p>
+<p>The resulting string often contains embedded newlines, and is
+formatted for a human reader.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">planets</span><span class="o">.</span><span class="n">comments</span><span class="p">())</span>
+<span class="go">; de421.bsp LOG FILE</span>
+<span class="go">;</span>
+<span class="go">; Created 2008-02-12/11:33:34.00.</span>
+<span class="gp">...</span>
+<span class="go">LEAPSECONDS_FILE    = naif0007.tls</span>
+<span class="go">SPK_FILE            = de421.bsp</span>
+<span class="gp">...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.jpllib.SpiceKernel.names">
+<code class="descname">names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.jpllib.SpiceKernel.names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all target names that are valid with this kernel.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">planets</span><span class="o">.</span><span class="n">names</span><span class="p">())</span>
+<span class="go">{0: [&#39;SOLAR_SYSTEM_BARYCENTER&#39;, &#39;SSB&#39;, &#39;SOLAR SYSTEM BARYCENTER&#39;],</span>
+<span class="go"> 1: [&#39;MERCURY_BARYCENTER&#39;, &#39;MERCURY BARYCENTER&#39;],</span>
+<span class="go"> 2: [&#39;VENUS_BARYCENTER&#39;, &#39;VENUS BARYCENTER&#39;],</span>
+<span class="go"> 3: [&#39;EARTH_BARYCENTER&#39;,</span>
+<span class="go">     &#39;EMB&#39;,</span>
+<span class="go"> ...</span>
+</pre></div>
+</div>
+<p>The result is a dictionary with target code keys and name lists
+as values.  The last name in each list is the one that Skyfield
+uses when printing information about a body.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.jpllib.SpiceKernel.decode">
+<code class="descname">decode</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.jpllib.SpiceKernel.decode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate a target name into its integer code.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">planets</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;Venus&#39;</span><span class="p">)</span>
+<span class="go">299</span>
+</pre></div>
+</div>
+<p>Raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> if you supply an unknown name, or
+<code class="docutils literal notranslate"><span class="pre">KeyError</span></code> if the target is missing from this kernel.  You can
+supply an integer code if you already have one and just want to
+check whether it is present in this kernel.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,46 @@
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>An index map of Harvey Butchart’s Grand Canyon quadrangles</title>
+  <style>
+    #map {height: 80%; width: 100%;}
+    p {max-width: 40em;}
+  </style>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+    crossorigin=""/>
+  <script
+    src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+    integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+    crossorigin=""></script>
+</head>
+<body>
+  <h1>An index map of Harvey Butchart’s Grand Canyon quadrangles</h1>
+  <p>
+    The <a href="http://www.nau.edu/library">Cline Library</a>
+    of <a href="https://nau.edu/">Northern Arizona University</a>
+    hosts the Harvey Butchart Collection,
+    the maps and trail logs
+    of famed Grand Canyon backpacker Harvey Butchart (1907–2002)
+    who taught in their mathematics department.
+    They have generously made the entire collection
+    available on their web site:
+  </p>
+  <p>
+    <a href="http://archive.library.nau.edu/cdm/ref/collection/cpa/id/66650"
+       >Table of Contents, J. Harvey Butchart Hiking Log, 1954-1987</a>
+  </p>
+  <p>
+    But they list his annotated Grand Canyon National Park topographic maps
+    and USGS quadrangles alphabetically, by name,
+    which makes them difficult to browse.
+    So I have constructed the following index map —
+    simply click on one of the orange boxes
+    to open the map covering that area:
+  </p>
+  <div id="map"></div>
+  <div id="map-canvas"></div>
+  <script src="quad_data.js"></script>
+  <script src="script.js"></script>

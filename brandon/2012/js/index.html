@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JavaScript Breaks Math</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>JavaScript Breaks Math</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>15 January 2012</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">computing, python</td>
+</tr>
+</tbody>
+</table>
+<p>Why do we Python programmers
+stay so annoyed with JavaScript's broken <tt class="docutils literal">this</tt> keyword?
+After all, every programming language has rough edges.
+The problem with <tt class="docutils literal">this</tt> even turns out to be easy to work around
+once you learn the knack.
+So why does it feel like JavaScript has committed a fresh offense
+every time we trip over&nbsp;it?</p>
+<p>The answer, I suggest, is that JavaScript manages to disturb
+very deep mental scaffolds
+with the behavior of the <tt class="docutils literal">this</tt> keyword.
+Not all programming language annoyances are created equal.
+Some involve inconsistency within a language itself,
+when a pattern set up by one feature is broken by another
+(think of method names in the Python Standard Library).
+More serious issues can involve hassles with a language's syntax
+or poor behaviors within its type system.
+But in this case JavaScript decided
+that it would abandon a key property
+of the system that lies <em>beneath</em> it —
+that it would break the conventions that,
+in fact, underlie all programming languages.</p>
+<p>JavaScript decided that it would break <em>mathematics.</em></p>
+<p>Let me explain by starting with a simple example.
+You are already familiar with operator precedence,
+and how multiplication binds more tightly than
+addition when both operators appear in the same expression.
+In the following expression,
+<em>a</em> will first be multiplied with <em>b</em>,
+then the result of that operation will be added to <em>c</em>.</p>
+<div class="line-block">
+<div class="line">(1)</div>
+<div class="line"><em>n</em> = <em>a</em> × <em>b</em> + <em>c</em></div>
+</div>
+<p>There is, in other words,
+a hidden intermediate result inside of this equation:
+the result of the multiplication.
+So&nbsp;(1) is, in fact, a shorthand
+for writing this sequence of two separate binary operations:</p>
+<div class="line-block">
+<div class="line">(2)</div>
+<div class="line"><em>x</em> = <em>a</em> × <em>b</em></div>
+<div class="line"><em>n</em> = <em>x</em> + <em>c</em></div>
+</div>
+<p>Note that our ability to transform (1) into the pair of lines (2)
+does not involve any special properties of the operators themselves.
+This does <em>not</em> illustrate some special feature
+of multiplication or addition,
+like the Distributive Property!
+Instead, we are working down at the lower and more fundamental level
+of asking what a complex math expression even <em>means</em>.
+So while we must use argument and proof
+to learn that addition is commutative,
+the operators and their precedence are simply
+a matter of <em>definition</em> —
+of what we decide it means when we string symbols together
+to form an expression in the first place.</p>
+<p>Now it turns out that the familiar programming language idiom
+of calling a method in a language like Python or JavaScript
+is quite precisely analogous to expression&nbsp;(1),
+because it separates three symbols
+with a pair of binary operators,
+where the left operator binds most tightly:</p>
+<div class="highlight"><pre><span class="p">(</span><span class="mi">3</span><span class="p">)</span>   <span class="n">n</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">b</span><span class="p">(</span><span class="n">c</span><span class="p">)</span></pre></div>
+
+<p>Until a programmer really grasps what it means
+for a language to have “first-class functions” —
+functions that can themselves be manipulated as values —
+it might be difficult to see that <tt class="docutils literal">a.b</tt>
+makes quite good sense simply standing by itself.
+It means “take the <tt class="docutils literal">a</tt> object,
+look and see whether it has an attribute named <tt class="docutils literal">b</tt>,
+and resolve the value of that attribute.”
+And so <tt class="docutils literal">a.b</tt> works perfectly in front of <tt class="docutils literal">(c)</tt>
+so long as the result of the attribute lookup
+happens to return a callable.</p>
+<p>So expression (3) can be decomposed like expression (1),
+and in Python the following two steps are
+exactly equivalent to statement (3) —
+except, of course, for defining an extra local variable <tt class="docutils literal">fn</tt>:</p>
+<div class="highlight"><pre><span class="p">(</span><span class="mi">4</span><span class="p">)</span>    <span class="n">fn</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">b</span>
+       <span class="n">n</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">c</span><span class="p">)</span></pre></div>
+
+<p>This is, again, simply a property of how expressions work in math —
+of the fact that you ought to be able to compute intermediate results
+by pulling an expression apart into its constituent binary operations.
+But, alas, JavaScript decided to break this property of expressions,
+and makes extra invisible magic happen
+when the two operators are used in combination —
+magic that does not happen when they are separated into separate steps.
+Or, perhaps there is a more interesting way to think about it:</p>
+<div class="highlight"><pre><span class="cm">/* In JavaScript this is NOT a pair of binary operations. It is a SINGLE</span>
+<span class="cm">   ternary operator that, to sow confusion among programmers, happens to</span>
+<span class="cm">   use the same symbols as two well-known binary operations. */</span>
+
+<span class="nx">a</span><span class="p">.</span><span class="nx">b</span><span class="p">(</span><span class="nx">c</span><span class="p">);</span>
+
+<span class="cm">/* This ternary operator is roughly equivalent to: */</span>
+
+<span class="kd">var</span> <span class="nx">fn</span> <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">b</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">old_this</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+<span class="k">this</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+<span class="nx">fn</span><span class="p">(</span><span class="nx">c</span><span class="p">);</span>
+<span class="k">this</span> <span class="o">=</span> <span class="nx">old_this</span><span class="p">;</span></pre></div>
+
+<p>Younger programmers,
+for whom <tt class="docutils literal">a.b(c)</tt> is simply a gesture,
+may find our distaste for JavaScript's behavior inexplicable.
+The problem is worst
+for the experienced programmer or mathematician,
+who — every time she types it —
+remembers what the dot and parentheses really mean
+as clean and separate operations,
+but has to remember that their meanings change
+when they appear in combination.
+This semantic instability flaunts a very long tradition
+of defining math operators
+so that expressions can be composed together
+and broken down again
+without changing their meaning.</p>
+<p>And that, I think, is why it annoys us:
+because from early grade school through college
+we have learned that math expressions compose and decompose cleanly,
+and JavaScript takes that symmetry away.</p>
+<p>One last note for newer Python programmers reading this:
+you might be suspecting that Python itself has some kind of magic
+involved here, because how else could it remember later
+whether you had pulled method <tt class="docutils literal">fn</tt>
+off of the specific object <tt class="docutils literal">a</tt>
+instead of off some other instance of that class?
+The answer is that every lookup of an instance method
+returns a new object, called a <em>bound method</em>,
+that remembers the object on which the lookup took place.</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">class</span> <span class="n">C</span><span class="o">:</span>
+<span class="p">...</span>     <span class="n">def</span> <span class="n">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span><span class="o">:</span>
+<span class="p">...</span>         <span class="n">self</span><span class="p">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+<span class="p">...</span>     <span class="n">def</span> <span class="n">__repr__</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="o">:</span>
+<span class="p">...</span>         <span class="k">return</span> <span class="err">&#39;</span><span class="n">C</span><span class="o">%</span><span class="n">d</span><span class="err">&#39;</span> <span class="o">%</span> <span class="n">self</span><span class="p">.</span><span class="n">n</span>
+<span class="p">...</span>     <span class="n">def</span> <span class="n">fn</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span><span class="o">:</span>
+<span class="p">...</span>         <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">n</span> <span class="o">+</span> <span class="n">m</span>
+<span class="p">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="mi">220</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">.</span><span class="n">fn</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">C</span><span class="p">.</span><span class="n">fn</span> <span class="n">of</span> <span class="n">C100</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span><span class="p">.</span><span class="n">fn</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">C</span><span class="p">.</span><span class="n">fn</span> <span class="n">of</span> <span class="n">C220</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span><span class="p">.</span><span class="n">fn</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="mi">225</span></pre></div>
+
+<p>What about your own least favorite language features,
+whether in JavaScript, Python, or something else?
+Are they all simply about scruples and inconvenience?
+Or can you identify some deep-seated assumptions
+of your own mental scaffolding
+that keep ruining your experience with a specific language?
+Let us know in the comments!</p>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'rhodesmill';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<p class="byline">©2020</p>
+
+</body>
+</html>

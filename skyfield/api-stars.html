@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — Stars and other distant objects</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-stars-and-other-distant-objects">
+<h1>API Reference — Stars and other distant objects<a class="headerlink" href="#api-reference-stars-and-other-distant-objects" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="skyfield.starlib.Star">
+<em class="property">class </em><code class="descclassname">skyfield.starlib.</code><code class="descname">Star</code><span class="sig-paren">(</span><em>ra=None</em>, <em>dec=None</em>, <em>ra_hours=None</em>, <em>dec_degrees=None</em>, <em>ra_mas_per_year=0.0</em>, <em>dec_mas_per_year=0.0</em>, <em>parallax_mas=0.0</em>, <em>radial_km_per_s=0.0</em>, <em>names=()</em>, <em>epoch=2451545.0</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.starlib.Star" title="Permalink to this definition">¶</a></dt>
+<dd><p>The position in the sky of a star or other fixed object.</p>
+<p>Each <a class="reference internal" href="#skyfield.starlib.Star" title="skyfield.starlib.Star"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Star</span></code></a> object specifies the position of a distant object.  You
+should provide as a right ascension and declination relative to the
+ICRS (the recent improvement upon J2000).  You can specify the
+coordinates using either floating point hours and degrees, or tuples
+that specify hour and degree fractions as minutes and seconds, or
+even full Skyfield <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> objects (which can
+themselves be initialized using hours, degrees, or radians):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">barnard</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">ra_hours</span><span class="o">=</span><span class="mf">17.963471675</span><span class="p">,</span> <span class="n">dec_degrees</span><span class="o">=</span><span class="mf">4.69339088889</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">barnard</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">ra_hours</span><span class="o">=</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mf">48.49</span><span class="p">),</span> <span class="n">dec_degrees</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mf">36.20</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">barnard</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mf">17.963471675</span><span class="p">),</span>
+<span class="gp">... </span>               <span class="n">dec</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="n">degrees</span><span class="o">=</span><span class="mf">4.69339088889</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>For objects whose proper motion across the sky has been detected,
+you can supply velocities in milliarcseconds (mas) per year, and
+even a parallax and radial velocity if those are known:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">barnard</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">ra_hours</span><span class="o">=</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mf">48.49803</span><span class="p">),</span>
+<span class="gp">... </span>               <span class="n">dec_degrees</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mf">36.2072</span><span class="p">),</span>
+<span class="gp">... </span>               <span class="n">ra_mas_per_year</span><span class="o">=-</span><span class="mf">798.71</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="n">dec_mas_per_year</span><span class="o">=+</span><span class="mf">10337.77</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="n">parallax_mas</span><span class="o">=</span><span class="mf">545.4</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="n">radial_km_per_s</span><span class="o">=-</span><span class="mf">110.6</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="stars.html"><span class="doc">Stars and Distant Objects</span></a> for a guide to using a <a class="reference internal" href="#skyfield.starlib.Star" title="skyfield.starlib.Star"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Star</span></code></a> once you have created it.</p>
+</dd></dl>
+
+</div>
+
+  </body>
+</html>

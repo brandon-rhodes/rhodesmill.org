@@ -1,0 +1,490 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — Astronomical Positions</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-astronomical-positions">
+<h1>API Reference — Astronomical Positions<a class="headerlink" href="#api-reference-astronomical-positions" title="Permalink to this headline">¶</a></h1>
+<p>See <a class="reference internal" href="positions.html"><span class="doc">Positions and Coordinates</span></a> for a detailed guide
+to these various kinds of position that Skyfield can compute,
+and to the selection of coordinate systems
+that can be used to express them.</p>
+<div class="section" id="generic-icrf-position">
+<h2>Generic ICRF position<a class="headerlink" href="#generic-icrf-position" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="skyfield.positionlib.ICRF">
+<em class="property">class </em><code class="descclassname">skyfield.positionlib.</code><code class="descname">ICRF</code><span class="sig-paren">(</span><em>position_au</em>, <em>velocity_au_per_d=None</em>, <em>t=None</em>, <em>center=None</em>, <em>target=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF" title="Permalink to this definition">¶</a></dt>
+<dd><p>An (x,y,z) position and velocity oriented to the ICRF axes.</p>
+<p>The International Coordinate Reference Frame (ICRF) is a permanent
+reference frame that is the replacement for J2000.  Their axes agree
+to within 0.02 arcseconds.  It also supersedes older equinox-based
+systems like B1900 and B1950.</p>
+<p>Each instance of this class provides a <code class="docutils literal notranslate"><span class="pre">.position</span></code> vector and a
+<code class="docutils literal notranslate"><span class="pre">.velocity</span></code> vector that specify (x,y,z) coordinates along the axes
+of the ICRF.  A specific time <code class="docutils literal notranslate"><span class="pre">.t</span></code> might be specified or might be
+<code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dl class="attribute">
+<dt id="skyfield.positionlib.ICRF.t">
+<code class="descname">t</code><a class="headerlink" href="#skyfield.positionlib.ICRF.t" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> coordinate of this position.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.positionlib.ICRF.position">
+<code class="descname">position</code><a class="headerlink" href="#skyfield.positionlib.ICRF.position" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> object offering the position’s (<em>x,y,z</em>) coordinates.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.positionlib.ICRF.velocity">
+<code class="descname">velocity</code><a class="headerlink" href="#skyfield.positionlib.ICRF.velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference internal" href="api-units.html#skyfield.units.Velocity" title="skyfield.units.Velocity"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Velocity</span></code></a> object
+offering the velocity’s (<em>dx/dt,dy/dt,dz/dt</em>) coordinates.</p>
+<p>This attribute will have the value <code class="docutils literal notranslate"><span class="pre">None</span></code> if no velocity was
+specified for this position.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="skyfield.positionlib.ICRF.from_time_and_frame_vectors">
+<em class="property">classmethod </em><code class="descname">from_time_and_frame_vectors</code><span class="sig-paren">(</span><em>t</em>, <em>frame</em>, <em>distance</em>, <em>velocity</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.from_time_and_frame_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor: build a position from two vectors in a reference frame.</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">t</span></code> — The <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> of the position.</li>
+<li><code class="docutils literal notranslate"><span class="pre">frame</span></code> — A reference frame listed at <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">distance</span></code> — A <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> x,y,z vector in the given frame.</li>
+<li><code class="docutils literal notranslate"><span class="pre">velocity</span></code> — A <a class="reference internal" href="api-units.html#skyfield.units.Velocity" title="skyfield.units.Velocity"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Velocity</span></code></a> ẋ,ẏ,ż vector in the given frame.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.distance">
+<code class="descname">distance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the distance from the origin to this position.</p>
+<p>The return value is a <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> that
+prints itself out in astronomical units (au) but that also
+offers attributes <code class="docutils literal notranslate"><span class="pre">au</span></code>, <code class="docutils literal notranslate"><span class="pre">km</span></code>, and <code class="docutils literal notranslate"><span class="pre">m</span></code> if you want to
+access its magnitude as a number.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">ICRF</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">distance</span><span class="p">())</span>
+<span class="go">1.41421 au</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.speed">
+<code class="descname">speed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.speed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the magnitude of the velocity vector.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">ICRF</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">speed</span><span class="p">())</span>
+<span class="go">3.74166 au/day</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.positionlib.ICRF.light_time">
+<code class="descname">light_time</code><a class="headerlink" href="#skyfield.positionlib.ICRF.light_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Length of this vector in days of light travel time.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.radec">
+<code class="descname">radec</code><span class="sig-paren">(</span><em>epoch=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.radec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute equatorial (RA, declination, distance)</p>
+<p>When called without a parameter, this returns standard ICRF
+right ascension and declination:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">astrometric</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">eph</span><span class="p">[</span><span class="s1">&#39;sun&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="go">03h 21m 47.67s</span>
+<span class="go">+18deg 28&#39; 55.3&quot;</span>
+</pre></div>
+</div>
+<p>If you instead want the coordinates referenced to the dynamical
+system defined by the Earth’s true equator and equinox, provide
+a specific epoch time.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="go">03h 22m 54.73s</span>
+<span class="go">+18deg 33&#39; 04.5&quot;</span>
+</pre></div>
+</div>
+<p>To get J2000.0 coordinates, simply pass <code class="docutils literal notranslate"><span class="pre">ts.J2000</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.separation_from">
+<code class="descname">separation_from</code><span class="sig-paren">(</span><em>another_icrf</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.separation_from" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the angle between this position and another.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sun</span><span class="p">,</span> <span class="n">venus</span><span class="p">,</span> <span class="n">earth</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;sun&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;venus&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">venus</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">separation_from</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+<span class="go">43deg 23&#39; 23.1&quot;</span>
+</pre></div>
+</div>
+<p>You can also compute separations across an array of positions.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">separation_from</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">venus</span><span class="p">)))</span>
+<span class="go">3 values from 43deg 23&#39; 23.1&quot; to 42deg 49&#39; 46.6&quot;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.cirs_xyz">
+<code class="descname">cirs_xyz</code><span class="sig-paren">(</span><em>epoch</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.cirs_xyz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute cartesian CIRS coordinates at a given epoch (x,y,z).</p>
+<p>Calculate coordinates in the Celestial Intermediate Reference System
+(CIRS), a dynamical coordinate system referenced to the Celestial
+Intermediate Origin (CIO). As this is a dynamical system it must be
+calculated at a specific epoch.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.cirs_radec">
+<code class="descname">cirs_radec</code><span class="sig-paren">(</span><em>epoch</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.cirs_radec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get spherical CIRS coordinates at a given epoch (ra, dec, distance).</p>
+<p>Calculate coordinates in the Celestial Intermediate Reference System
+(CIRS), a dynamical coordinate system referenced to the Celestial
+Intermediate Origin (CIO). As this is a dynamical system it must be
+calculated at a specific epoch.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.frame_xyz">
+<code class="descname">frame_xyz</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.frame_xyz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return this position as an (x,y,z) vector in a reference frame.</p>
+<p>Returns a <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> object giving the
+(x,y,z) of this position in the given <code class="docutils literal notranslate"><span class="pre">frame</span></code>.  See
+<a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.frame_xyz_and_velocity">
+<code class="descname">frame_xyz_and_velocity</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.frame_xyz_and_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return (x,y,z) position and velocity vectors in a reference frame.</p>
+<p>Returns two vectors in the given coordinate <code class="docutils literal notranslate"><span class="pre">frame</span></code>: a
+<a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> providing an (x,y,z) position
+and a <a class="reference internal" href="api-units.html#skyfield.units.Velocity" title="skyfield.units.Velocity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Velocity</span></code></a> giving (xdot,ydot,zdot)
+velocity.  See <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.frame_latlon">
+<code class="descname">frame_latlon</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.frame_latlon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return longitude, latitude, and distance in the given frame.</p>
+<p>Returns a 3-element tuple giving the latitude and longitude as
+<a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> objects and the range to the
+target as a <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a>.  See
+<a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.to_skycoord">
+<code class="descname">to_skycoord</code><span class="sig-paren">(</span><em>unit=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.to_skycoord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert this distance to an AstroPy <code class="docutils literal notranslate"><span class="pre">SkyCoord</span></code> object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.is_sunlit">
+<code class="descname">is_sunlit</code><span class="sig-paren">(</span><em>ephemeris</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.is_sunlit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether a position in Earth orbit is in sunlight.</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code>, or an array of such values, to
+indicate whether this position is in sunlight or is blocked by
+the Earth’s shadow.  It should work with positions produced
+either by calling <code class="docutils literal notranslate"><span class="pre">at()</span></code> on a satellite object, or by calling
+<code class="docutils literal notranslate"><span class="pre">at()</span></code> on the relative position <code class="docutils literal notranslate"><span class="pre">sat</span> <span class="pre">-</span> <span class="pre">topos</span></code> of a satellite
+with respect to an Earth observer’s position.  See
+<a class="reference internal" href="earth-satellites.html#satellite-is-sunlit"><span class="std std-ref">Find when a satellite is in sunlight</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.is_behind_earth">
+<code class="descname">is_behind_earth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.is_behind_earth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether the Earth blocks the view of this object.</p>
+<p>For a position centered on an Earth-orbiting satellite, return
+whether the target is in eclipse behind the disc of the Earth.
+See <a class="reference internal" href="earth-satellites.html#is-behind-earth"><span class="std std-ref">Find whether the Earth blocks a satellite’s view</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.from_altaz">
+<code class="descname">from_altaz</code><span class="sig-paren">(</span><em>alt=None</em>, <em>az=None</em>, <em>alt_degrees=None</em>, <em>az_degrees=None</em>, <em>distance=&lt;Distance 0.1 au&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.from_altaz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate an Apparent position from an altitude and azimuth.</p>
+<p>The altitude and azimuth can each be provided as an <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a>
+object, or else as a number of degrees provided as either a
+float or a tuple of degrees, arcminutes, and arcseconds:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">alt</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="o">...</span><span class="p">),</span> <span class="n">az</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">alt_degrees</span><span class="o">=</span><span class="mf">23.2289</span><span class="p">,</span> <span class="n">az_degrees</span><span class="o">=</span><span class="mf">142.1161</span>
+<span class="n">alt_degrees</span><span class="o">=</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mf">44.1</span><span class="p">),</span> <span class="n">az_degrees</span><span class="o">=</span><span class="p">(</span><span class="mi">142</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mf">58.1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The distance should be a <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a>
+object, if provided; otherwise a default of 0.1 au is used.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="position-measured-from-the-solar-system-barycenter">
+<h2>Position measured from the Solar System barycenter<a class="headerlink" href="#position-measured-from-the-solar-system-barycenter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="skyfield.positionlib.Barycentric">
+<em class="property">class </em><code class="descclassname">skyfield.positionlib.</code><code class="descname">Barycentric</code><span class="sig-paren">(</span><em>position_au</em>, <em>velocity_au_per_d=None</em>, <em>t=None</em>, <em>center=None</em>, <em>target=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Barycentric" title="Permalink to this definition">¶</a></dt>
+<dd><p>An (x,y,z) position measured from the Solar System barycenter.</p>
+<p>Skyfield generates a <a class="reference internal" href="#skyfield.positionlib.Barycentric" title="skyfield.positionlib.Barycentric"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Barycentric</span></code></a> position measured from the
+gravitational center of the Solar System whenever you ask a body for
+its location at a particular time:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2003</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">29</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mars</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="go">&lt;Barycentric BCRS position and velocity at date t center=0 target=499&gt;</span>
+</pre></div>
+</div>
+<p>This class’s <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> are (x,y,z) vectors in
+the Barycentric Celestial Reference System (BCRS), the modern
+replacement for J2000 coordinates measured from the Solar System
+Barycenter.</p>
+<p>This class inherits the methods of is parent class <a class="reference internal" href="#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a> as
+well as the orientation of its axes in space.</p>
+<dl class="method">
+<dt id="skyfield.positionlib.Barycentric.observe">
+<code class="descname">observe</code><span class="sig-paren">(</span><em>body</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Barycentric.observe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the <a class="reference internal" href="#skyfield.positionlib.Astrometric" title="skyfield.positionlib.Astrometric"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Astrometric</span></code></a> position of a body from this location.</p>
+<p>To compute the body’s astrometric position, it is first asked
+for its position at the time <a class="reference internal" href="#skyfield.positionlib.ICRF.t" title="skyfield.positionlib.ICRF.t"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">t</span></code></a> of this position itself.  The
+distance to the body is then divided by the speed of light to
+find how long it takes its light to arrive.  Finally, the light
+travel time is subtracted from <a class="reference internal" href="#skyfield.positionlib.ICRF.t" title="skyfield.positionlib.ICRF.t"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">t</span></code></a> and the body is asked for a
+series of increasingly exact positions to learn where it was
+when it emitted the light that is now reaching this position.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
+<span class="go">&lt;Astrometric ICRS position and velocity at date t center=399 target=499&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="astrometric-position-relative-to-an-observer">
+<h2>Astrometric position relative to an observer<a class="headerlink" href="#astrometric-position-relative-to-an-observer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="skyfield.positionlib.Astrometric">
+<em class="property">class </em><code class="descclassname">skyfield.positionlib.</code><code class="descname">Astrometric</code><span class="sig-paren">(</span><em>position_au</em>, <em>velocity_au_per_d=None</em>, <em>t=None</em>, <em>center=None</em>, <em>target=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Astrometric" title="Permalink to this definition">¶</a></dt>
+<dd><p>An astrometric (x,y,z) position relative to a particular observer.</p>
+<p>The astrometric position of a body is its position relative to an
+observer, adjusted for light-time delay.  It is the position of the
+body back when it emitted (or reflected) the light that is now
+reaching the observer’s eye or telescope.  Astrometric positions are
+usually generated in Skyfield by calling the <a class="reference internal" href="#skyfield.positionlib.Barycentric" title="skyfield.positionlib.Barycentric"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Barycentric</span></code></a> method
+<a class="reference internal" href="#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">observe()</span></code></a>, which performs the light-time correction.</p>
+<p>Both the <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> are <code class="docutils literal notranslate"><span class="pre">[x</span> <span class="pre">y</span> <span class="pre">z]</span></code> vectors
+oriented along the axes of the ICRF, the modern replacement for the
+J2000 reference frame.</p>
+<p>It is common to either call <code class="docutils literal notranslate"><span class="pre">.radec()</span></code> (with no argument) on an
+astrometric position to generate an <em>astrometric place</em> right
+ascension and declination with respect to the ICRF axes, or else to
+call <code class="docutils literal notranslate"><span class="pre">.apparent()</span></code> to generate an <a class="reference internal" href="#skyfield.positionlib.Apparent" title="skyfield.positionlib.Apparent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Apparent</span></code></a> position.</p>
+<p>This class inherits the methods of is parent class <a class="reference internal" href="#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a> as
+well as the orientation of its axes in space.</p>
+<dl class="method">
+<dt id="skyfield.positionlib.Astrometric.apparent">
+<code class="descname">apparent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Astrometric.apparent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute an <a class="reference internal" href="#skyfield.positionlib.Apparent" title="skyfield.positionlib.Apparent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Apparent</span></code></a> position for this body.</p>
+<p>This applies two effects to the position that arise from
+relativity and shift slightly where the other body will appear
+in the sky: the deflection that the image will experience if its
+light passes close to large masses in the Solar System, and the
+aberration of light caused by the observer’s own velocity.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+<span class="go">&lt;Apparent GCRS position and velocity at date t center=399 target=499&gt;</span>
+</pre></div>
+</div>
+<p>These transforms convert the position from the BCRS reference
+frame of the Solar System barycenter and to the reference frame
+of the observer.  In the specific case of an Earth observer, the
+output reference frame is the GCRS.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="apparent-position-relative-to-an-observer">
+<h2>Apparent position relative to an observer<a class="headerlink" href="#apparent-position-relative-to-an-observer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="skyfield.positionlib.Apparent">
+<em class="property">class </em><code class="descclassname">skyfield.positionlib.</code><code class="descname">Apparent</code><span class="sig-paren">(</span><em>position_au</em>, <em>velocity_au_per_d=None</em>, <em>t=None</em>, <em>center=None</em>, <em>target=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Apparent" title="Permalink to this definition">¶</a></dt>
+<dd><p>An apparent <code class="docutils literal notranslate"><span class="pre">[x</span> <span class="pre">y</span> <span class="pre">z]</span></code> position relative to a particular observer.</p>
+<p>This class’s vectors provide the position and velocity of a body
+relative to an observer, adjusted to predict where the body’s image
+will really appear (hence “apparent”) in the sky:</p>
+<ul class="simple">
+<li>Light-time delay, as already present in an <a class="reference internal" href="#skyfield.positionlib.Astrometric" title="skyfield.positionlib.Astrometric"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Astrometric</span></code></a> position.</li>
+<li>Deflection: gravity bends light, and thus the image of a distant
+object, as the light passes massive objects like Jupiter, Saturn,
+and the Sun.  For an observer on the Earth’s surface or in Earth
+orbit, the slight deflection by the gravity of the Earth itself is
+also included.</li>
+<li>Aberration: incoming light arrives slanted because of the
+observer’s motion through space.</li>
+</ul>
+<p>These positions are usually produced in Skyfield by calling the
+<a class="reference internal" href="#skyfield.positionlib.Astrometric.apparent" title="skyfield.positionlib.Astrometric.apparent"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">apparent()</span></code></a> method of an <a class="reference internal" href="#skyfield.positionlib.Astrometric" title="skyfield.positionlib.Astrometric"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Astrometric</span></code></a> object.</p>
+<p>Both the <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> are <code class="docutils literal notranslate"><span class="pre">[x</span> <span class="pre">y</span> <span class="pre">z]</span></code> vectors
+oriented along the axes of the ICRF, the modern replacement for the
+J2000 reference frame.  If the observer is at the geocenter, they
+are more specifically GCRS coordinates.  Two common coordinates that
+this vector can generate are:</p>
+<ul class="simple">
+<li><em>Proper place:</em> call <code class="docutils literal notranslate"><span class="pre">.radec()</span></code> without arguments to compute
+right ascension and declination with respect to the fixed axes of
+the ICRF.</li>
+<li><em>Apparent place,</em> the most popular option: call <code class="docutils literal notranslate"><span class="pre">.radec('date')</span></code>
+to generate right ascension and declination with respect to the
+equator and equinox of date.</li>
+</ul>
+<p>This class inherits the methods of is parent class <a class="reference internal" href="#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a> as
+well as the orientation of its axes in space.</p>
+<dl class="method">
+<dt id="skyfield.positionlib.Apparent.altaz">
+<code class="descname">altaz</code><span class="sig-paren">(</span><em>temperature_C=None</em>, <em>pressure_mbar='standard'</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Apparent.altaz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute (alt, az, distance) relative to the observer’s horizon</p>
+<p>The altitude returned is an <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a>
+measured in degrees above the horizon, while the azimuth
+<a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> measures east along the horizon
+from geographic north (so 0 degrees means north, 90 is east, 180
+is south, and 270 is west).</p>
+<p>By default, Skyfield does not adjust the altitude for
+atmospheric refraction.  If you want Skyfield to estimate how
+high the atmosphere might lift the body’s image, give the
+argument <code class="docutils literal notranslate"><span class="pre">temperature_C</span></code> either the temperature in degrees
+centigrade, or the string <code class="docutils literal notranslate"><span class="pre">'standard'</span></code> (in which case 10°C is
+used).</p>
+<p>When calculating refraction, Skyfield uses the observer’s
+elevation above sea level to estimate the atmospheric pressure.
+If you want to override that value, simply provide a number
+through the <code class="docutils literal notranslate"><span class="pre">pressure_mbar</span></code> parameter.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="geocentric-position-relative-to-the-earth">
+<h2>Geocentric position relative to the Earth<a class="headerlink" href="#geocentric-position-relative-to-the-earth" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="skyfield.positionlib.Geocentric">
+<em class="property">class </em><code class="descclassname">skyfield.positionlib.</code><code class="descname">Geocentric</code><span class="sig-paren">(</span><em>position_au</em>, <em>velocity_au_per_d=None</em>, <em>t=None</em>, <em>center=None</em>, <em>target=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Geocentric" title="Permalink to this definition">¶</a></dt>
+<dd><p>An (x,y,z) position measured from the center of the Earth.</p>
+<p>A geocentric position is the difference between the position of the
+Earth at a given instant and the position of a target body at the
+same instant, without accounting for light-travel time or the effect
+of relativity on the light itself.</p>
+<p>Its <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> vectors have (x,y,z) axes that
+are those of the Geocentric Celestial Reference System (GCRS), an
+inertial system that is an update to J2000 and that does not rotate
+with the Earth itself.</p>
+<p>This class inherits the methods of is parent class <a class="reference internal" href="#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a> as
+well as the orientation of its axes in space.</p>
+<dl class="method">
+<dt id="skyfield.positionlib.Geocentric.itrf_xyz">
+<code class="descname">itrf_xyz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Geocentric.itrf_xyz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated; instead, call <code class="docutils literal notranslate"><span class="pre">.frame_xyz(itrs)</span></code>.         See <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.Geocentric.subpoint">
+<code class="descname">subpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Geocentric.subpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated; instead, call either <code class="docutils literal notranslate"><span class="pre">iers2010.subpoint(pos)</span></code> or         <code class="docutils literal notranslate"><span class="pre">wgs84.subpoint(pos)</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="geometric-instantaneous-position-between-two-objects">
+<h2>Geometric instantaneous position between two objects<a class="headerlink" href="#geometric-instantaneous-position-between-two-objects" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="skyfield.positionlib.Geometric">
+<em class="property">class </em><code class="descclassname">skyfield.positionlib.</code><code class="descname">Geometric</code><span class="sig-paren">(</span><em>position_au</em>, <em>velocity_au_per_d=None</em>, <em>t=None</em>, <em>center=None</em>, <em>target=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Geometric" title="Permalink to this definition">¶</a></dt>
+<dd><p>An (x,y,z) vector between two instantaneous position.</p>
+<p>A geometric position is the difference between the Solar System
+positions of two bodies at exactly the same instant.  It is <em>not</em>
+corrected for the fact that, in real physics, it will take time for
+light to travel from one position to the other.</p>
+<p>Both the <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> are (x,y,z) vectors
+oriented along the axes of the International Celestial Reference
+System (ICRS), the modern replacement for J2000 coordinates.</p>
+<p>This class inherits the methods of is parent class <a class="reference internal" href="#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a> as
+well as the orientation of its axes in space.</p>
+<dl class="method">
+<dt id="skyfield.positionlib.Geometric.altaz">
+<code class="descname">altaz</code><span class="sig-paren">(</span><em>temperature_C=None</em>, <em>pressure_mbar='standard'</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Geometric.altaz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute (alt, az, distance) relative to the observer’s horizon</p>
+<p>The altitude returned is an <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a>
+measured in degrees above the horizon, while the azimuth
+<a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> measures east along the horizon
+from geographic north (so 0 degrees means north, 90 is east, 180
+is south, and 270 is west).</p>
+<p>By default, Skyfield does not adjust the altitude for
+atmospheric refraction.  If you want Skyfield to estimate how
+high the atmosphere might lift the body’s image, give the
+argument <code class="docutils literal notranslate"><span class="pre">temperature_C</span></code> either the temperature in degrees
+centigrade, or the string <code class="docutils literal notranslate"><span class="pre">'standard'</span></code> (in which case 10°C is
+used).</p>
+<p>When calculating refraction, Skyfield uses the observer’s
+elevation above sea level to estimate the atmospheric pressure.
+If you want to override that value, simply provide a number
+through the <code class="docutils literal notranslate"><span class="pre">pressure_mbar</span></code> parameter.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="building-a-position-from-right-ascension-and-declination">
+<h2>Building a position from right ascension and declination<a class="headerlink" href="#building-a-position-from-right-ascension-and-declination" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="skyfield.positionlib.position_of_radec">
+<code class="descclassname">skyfield.positionlib.</code><code class="descname">position_of_radec</code><span class="sig-paren">(</span><em>ra_hours</em>, <em>dec_degrees</em>, <em>distance_au=206264806247096.38</em>, <em>epoch=None</em>, <em>t=None</em>, <em>center=None</em>, <em>target=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.position_of_radec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a position object from a right ascension and declination.</p>
+<p>If a specific <code class="docutils literal notranslate"><span class="pre">distance_au</span></code> is not provided, Skyfield returns a
+position vector a gigaparsec in length.  This puts the position at a
+great enough distance that it will stand at the same right ascension
+and declination from any viewing position in the Solar System, to
+very high precision (within a few hundredths of a microarcsecond).</p>
+<p>If an <code class="docutils literal notranslate"><span class="pre">epoch</span></code> is specified, the input coordinates are understood
+to be in the dynamical system of that particular date.  Otherwise,
+they will be assumed to be ICRS (the modern replacement for J2000).</p>
+</dd></dl>
+
+</div>
+</div>
+
+  </body>
+</html>

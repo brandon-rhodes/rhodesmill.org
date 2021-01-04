@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Animating Saturn with matplotlib, a subclass, and mock.patch()</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>Animating Saturn with matplotlib, a subclass, and mock.patch()</h1>
+<p><em>Based on my lightning talk at PyOhio 2018</em></p>
+<p>I hope that this comes across not as a complaint about matplotlib,
+but as a celebration of tools that a dynamic language like Python
+offers in situations where a library is seriously misbehaving
+and needs some crucial live-edits to run successfully.</p>
+<p>The task had seemed so simple.
+To support an upcoming series of posts
+based on my 2014 keynote at PyCon Ireland
+(“Building the Medieval Universe in 7 Easy Steps with Scientific Python”),
+I wanted to render an animation of one of the outer planets —
+I chose Saturn —
+progressing slowly eastward across the sky
+over several seasons and several years.</p>
+<video controls autoplay loop height="648" width="648">
+<source type="video/mp4" src="http://rhodesmill.org/brandon/2018/saturn.mp4">
+</video>
+<p>Instead, I got to spend a weekend wrestling with matplotlib.</p>
+<p>Once I had designed a static matplotlib figure
+with Saturn drawn atop a field of glittering stars,
+I was ready to try animating it.
+Following the matplotlib documentation,
+I instantiated an <code>Animation</code> object
+and provided it with both the figure I had drawn
+and a method that would update the position of Saturn for every frame.</p>
+<pre><code>def update(frame_number):
+    ...  # move Saturn
+
+anim = _Animation(fig, update)
+anim.to_html5_video()
+</code></pre>
+<p>The result was beautiful!
+Saturn moves grandly across the sky,
+swinging east and then west as our own planet’s orbit
+carries our vantage point
+first to one side of the Sun and then to the other.</p>
+<p>But the animation rendered very slowly.
+This little 96 kB movie somehow took several minutes to complete!</p>
+<p>I wanted it to render more quickly —
+not simply because I am impatient,
+and not simply because I can make far more progress each hour
+if I can iterate quickly on a design,
+but because of a deep sense of proportion.
+A modern computer can do a billion operations per second.
+There is simply no reason that moving a circle in front of a star field
+on a bitmap that’s only a few hundred pixels across
+should take more than a few seconds.</p>
+<p>And a solution was openly advertised
+in <a href="https://matplotlib.org/api/animation_api.html">matplotlib’s own documentation</a>.
+All I had to do was to get it to work.</p>
+<h2>Asking for blitting</h2>
+<p>The mechanism for accelerating an animation
+that features a static background is called “blitting,”
+a venerable technique that has been a staple approach
+since the early days of computer animation.
+With this technique, the background is rendered first,
+then each frame is constructed by making a copy of the static background bitmap
+and painting the moving part of the animation on top.</p>
+<p>Only two additional parameters are necessary
+to activate blitting in matplotlib.</p>
+<p>First, you add <code>blit=True</code>.</p>
+<p>Second, Matplotlib needs two functions drawing functions instead of one:
+the first returns the figure elements that belong to the background,
+and the second does only the work of animation itself.</p>
+<pre><code>def init(frame_number):
+    ...  # return the star field
+
+def update(frame_number):
+    ...  # move Saturn
+
+anim = _Animation(fig, update, blit=True, init_func=init)
+</code></pre>
+<p>The result, alas, was disappointing.</p>
+<p>The rendering took exactly as long as before.</p>
+<p>What was going wrong?
+Why was matplotlib not behaving any differently?
+To learn the answer,
+I had to reach into my Python toolkit
+and begin a dive into the innards of matplotlib.</p>
+<h2>Festooning matplotlib with print()</h2>
+<p>Always remember
+that a Python library installed with <code>pip</code> or <code>conda</code>
+is simply a collection of files —
+most of them plain-text Python source code —
+owned by your user
+and sitting somewhere beneath your home directory.</p>
+<p>This means that you never need to treat a malfunctioning library
+as a black box.
+You can open its files in an editor,
+find a routine whose behavior you want to understand,
+and start adding all the <code>print()</code> calls you want
+to learn what the routine is doing at runtime</p>
+<p>Happily, the Jupiter notebook has an outstanding feature
+that is a perfect match for this kind of work:</p>
+<pre><code>%load_ext autoreload
+%autoreload 2
+</code></pre>
+<p>When you activate the “auto reload” extension,
+IPython automatically detect edits to Python files and —
+using some extraordinary inner magic of its own —
+will make live updates to the functions and classes in your program
+so that your edits take effect immediately.
+You can see the result of editing and saving a source file
+by simply re-running the notebook’s current cell.</p>
+<p>It only took the barest of instrumentation
+for me to find the first culprit:
+<code>to_html5_video()</code> called the animation’s <code>save()</code> method
+which makes an unfortunate decision about blitting:</p>
+<pre><code># TODO: See if turning off blit is really necessary
+anim._draw_next_frame(d, blit=False)
+</code></pre>
+<p>If I wanted the animation to render more quickly,
+I would obviously have to convince matplotlib
+that this <code>blit</code> parameter should instead be <code>True</code>.</p>
+<h2>A subclass</h2>
+<p>Those who know me will appreciate my chagrin
+when I had to admit to myself that, in this particular case,
+a subclass really was the most natural means for defeating
+the <code>save()</code> method’s unfortunate behavior.</p>
+<p>So I wrote a subclass.</p>
+<p>For a moment I thought that the solution
+would be a subclass of <code>Animation</code>
+that overrode the <code>save()</code> method itself —
+after all, it was <code>save()</code> that was setting <code>blit</code> incorrectly.</p>
+<p>But as soon as my cursor was poised inside of the new subclass,
+I saw that overriding <code>save()</code> would be the wrong approach.
+In order to tweak that one line of code,
+I would have to cut and paste the entire method —
+which weighs in at 99 lines of code!
+In general,
+you want to avoid repeating any code from the parent class
+when constructing its child.</p>
+<p>Instead, the solution was to leave <code>save()</code> broken
+but override the method it was calling
+to ignore the parameter’s value.</p>
+<pre><code>class _Animation(FuncAnimation):
+    def _draw_next_frame(self, framedata, blit):
+        blit = True
+        super(_Animation, self)._draw_next_frame(framedata, blit)
+</code></pre>
+<p>Then I asked matplotlib to re-render my animation.
+The result?</p>
+<p>It now rendered in half the time.</p>
+<h2>And you thought mock.patch() was for tests</h2>
+<p>But, wait — <em>half</em> the time?
+Something was obviously wrong.</p>
+<p>Eliminating the star field rendering from every frame
+should have sped up the animation by a factor of a hundred,
+not merely by a factor of two.
+What extra work was matplotlib doing
+that was as expensive as the star field render I had just eliminated?</p>
+<p>It was time to add more <code>print()</code> calls.</p>
+<p>It was at this point
+that <code>autoreload</code> started to run into trouble.
+I would add <code>print()</code> calls but they wouldn't print.
+I would edit files, but the edits would have no effect.
+Only when I restarted the notebook kernel
+would I receive output and see the effects of new code.</p>
+<p>How was matplotlib defeating
+the clever techniques built in to <code>autoreload</code> in IPython?</p>
+<p>The answer is that matplotlib was using
+even more nefarious techniques of its own —
+techniques that were also defeating my own ability to simply read its code.
+After repeatedly seeing methods invoked at runtime
+that I could not find on the same class in the source code,
+I finally discovered this:</p>
+<pre><code>@functools.lru_cache(None)
+def subplot_class_factory(axes_class=None):
+    # This makes a new class that inherits from SubplotBase and the
+    # given axes_class (which is assumed to be a subclass of Axes).
+    # This is perhaps a little bit roundabout to make a new class on
+    # the fly like this, but it means that a new Subplot class does
+    # not have to be created for every type of Axes.
+    if axes_class is None:
+        axes_class = Axes
+    return type(&quot;%sSubplot&quot; % axes_class.__name__,
+                (SubplotBase, axes_class),
+                {'_axes_class': axes_class})
+</code></pre>
+<p>Alas!</p>
+<p>It turns out that matplotlib generates classes at runtime.
+And constructs them by combining regular classes with mix-ins.
+And it even stores them in a little dynamic class cache for use later.</p>
+<p>It was, predictably, these dynamically-generated classes
+which were not getting reloaded by IPython
+when I would edit their source code;
+<code>autoreload</code> had met its match.</p>
+<p>Once I stopped relying on <code>autoreload</code> and got moving again,
+the terrible truth was revealed.
+The reason that blitting had only eliminated half my rendering time
+was because matplotlib was rendering every frame twice.
+Its technique for producing a frame of the animation, in other words, was:</p>
+<ul>
+<li>Make a copy of the star field background</li>
+<li>Draw Saturn in the correct position for this frame on top</li>
+<li>Throw the resulting image away</li>
+<li>Start over with a new image</li>
+<li>Draw the star field</li>
+<li>And draw Saturn</li>
+</ul>
+<p>But, why?
+What method call was launching a redundant and expensive re-rendering
+of the entire figure?</p>
+<p>It's easy in Python to discover why something is called the first time.
+Simply toss an error into its source code
+(I normally just open a new line and type <code>asdf</code>)
+and run your program.
+A traceback will appear showing you the site of the function’s
+very first invocation.
+But to get a traceback for a second or third invocation,
+your booby trap needs to be a little more elaborate.
+I usually use a variation on:</p>
+<pre><code>BCR = []  # mutable global at the top of the file
+
+# Then, inside the function or method:
+    if BCR:
+        asdf
+    BCR.append(None)
+</code></pre>
+<p>The resulting traceback showed me exactly what I needed to know!</p>
+<ul>
+<li>
+<p>After <code>Animation.save()</code> calls <code>Animation._draw_next_frame()</code>
+to render the frame to its bitmap canvas,
+it invokes <code>FileMovieWriter.grab_frame(...)</code>
+to add the frame to the growing animation.</p>
+</li>
+<li>
+<p>Presumably needing a copy of the completed bitmap,
+<code>grab_frame()</code> calls <code>Figure.savefig(...)</code> on the diagram.</p>
+</li>
+<li>
+<p>But <code>savefig()</code> prefers to delegate the actual act of drawing
+to other classes.
+After making sure that a whole list of defaults have been properly set,
+it calls its canvas’s <code>print_figure(...)</code> method.</p>
+</li>
+<li>
+<p>Which is a method that lives over on the class <code>FigureCanvasBase</code>,
+a method with a reassuringly concrete docstring description:
+“Render the figure to hardcopy.”
+Confusingly, while <code>savefig()</code> thought of this object
+itself as the figure’s “canvas,”
+here in <code>print_figure()</code> what we might call the “real canvas”
+is revealed to be an object yet deeper in the hierarchy
+which is acquired by learning the requested output format,
+building the string <code>'print_%s' % format</code>,
+and using <code>getattr()</code> to get that method from the canvas.
+In our case the method fetched is named <code>'print_raw'</code>.</p>
+</li>
+<li>
+<p>Which winds up invoking a method <code>print_raw()</code> in <code>FigureCanvasAgg</code>,
+a subclass of the <code>FigureCanvasBase</code> we were just discussing.
+Subtracting out a bit of preparation involving DPI,
+<code>print_raw()</code> mostly exists to send <code>fileobj.write()</code>
+the data from a call to <code>self.get_renderer()._renderer.buffer_rgba()</code>.
+Which sounds more or less like what we would hope it would be doing:
+rendering an RGBA bitmap.
+Except that, <em>before</em> using the renderer to save data to the file,
+<code>print_raw()</code> — apparently in a momentary loss of confidence
+that there’s even data ready to save —
+calls <code>FigureCanvasAgg.draw()</code> on itself
+and winds up drawing the entire frame over again.</p>
+</li>
+</ul>
+<p>So there we are.
+I saw that if I could simply disable the method <code>FigureCanvasAgg.draw()</code>,
+I could skip the re-rendering and animate at full speed!</p>
+<p>But in this case,
+I couldn't simply build a subclass to skip the animation,
+because I wasn't the one who even instantiated
+whatever subclass of <code>FigureCanvasAgg</code> was involved here.
+While I could have reached into the maze of live matplotlib objects
+and attempted to edit the object in-place,
+I usually find it faster to attack the class instead.
+I reached into the Python toolbox
+for everybody's favorite tool for subverting production code:
+<code>mock.patch()</code>.</p>
+<pre><code>DRAW = 'matplotlib.backends.backend_agg.FigureCanvasAgg.draw'
+
+def no_nothing(self):
+    pass
+
+with patch(DRAW, do_nothing):
+    anim.to_html5_video()
+</code></pre>
+<p>The first run of my animation with this improvement in place
+ran at blazing speed!</p>
+<h2>Pulling mock.patch() to pieces</h2>
+<p>There was only one problem.</p>
+<p>The star field was now entirely missing.
+Saturn was pacing back and forth, lonely,
+across an empty sky of solitude.</p>
+<p>I realized that I needed to let <code>FigureCanvasAgg.draw()</code>
+run once at the beginning,
+to render the star field,
+before I turned it off for the rest of the animation.
+Happily, Python exposes the innards of its context managers like <code>mock.patch()</code>
+which makes it possible to call them in phases:</p>
+<pre><code>class _Animation(FuncAnimation):
+    patcher = None
+
+    def _draw_next_frame(self, framedata, blit):
+        blit = True
+        super(_Animation, self)._draw_next_frame(framedata, blit)
+        if self.patcher is None:
+            self.patcher = patch('matplotlib.backends.backend_agg'
+                                 '.FigureCanvasAgg.draw', do_nothing)
+            self.patcher.__enter__()
+
+    def save(self, **args, **kw):
+        super(_Animation, self).save(**args, **kw)
+        self.patcher.__exit__()
+</code></pre>
+<p>By not entering <code>mock.patch()</code> until the animation has drawn the background
+and called <code>_draw_next_frame()</code> for the first time,
+I leave the <code>draw()</code> method alive
+during the crucial step of rendering the star field.
+Note that I’m also careful to exit the patch
+when I’m done with it at the very end —
+if you forget that, it turns out,
+then all future animations will also be missing their background!</p>
+<p>With these careful adjustments in place,
+the animation worked perfectly,
+and ran with blazing speed.
+I was now unblocked
+and free to move forward with my animation work.</p>
+<p>Oh — and, all those <code>print()</code> calls that now festooned matplotlib?
+I advise against trying to remove them one by one.
+You’ll think that you have them all removed,
+but months later random debugging output will appear
+in the middle of an IPython notebook when you least expect it.
+If by that point you forgot about even adding them,
+it might take a bit of work
+before you realize where the output is coming from.</p>
+<p>So don't try to remove them manually.
+Uninstall the package, reinstall the package, and then restart IPython.
+It’s the only way to be sure.</p>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'rhodesmill';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<p class="byline">©2020</p>
+
+</body>
+</html>

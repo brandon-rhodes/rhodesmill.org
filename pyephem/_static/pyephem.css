@@ -1,0 +1,161 @@
+body {
+    margin: 0px;
+}
+
+div.related, div.sidebar, div.footer, table.triad {
+    font-family: Arial, sans-serif;
+}
+
+div.related h3 {
+    display: none;
+}
+
+div.related li {
+    display: inline;
+}
+
+div.related li.right {
+    float: right;
+    margin-right: 5px;
+}
+
+div.related {
+    border-bottom: solid 3px black;
+}
+
+div.sidebar {
+    float: right;
+    background-color: #f0f0f0;
+    margin: 0.72em; padding: 0px 1em 1em 1em; border: solid 2px #c00000;
+}
+
+div.sidebar div > ul {
+    margin-bottom: 2em;
+}
+
+div.highlight {
+    background-color: #e0e0c0;
+}
+
+pre {
+    padding: 0.8ex;
+}
+
+div.footer {
+    text-align: center;
+    font-size: smaller;
+}
+
+a.headerlink {
+    color: #c60f0f;
+    font-size: 0.8em;
+    padding: 0 4px 0 4px;
+    text-decoration: none;
+    visibility: hidden;
+}
+
+h1:hover > a.headerlink,
+h2:hover > a.headerlink,
+h3:hover > a.headerlink,
+h4:hover > a.headerlink,
+h5:hover > a.headerlink,
+h6:hover > a.headerlink,
+dt:hover > a.headerlink {
+    visibility: visible;
+}
+
+a.headerlink:hover {
+    background-color: #c60f0f;
+    color: white;
+}
+
+dt {
+    font-weight: bold;
+}
+
+#pyephem-home-page h1 {
+    display: none;
+}
+
+table.triad {
+    padding: 16px;
+    border-collapse: separate;
+    border-spacing: 12px 0px;
+    background-color: #d5dba7;
+}
+
+table.triad td {
+    border-left: solid 6px #a0a0a0;
+    border-right: solid 6px #a0a0a0;
+    background-color: white;
+}
+
+table.triad tr.cap td {
+    border-top: solid 6px #a0a0a0;
+}
+
+table.triad tr.sites td {
+    width: 30%;
+    vertical-align: top;
+    text-align: center;
+}
+
+table.triad tr.toe td {
+    border-bottom: solid 6px #a0a0a0;
+}
+
+table.triad tr.toe td:first-child {
+    border-bottom: none;
+}
+
+table.triad tr.mount td {
+    height: 12px;
+}
+
+table.triad tr.base td {
+    height: 12px;
+    border-left: none;
+    border-right: none;
+    border-top: solid 6px #a0a0a0;
+    border-bottom: solid 6px #a0a0a0;
+    border-left: solid 6px #a0a0a0;
+    border-right: solid 6px #a0a0a0;
+    padding: 0px 12px;
+}
+
+table.triad img.corner2 {
+    float: right;
+    position: relative;
+    top: -7px;
+    right: -7px;
+}
+
+table.triad img.corner3 {
+    float: left;
+    position: relative;
+    left: -7px;
+    bottom: -7px;
+}
+
+body div.section {
+    padding: 0px 16px;
+}
+
+body div.section div.section {
+    padding: 0px;
+}
+
+p, li {
+    line-height: 1.3;
+}
+.section ul li {
+    margin-top: 0.8em;
+    margin-bottom: 0.8em;
+}
+.toctree-wrapper ul li {
+    margin: 0px;
+}
+
+img.alone-logo {
+    margin: 16px 0px 0px 16px;
+}

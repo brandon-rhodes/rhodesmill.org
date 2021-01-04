@@ -1,0 +1,1184 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>&lt;stdin&gt;</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="slide">
+
+<!-- xrandr - -output HDMI2 - -same-as eDP1 - -mode 1280x800 -->
+<style>
+  .section {position: relative;}
+  .reading-mode .note {font-style: italic;}
+  .reading-mode .admonition-title {display: none;}
+  .presentation-mode .note {position: absolute; left: 101%; top: 0;}
+  .presentation-mode .note {color: white; top: 250px; font-size: 0.5em;
+    width: 300px}
+  .small {font-size: 0.75em;}
+  .strike {text-decoration: line-through;}
+</style>
+
+<style>
+  body {font-family: "Gentium Basic"}
+  body.presentation-mode .section {
+    width: 1280px;
+    height: 800px;
+  }
+  body.presentation-mode pre {
+    font-size: 36px;
+  }
+  .timer {
+    left: 1400px;
+  }
+  em {font-size: 1.04em;}
+</style><div class="line-block">
+<div class="line"><em>Python and the Glories</em></div>
+<div class="line"><em>of the UNIX Tradition</em></div>
+</div>
+<div class="line-block">
+<div class="line">PyCon UK 2016</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>&#64;brandon_rhodes</strong></div>
+</div>
+<!-- TODO round trips that repr allows? -->
+<!-- TODO show compiling document from 1970s? -->
+<!-- TODO show ps | grep? -->
+</div>
+<div class="section" id="id1">
+
+<img alt="advent.png" src="advent.png" style="height: 768px;" />
+</div>
+<div class="section" id="id2">
+
+<p>Another adventure</p>
+</div>
+<div class="section" id="id3">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">pwd</tt></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">ls <span class="pre">-F</span></tt></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">cd</tt></div>
+</div>
+</div>
+<div class="section" id="id4">
+
+<p>UNIX</p>
+</div>
+<div class="section" id="id5">
+
+<div class="line-block">
+<div class="line"><strong>Python</strong> is part of the <em>tradition</em></div>
+<div class="line">of languages and tools that grew</div>
+<div class="line">up within the UNIX ecosystem</div>
+</div>
+</div>
+<div class="section" id="id6">
+
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What does Python and the</div>
+<div class="line">tradition share in common?</div>
+</div>
+</div>
+<div class="section" id="id7">
+
+<p><em>Two quick terms:</em></p>
+<div class="line-block">
+<div class="line">“Operating system”</div>
+<div class="line">“System call”</div>
+</div>
+</div>
+<div class="section" id="id8">
+
+</div>
+<div class="section" id="implement-and-iterate">
+<h1>Implement and Iterate</h1>
+</div>
+<div class="section" id="id9">
+
+<div class="line-block">
+<div class="line">MULTICS (1965–) → UNIX (1969–)</div>
+</div>
+</div>
+<div class="section" id="id10">
+
+<div class="line-block">
+<div class="line">“plan to throw one away;</div>
+<div class="line"><strong>you will, anyhow”</strong></div>
+</div>
+<p>Fred Brooks, <em>The Mythical Man-Month</em></p>
+</div>
+<div class="section" id="id11">
+
+<img alt="journal-cover.jpg" src="journal-cover.jpg" style="height: 800px;" />
+</div>
+<div class="section" id="id12">
+
+<div class="line-block">
+<div class="line">ABC → Python</div>
+</div>
+</div>
+<div class="section" id="interactivity">
+<h1>Interactivity</h1>
+</div>
+<div class="section" id="id13">
+
+<img alt="backspace.png" src="backspace.png" style="height: 800px;" />
+</div>
+<div class="section" id="id14">
+
+<div class="line-block">
+<div class="line">And the UNIX <em>shell</em></div>
+<div class="line">was not just interactive</div>
+</div>
+<div class="line-block">
+<div class="line">it was a <strong>programming</strong></div>
+<div class="line"><strong>language!</strong></div>
+</div>
+</div>
+<div class="section" id="id15">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">app</span> <span class="n">db</span> <span class="n">www</span>
+<span class="o">&gt;</span> <span class="n">do</span> <span class="n">ssh</span> <span class="err">$</span><span class="n">host</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">upgrade</span>
+<span class="o">&gt;</span> <span class="n">done</span>
+</pre></div>
+
+</div>
+<div class="section" id="id16">
+
+<div class="line-block">
+<div class="line">Both Unix and</div>
+<div class="line">Python worked to offer a <strong>full</strong></div>
+<div class="line">programming experience</div>
+<div class="line"><em>interactively</em></div>
+</div>
+</div>
+<div class="section" id="id17">
+
+<div class="line-block">
+<div class="line"><em>Interactive</em> systems can make</div>
+<div class="line">it faster to <strong>iterate</strong></div>
+</div>
+</div>
+<div class="section" id="id18">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">head</span> <span class="o">-</span><span class="mi">2</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span>
+<span class="n">root</span><span class="p">:</span><span class="n">x</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="n">root</span><span class="p">:</span><span class="o">/</span><span class="n">root</span><span class="p">:</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bash</span>
+<span class="n">daemon</span><span class="p">:</span><span class="n">x</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="n">daemon</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">nologin</span>
+
+<span class="err">$</span> <span class="n">sed</span> <span class="s1">&#39;s/:.*//&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span> <span class="o">|</span> <span class="n">head</span> <span class="o">-</span><span class="mi">2</span>
+<span class="n">root</span>
+<span class="n">daemon</span>
+
+<span class="err">$</span> <span class="n">sed</span> <span class="s1">&#39;s/:.*//&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span> <span class="o">|</span> <span class="n">sort</span> <span class="o">|</span> <span class="n">head</span> <span class="o">-</span><span class="mi">2</span>
+<span class="n">_apt</span>
+<span class="n">avahi</span>
+</pre></div>
+
+</div>
+<div class="section" id="id19">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">lines</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/etc/passwd&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">line</span>
+<span class="s1">&#39;root:x:0:0:root:/root:bash</span><span class="se">\n</span><span class="s1">&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="p">[</span><span class="s1">&#39;root:x:0:0:root:/root:bash&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+<span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;/root&#39;</span><span class="p">,</span> <span class="s1">&#39;bash</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="s1">&#39;root&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">)</span>
+<span class="p">[</span><span class="s1">&#39;_apt&#39;</span><span class="p">,</span> <span class="s1">&#39;avahi&#39;</span><span class="p">,</span> <span class="s1">&#39;avahi-autoipd&#39;</span><span class="p">,</span> <span class="s1">&#39;backup&#39;</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id20">
+
+<p>✔ Interactivity</p>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="recursive-data-layout">
+<h1>Recursive Data Layout</h1>
+</div>
+<div class="section" id="id21">
+
+<div class="line-block">
+<div class="line">How should a disk</div>
+<div class="line">drive maintain its</div>
+<div class="line">list of files?</div>
+</div>
+</div>
+<div class="section" id="id22">
+
+<div class="line-block">
+<div class="line"><em>How many</em> lists of files?</div>
+<div class="line">Per-user? System list? Dropbox?</div>
+</div>
+<div class="line-block">
+<div class="line">What’s the <strong>API</strong> for</div>
+<div class="line">accessing each one?</div>
+</div>
+</div>
+<div class="section" id="id23">
+
+<p>MULTICS</p>
+<div class="line-block">
+<div class="line">What if <em>every directory</em></div>
+<div class="line">…</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id24">
+
+<p>MULTICS</p>
+<div class="line-block">
+<div class="line">What if <em>every directory</em></div>
+<div class="line"><strong>IS ITSELF A FILE</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id25">
+
+<p>“Hierarchical filesystem”</p>
+</div>
+<div class="section" id="id26">
+
+<div class="line-block">
+<div class="line">If directories are files—</div>
+</div>
+<div class="line-block">
+<div class="line">1. Directories have names</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id27">
+
+<div class="line-block">
+<div class="line">If directories are files—</div>
+</div>
+<div class="line-block">
+<div class="line">1. Directories have names</div>
+<div class="line">2. Simply <tt class="docutils literal">open()</tt> and <tt class="docutils literal">read()</tt></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id28">
+
+<div class="line-block">
+<div class="line">If directories are files—</div>
+</div>
+<div class="line-block">
+<div class="line">1. Directories have names</div>
+<div class="line">2. Simply <tt class="docutils literal">open()</tt> and <tt class="docutils literal">read()</tt></div>
+<div class="line">3. Nest <em>inside</em> other directories!</div>
+</div>
+</div>
+<div class="section" id="id29">
+
+<div class="highlight"><pre><span></span><span class="o">/</span>
+<span class="err">├──</span> <span class="nb">bin</span>
+<span class="err">├──</span> <span class="n">dev</span>
+<span class="err">├──</span> <span class="n">etc</span>
+<span class="err">└──</span> <span class="n">usr</span>
+    <span class="err">├──</span> <span class="n">brandon</span>
+    <span class="err">└──</span> <span class="n">jackie</span>
+</pre></div>
+
+</div>
+<div class="section" id="id30">
+
+<div class="line-block">
+<div class="line">Unix: Hierarchical Filesystem</div>
+<div class="line">Python: ?</div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="line-block">
+<div class="line">Unix: Hierarchical Filesystem</div>
+<div class="line">Python: <em>Recursive Data Structures</em></div>
+</div>
+</div>
+<div class="section" id="id32">
+
+<div class="line-block">
+<div class="line">Python data structures</div>
+<div class="line"><em>nest</em> arbitrarily!</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line">Python data structures</div>
+<div class="line"><em>nest</em> arbitrarily!</div>
+</div>
+<div class="line-block">
+<div class="line">(Except <tt class="docutils literal">dict</tt> keys)</div>
+</div>
+</div>
+<div class="section" id="id34">
+
+<div class="highlight"><pre><span></span><span class="p">[(</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;GBP&#39;</span><span class="p">,</span> <span class="s1">&#39;£&#39;</span><span class="p">,</span> <span class="mf">1.32</span><span class="p">)]</span>
+
+<span class="p">{</span><span class="s1">&#39;.py&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;mod.py&#39;</span><span class="p">,</span> <span class="s1">&#39;test.py&#39;</span><span class="p">],</span>
+ <span class="s1">&#39;.pyc&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;mod.pyc&#39;</span><span class="p">]}</span>
+
+<span class="p">{(</span><span class="s1">&#39;python.org&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">):</span> <span class="mi">9173</span><span class="p">,</span>
+ <span class="p">(</span><span class="s1">&#39;python.org&#39;</span><span class="p">,</span> <span class="mi">443</span><span class="p">):</span> <span class="mi">137574</span><span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id35">
+
+<p>✔ Recursive Data Layout</p>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="plain-text">
+<h1>Plain Text</h1>
+</div>
+<div class="section" id="id36">
+
+<p>ASCII characters 32–126</p>
+<div class="highlight"><pre><span></span> <span class="err">!</span><span class="s2">&quot;#$%&amp;&#39;()*+,-./0123456789:;&lt;=&gt;?</span>
+<span class="nd">@ABCDEFGHIJKLMNOPQRSTUVWXYZ</span><span class="p">[</span>\<span class="p">]</span><span class="o">^</span><span class="n">_</span>
+<span class="err">`</span><span class="n">abcdefghijklmnopqrstuvwxyz</span><span class="p">{</span><span class="o">|</span><span class="p">}</span>
+</pre></div>
+
+<p>plus the newline <tt class="docutils literal">\n</tt></p>
+</div>
+<div class="section" id="id37">
+
+<div class="line-block">
+<div class="line">UNIX tends to use plain text</div>
+<div class="line">for everything it possibly can</div>
+</div>
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line">Filename? Plain text!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">README</span>
+<span class="n">setup</span><span class="o">.</span><span class="n">py</span>
+<span class="n">Python</span><span class="o">-</span><span class="mf">1.5</span><span class="o">.</span><span class="mf">1.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+</pre></div>
+
+</div>
+<div class="section" id="id39">
+
+<div class="line-block">
+<div class="line">Path? Plain text!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span>
+</pre></div>
+
+<p><em>Craziness</em></p>
+</div>
+<div class="section" id="id40">
+
+<p><tt class="docutils literal">/etc/passwd</tt></p>
+<div class="line-block">
+<div class="line">Fixed-length records? —</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id41">
+
+<p><tt class="docutils literal">/etc/passwd</tt></p>
+<div class="line-block">
+<div class="line">Fixed-length records? <strong>No!</strong></div>
+<div class="line">On-disk hash table? —</div>
+</div>
+</div>
+<div class="section" id="id42">
+
+<p><tt class="docutils literal">/etc/passwd</tt></p>
+<div class="line-block">
+<div class="line">Fixed-length records? <strong>No!</strong></div>
+<div class="line">On-disk hash table? <strong>No!</strong></div>
+</div>
+</div>
+<div class="section" id="id43">
+
+<p>Plain text!</p>
+<div class="highlight"><pre><span></span><span class="n">root</span><span class="p">:</span><span class="n">bh0ENureqXWho</span><span class="o">.</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="n">root</span><span class="p">:</span><span class="o">/</span><span class="p">:</span><span class="n">bash</span>
+<span class="nb">bin</span><span class="p">:</span><span class="n">x</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="nb">bin</span><span class="p">:</span><span class="o">/</span><span class="nb">bin</span><span class="p">:</span><span class="n">nologin</span>
+<span class="n">sys</span><span class="p">:</span><span class="n">x</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="n">sys</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="p">:</span><span class="n">nologin</span>
+<span class="n">sshd</span><span class="p">:</span><span class="n">x</span><span class="p">:</span><span class="mi">122</span><span class="p">:</span><span class="mi">65534</span><span class="p">::</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">sshd</span><span class="p">:</span><span class="n">nologin</span>
+<span class="n">brandon</span><span class="p">:</span><span class="n">Ep6mckrOLChF</span><span class="o">.</span><span class="p">:</span><span class="mi">1000</span><span class="p">:</span><span class="mi">1000</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">brandon</span><span class="p">:</span><span class="n">zsh</span>
+</pre></div>
+
+<p><em>Craziness</em></p>
+</div>
+<div class="section" id="id44">
+
+<p><strong>UNIX</strong> was an act of <em>divestiture</em></p>
+</div>
+<div class="section" id="id45">
+
+<div class="line-block">
+<div class="line">Plain text means that <em>standard</em></div>
+<div class="line"><em>tools</em> can operate on <strong>system data</strong></div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">grep</span> <span class="s1">&#39;^uucp:&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span>
+<span class="n">uucp</span><span class="p">:</span><span class="n">x</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="n">uucp</span><span class="p">:</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">spool</span><span class="o">/</span><span class="n">uucp</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">nologin</span>
+
+<span class="err">$</span> <span class="n">sed</span> <span class="s1">&#39;s/:.*//&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span> <span class="o">|</span> <span class="n">sort</span> <span class="o">|</span> <span class="n">head</span> <span class="o">-</span><span class="mi">2</span>
+<span class="n">_apt</span>
+<span class="n">avahi</span>
+</pre></div>
+
+</div>
+<div class="section" id="id46">
+
+<p><em>Personal preferences</em></p>
+<div class="line-block">
+<div class="line">Special registry?</div>
+<div class="line">Special system calls?</div>
+</div>
+</div>
+<div class="section" id="id47">
+
+<div class="line-block">
+<div class="line">Plain text!</div>
+<div class="line"><em>“Environment”</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="nb">set</span>
+<span class="n">EDITOR</span><span class="o">=</span><span class="n">emacs</span>
+<span class="n">HOME</span><span class="o">=/</span><span class="n">home</span><span class="o">/</span><span class="n">brandon</span>
+<span class="n">LOGNAME</span><span class="o">=</span><span class="n">brandon</span>
+<span class="n">PAGER</span><span class="o">=</span><span class="n">less</span>
+<span class="n">PYTHONDONTWRITEBYTECODE</span><span class="o">=</span><span class="n">PLEASE</span>
+<span class="n">SHELL</span><span class="o">=/</span><span class="nb">bin</span><span class="o">/</span><span class="n">zsh</span>
+</pre></div>
+
+</div>
+<div class="section" id="id48">
+
+<div class="line-block">
+<div class="line">Unix: Plain Text</div>
+<div class="line">Python: ?</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id49">
+
+<div class="line-block">
+<div class="line">Unix: Plain Text</div>
+<div class="line">Python: Plain Data Structures</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">tuple</tt> &nbsp; <tt class="docutils literal">list</tt> &nbsp; <tt class="docutils literal">dict</tt></div>
+</div>
+</div>
+<div class="section" id="id50">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;list&#39;</span><span class="o">&gt;</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;list&#39;</span><span class="o">&gt;</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;dict&#39;</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id51">
+
+<div class="line-block">
+<div class="line">✔ Plain Text</div>
+<div class="line">✔ Plain Data</div>
+</div>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="everything-is-a-file">
+<h1>Everything is a File</h1>
+</div>
+<div class="section" id="id52">
+
+<p>Regular file</p>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">open() close()</tt></div>
+<div class="line"><tt class="docutils literal">read() write()</tt></div>
+<div class="line"><tt class="docutils literal">seek() tell()</tt></div>
+</div>
+</div>
+<div class="section" id="id53">
+
+<p>Directory</p>
+<p><tt class="docutils literal">open() read() close()</tt></p>
+</div>
+<div class="section" id="id54">
+
+<div class="line-block">
+<div class="line">Applications like <tt class="docutils literal">/bin/ls</tt> and</div>
+<div class="line">libraries like <tt class="docutils literal"><span class="pre">/lib/libc-2.23.so</span></tt></div>
+<div class="line">are just <em>regular files</em> that start with</div>
+<div class="line">a header the OS recognizes</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">open() close()</tt></div>
+<div class="line"><tt class="docutils literal">read() write()</tt></div>
+<div class="line"><tt class="docutils literal">seek() tell()</tt></div>
+</div>
+</div>
+<div class="section" id="id55">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">od</span> <span class="o">-</span><span class="n">x</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">cat</span> <span class="o">|</span> <span class="n">head</span> <span class="o">-</span><span class="mi">1</span>
+<span class="mo">0000000</span> <span class="mi">457</span><span class="n">f</span> <span class="mi">464</span><span class="n">c</span> <span class="mo">0102</span> <span class="mo">0001</span> <span class="mo">0000</span> <span class="mo">0000</span> <span class="mo">0000</span> <span class="mo">0000</span>
+</pre></div>
+
+</div>
+<div class="section" id="id56">
+
+<p><tt class="docutils literal">/etc/magic</tt></p>
+<div class="line-block">
+<div class="line">Lists magic numbers so you can</div>
+<div class="line">identify different kinds of file</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="nb">file</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span>
+<span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span><span class="p">:</span> <span class="n">ASCII</span> <span class="n">text</span>
+
+<span class="err">$</span> <span class="nb">file</span> <span class="n">Gentium</span><span class="o">-</span><span class="n">R</span><span class="o">.</span><span class="n">ttf</span>
+<span class="n">Gentium</span><span class="o">-</span><span class="n">R</span><span class="o">.</span><span class="n">ttf</span><span class="p">:</span> <span class="n">TrueType</span> <span class="n">font</span> <span class="n">data</span>
+
+<span class="err">$</span> <span class="nb">file</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">ls</span>
+<span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">ls</span><span class="p">:</span> <span class="n">ELF</span> <span class="mi">64</span><span class="o">-</span><span class="n">bit</span> <span class="n">LSB</span> <span class="n">executable</span><span class="p">,</span> <span class="n">x86</span><span class="o">-</span><span class="mf">64.</span><span class="o">..</span>
+</pre></div>
+
+</div>
+<div class="section" id="id57">
+
+<div class="line-block">
+<div class="line">Terminals like</div>
+<div class="line"><tt class="docutils literal">/dev/tty21</tt> also</div>
+<div class="line">live on the filesystem!</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">open() close()</tt></div>
+<div class="line"><tt class="docutils literal">read() write()</tt></div>
+</div>
+</div>
+<div class="section" id="id58">
+
+<div class="line-block">
+<div class="line">So <em>file permissions</em> can</div>
+<div class="line">protect ttys and block devices!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">tty</span>
+<span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">pts</span><span class="o">/</span><span class="mi">1</span>
+
+<span class="err">$</span> <span class="n">ls</span> <span class="o">-</span><span class="n">l</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">pts</span><span class="o">/</span><span class="mi">1</span>
+<span class="n">crw</span><span class="o">--</span><span class="n">w</span><span class="o">----</span> <span class="mi">1</span> <span class="n">brandon</span> <span class="n">tty</span> <span class="mi">136</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">pts</span><span class="o">/</span><span class="mi">1</span>
+</pre></div>
+
+</div>
+<div class="section" id="id59">
+
+<p><tt class="docutils literal">fsck</tt></p>
+<div class="line-block">
+<div class="line"><em>How</em> does it access the disk?</div>
+<div class="line">A dozen special <strong>system calls?</strong></div>
+</div>
+</div>
+<div class="section" id="id60">
+
+<p><tt class="docutils literal">fsck</tt></p>
+<div class="line-block">
+<div class="line">Can simply use:</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">/proc/mounts</tt></div>
+<div class="line"><tt class="docutils literal">/dev/sdb3</tt></div>
+</div>
+</div>
+<div class="section" id="id61">
+
+<div class="line-block">
+<div class="line">Unix: Everything is a File</div>
+<div class="line">Python: ?</div>
+</div>
+</div>
+<div class="section" id="id62">
+
+<div class="line-block">
+<div class="line">Unix: Everything is a file</div>
+<div class="line">Python: Everything is an object</div>
+</div>
+</div>
+<div class="section" id="id63">
+
+<div class="line-block">
+<div class="line">Common protocols get</div>
+<div class="line">re-used across many objects</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">string[key]</tt></div>
+<div class="line"><tt class="docutils literal">my_tuple[key]</tt></div>
+<div class="line"><tt class="docutils literal">my_list[key]</tt></div>
+<div class="line"><tt class="docutils literal">my_dict[key]</tt></div>
+<div class="line"><tt class="docutils literal">sys.environ[key]</tt></div>
+<div class="line"><tt class="docutils literal">berkeley_db[key]</tt></div>
+</div>
+</div>
+<div class="section" id="id64">
+
+<p>Everything is an object</p>
+<p>↓</p>
+<p>Duck typing</p>
+</div>
+<div class="section" id="id65">
+
+<p>A beautiful error</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Point</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Point&#39;</span><span class="p">,</span> <span class="s1">&#39;x y&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">namedtuple</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id66">
+
+<div class="line-block">
+<div class="line">Unix: ✔ Everything is a file</div>
+<div class="line">Python: ✔ Everything is an object</div>
+</div>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="first-class-errors">
+<h1>First-Class Errors</h1>
+<div class="line-block">
+<div class="line"><em>How</em> do you detect</div>
+<div class="line">that a Unix program</div>
+<div class="line">has <strong>failed?</strong></div>
+</div>
+</div>
+<div class="section" id="id67">
+
+<div class="line-block">
+<div class="line">1. Detection: programs exit</div>
+<div class="line">with <strong>integer status</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">0</tt> — success</div>
+<div class="line"><tt class="docutils literal">1</tt> — failure</div>
+<div class="line"><tt class="docutils literal">2</tt> — failure</div>
+<div class="line">⋮</div>
+</div>
+</div>
+<div class="section" id="id68">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">ls</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">tmp</span>
+<span class="err">$</span> <span class="n">echo</span> <span class="err">$?</span>
+<span class="mi">0</span>
+
+<span class="err">$</span> <span class="n">ls</span> <span class="o">/</span><span class="n">etcc</span>
+<span class="n">ls</span><span class="p">:</span> <span class="n">cannot</span> <span class="n">access</span> <span class="s1">&#39;/etcc&#39;</span>
+
+<span class="err">$</span> <span class="n">echo</span> <span class="err">$?</span>
+<span class="mi">2</span>
+</pre></div>
+
+</div>
+<div class="section" id="id69">
+
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">grep</span> <span class="n">brandon</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span>
+<span class="n">then</span>
+    <span class="n">echo</span> <span class="s2">&quot;We have a brandon!&quot;</span>
+<span class="k">else</span>
+    <span class="n">echo</span> <span class="s2">&quot;We have none.&quot;</span>
+<span class="n">fi</span>
+</pre></div>
+
+</div>
+<div class="section" id="id70">
+
+<div class="line-block">
+<div class="line">You can stop upon</div>
+<div class="line">receiving an error with</div>
+<div class="line"><tt class="docutils literal">bash <span class="pre">-e</span> script.sh</tt></div>
+</div>
+<p><em>or</em></p>
+<p><tt class="docutils literal">set <span class="pre">-e</span></tt> inside the script</p>
+</div>
+<div class="section" id="id71">
+
+<div class="line-block">
+<div class="line">2. Data: <strong>error messages</strong> written</div>
+<div class="line">to a dedicated <em>stderr</em> output</div>
+</div>
+</div>
+<div class="section" id="id72">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">ls</span> <span class="o">-</span><span class="n">l</span> <span class="n">passwd</span> <span class="n">grouppw</span> <span class="n">shadow</span>
+<span class="n">ls</span><span class="p">:</span> <span class="n">cannot</span> <span class="n">access</span> <span class="s1">&#39;grouppw&#39;</span><span class="p">:</span> <span class="n">No</span> <span class="n">such</span> <span class="nb">file</span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span> <span class="mi">1</span> <span class="n">root</span> <span class="n">root</span>   <span class="mi">2225</span> <span class="n">Sep</span> <span class="mi">11</span> <span class="mo">05</span><span class="p">:</span><span class="mo">06</span> <span class="n">passwd</span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">-----</span> <span class="mi">1</span> <span class="n">root</span> <span class="n">shadow</span> <span class="mi">1246</span> <span class="n">Sep</span>  <span class="mi">7</span> <span class="mi">10</span><span class="p">:</span><span class="mi">44</span> <span class="n">shadow</span>
+</pre></div>
+
+</div>
+<div class="section" id="id73">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">ls</span> <span class="o">-</span><span class="n">l</span> <span class="n">passwd</span> <span class="n">grouppw</span> <span class="n">shadow</span> <span class="mi">1</span><span class="o">&gt;</span><span class="n">out</span> <span class="mi">2</span><span class="o">&gt;</span><span class="n">err</span>
+
+<span class="err">$</span> <span class="n">cat</span> <span class="n">out</span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span> <span class="mi">1</span> <span class="n">root</span> <span class="n">root</span>   <span class="mi">2225</span> <span class="n">Sep</span> <span class="mi">11</span> <span class="mo">05</span><span class="p">:</span><span class="mo">06</span> <span class="n">passwd</span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">-----</span> <span class="mi">1</span> <span class="n">root</span> <span class="n">shadow</span> <span class="mi">1246</span> <span class="n">Sep</span>  <span class="mi">7</span> <span class="mi">10</span><span class="p">:</span><span class="mi">44</span> <span class="n">shadow</span>
+
+<span class="err">$</span> <span class="n">cat</span> <span class="n">err</span>
+<span class="n">ls</span><span class="p">:</span> <span class="n">cannot</span> <span class="n">access</span> <span class="s1">&#39;grouppw&#39;</span><span class="p">:</span> <span class="n">No</span> <span class="n">such</span> <span class="nb">file</span>
+</pre></div>
+
+</div>
+<div class="section" id="id74">
+
+<div class="line-block">
+<div class="line">Unix: status and stderr</div>
+<div class="line">Python: ?</div>
+</div>
+</div>
+<div class="section" id="id75">
+
+<div class="line-block">
+<div class="line">Unix: status and stderr</div>
+<div class="line">Python: first-class exceptions</div>
+</div>
+</div>
+<div class="section" id="id76">
+
+<div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/etc/password&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+
+<p>→ <tt class="docutils literal">IOError: No such file or directory</tt></p>
+</div>
+<div class="section" id="id77">
+
+<ul class="simple">
+<li>No return codes to check</li>
+<li>Exception can carry data</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span>
+    <span class="k">print</span> <span class="n">e</span><span class="o">.</span><span class="n">filename</span>
+    <span class="k">print</span> <span class="n">e</span><span class="o">.</span><span class="n">strerror</span>
+</pre></div>
+
+</div>
+<div class="section" id="id78">
+
+<p>✔ First-Class Errors</p>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="pipes">
+<h1>Pipes</h1>
+</div>
+<div class="section" id="id79">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">sed</span> <span class="s1">&#39;s/:.*//&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span> <span class="o">|</span> <span class="n">sort</span> <span class="o">|</span> <span class="n">head</span> <span class="o">-</span><span class="mi">2</span>
+</pre></div>
+
+</div>
+<div class="section" id="id80">
+
+<div class="line-block">
+<div class="line">Unix: Pipes</div>
+<div class="line">Python: ?</div>
+</div>
+</div>
+<div class="section" id="id81">
+
+<div class="line-block">
+<div class="line">Unix: Pipes</div>
+<div class="line">Python: Iterator Protocol</div>
+</div>
+</div>
+<div class="section" id="id82">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">sed</span> <span class="s1">&#39;s/:.*//&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span> <span class="o">|</span> <span class="n">sort</span> <span class="o">|</span> <span class="n">head</span> <span class="o">-</span><span class="mi">2</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="n">lines</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/etc/passwd&#39;</span><span class="p">)</span>
+<span class="n">usernames</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">)</span>
+<span class="k">print</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">usernames</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+<p>✔ Pipes</p>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="offer-power-tools">
+<h1>Offer Power Tools</h1>
+</div>
+<div class="section" id="id83">
+
+<div class="line-block">
+<div class="line">“Use <strong>simple</strong> algorithms as</div>
+<div class="line">well as <strong>simple</strong> data structures”</div>
+<div class="line"><em>— Rob Pike</em></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id84">
+
+<div class="line-block">
+<div class="line"><span class="strike">“Use simple algorithms as</span></div>
+<div class="line"><span class="strike">well as simple data structures”</span></div>
+<div class="line"><em>— Rob Pike</em></div>
+</div>
+<div class="line-block">
+<div class="line">“<strong>No!</strong> Use <em>complicated</em> data</div>
+<div class="line">structures: <tt class="docutils literal">set</tt> and <tt class="docutils literal">dict</tt>.”</div>
+<div class="line"><em>— Python</em></div>
+</div>
+</div>
+<div class="section" id="id85">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">sort</tt></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id86">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">sort</tt></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">dict</tt></div>
+</div>
+</div>
+<div class="section" id="id87">
+
+<p>✔ Power Tools</p>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="limited-core">
+<h1>Limited Core</h1>
+</div>
+<div class="section" id="id88">
+
+<div class="line-block">
+<div class="line"><strong>UNIX</strong></div>
+<div class="line">Small kernel + programs</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Python</em></div>
+<div class="line">Small runtime + standard library</div>
+</div>
+<!-- Standard Reference
+- - - - - - - - - - - - - - - - - -
+
+| ``man``
+| ``pydoc``
+
+| (Same weakness:
+| *excellent* for reference,
+| **bad** for learning —
+| PyMOTW et cetera) -->
+</div>
+<div class="section" id="reference-counting">
+<h1>Reference Counting</h1>
+</div>
+<div class="section" id="id89">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">echo</span> <span class="n">Brandon</span> <span class="o">&gt;</span> <span class="n">my_name</span>
+
+<span class="err">$</span> <span class="n">ls</span> <span class="o">-</span><span class="n">l</span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">-----</span> <span class="mi">1</span> <span class="o">...</span> <span class="n">my_name</span>
+
+<span class="err">$</span> <span class="n">ln</span> <span class="n">my_name</span> <span class="n">moniker</span>
+
+<span class="err">$</span> <span class="n">ls</span> <span class="o">-</span><span class="n">l</span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">-----</span> <span class="mi">2</span> <span class="o">...</span> <span class="n">my_name</span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">-----</span> <span class="mi">2</span> <span class="o">...</span> <span class="n">moniker</span>
+</pre></div>
+
+</div>
+<div class="section" id="id90">
+
+<div class="line-block">
+<div class="line"><strong>Q:</strong> When the <em>final link</em></div>
+<div class="line">to a file disappears, and its</div>
+<div class="line">reference count drops to zero,</div>
+<div class="line">can it be removed?</div>
+</div>
+</div>
+<div class="section" id="id91">
+
+<div class="line-block">
+<div class="line"><strong>A:</strong> Not necessarily.</div>
+</div>
+<div class="line-block">
+<div class="line"><em>A process might still</em></div>
+<div class="line"><em>have the process open</em></div>
+</div>
+</div>
+<div class="section" id="id92">
+
+<div class="line-block">
+<div class="line">Weak operating systems</div>
+<div class="line"><em>forbid removal</em> of</div>
+<div class="line">open files</div>
+</div>
+<!-- TODO quote error Windows gives you -->
+</div>
+<div class="section" id="id93">
+
+<div class="highlight"><pre><span></span><span class="err">┌────────────────────────┐</span>
+<span class="err">│</span> <span class="n">RAM</span>                    <span class="err">│</span>
+<span class="err">│</span>                        <span class="err">│</span>
+<span class="err">│</span>      <span class="n">inode</span>    <span class="err">←</span>  <span class="n">PID</span> <span class="mi">1</span> <span class="err">│</span>
+<span class="err">│</span>     <span class="n">nlink</span><span class="o">=</span><span class="mi">4</span>   <span class="err">←</span>  <span class="n">PID</span> <span class="mi">2</span> <span class="err">│</span>
+<span class="err">└──────</span>  <span class="err">║</span>  <span class="err">─────────────┘</span>
+<span class="err">┌──────</span>  <span class="err">║</span>  <span class="err">─────────────┐</span>
+<span class="err">│</span>      <span class="n">inode</span>    <span class="err">←</span>  <span class="n">name1</span> <span class="err">│</span>
+<span class="err">│</span>     <span class="n">nlink</span><span class="o">=</span><span class="mi">2</span>   <span class="err">←</span>  <span class="n">name2</span> <span class="err">│</span>
+<span class="err">│</span>                        <span class="err">│</span>
+<span class="err">│</span>  <span class="n">Disk</span>                  <span class="err">│</span>
+<span class="err">└────────────────────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id94">
+
+<div class="highlight"><pre><span></span><span class="err">┌────────────────────────┐</span>
+<span class="err">│</span> <span class="n">RAM</span>                    <span class="err">│</span>
+<span class="err">│</span>                        <span class="err">│</span>
+<span class="err">│</span>      <span class="n">inode</span>    <span class="err">←</span>  <span class="n">PID</span> <span class="mi">1</span> <span class="err">│</span>
+<span class="err">│</span>     <span class="n">nlink</span><span class="o">=</span><span class="mi">3</span>   <span class="err">←</span>  <span class="n">PID</span> <span class="mi">2</span> <span class="err">│</span>
+<span class="err">└──────</span>  <span class="err">║</span>  <span class="err">─────────────┘</span>
+<span class="err">┌──────</span>  <span class="err">║</span>  <span class="err">─────────────┐</span>
+<span class="err">│</span>      <span class="n">inode</span>    <span class="err">←</span>  <span class="n">name1</span> <span class="err">│</span>
+<span class="err">│</span>     <span class="n">nlink</span><span class="o">=</span><span class="mi">1</span>            <span class="err">│</span>
+<span class="err">│</span>                        <span class="err">│</span>
+<span class="err">│</span>  <span class="n">Disk</span>                  <span class="err">│</span>
+<span class="err">└────────────────────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id95">
+
+<div class="highlight"><pre><span></span><span class="err">┌────────────────────────┐</span>
+<span class="err">│</span> <span class="n">RAM</span>                    <span class="err">│</span>
+<span class="err">│</span>                        <span class="err">│</span>
+<span class="err">│</span>      <span class="n">inode</span>    <span class="err">←</span>  <span class="n">PID</span> <span class="mi">1</span> <span class="err">│</span>
+<span class="err">│</span>     <span class="n">nlink</span><span class="o">=</span><span class="mi">2</span>   <span class="err">←</span>  <span class="n">PID</span> <span class="mi">2</span> <span class="err">│</span>
+<span class="err">└──────</span>  <span class="err">║</span>  <span class="err">─────────────┘</span>
+<span class="err">┌──────</span>  <span class="err">║</span>  <span class="err">─────────────┐</span>
+<span class="err">│</span>      <span class="n">inode</span>             <span class="err">│</span>
+<span class="err">│</span>     <span class="n">nlink</span><span class="o">=</span><span class="mi">0</span>            <span class="err">│</span>
+<span class="err">│</span>                        <span class="err">│</span>
+<span class="err">│</span>  <span class="n">Disk</span>                  <span class="err">│</span>
+<span class="err">└────────────────────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id96">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">)</span>  <span class="c1"># &quot;rm file&quot;!</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;one line</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1">#=&gt; &quot;one line&quot;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id97">
+
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">lsof</span> <span class="o">-</span><span class="n">p</span> <span class="mi">24751</span>
+<span class="n">COMMAND</span>   <span class="n">PID</span>  <span class="n">FD</span>  <span class="n">SIZE</span><span class="o">/</span><span class="n">OFF</span> <span class="n">NAME</span>
+<span class="n">python</span>  <span class="mi">24751</span> <span class="n">cwd</span>      <span class="mi">4096</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">brandon</span><span class="o">/</span><span class="n">talks</span>
+<span class="n">python</span>  <span class="mi">24751</span> <span class="n">rtd</span>      <span class="mi">4096</span> <span class="o">/</span>
+<span class="n">python</span>  <span class="mi">24751</span> <span class="n">txt</span>   <span class="mi">3546104</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span>
+<span class="o">...</span>
+<span class="n">python</span>  <span class="mi">24751</span>   <span class="mi">0</span><span class="n">u</span>      <span class="mi">0</span><span class="n">t0</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">pts</span><span class="o">/</span><span class="mi">7</span>
+<span class="n">python</span>  <span class="mi">24751</span>   <span class="mi">1</span><span class="n">u</span>      <span class="mi">0</span><span class="n">t0</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">pts</span><span class="o">/</span><span class="mi">7</span>
+<span class="n">python</span>  <span class="mi">24751</span>   <span class="mi">2</span><span class="n">u</span>      <span class="mi">0</span><span class="n">t0</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">pts</span><span class="o">/</span><span class="mi">7</span>
+<span class="n">python</span>  <span class="mi">24751</span>   <span class="mi">3</span><span class="n">u</span>        <span class="mi">9</span> <span class="nb">file</span> <span class="p">(</span><span class="n">deleted</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id98">
+
+<div class="highlight"><pre><span></span><span class="n">stat</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fstat</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+<span class="k">print</span> <span class="n">stat</span><span class="o">.</span><span class="n">st_nlink</span>  <span class="c1">#=&gt; 0</span>
+</pre></div>
+
+</div>
+<div class="section" id="id99">
+
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">TemporaryFile</span>
+</pre></div>
+
+</div>
+<div class="section" id="id100">
+
+<div class="line-block">
+<div class="line">This is how an installer</div>
+<div class="line">can <tt class="docutils literal">rm</tt> an executable and</div>
+<div class="line">replace it <em>without</em> forcing</div>
+<div class="line">you to <strong>quit the app</strong></div>
+</div>
+</div>
+<div class="section" id="id101">
+
+<p>✔ Reference Counting</p>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+<div class="section" id="share-the-code">
+<h1>Share the Code</h1>
+</div>
+<div class="section" id="id102">
+
+<img alt="bell_logo.gif" src="bell_logo.gif" style="height: 520px;" />
+</div>
+<div class="section" id="id103">
+
+<p>1958 consent decree</p>
+</div>
+<div class="section" id="id104">
+
+<div class="line-block">
+<div class="line">UNIX → BSD → NEXTSTEP → <em>OS X</em></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id105">
+
+<div class="line-block">
+<div class="line">UNIX → BSD → NEXTSTEP → <em>OS X</em></div>
+<div class="line">⇢ MINIX ⇢ <strong>Linux</strong></div>
+</div>
+<!-- TODO picture -->
+</div>
+<div class="section" id="today">
+<h1>Today</h1>
+<ul class="simple">
+<li>I work at Dropbox</li>
+<li>Servers run <strong>Linux</strong></li>
+<li>Laptops run <em>OS X</em></li>
+</ul>
+</div>
+<div class="section" id="unix">
+<h1>UNIX</h1>
+</div>
+<div class="section" id="id106">
+
+<div class="line-block">
+<div class="line">Freedom</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id107">
+
+<div class="line-block">
+<div class="line">Freedom</div>
+</div>
+<div class="line-block">
+<div class="line">↓</div>
+</div>
+<div class="line-block">
+<div class="line">Tradition</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id108">
+
+<div class="line-block">
+<div class="line">Freedom</div>
+</div>
+<div class="line-block">
+<div class="line">↓</div>
+</div>
+<div class="line-block">
+<div class="line">Tradition</div>
+</div>
+<div class="line-block">
+<div class="line">↓</div>
+</div>
+<div class="line-block">
+<div class="line">Community</div>
+</div>
+</div>
+<div class="section" id="id109">
+
+<div class="line-block">
+<div class="line"><em>Welcome</em> to</div>
+<div class="line"><strong>PyCon UK 2016!</strong></div>
+</div>
+<div class="line-block">
+<div class="line">&#64;brandon_rhodes</div>
+</div>
+</div>
+<div class="section" id="references">
+<h1>References</h1>
+<p><a class="reference external" href="http://python-history.blogspot.com/2009/01/pythons-design-philosophy.html">http://python-history.blogspot.com/2009/01/pythons-design-philosophy.html</a></p>
+<!-- single quote: ’
+double quotes: x“”x
+prime: ′ ″
+em-dash: —
+vertical ellipsis: ⋮
+arrows: ←, ↑, →, ↓, ↔, ↕, ↖, ↗, ↘, ↙ -->
+<script>
+  window.slide_transition_time = 2000;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

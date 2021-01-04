@@ -1,0 +1,853 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dates and Time</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="dates-and-time">
+<h1>Dates and Time<a class="headerlink" href="#dates-and-time" title="Permalink to this headline">¶</a></h1>
+<p>Astronomers use a variety of different scales to measure time.
+Skyfield often has to use several timescales within a single computation!
+The <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> class is how Skyfield represents either a single moment in time
+or a whole array of moments,
+and keeps track of all of the different designations
+assigned to that moment
+by the various standard time scales:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">tt</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;TT date and time: &#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">tt_strftime</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;TAI date and time:&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">tai_strftime</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;UTC date and time:&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;TDB Julian date: </span><span class="si">{:.10f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">tdb</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Julian century: </span><span class="si">{:.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">J</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>TT date and time:  2000-01-01 12:00:00 TT
+TAI date and time: 2000-01-01 11:59:28 TAI
+UTC date and time: 2000-01-01 11:58:56 UTC
+TDB Julian date: 2451544.9999999991
+Julian century: 2000.0
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale" title="skyfield.timelib.Timescale"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Timescale</span></code></a> object returned by <code class="docutils literal notranslate"><span class="pre">load.timescale()</span></code>
+manages the conversions between different time scales
+and is also how the programmer builds <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> objects for specific dates.
+Most applications create only one <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale" title="skyfield.timelib.Timescale"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Timescale</span></code></a> object,
+which Skyfield programmers conventionally name <code class="docutils literal notranslate"><span class="pre">ts</span></code>,
+and use it to build all of their times.</p>
+<p>For quick reference,
+here are the supported timescales:</p>
+<ul class="simple">
+<li>UTC — Coordinated Universal Time (“Greenwich Time”)</li>
+<li>UT1 — Universal Time</li>
+<li>TAI — International Atomic Time</li>
+<li>TT — Terrestrial Time</li>
+<li>TDB — Barycentric Dynamical Time (the JPL’s <em>T</em><sub>eph</sub>)</li>
+</ul>
+<p>And here are links to the API documentation for time scales and times:</p>
+<ul class="simple">
+<li><a class="reference internal" href="api.html#api-timescale"><span class="std std-ref">Time scales</span></a></li>
+<li><a class="reference internal" href="api.html#api-time"><span class="std std-ref">Time objects</span></a></li>
+</ul>
+<div class="section" id="ancient-and-modern-dates">
+<span id="choice-of-calendars"></span><h2>Ancient and modern dates<a class="headerlink" href="#ancient-and-modern-dates" title="Permalink to this headline">¶</a></h2>
+<p>Skyfield normally uses the modern Gregorian calendar,
+even for dates in history before the Gregorian calendar’s adoption in&nbsp;1582.
+This “proleptic” use of Gregorian dates
+makes date calculations simple,
+is compatible with Python’s <code class="docutils literal notranslate"><span class="pre">datetime</span></code>,
+and is also the behavior of the United States Naval Observatory library
+on which many Skyfield routines were originally based.</p>
+<p>But the Gregorian calendar is awkward
+for historians and students of ancient astronomy,
+because the calendar in actual use before 1582
+was the old Julian calendar
+established by Julius Caesar’s calendar reform in&nbsp;45&nbsp;BC.
+The two calendars agree over the century
+between the leap day of AD&nbsp;200 and the leap day of AD&nbsp;300.
+But because the Julian calendar is not quite synchronized with the seasons,
+its dates run ahead of the Gregorian calendar before that century
+and run behind the Gregorian calendar after it.</p>
+<p>If you would like Skyfield
+to switch to the Julian calendar for historical dates —
+both when interpreting the dates you input,
+and when producing calendar dates as output —
+simply give your <code class="docutils literal notranslate"><span class="pre">Timescale</span></code> object
+the <a class="reference external" href="https://en.wikipedia.org/wiki/Julian_day">Julian day</a>
+on which you would like the calendar to switch.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">GREGORIAN_START</span>
+
+<span class="n">ts</span><span class="o">.</span><span class="n">julian_calendar_cutoff</span> <span class="o">=</span> <span class="n">GREGORIAN_START</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">tt_jd</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2299159</span><span class="p">,</span> <span class="mi">2299163</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">tt_strftime</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>1582-10-03 12:00:00 TT
+1582-10-04 12:00:00 TT
+1582-10-15 12:00:00 TT
+1582-10-16 12:00:00 TT
+</pre></div>
+</div>
+<p>As you can see from these four successive days in history,
+Pope Gregory had the calendar jump
+directly from the old Julian calendar date 1582 October&nbsp;4
+to the new Gregorian calendar date 1582 October&nbsp;15,
+bringing the date of Easter back into sync with the equinox.
+Skyfield provides two constants for popular cutoff dates:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">GREGORIAN_START</span></code> — Julian day 2299161,
+on which the new Gregorian calendar went into effect in Rome.</li>
+<li><code class="docutils literal notranslate"><span class="pre">GREGORIAN_START_ENGLAND</span></code> — Julian day 2361222,
+on which the new Gregorian calendar went into effect in England in&nbsp;1752
+(the reform having initially been rejected by the English bishops,
+“Seeing that the Bishop of Rome is Antichrist,
+therefore we may not communicate with him in any thing”).</li>
+</ul>
+<p>You are free to choose your own cutoff Julian day
+if you are studying astronomy records from a country
+that adopted the Gregorian calendar on some other date.
+Russia, for example, did not adopt it until the twentieth century.
+The default value,
+that asks the timescale to always use Gregorian dates,
+is <code class="docutils literal notranslate"><span class="pre">None</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">julian_calendar_cutoff</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>Note that even the Julian calendar becomes anachronistic
+before its adoption in 45&nbsp;BC,
+so all dates generated by Skyfield are “proleptic” before that date.
+And, of course, the Julian calendar
+was local to the civilization that ringed the Mediterranean.
+If you are interested in relating astronomical events
+to more ancient Roman calendars,
+or the calendars of other civilizations,
+try searching for a third-party Python package
+that supports the calendar you are interested in.</p>
+</div>
+<div class="section" id="building-and-printing-utc">
+<span id="building-dates"></span><h2>Building and printing UTC<a class="headerlink" href="#building-and-printing-utc" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">utc</span></code> parameter in the examples above
+specifies Coordinated Universal Time (UTC),
+the world clock known affectionately as “Greenwich Mean Time”
+which is the basis for all of the world’s timezones.
+If you are comfortable dealing directly with UTC
+instead of your local timezone,
+you can build and display dates
+without needing any other library besides Skyfield.</p>
+<p>You can build a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a calendar date and UTC time
+using <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.utc" title="skyfield.timelib.Timescale.utc"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">Timescale.utc</span></code></a>.
+Provide only as many parameters as you want —
+year, month, day, hour, minute, and second —
+and Skyfield will fill in the rest
+by defaulting to January first and zero hours, minutes, and seconds.</p>
+<p>Feel free to use fractional days, hours, and minutes.
+Here are several ways to specify the exact same time and date:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Four ways to specify 2014 January 18 01:35:37.5</span>
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">18.06640625</span><span class="p">)</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mf">1.59375</span><span class="p">)</span>
+<span class="n">t3</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">35.625</span><span class="p">)</span>
+<span class="n">t4</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mf">37.5</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">t1</span> <span class="o">==</span> <span class="n">t2</span> <span class="o">==</span> <span class="n">t3</span> <span class="o">==</span> <span class="n">t4</span>    <span class="c1"># True!</span>
+
+<span class="c1"># Several ways to print a time as UTC.</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">utc</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;On %Y %b </span><span class="si">%d</span><span class="s1"> at %H:%M:%S&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(2014, 1, 18, 1, 35, 37.5)
+2014-01-18T01:35:38Z
+2014-01-18 01:35:38 UTC
+On 2014 Jan 18 at 01:35:38
+A.D. 2014-Jan-18 01:35:37.5000 UTC
+</pre></div>
+</div>
+<p>The 6 values returned by <code class="docutils literal notranslate"><span class="pre">utc()</span></code>
+can be accessed as the attributes
+<code class="docutils literal notranslate"><span class="pre">year</span></code>, <code class="docutils literal notranslate"><span class="pre">month</span></code>, <code class="docutils literal notranslate"><span class="pre">day</span></code>, <code class="docutils literal notranslate"><span class="pre">hour</span></code>, <code class="docutils literal notranslate"><span class="pre">minute</span></code>,  and <code class="docutils literal notranslate"><span class="pre">second</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">utc</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">t1</span><span class="o">.</span><span class="n">utc</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">t1</span><span class="o">.</span><span class="n">utc</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">utc</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">t1</span><span class="o">.</span><span class="n">utc</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">t1</span><span class="o">.</span><span class="n">utc</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2014 / 1 / 18
+1 : 35 : 37.5
+</pre></div>
+</div>
+<p>If you want to use the current time,
+Skyfield leverages the minimal support for UTC
+in the Python Standard Library
+to offer a <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.now" title="skyfield.timelib.Timescale.now"><code class="xref py py-func docutils literal notranslate"><span class="pre">now()</span></code></a> function
+that reads your system clock
+and returns the current time as a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> object
+(assuming that your operating system clock is correct
+and configured with the correct time zone):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+
+<span class="c1"># Asking the current date and time</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>A.D. 2015-Oct-11 10:00:00.0000 UTC
+</pre></div>
+</div>
+</div>
+<div class="section" id="utc-and-your-timezone">
+<h2>UTC and your timezone<a class="headerlink" href="#utc-and-your-timezone" title="Permalink to this headline">¶</a></h2>
+<p>To move beyond UTC and work with other world timezones,
+you will need to install a time zone database
+for your version of Python.</p>
+<ul class="simple">
+<li>Every version of Python that Skyfield supports
+will work with the <a class="reference external" href="http://pytz.sourceforge.net/">pytz</a> package described in this section.</li>
+<li>Python 3.6 upgraded the Standard Library <code class="docutils literal notranslate"><span class="pre">datetime</span></code> type
+so that the contortions of <a class="reference external" href="http://pytz.sourceforge.net/">pytz</a> are no longer necessary,
+and instead recommends
+<a class="reference external" href="https://dateutil.readthedocs.io/en/stable/">dateutil</a>
+for working with timezones.
+Consult its documentation if you are interested in using it.</li>
+<li>Python 3.9 will offer a native
+<a class="reference external" href="https://docs.python.org/3.9/library/zoneinfo.html">zoneinfo</a>
+module that for the first time brings timezone support
+into the Python Standard Library.</li>
+</ul>
+<p>This documentation will focus on the first approach,
+which works universally across all Python versions.
+You can install the third-party <a class="reference external" href="http://pytz.sourceforge.net/">pytz</a> library
+by listing it in the dependencies of your package,
+adding it to your project’s <a class="reference external" href="https://pip.pypa.io/en/latest/user_guide.html#requirements-files">requirements.txt</a> file,
+or simply installing it manually:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pytz</span>
+</pre></div>
+</div>
+<p>Once it is installed,
+building a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a local time is simple.
+Instantiate a normal Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code>,
+pass it to the <code class="docutils literal notranslate"><span class="pre">localize()</span></code> method of your time zone,
+and pass the result to Skyfield:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">pytz</span> <span class="kn">import</span> <span class="n">timezone</span>
+
+<span class="n">eastern</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="s1">&#39;US/Eastern&#39;</span><span class="p">)</span>
+
+<span class="c1"># Converting US Eastern Time to a Skyfield Time.</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">eastern</span><span class="o">.</span><span class="n">localize</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_datetime</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When Skyfield returns a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> at the end of a calculation,
+you can ask for either a UTC <code class="docutils literal notranslate"><span class="pre">datetime</span></code>
+or a <code class="docutils literal notranslate"><span class="pre">datetime</span></code> in your own timezone:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># UTC datetime</span>
+
+<span class="n">dt</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_datetime</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;UTC: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dt</span><span class="p">))</span>
+
+<span class="c1"># Converting back to an Eastern Time datetime.</span>
+
+<span class="n">dt</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">eastern</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;EST: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dt</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>UTC: 2014-01-16 06:32:09+00:00
+EST: 2014-01-16 01:32:09-05:00
+</pre></div>
+</div>
+<p>As we would expect,
+1:32&nbsp;AM in the Eastern time zone in January
+is 6:32&nbsp;AM local time in Greenwich, England,
+five hours to the east across the Atlantic.</p>
+<p>Note that Skyfield’s <a class="reference internal" href="api-time.html#skyfield.timelib.Time.astimezone" title="skyfield.timelib.Time.astimezone"><code class="xref py py-meth docutils literal notranslate"><span class="pre">astimezone()</span></code></a> method
+will detect that you are using a <code class="docutils literal notranslate"><span class="pre">pytz</span></code> timezone
+and automatically call its <code class="docutils literal notranslate"><span class="pre">normalize()</span></code> method for you —
+which makes sure that daylight savings time is handled correctly —
+to spare you from having to make the call yourself.</p>
+<p>If you want a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> to hold an entire array of dates,
+as discussed below in <a class="reference internal" href="#date-arrays"><span class="std std-ref">Date arrays</span></a>,
+then you can provide a list of <code class="docutils literal notranslate"><span class="pre">datetime</span></code> objects
+to the <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.from_datetimes" title="skyfield.timelib.Timescale.from_datetimes"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">Timescale.from_datetimes()</span></code></a> method.
+The UTC methods will then return whole lists of values.</p>
+</div>
+<div class="section" id="utc-and-leap-seconds">
+<span id="leap-seconds"></span><h2>UTC and leap seconds<a class="headerlink" href="#utc-and-leap-seconds" title="Permalink to this headline">¶</a></h2>
+<p>The rate of Earth’s rotation is gradually slowing down.
+Since the UTC standard specifies a fixed length for the second,
+promises a day of 24 hours, and limits an hour to 60 minutes,
+the only way to stay within the rules
+while keeping UTC synchronized with the Earth
+is to occasionally add an extra leap second
+to one of the year’s minutes.</p>
+<p>The <a class="reference external" href="http://hpiers.obspm.fr/">International Earth Rotation Service</a>
+currently restricts itself to appending a leap second
+to the last minute of June or the last minute of December.
+When a leap second is inserted,
+its minute counts 61 seconds numbered 00–60
+instead of staying within the usual range 00–59.
+One recent leap second was in June 2012:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display 5 seconds around a leap second</span>
+
+<span class="n">five_seconds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">58</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">62</span><span class="p">]</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="n">five_seconds</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>A.D. 2012-Jun-30 23:59:58.0000 UTC
+A.D. 2012-Jun-30 23:59:59.0000 UTC
+A.D. 2012-Jun-30 23:59:60.0000 UTC
+A.D. 2012-Jul-01 00:00:00.0000 UTC
+A.D. 2012-Jul-01 00:00:01.0000 UTC
+</pre></div>
+</div>
+<p>Note that Skyfield has no problem with a calendar tuple
+that has hours, minutes, or — as in this case —
+seconds that are out of range.
+When we provided a range of numbers 58 through 62 as seconds,
+Skyfield added exactly the number of seconds we specified
+to the end of June
+and let the value overflow cleanly into the beginning of July.</p>
+<p>Keep two consequences in mind when using UTC in your calculations.</p>
+<p>First, expect an occasional jump or discrepancy
+if you are striding forward through time
+using the UTC minute, hour, or day.
+For example,
+an hourly plot of planet’s position
+will show the planet moving slightly farther
+during an hour that was lengthened by a leap second
+than during other hours of the year.
+An&nbsp;Earth satellite’s velocity will seem higher
+when you reach the minute that includes 61 seconds.
+And so forth.
+Problems like these are the reason
+that the <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> class only uses UTC for input and output,
+and insists on keeping time internally
+using the uniform time scales discussed below in <a class="reference internal" href="#tai-tt-tdb"><span class="std std-ref">Uniform time scales: TAI, TT, and TDB</span></a>.</p>
+<p>Second, leap seconds disqualify the Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code>
+from use as a general way to represent time
+because in many versions of Python
+the <code class="docutils literal notranslate"><span class="pre">datetime</span></code> refuses to accept seconds greater than&nbsp;59:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">datetime</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Traceback (most recent call last):
+  ...
+ValueError: second must be in 0..59
+</pre></div>
+</div>
+<p>That limitation is why Skyfield offers a second version
+of each method that returns a <code class="docutils literal notranslate"><span class="pre">datetime</span></code>.
+These fancier methods return a leap-second flag as an additional return value:</p>
+<ul class="simple">
+<li><a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_datetime_and_leap_second" title="skyfield.timelib.Time.utc_datetime_and_leap_second"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">Time.utc_datetime_and_leap_second()</span></code></a></li>
+<li><a class="reference internal" href="api-time.html#skyfield.timelib.Time.astimezone_and_leap_second" title="skyfield.timelib.Time.astimezone_and_leap_second"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">Time.astimezone_and_leap_second()</span></code></a></li>
+</ul>
+<p>The leap-second return value is usually <code class="docutils literal notranslate"><span class="pre">0</span></code> but jumps to <code class="docutils literal notranslate"><span class="pre">1</span></code>
+when Skyfield is forced to represent a leap second
+as a <code class="docutils literal notranslate"><span class="pre">datetime</span></code> with the incorrect time 23:59:59.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Asking for the leap_second flag to learn the whole story</span>
+
+<span class="n">dt</span><span class="p">,</span> <span class="n">leap_second</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">astimezone_and_leap_second</span><span class="p">(</span><span class="n">eastern</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">dt_i</span><span class="p">,</span> <span class="n">leap_second_i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">leap_second</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">  leap_second = </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dt_i</span><span class="p">,</span> <span class="n">leap_second_i</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2012-06-30 19:59:58-04:00  leap_second = 0
+2012-06-30 19:59:59-04:00  leap_second = 0
+2012-06-30 19:59:59-04:00  leap_second = 1
+2012-06-30 20:00:00-04:00  leap_second = 0
+2012-06-30 20:00:01-04:00  leap_second = 0
+</pre></div>
+</div>
+<p>Using calendar tuples to represent UTC times is more elegant
+than using Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> objects
+because leap seconds can be represented accurately.
+If your application cannot avoid using <code class="docutils literal notranslate"><span class="pre">datetime</span></code> objects,
+then you will have to decide
+whether to simply ignore the <code class="docutils literal notranslate"><span class="pre">leap_second</span></code> value
+or to somehow output the leap second information.</p>
+</div>
+<div class="section" id="date-arrays">
+<span id="id1"></span><h2>Date arrays<a class="headerlink" href="#date-arrays" title="Permalink to this headline">¶</a></h2>
+<p>If you want to ask where a planet or satellite was
+across a whole series of times and dates,
+then Skyfield will work most efficiently if,
+instead of building many separate <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> objects,
+you build a single <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> object that holds the entire array of dates.</p>
+<p>There are three techniques for building a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> array.</p>
+<ul class="simple">
+<li>Provide <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.tai" title="skyfield.timelib.Timescale.tai"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tai()</span></code></a> or <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.tt" title="skyfield.timelib.Timescale.tt"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tt()</span></code></a>
+or <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.tdb" title="skyfield.timelib.Timescale.tdb"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tdb()</span></code></a> or <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.ut1" title="skyfield.timelib.Timescale.ut1"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ut1()</span></code></a>
+with a Python list or NumPy array of numbers
+for one of the six components of the calendar date
+(year, month, day, hour, minute, or second).</li>
+<li>Provide <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.tai_jd" title="skyfield.timelib.Timescale.tai_jd"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tai_jd()</span></code></a> or <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.tt_jd" title="skyfield.timelib.Timescale.tt_jd"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tt_jd()</span></code></a>
+or <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.tdb_jd" title="skyfield.timelib.Timescale.tdb_jd"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tdb_jd()</span></code></a> or <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.ut1_jd" title="skyfield.timelib.Timescale.ut1_jd"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ut1_jd()</span></code></a>
+with a list or NumPy array of floating point numbers.</li>
+<li>Provide <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.from_datetimes" title="skyfield.timelib.Timescale.from_datetimes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_datetimes()</span></code></a>
+with a Python list of <code class="docutils literal notranslate"><span class="pre">datetime</span></code> objects.</li>
+</ul>
+<p>The first possibility is generally the one that is the most fun,
+because its lets you vary whichever time unit you want
+while holding the others constant.
+You are free to provide out-of-range values
+and leave it to Skyfield to work out the correct result.
+Here are some examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1900</span><span class="p">,</span> <span class="mi">1950</span><span class="p">))</span>     <span class="c1"># Fifty years 1900–1949</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">1980</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">))</span>    <span class="c1"># 24 months of 1980 and 1981</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2005</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">21</span><span class="p">])</span>  <span class="c1"># 1st, 11th, and 21st of May</span>
+
+<span class="c1"># Negative values work too!  Here are the</span>
+<span class="c1"># ten seconds crossing the 1974 leap second.</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">1975</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The resulting <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> object will hold an array of times.
+As illustrated in the previous section (on leap seconds),
+you can use a Python <code class="docutils literal notranslate"><span class="pre">for</span></code> to print each time separately:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2020-06-16 07:00
+2020-06-16 07:01
+2020-06-16 07:02
+2020-06-16 07:03
+</pre></div>
+</div>
+<p>When you provide a time array as input to a Skyfield calculation,
+the output array will have an extra dimension
+that expands what would normally be a single result
+into as many results as you provided dates.
+We can compute the position of the Earth as an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Single Earth position</span>
+
+<span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">earth</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[-0.17461758  0.88567056  0.38384886]
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Whole array of Earth positions</span>
+
+<span class="n">days</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">days</span><span class="p">)</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[-0.17461758 -0.19179872 -0.20891924 -0.22597338]
+ [ 0.88567056  0.88265548  0.87936337  0.87579547]
+ [ 0.38384886  0.38254134  0.38111391  0.37956709]]
+</pre></div>
+</div>
+<p>Note the shape of the resulting NumPy array.
+If you unpack this array into three names,
+then you get three four-element arrays
+corresponding to the four dates.
+These four-element arrays are ready to be submitted to <a class="reference external" href="http://matplotlib.org/">matplotlib</a>
+and other scientific Python tools:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">pos</span>    <span class="c1"># four values each</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>       <span class="c1"># example matplotlib call</span>
+</pre></div>
+</div>
+<p>If you instead slice along the second axis,
+then you can retrieve an individual position for a particular date —
+and the first position is exactly what was returned above
+when we computed the January 1st position by itself:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">pos</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[-0.17461758  0.88567056  0.38384886]
+</pre></div>
+</div>
+<p>You can combine a Python <code class="docutils literal notranslate"><span class="pre">for</span></code> loop with Python’s <code class="docutils literal notranslate"><span class="pre">zip()</span></code> builtin
+to print each time alongside the corresponding coordinates.
+There are two techniques,
+one of which is less efficient and the other more efficient.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Less efficient: loop over `t`, forcing the creation of</span>
+<span class="c1"># a separate `Time` object for each iteration of the loop.</span>
+
+<span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">  x = </span><span class="si">{:.2f}</span><span class="s1"> y = </span><span class="si">{:.2f}</span><span class="s1"> z = </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">,</span>
+    <span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2014-01-01  x = -0.17 y = 0.89 z = 0.38
+2014-01-02  x = -0.19 y = 0.88 z = 0.38
+2014-01-03  x = -0.21 y = 0.88 z = 0.38
+2014-01-04  x = -0.23 y = 0.88 z = 0.38
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># More efficient: loop over the output of a `Time` method,</span>
+<span class="c1"># which returns an array of the same length as `t`.</span>
+
+<span class="n">t_strings</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">tstr</span><span class="p">,</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t_strings</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">  x = </span><span class="si">{:.2f}</span><span class="s1"> y = </span><span class="si">{:.2f}</span><span class="s1"> z = </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">tstr</span><span class="p">,</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">,</span>
+    <span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2014-01-01  x = -0.17 y = 0.89 z = 0.38
+2014-01-02  x = -0.19 y = 0.88 z = 0.38
+2014-01-03  x = -0.21 y = 0.88 z = 0.38
+2014-01-04  x = -0.23 y = 0.88 z = 0.38
+</pre></div>
+</div>
+<p>Finally, converting an array <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> back into a calendar tuple
+results in the year, month, day, hour, minute, and second
+each having the same dimension as the array itself:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[2014. 2014. 2014. 2014.]
+ [   1.    1.    1.    1.]
+ [   1.    2.    3.    4.]
+ [   0.    0.    0.    0.]
+ [   0.    0.    0.    0.]
+ [   0.    0.    0.    0.]]
+</pre></div>
+</div>
+<p>Simply slice across the second dimension of the array
+to pull a particular calendar tuple out of the larger result:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[2014.    1.    3.    0.    0.    0.]
+</pre></div>
+</div>
+<p>Slicing in the other direction,
+the rows can be fetched not only by index
+but also through the attribute names <code class="docutils literal notranslate"><span class="pre">year</span></code>, <code class="docutils literal notranslate"><span class="pre">month</span></code>, <code class="docutils literal notranslate"><span class="pre">day</span></code>,
+<code class="docutils literal notranslate"><span class="pre">hour</span></code>, <code class="docutils literal notranslate"><span class="pre">minute</span></code>,  and <code class="docutils literal notranslate"><span class="pre">second</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc</span><span class="o">.</span><span class="n">month</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc</span><span class="o">.</span><span class="n">hour</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[2014. 2014. 2014. 2014.]
+[1. 1. 1. 1.]
+[1. 2. 3. 4.]
+[0. 0. 0. 0.]
+</pre></div>
+</div>
+</div>
+<div class="section" id="uniform-time-scales-tai-tt-and-tdb">
+<span id="tai-tt-tdb"></span><h2>Uniform time scales: TAI, TT, and TDB<a class="headerlink" href="#uniform-time-scales-tai-tt-and-tdb" title="Permalink to this headline">¶</a></h2>
+<p>Date arithmetic becomes very simple
+as we leave UTC behind and consider completely uniform time scales.
+Days are always 24&nbsp;hours, hours always 60&nbsp;minutes,
+and minutes always 60&nbsp;seconds without any variation or exceptions.
+Such time scales are not appropriate for your morning alarm clock
+because they are never delayed or adjusted
+to stay in sync with the slowing rotation of the earth.
+But that is what makes them useful for astronomical calculation —
+because physics keeps up its dance,
+and the stars and planets move in their courses,
+whether humanity pauses to observe a UTC leap second or not.</p>
+<p>Because they make every day the same length,
+uniform time scales can express dates
+as a simple floating-point count of days elapsed.
+To make all historical dates come out as positive numbers,
+astronomers traditionally assign each date a “Julian day” number
+that starts counting at 4713&nbsp;BC January&nbsp;1 in the old Julian calendar —
+the same date as 4714&nbsp;BC November&nbsp;24 in our Gregorian calendar.
+Following a tradition going back to the Greeks and Ptolemy,
+the count starts at noon,
+since the sun’s transit is an observable event
+but the moment of midnight is not.</p>
+<p>So twelve noon was the moment of Julian date zero:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># When was Julian date zero?</span>
+
+<span class="n">bc_4714</span> <span class="o">=</span> <span class="o">-</span><span class="mi">4713</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">tt</span><span class="p">(</span><span class="n">bc_4714</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">tt</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>0.0
+</pre></div>
+</div>
+<p>Did you notice how negative years work —
+that we expressed 4714&nbsp;BC using the negative number <code class="docutils literal notranslate"><span class="pre">-4713</span></code>?
+People still counted by starting at one, not zero,
+when the scholar Dionysius Exiguus created the eras BC and AD
+in around the year AD&nbsp;500.
+So his scheme has 1&nbsp;BC followed immediately by AD&nbsp;1 without a break.
+To avoid an off-by-one error,
+astronomers usually ignore BC and count backwards through a year zero
+and on into negative years.
+So negative year <em>−n</em> is what might otherwise be called
+either “<em>n+1</em> BC” or “<em>n+1</em> BCE” in a history textbook.</p>
+<p>More than two million days have passed since 4714&nbsp;BC,
+so modern dates tend to be rather large numbers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 2014 January 1 00:00 UTC expressed as Julian dates</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;TAI = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">t</span><span class="o">.</span><span class="n">tai</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;TT  = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">t</span><span class="o">.</span><span class="n">tt</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;TDB = </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">t</span><span class="o">.</span><span class="n">tdb</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>TAI = 2456658.5004050927
+TT  = 2456658.5007775924
+TDB = 2456658.500777592
+</pre></div>
+</div>
+<p>What are these three different uniform time scales?</p>
+<p>International Atomic Time (TAI) is maintained
+by the worldwide network of atomic clocks
+referenced by researchers with a need for very accurate time.
+The official leap second table
+is actually a table of offsets between TAI and UTC.
+At the end of June 2012, for example,
+the TAI−UTC offset was changed from 34.0 to 35.0
+which is what generated the leap second in UTC.</p>
+<p>Terrestrial Time (TT) differs from TAI
+only because astronomers
+were already maintaining a uniform time scale of their own
+before TAI was established,
+using a slightly different starting point for the day.
+For practical purposes, TT is simply TAI
+plus exactly 32.184 seconds.
+So it is now more than a minute ahead of UTC.
+You can also retrieve Terrestrial Time as a floating point number of years
+of exactly 365.25 days each:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Julian year = </span><span class="si">{:.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">J</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Julian year = 2014.0000
+</pre></div>
+</div>
+<p>Finally,
+Barycentric Dynamical Time (TDB) runs at approximately the rate
+that an atomic clock would run
+if it were at rest with respect to the Solar System barycenter,
+and therefore unaffected by the Earth’s motion.
+The acceleration that Earth experiences in its orbit —
+sometimes speeding up, sometimes slowing down —
+varies the rate at which our atomic clocks
+seem to run to an outside observer,
+as predicted by Einstein’s theory of General Relativity.
+So physical simulations of the Solar System tend to use TDB,
+which is continuous with the <em>T</em><sub>eph</sub> time scale
+traditionally used for Solar System and spacecraft simulations
+at the Jet Propulsion Laboratory.</p>
+</div>
+<div class="section" id="ut1-and-downloading-iers-data">
+<span id="downloading-timescale-files"></span><h2>UT1 and downloading IERS data<a class="headerlink" href="#ut1-and-downloading-iers-data" title="Permalink to this headline">¶</a></h2>
+<p>Finally, UT1 is the least uniform time scale of all
+because its clock cannot be housed in a laboratory,
+nor is its rate established by any human convention.
+It is, rather, the clock
+whose “hand” is the rotation of the Earth itself!
+The direction that the Earth is facing determines
+not only the coordinates of every city and observatory in the world,
+but also the local directions that each site
+will designate as their local “up”, “north”, and “east”.</p>
+<p>It is hard to predict future values for UT1.
+The Earth is a young world
+with a still-molten iron core,
+a viscous mantle,
+and ice ages that move water weight into glaciers at the poles
+then release it back into the ocean.
+While we think we can predict, for example,
+Jupiter’s position thousands of years from now,
+predicting the fluid dynamics of the elastic rotating ellipsoid we call home
+is — at the moment — beyond us.
+We can only watch with sensitive instruments
+to see what the Earth does next.</p>
+<p>Skyfield relies on the IERS,
+the International Earth Rotation Service,
+for accurate measurements of UT1
+and for the schedule of leap seconds (discussed above)
+that keeps UTC from straying more than 0.9&nbsp;seconds away from UT1.</p>
+<p>Each new version of Skyfield carries recent IERS data in internal tables.
+This data will gradually fall out of date after each Skyfield release,
+however, with two consequences:</p>
+<ul class="simple">
+<li>The next time the IERS declares a new leap second
+that is not listed in Skyfield’s built-in tables,
+Skyfield’s UTC time will be off by 1&nbsp;second
+for every date that falls after the leap second.</li>
+<li>As the Earth’s rotation speeds up or slows down in the coming years
+more than was predicted in Skyfield’s built-in UT1 tables,
+Skyfield’s idea of where the Earth is pointing will grow less accurate.
+This will affect both the position and direction
+of each <a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a> —
+whether used as an observer or a target —
+and will also affect Earth satellite positions.</li>
+</ul>
+<p>You can avoid both of these problems
+by periodically downloading new data from the IERS.
+Simply specify that you don’t want Skyfield to use its builtin tables.
+In that case <a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.timescale" title="skyfield.iokit.Loader.timescale"><code class="xref py py-meth docutils literal notranslate"><span class="pre">timescale()</span></code></a>
+will instead download <code class="docutils literal notranslate"><span class="pre">finals2000A.all</span></code> from the IERS:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download and use the `finals.all` file.</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">(</span><span class="n">builtin</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="c1">#################################] 100% finals2000A.all</span>
+</pre></div>
+</div>
+<p>As usual with data files,
+Skyfield will only download the file the first time you need it,
+then will keep using that same copy of the file that it finds on disk.
+If your script will always have Internet access
+and you worry about the file falling out of date
+(and if you can trust the “modify time” file attribute on your filesystem),
+then you can have Skyfield download a new copy
+once the file on disk has grown too old
+(where “too old” for your application
+must be determined by comparing your accuracy needs
+with how quickly UT1 diverges without fresh IERS data;
+this example uses 30&nbsp;days only as an illustration):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">load</span><span class="o">.</span><span class="n">days_old</span><span class="p">(</span><span class="s1">&#39;finals2000A.all&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">30.0</span><span class="p">:</span>
+    <span class="n">load</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;finals2000A.all&#39;</span><span class="p">)</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">(</span><span class="n">builtin</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>But, beware!
+For compatibility with versions of Skyfield ≤&nbsp;1.30,
+Skyfield will ignore <code class="docutils literal notranslate"><span class="pre">finals2000A.all</span></code>
+if the three old files
+<code class="docutils literal notranslate"><span class="pre">deltat.data</span></code>, <code class="docutils literal notranslate"><span class="pre">deltat.preds</span></code>, and <code class="docutils literal notranslate"><span class="pre">Leap_Second.dat</span></code>
+exist in the loader’s directory,
+in which case it will use them instead.
+This is to prevent users who specify <code class="docutils literal notranslate"><span class="pre">builtins=False</span></code>,
+but who downloaded the three necessary files long ago,
+from experiencing an unexpected download attempt.
+The hope is that all scripts
+which did not previously need Internet access
+will continue to run without it.</p>
+<p>If you ever want to display or plot the behavior of UT1,
+astronomers use two common conventions
+for stating the difference between clock time and UT1.
+Skyfield supports them both.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:+.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">dut1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:+.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">delta_t</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-0.0970
++67.2810
+</pre></div>
+</div>
+<p>The two quantities are:</p>
+<ul class="simple">
+<li>DUT1 — The difference between UTC and UT1,
+which should always be less than 0.9 if the IERS succeeds at its mission.
+Note that there are two different reasons that this value changes:
+every day it changes a small amount because of the drift of UT1;
+and superimposed on this drift
+is a big jump of 1.0 seconds
+every time a leap second passes.</li>
+<li>∆T — The difference between TT and UT1.
+This is a much more straightforward value than DUT1,
+without all the ugly discontinuities caused by leap seconds.
+Because TT is a uniform timescale,
+∆T provides a pure and continuous record
+of how UT1 has changed over the decades
+that we have been measuring the Earth’s rotation to high precision.</li>
+</ul>
+</div>
+<div class="section" id="setting-a-custom-value-for-t">
+<span id="custom-delta-t"></span><h2>Setting a Custom Value For ∆T<a class="headerlink" href="#setting-a-custom-value-for-t" title="Permalink to this headline">¶</a></h2>
+<p>If you ever want to specify your own value for ∆T,
+then provide a <code class="docutils literal notranslate"><span class="pre">delta_t</span></code> keyword argument
+when creating your timescale:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">(</span><span class="n">delta_t</span><span class="o">=</span><span class="mf">67.2810</span><span class="p">)</span><span class="o">.</span><span class="n">utc</span><span class="p">((</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="values-cached-on-the-time-object">
+<span id="date-cache"></span><h2>Values cached on the Time object<a class="headerlink" href="#values-cached-on-the-time-object" title="Permalink to this headline">¶</a></h2>
+<p>When you create a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a>
+it goes ahead and computes its <code class="docutils literal notranslate"><span class="pre">tt</span></code> Terrestrial Time attribute
+starting from whatever time argument you provide.
+If you provide the <code class="docutils literal notranslate"><span class="pre">utc</span></code> parameter, for example,
+then the date first computes and sets <code class="docutils literal notranslate"><span class="pre">tai</span></code>
+and then computes and sets <code class="docutils literal notranslate"><span class="pre">tt</span></code>.
+Each of the other time attributes only gets computed once,
+the first time you access it.</p>
+<p>The general rule is that attributes are only computed once,
+and can be accessed again and again for free,
+while methods never cache their results —
+think of the <code class="docutils literal notranslate"><span class="pre">()</span></code> parentheses after a method name
+as your reminder that “this will do a fresh computation every time.”</p>
+<p>In addition to time scales,
+each <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> object caches several other quantities
+that are often needed in astronomy.
+Skyfield only computes these attributes on-demand,
+the first time the user tries to access them
+or invokes a computation that needs their value:</p>
+<dl class="docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">gmst</span></code></dt>
+<dd>Greenwich Mean Sidereal Time in hours,
+in the range 0.0 ≤ <code class="docutils literal notranslate"><span class="pre">gmst</span></code>&nbsp;&lt;&nbsp;24.0.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">gast</span></code></dt>
+<dd>Greenwich Apparent Sidereal Time in hours,
+in the range 0.0 ≤ <code class="docutils literal notranslate"><span class="pre">gast</span></code>&nbsp;&lt;&nbsp;24.0.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">M</span></code>, <code class="docutils literal notranslate"><span class="pre">MT</span></code></dt>
+<dd>This 3×3 matrix and its inverse
+perform the complete rotation between a vector in the ICRF
+and a vector in the dynamical reference system for this time and date.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">C</span></code>, <code class="docutils literal notranslate"><span class="pre">CT</span></code></dt>
+<dd>This 3×3 matrix and its inverse
+perform the complete rotation between a vector in the ICRF
+and a vector in the celestial intermediate reference system (CIRS)
+of this time and date.</dd>
+</dl>
+<p>You will typically never need to access these matrices yourself,
+as they are used automatically
+by the <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radec()</span></code></a>
+method when you use its  <code class="docutils literal notranslate"><span class="pre">epoch=</span></code> parameter
+to ask for a right ascension and declination
+in the dynamical reference system,
+and when you ask a <a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a> object
+for its position.</p>
+</div>
+</div>
+
+  </body>
+</html>

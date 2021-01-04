@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Untangling the Big Pharoah’s “Terrifying” Chart</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1 id="Untangling-the-Big-Pharoah&#8217;s-&#8220;Terrifying&#8221;-Chart">Untangling the Big Pharoah&#8217;s &#8220;Terrifying&#8221; Chart<a class="anchor-link" href="#Untangling-the-Big-Pharoah&#8217;s-&#8220;Terrifying&#8221;-Chart">&#182;</a></h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>3 September 2013</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">python</td>
+</tr>
+</tbody>
+</table><p>An interesting diagram has been making the rounds on the Internet.
+Attributed to a Twitter personality
+named <a href="https://twitter.com/TheBigPharaoh">@TheBigPharaoh</a> —
+whose tweets draw attention to the humanitarian
+and human rights situation in Egypt —
+it has been cited by no less an authority than the
+<a href="http://www.washingtonpost.com/blogs/worldviews/wp/2013/08/26/the-middle-east-explained-in-one-sort-of-terrifying-chart/">Washington Post, who calls it a “sort of terrifying”</a>
+depiction of the modern Middle East.
+But as a consumer of data,
+I was immediately skeptical:
+there are many ways to make quite simple information
+look like chaos if it is presented poorly.</p>
+<div class="figure"><a href="http://www.washingtonpost.com/blogs/worldviews/files/2013/08/BSm0bOBCYAAAph6.jpg"><img style="width: 420px" src="http://www.washingtonpost.com/blogs/worldviews/files/2013/08/BSm0bOBCYAAAph6.jpg"></a></div><p>Is the information in the diagram really that complex?</p>
+<p>I decided to try building a very simple data model
+to see if it could predict every single relationship on the diagram.
+Not because I think that the real Middle East (or anywhere else)
+can be adequately described with a simple model,
+but because I strongly suspected that the diagram itself
+was in fact modeled on only a few basic regional divisions.</p>
+<p class="note">
+Update: reader Alex Burr points out five missing edges in
+[`pharoahs-chart.json`](http://rhodesmill.org/brandon/2013/pharoahs-chart.json)
+so please use
+[`pharoahs-chart-v2.json`](http://rhodesmill.org/brandon/2013/pharoahs-chart-v2.json)
+instead, which inspired an improvement in the article below:
+Iran has been added to the `islamists` set,
+which now overrules the Shia-Sunni split
+to match the diagram’s assertion that they support Hamas.
+</p><h2 id="Diving-into-the-data">Diving into the data<a class="anchor-link" href="#Diving-into-the-data">&#182;</a></h2><p>So I opened an IPython Notebook and got to work!
+This blog post is, in fact, the notebook itself,
+with some Markdown calls full of paragraphs and text
+added to provide structure and commentary.
+You can download the original notebook here:</p>
+<p><a href="http://rhodesmill.org/brandon/2013/untangling-big-pharoah.ipynb"><code>untangling-big-pharoah.ipynb</code></a></p>
+<p>So that every IPython Notebook does not begin
+with the same series of verbose import statements,
+IPython provides a <code>pylab</code> directive which imports a few dozen
+essential NumPy features.
+It is the first step that I took in getting ready to code:<!--more--></p>
+
+<div class=" highlight hl-python3"><pre><span class="o">%</span><span class="n">pylab</span> <span class="n">inline</span></pre></div>
+
+<pre class="output">
+Populating the interactive namespace from numpy and matplotlib
+</pre>
+<p>So that other people can play with the diagram —
+and probably do an even better job of analysis than I will here! —
+I have chosen to represent it as JSON
+instead of using a Python-specific format.
+You can download my small data file here:</p>
+<p><a href="http://rhodesmill.org/brandon/2013/pharoahs-chart-v2.json"><code>pharoahs-chart-v2.json</code></a></p>
+<p>Once this file is saved to the current directory,
+Python can load it quite easily with the <code>load()</code> method:</p>
+
+<div class=" highlight hl-python3"><pre><span class="kn">import</span> <span class="nn">json</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;pharoahs-chart-v2.json&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+
+<span class="n">a</span><span class="p">,</span> <span class="n">verb</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="nb">print</span> <span class="s">&#39;Loaded&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">verb</span><span class="p">),</span> <span class="s">&#39;edges&#39;</span></pre></div>
+
+<pre class="output">
+Loaded 42 edges
+</pre>
+<p>As is common when doing information processing in modern Python,
+note that I have not left the data as a list-of-lists
+as it is represented in the underlying JSON file.
+Instead, I have passed the entire data structure
+to the NumPy <code>array()</code> method
+which I have then transposed
+so that the input’s list of 3-element items
+becomes three big vectors:
+a vector of actors, a vector of verbs,
+and finally another vector of actors at which those verbs
+are respectively directed.</p>
+<p>A quick count of the number of unique nodes
+can be a quick way to check against misspellings,
+since a misspelling will create two unique nodes
+where the original diagram had only one.
+Happily, computing the number of unique strings
+shared between <code>a</code> and <code>b</code> yields
+exactly the number of unique nodes in the actual diagram:</p>
+
+<div class=" highlight hl-python3"><pre><span class="nb">print</span> <span class="s">&#39;Loaded&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))),</span> <span class="s">&#39;nodes&#39;</span></pre></div>
+
+<pre class="output">
+Loaded 15 nodes
+</pre>
+<p>We are nearly ready to explore the data!</p>
+<p>I will propose a series of simple political models of the Middle East,
+each of which is a function that,
+given a political actor <code>a</code> like <code>"Turkey"</code>
+and a potential client <code>b</code> like <code>"Syria Rebels"</code>,
+returns one of three predictions:</p>
+<ul>
+<li><code>"supports"</code> — diagram’s blue lines</li>
+<li><code>"hates"</code> — diagram’s red lines</li>
+<li><code>"clueless"</code> — diagram’s green lines </li>
+</ul>
+<p>These predictions can then be compared
+to the actual arrows on the diagram
+to rate the political model for its accuracy.
+Note carefully that these models
+are only being judged for their ability to correctly color-code
+the arrows that actually exist in the diagram;
+they can return whatever nonsense they want
+for arrows not in the diagram, like <code>("USA", "Turkey")</code>,
+because we are only testing the functions against the input data set.</p>
+<p>Because NumPy supports vector operations
+that operate simultaneously on whole vectors of input values,
+it only takes a single <code>==</code> operation to compare a series of
+predictions against the series of actual supports/hates verbs
+from the diagram.
+The only catch is that, to perform the actual prediction,
+we need to “vectorize” each little prediction function
+to produce a routine that works on a whole vector at a time.
+And we use another trick:
+since a series of <code>==</code> decisions like <code>True</code> and <code>False</code>
+are in fact equivalent to a series of numbers <code>1</code> or <code>0</code>,
+we can use <code>sum()</code> to count how many <code>True</code> values are present!
+Aside from these two nuances,
+the reporting routine is rather simple Python:</p>
+
+<div class=" highlight hl-python3"><pre><span class="k">def</span> <span class="nf">try_predictor</span><span class="p">(</span><span class="n">predictor</span><span class="p">,</span> <span class="n">report</span><span class="o">=</span><span class="k">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="k">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Report on how well a `predictor` function performs.&quot;&quot;&quot;</span>
+
+    <span class="c"># What does the predictor predict for each situation?</span>
+
+    <span class="n">prediction</span> <span class="o">=</span> <span class="n">vectorize</span><span class="p">(</span><span class="n">predictor</span><span class="p">)(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    
+    <span class="c"># How does that stack up against the diagram?</span>
+
+    <span class="n">match</span> <span class="o">=</span> <span class="p">(</span><span class="n">prediction</span> <span class="o">==</span> <span class="n">verb</span><span class="p">)</span>
+    <span class="n">percent</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">match</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">match</span><span class="p">)</span>
+    <span class="nb">print</span> <span class="s">&#39;Accuracy: %.03f %%&#39;</span> <span class="o">%</span> <span class="n">percent</span>
+    
+    <span class="c"># What specific predictions is it making?</span>
+
+    <span class="k">if</span> <span class="n">report</span> <span class="ow">and</span> <span class="p">(</span><span class="n">verbose</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">match</span><span class="p">)):</span>
+        <span class="nb">print</span>
+        <span class="k">for</span> <span class="n">is_match</span><span class="p">,</span> <span class="n">ai</span><span class="p">,</span> <span class="n">bi</span><span class="p">,</span> <span class="n">pi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">prediction</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">is_match</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="nb">print</span> <span class="s">&#39;      &#39;</span> <span class="k">if</span> <span class="n">is_match</span> <span class="k">else</span> <span class="s">&#39;WRONG:&#39;</span><span class="p">,</span>
+            <span class="nb">print</span> <span class="n">ai</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">bi</span>
+        <span class="nb">print</span></pre></div>
+
+<p>Before getting all political,
+we should test this analysis and reporting tool
+by feeding it one or two dummy predictors
+that are not actually interesting,
+to see its output.
+We will try exercising a pair of functions
+that represent the perfect optimist and the perfect pessimist:
+the one assumes that members of the human species always support one another,
+while the other assumes that <code>"hates"</code> is the universal relationship.</p>
+
+<div class=" highlight hl-python3"><pre><span class="n">try_predictor</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="s">&#39;supports&#39;</span><span class="p">,</span> <span class="n">report</span><span class="o">=</span><span class="k">False</span><span class="p">)</span>
+<span class="n">try_predictor</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="s">&#39;hates&#39;</span><span class="p">,</span> <span class="n">report</span><span class="o">=</span><span class="k">False</span><span class="p">)</span></pre></div>
+
+<pre class="output">
+Accuracy: 47.619 %
+Accuracy: 47.619 %
+</pre>
+<p>It is a happy fact that the pessimist and optimist
+are so perfectly balanced in this particular case:
+the number of friendly links in the diagram, in other words,
+is equal to the number of enemy relationships.
+Which almost gives one hope for the world — not quite, but almost.</p>
+<h2 id="Friends-and-Enemies">Friends and Enemies<a class="anchor-link" href="#Friends-and-Enemies">&#182;</a></h2><p>Given this infrastructure,
+it will take only a few steps
+to predict every single political relationship
+in the Big Pharaoh’s diagram.
+The real Middle East may be more complex than this,
+but you would not know it from the diagram!</p>
+<p>The first thing that strikes me
+is how many red arrows cut left-to-right across the diagram
+between the upper right, where we see Russia, Assad, and Iran,
+and most of the rest of the state
+and non-state actors that are depicted.
+This has deep roots:
+Islam became separated within its first few centuries
+into a Sunni majority and a Shia minority (as well as many smaller groups),
+the latter of which claims both Assad and the Iranian leadership as adherents.
+If we place all of the Shia in a group and throw in Russia —
+which shares a border with Iran and has served as an ally
+following the overthrow of the United-States-backed Shah in 1979 —
+then we find that we are almost halfway
+to explaining the entire diagram:</p>
+
+<div class=" highlight hl-python3"><pre><span class="n">shias</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Assad&#39;</span><span class="p">,</span> <span class="s">&#39;Iran&#39;</span><span class="p">,</span> <span class="s">&#39;Lebanon Shias&#39;</span><span class="p">,</span> <span class="s">&#39;Russia&#39;</span><span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">p1</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">shias</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">b</span> <span class="ow">in</span> <span class="n">shias</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;hates&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&#39;supports&#39;</span>
+
+<span class="n">try_predictor</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span></pre></div>
+
+<pre class="output">
+Accuracy: 71.429 %
+
+WRONG: Al Qaeda supports Saudi &amp; Gulf
+WRONG: Hamas supports Sisi
+WRONG: Iran hates Hamas
+WRONG: Israel supports Hamas
+WRONG: Qatar supports Sisi
+WRONG: Saudi &amp; Gulf supports Muslim Brotherhood
+WRONG: Sisi supports Muslim Brotherhood
+WRONG: Turkey supports Sisi
+WRONG: USA supports Muslim Brotherhood
+WRONG: USA supports Sisi
+WRONG: USA supports Al Qaeda
+WRONG: USA supports Hamas
+
+</pre>
+<p>You may be a bit confused about why I am performing a pair of <code>in</code>
+operations and then comparing the output with an <code>!=</code> inequality operator.
+The reason is that I am looking for situations where the answers
+are either <code>True</code> and <code>False</code> or else the values <code>False</code> and <code>True</code>,
+either one of which indicates that <code>a</code> and <code>b</code> fall on opposite sides
+of the division.</p>
+<p>This predictor brings our success rate to 70%.</p>
+<p>But there is obviously more going on here,
+because nearly 30% of the links in the diagram
+are still being reported incorrectly.
+Take a moment to read over the list of mis-predictions above.
+Do they share anything in common?</p>
+<p>What our first predictor seems blind to
+is the opposition between populist Islamist movements 
+and most of the nation-states involved in the region.
+The Arab Spring has made it possible
+that several of these organizations
+will now make significant political gains
+if they can turn their popular support into votes
+in newly created democracies,
+but they are considered terrorist organizations
+by many Western nations and their allies.</p>
+<p>Three state actors, though, have allied themselves
+with the Islamist movements instead of opposing them.
+Theocratic Iran was itself born of an Islamist revolution in 1979.
+Turkey is a secular democracy that has been flirting with the idea
+of a more explicitly Islamist government.
+And Qatar is a more interesting case:
+while the government itself is an autocracy,
+it is a <a href="http://en.wikipedia.org/wiki/Wahhabi_movement">Wahabi</a> state
+and thus is strongly aligned with the earnestly conservative Islam
+that motivates many of these political and religious groups.</p>
+<p>Adding these two rough allegiances into our model,
+and assuming that Islamists always aid one another
+while Islamists and moderates are always at odds,
+very nearly completes the entire diagram!</p>
+
+<div class=" highlight hl-python3"><pre><span class="n">islamists</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Al Qaeda&#39;</span><span class="p">,</span> <span class="s">&#39;Hamas&#39;</span><span class="p">,</span> <span class="s">&#39;Muslim Brotherhood&#39;</span><span class="p">,</span> <span class="s">&#39;Iran&#39;</span><span class="p">,</span> <span class="s">&#39;Turkey&#39;</span><span class="p">,</span> <span class="s">&#39;Qatar&#39;</span><span class="p">}</span>
+<span class="n">moderates</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Saudi &amp; Gulf&#39;</span><span class="p">,</span> <span class="s">&#39;Sisi&#39;</span><span class="p">,</span> <span class="s">&#39;Israel&#39;</span><span class="p">,</span> <span class="s">&#39;USA&#39;</span><span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">p2</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">either</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">islamists</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">b</span> <span class="ow">in</span> <span class="n">islamists</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;supports&#39;</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">either</span> <span class="o">&amp;</span> <span class="n">islamists</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">either</span> <span class="o">&amp;</span> <span class="n">moderates</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;hates&#39;</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">shias</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">b</span> <span class="ow">in</span> <span class="n">shias</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;hates&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&#39;supports&#39;</span>
+
+<span class="n">try_predictor</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span></pre></div>
+
+<pre class="output">
+Accuracy: 95.238 %
+
+WRONG: USA hates Muslim Brotherhood
+WRONG: USA supports Sisi
+
+</pre>
+<p>Note my careful use of Python set operations to contrive
+a succinct expression for “if one of the players is populist
+and the other is autocratic” —
+if it were not for the ability to do a quick test
+for an intersection between one of the inputs
+and either the <code>islamists</code> set or the <code>moderates</code> set,
+this new <code>if</code> statement would have had to run to several lines.</p>
+<p>The only thing now missing
+is that our political predictor
+never outputs the result <code>"clueless"</code>
+and thus cannot correctly predict the stance of the United States
+with respect to the power struggle in Egypt.
+I will leave to more informed political commentators
+whether this characterization of the current administration
+is fair or not;
+for our purposes, the only point is that it requires
+the addition of but a third clause to our predictor,
+yielding an absolutely perfect <code>p3()</code>:</p>
+
+<div class=" highlight hl-python3"><pre><span class="n">egypt</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Muslim Brotherhood&#39;</span><span class="p">,</span> <span class="s">&#39;Sisi&#39;</span><span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">p3</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">either</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="s">&#39;USA&#39;</span> <span class="ow">and</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">egypt</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&#39;clueless&#39;</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">islamists</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">b</span> <span class="ow">in</span> <span class="n">islamists</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;supports&#39;</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">either</span> <span class="o">&amp;</span> <span class="n">islamists</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">either</span> <span class="o">&amp;</span> <span class="n">moderates</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;hates&#39;</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">shias</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">b</span> <span class="ow">in</span> <span class="n">shias</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;hates&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&#39;supports&#39;</span>
+
+<span class="n">try_predictor</span><span class="p">(</span><span class="n">p3</span><span class="p">)</span></pre></div>
+
+<pre class="output">
+Accuracy: 100.000 %
+</pre>
+<p>And we are done.</p>
+<h2 id="Lessons">Lessons<a class="anchor-link" href="#Lessons">&#182;</a></h2><p>For all of its chaotic hand-drawn relationships,
+the Big Pharoah diagram really models only two regional feuds,
+combined with a swipe at the United States
+for its caution in engaging with either of two warring factions
+within today’s Egypt.</p>
+<p>I draw three lessons about information visualization from the fact
+that a diagram whose politics are so simplistic
+has been re-blogged as evidence that the Middle East is complicated.</p>
+<p>First, the diagram presents a puzzle
+for which the human vision is simply not optimized.
+Never, to my knowledge, does Nature present a hunter-gatherer
+with a web of different-colored links
+and demand a quick intuition
+about whether the nodes form only a few basic groupings
+or are hopelessly splintered into several.
+So presenting the information this way
+makes it basically opaque.</p>
+<p>Second, our eyes are very sensitive
+to similarities between shapes,
+yet the diagram takes a uniform relationship like “supports”
+and splays it across the page at a half-dozen different
+angles and sizes to create a perception of chaos.
+The fact that the arrows are hand-drawn
+adds an extra level of visual noise
+that is simply icing on the cake.</p>
+<p>Finally, edge-coloring turns out to be a fairly expensive way
+to illustrate nodes that fall into a few groups,
+because in the general case you wind up drawing n² edges
+when instead you could just use 3 or 4 colors
+to label broad groups
+and then explain the relationships among them.
+You could even use a mix of node-colorings and edges:
+imagine a map of the 30 Years’ War
+that colors Catholic countries one color,
+Protestant countries another,
+and then has a few annotations thrown in
+to explain the exceptions to those natural allegances
+that arose during the protracted conflict.
+I suspect that the same approach would work better here.</p>
+
+
+<p class="byline">©2020</p>
+
+</body>
+</html>

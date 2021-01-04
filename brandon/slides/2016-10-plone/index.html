@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>&lt;stdin&gt;</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="slide">
+
+<!-- xrandr - -output DP1 - -same-as eDP1 - -mode 1024x768 -->
+<!-- xrandr - -output DP1 - -same-as eDP1 - -mode 1280x720 -->
+<style>
+  .big {font-size: 3em; font-style: italic;}
+  .section {position: relative;}
+  .reading-mode .note {font-style: italic;}
+  .reading-mode .admonition-title {display: none;}
+  .presentation-mode .note {position: absolute; left: 101%; top: 0;}
+  .presentation-mode .note {color: white; top: 250px; font-size: 0.5em;
+    width: 300px}
+  .small {font-size: 0.75em;}
+  .strike {text-decoration: line-through;}
+
+  body {font-family: "Gentium Basic"; padding-left: 200px}
+  body.presentation-mode pre {
+    /* font-size: 36px; */
+  }
+  .timer {
+    left: 1500px;
+  }
+  em {font-size: 1.04em;}
+</style><div class="line-block">
+<div class="line"><em>Python and the Web</em></div>
+</div>
+<div class="line-block">
+<div class="line">Plone Conference 2016</div>
+<div class="line"><strong>&#64;brandon_rhodes</strong></div>
+</div>
+</div>
+<div class="section" id="id1">
+
+<p><em>The Social Network</em> (2010)</p>
+</div>
+<div class="section" id="id2">
+
+<div class="line-block">
+<div class="line">“We don’t even know</div>
+<div class="line">what it is yet.”</div>
+</div>
+</div>
+<div class="section" id="id3">
+
+<img alt="know.png" src="know.png" style="width: 1024px;" />
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line">“We don’t even know</div>
+<div class="line">what it is yet.”</div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<object data="python-logo-inkscape.svg" type="image/svg+xml">
+python-logo-inkscape.svg</object>
+<p>Web → ← Python</p>
+</div>
+<div class="section" id="id6">
+
+<object data="python-logo-inkscape.svg" type="image/svg+xml">
+python-logo-inkscape.svg</object>
+<p>What does Python offer?</p>
+</div>
+<div class="section" id="id7">
+
+<div class="line-block">
+<div class="line">Reflection</div>
+<div class="line">Object oriented</div>
+<div class="line">Dynamic</div>
+<div class="line">Simple</div>
+</div>
+</div>
+<div class="section" id="reflection">
+<h1>Reflection</h1>
+<div class="line-block">
+<div class="line">A program can see</div>
+<div class="line">itself in the mirror</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">dir()</tt></div>
+<div class="line"><tt class="docutils literal">getattr()</tt></div>
+<div class="line"><tt class="docutils literal">type()</tt></div>
+</div>
+</div>
+<div class="section" id="id8">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cherrypy</span>
+
+<span class="k">class</span> <span class="nc">HelloWorld</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;Hello World!&quot;</span>
+    <span class="n">index</span><span class="o">.</span><span class="n">exposed</span> <span class="o">=</span> <span class="bp">True</span>
+</pre></div>
+
+</div>
+<div class="section" id="id9">
+
+<div class="highlight"><pre><span></span><span class="n">views</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="nb">object</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">exposed</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="s1">&#39;exposed&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">exposed</span><span class="p">:</span>
+        <span class="n">views</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">object</span>
+</pre></div>
+
+</div>
+<div class="section" id="object-oriented">
+<h1>Object oriented</h1>
+<p>= subclassing</p>
+</div>
+<div class="section" id="id10">
+
+<div class="highlight"><pre><span></span><span class="c1"># &quot;Object based&quot;: hides complexity</span>
+
+<span class="k">def</span> <span class="nf">monitor</span><span class="p">():</span>
+    <span class="o">...</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">monitor</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># &quot;Object oriented&quot;: subclassing</span>
+
+<span class="k">class</span> <span class="nc">MonitorThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id11">
+
+<div class="line-block">
+<div class="line">Object oriented: you get</div>
+<div class="line">invited to write <em>new methods</em></div>
+<div class="line">for <strong>existing</strong> classes</div>
+</div>
+</div>
+<div class="section" id="id12">
+
+<p>(And, it eats a level of indentation)</p>
+</div>
+<div class="section" id="dynamic">
+<h1>Dynamic</h1>
+<div class="line-block">
+<div class="line">Code objects — modules,</div>
+<div class="line">classes, functions — can</div>
+<div class="line"><em>change</em> at <strong>runtime</strong></div>
+</div>
+</div>
+<div class="section" id="id13">
+
+<p>What error should this code raise?</p>
+<div class="highlight"><pre><span></span><span class="c1"># &quot;from framework import request&quot;?</span>
+
+<span class="k">def</span> <span class="nf">my_view</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="s1">&#39;Hi, you sent {} cookies.&#39;</span>
+        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">cookies</span><span class="p">))</span>
+    <span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id14">
+
+<div class="highlight"><pre><span></span><span class="c1"># framework.py</span>
+
+<span class="o">...</span>
+    <span class="c1"># Magically create a global!</span>
+    <span class="n">views_module</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id15">
+
+<div class="line-block">
+<div class="line">In a <em>dynamic</em> language,</div>
+<div class="line">you can wind up with code and</div>
+<div class="line">objects that <strong>don’t even exist</strong></div>
+<div class="line">in your raw source code</div>
+</div>
+</div>
+<div class="section" id="id16">
+
+<div class="line-block">
+<div class="line"><strong>Q:</strong> Does it make your</div>
+<div class="line">code more <em>readable?</em></div>
+</div>
+</div>
+<div class="section" id="simple">
+<h1>Simple</h1>
+<div class="line-block">
+<div class="line">“Things should be as simple</div>
+<div class="line">as possible, but no simpler.”</div>
+</div>
+<div class="line-block">
+<div class="line"><em>— Einstein, quoted in</em></div>
+<div class="line"><a class="reference external" href="http://python-history.blogspot.com/2009/01/pythons-design-philosophy.html">Python’s Design Philosophy</a></div>
+</div>
+</div>
+<div class="section" id="id17">
+
+<div class="line-block">
+<div class="line">“every company gets about</div>
+<div class="line">three innovation tokens”</div>
+</div>
+<div class="line-block">
+<div class="line">— Dan McKinley,</div>
+<div class="line"><a class="reference external" href="http://mcfunley.com/choose-boring-technology">Choose Boring Technology</a></div>
+</div>
+</div>
+<div class="section" id="id18">
+
+<div class="line-block">
+<div class="line">“MySQL is boring.</div>
+<div class="line">Postgres is boring.</div>
+<div class="line">PHP is boring.</div>
+<div class="line"><strong>Python</strong> is boring.”</div>
+</div>
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What makes Python</div>
+<div class="line">wonderful for the web?</div>
+</div>
+<div class="line-block">
+<div class="line">Reflection</div>
+<div class="line">Object oriented</div>
+<div class="line">Dynamic</div>
+<div class="line">Simple</div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What makes Python</div>
+<div class="line">wonderful for the web?</div>
+</div>
+<div class="line-block">
+<div class="line"><span class="strike">Reflection</span></div>
+<div class="line"><span class="strike">Object oriented</span></div>
+<div class="line"><span class="strike">Dynamic</span></div>
+<div class="line"><cite>Simple</cite></div>
+</div>
+</div>
+<div class="section" id="id21">
+
+<div class="line-block">
+<div class="line">Django</div>
+<div class="line">Flask</div>
+<div class="line">Bottle</div>
+<div class="line">Pyramid</div>
+<div class="line">Morepath</div>
+</div>
+</div>
+<div class="section" id="id22">
+
+<div class="line-block">
+<div class="line">Flask 23,132</div>
+<div class="line">Django 21,712</div>
+<div class="line">Bottle 4,038</div>
+<div class="line">Pyramid 2,122</div>
+<div class="line">Morepath 263</div>
+</div>
+</div>
+<div class="section" id="id23">
+
+<div class="line-block">
+<div class="line">Flask 23,132</div>
+<div class="line">Django 21,712</div>
+<div class="line"><br /></div>
+<div class="line">Bottle 4,038</div>
+<div class="line">Pyramid 2,122</div>
+<div class="line"><br /></div>
+<div class="line">Morepath 263</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id24">
+
+<div class="line-block">
+<div class="line">Flask 23,132</div>
+<div class="line">Django 21,712</div>
+<div class="line"><em>web.py</em> <strong>4,089</strong></div>
+<div class="line">Bottle 4,038</div>
+<div class="line">Pyramid 2,122</div>
+<div class="line"><em>web2py</em> <strong>1,218</strong></div>
+<div class="line">Morepath 263</div>
+<div class="line"><em>CherryPy</em> <strong>201</strong></div>
+</div>
+</div>
+<div class="section" id="id25">
+
+<div class="line-block">
+<div class="line">What do the</div>
+<div class="line">top frameworks</div>
+<div class="line">have in common?</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Flask 23,132</strong></div>
+<div class="line"><strong>Django 21,712</strong></div>
+<div class="line">web.py 4,089</div>
+<div class="line">Bottle 4,038</div>
+<div class="line">⋮</div>
+</div>
+</div>
+<div class="section" id="flask-and-django">
+<h1>Flask and Django</h1>
+<ul class="simple">
+<li>Views are <em>plain functions</em></li>
+<li>Explicit registration (<strong>not</strong> reflection)</li>
+<li>Your app can <em>start small</em> and grow</li>
+<li>Aim for <strong>simplicity</strong></li>
+</ul>
+</div>
+<div class="section" id="django">
+<h1>Django</h1>
+<div class="line-block">
+<div class="line">Python’s default <em>first framework</em></div>
+</div>
+<div class="line-block">
+<div class="line">ORM: persist data in a database</div>
+<div class="line">Admin interface: database <em>visible</em></div>
+<div class="line">Forms library</div>
+</div>
+</div>
+<div class="section" id="id26">
+
+<p>Forms library!?</p>
+</div>
+<div class="section" id="id27">
+
+<p><a class="reference external" href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.221.4379">Multi-trailer systems</a></p>
+</div>
+<div class="section" id="id28">
+
+<img alt="two-trailers.png" src="two-trailers.png" style="height: 760px;" />
+</div>
+<div class="section" id="id29">
+
+<div class="line-block">
+<div class="line"><strong>Trade-off:</strong> yield <em>control</em></div>
+<div class="line">in return for <em>features</em></div>
+</div>
+</div>
+<div class="section" id="id30">
+
+<p>Forms library</p>
+<ul class="simple">
+<li>Automatic <em>validation</em></li>
+<li>Re-fill form for retry</li>
+<li><strong>XSS</strong> protection</li>
+</ul>
+</div>
+<div class="section" id="flask">
+<h1>Flask</h1>
+<div class="line-block">
+<div class="line">The go-to second framework</div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="line-block">
+<div class="line">Will people keep writing</div>
+<div class="line">Python for the web?</div>
+</div>
+</div>
+<div class="section" id="id32">
+
+<div class="line-block">
+<div class="line">What’s the competition?</div>
+</div>
+</div>
+<div class="section" id="javascript">
+<h1>JavaScript</h1>
+<ul class="simple">
+<li>Language inside <strong>every</strong> browser</li>
+<li>Web developers <em>already</em> know it</li>
+<li><strong>Node.js</strong> brings it to the server</li>
+</ul>
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line"><strong>Python</strong> — 2 vs 3, C Python vs PyPy</div>
+<div class="line"><strong>JavaScript</strong> — Node.js, ES6 → ES5</div>
+</div>
+</div>
+<div class="section" id="python">
+<h1>Python</h1>
+<div class="line-block">
+<div class="line">reflection</div>
+<div class="line">generators</div>
+<div class="line">iterators</div>
+<div class="line">classes</div>
+<div class="line">modules</div>
+</div>
+</div>
+<div class="section" id="id34">
+<h1>JavaScript</h1>
+<div class="line-block">
+<div class="line"><span class="strike">reflection</span></div>
+<div class="line"><span class="strike">generators</span></div>
+<div class="line"><span class="strike">iterators</span></div>
+<div class="line"><span class="strike">classes</span></div>
+<div class="line"><span class="strike">modules</span></div>
+</div>
+</div>
+<div class="section" id="id35">
+
+<p><strong>It does now</strong></p>
+</div>
+<div class="section" id="es6">
+<h1>ES6</h1>
+<div class="line-block">
+<div class="line">reflection</div>
+<div class="line">generators</div>
+<div class="line">iterators</div>
+<div class="line">classes</div>
+<div class="line">modules</div>
+</div>
+</div>
+<div class="section" id="id36">
+
+<div class="line-block">
+<div class="line"><em>“Everything that rises</em></div>
+<div class="line">must <strong>converge”</strong></div>
+</div>
+</div>
+<div class="section" id="id37">
+<h1>JavaScript</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="mi">40</span> <span class="o">-</span> <span class="s1">&#39;30&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id38">
+<h1>JavaScript</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="mi">40</span> <span class="o">-</span> <span class="s1">&#39;30&#39;</span>
+<span class="mi">10</span>
+</pre></div>
+
+</div>
+<div class="section" id="id39">
+<h1>JavaScript</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="mi">40</span> <span class="o">-</span> <span class="s1">&#39;30&#39;</span>
+<span class="mi">10</span>
+
+<span class="o">&gt;</span> <span class="mi">40</span> <span class="o">+</span> <span class="s1">&#39;30&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id40">
+<h1>JavaScript</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="mi">40</span> <span class="o">-</span> <span class="s1">&#39;30&#39;</span>
+<span class="mi">10</span>
+
+<span class="o">&gt;</span> <span class="mi">40</span> <span class="o">+</span> <span class="s1">&#39;30&#39;</span>
+<span class="s2">&quot;4030&quot;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id41">
+<h1>Python</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="mi">40</span> <span class="o">-</span> <span class="s1">&#39;30&#39;</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="o">...</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="n">unsupported</span> <span class="n">operand</span> <span class="nb">type</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="typescript">
+<h1>TypeScript</h1>
+</div>
+<div class="section" id="id42">
+
+<p>TypeScript → ES5!</p>
+</div>
+<div class="section" id="id43">
+<h1>JavaScript</h1>
+<ul class="simple">
+<li>Is a contender</li>
+<li>Gaining features</li>
+<li>Becoming safer</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id44">
+<h1>JavaScript</h1>
+<ul class="simple">
+<li>Is a contender</li>
+<li>Gaining features</li>
+<li>Becoming safer</li>
+</ul>
+<div class="line-block">
+<div class="line"><em>Dynamic,</em></div>
+<div class="line"><em>High-level,</em></div>
+<div class="line"><em>Open source!</em></div>
+</div>
+</div>
+<div class="section" id="q">
+<h1>Q</h1>
+<div class="line-block">
+<div class="line">What will happen</div>
+<div class="line">to Python?</div>
+</div>
+</div>
+<div class="section" id="id45">
+
+<div class="line-block">
+<div class="line">Python has <em>always</em></div>
+<div class="line">played 2nd fiddle to</div>
+<div class="line">some <strong>other</strong> web language</div>
+</div>
+<div class="line-block">
+<div class="line">PHP, VB Script, Ruby, JS</div>
+</div>
+</div>
+<div class="section" id="id46">
+
+<div class="line-block">
+<div class="line">What are Python’s advantages?</div>
+</div>
+</div>
+<div class="section" id="id47">
+
+<div class="line-block">
+<div class="line">Becoming the world’s</div>
+<div class="line"><em>default language</em></div>
+</div>
+</div>
+<div class="section" id="id48">
+
+<div class="line-block">
+<div class="line">Often the language</div>
+<div class="line">learned in school</div>
+</div>
+</div>
+<div class="section" id="id49">
+
+<div class="line-block">
+<div class="line">Simple syntax is perfect for</div>
+<div class="line">the <strong>“occasional programmer”</strong></div>
+</div>
+</div>
+<div class="section" id="id50">
+
+<p>Burgeoning community</p>
+</div>
+<div class="section" id="id51">
+
+<img alt="girls.png" src="girls.png" style="height: 768px;" />
+<!-- flight simulator? -->
+</div>
+<div class="section" id="id52">
+
+<div class="line-block">
+<div class="line">The Web and Python met</div>
+<div class="line">when <em>both</em> were immature</div>
+</div>
+<p>Web → ← Python</p>
+</div>
+<div class="section" id="id53">
+
+<div class="line-block">
+<div class="line">“We don’t even know</div>
+<div class="line">what it is yet.”</div>
+</div>
+</div>
+<div class="section" id="id54">
+
+<img alt="know.png" src="know.png" style="width: 1024px;" />
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line">“We don’t even know</div>
+<div class="line">what it is yet.”</div>
+</div>
+</div>
+<div class="section" id="id56">
+
+<p>Thank you!</p>
+<p><em>&#64;brandon_rhodes</em></p>
+</div>
+<div class="section" id="id57">
+
+<!-- References
+
+Choose Boring Tech: http://mcfunley.com/choose-boring-technology -->
+<!-- single quote: ’
+double quotes: x“”x
+prime: ′ ″
+em-dash: —
+vertical ellipsis: ⋮
+arrows: ←, ↑, →, ↓, ↔, ↕, ↖, ↗, ↘, ↙ -->
+<script>
+  window.slide_transition_time = 2000;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

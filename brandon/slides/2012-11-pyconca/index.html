@@ -1,0 +1,2427 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>slides.rst</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<!-- possible goals
+(10 slides / minute) * (40 minutes) = 400 slides
+ (6 slides / minute) * (40 minutes) = 240 slides -->
+<!-- TODO: install ispell on MacOS so I can spellcheck this before presenting it -->
+<div class="section" id="a-python-aesthetic">
+<h1>A Python Æsthetic</h1>
+<div class="line-block">
+<div class="line"><em>Beauty, and</em></div>
+<div class="line"><em>Why I Python</em></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Brandon Rhodes</strong></div>
+<div class="line"><strong>PyCon Canada 2012</strong></div>
+</div>
+</div>
+<div class="section" id="why-do-i-write-python">
+<h1>Why Do I Write Python?</h1>
+<div class="line-block">
+<div class="line">Beautiful to think about</div>
+<div class="line">Beautiful to look at</div>
+</div>
+</div>
+<div class="section" id="slide">
+
+<div class="line-block">
+<div class="line">Language → beautiful ideas</div>
+<div class="line">Community → beautiful code</div>
+</div>
+</div>
+<div class="section" id="id1">
+
+<div class="line-block">
+<div class="line">It does not matter how</div>
+<div class="line">beautiful the ideas are behind</div>
+<div class="line">a programming language</div>
+</div>
+<div class="line-block">
+<div class="line"><em>if</em></div>
+</div>
+<div class="line-block">
+<div class="line">its community insists</div>
+<div class="line">on writing ugly code</div>
+</div>
+</div>
+<div class="section" id="id2">
+
+<div class="line-block">
+<div class="line">It is the <em>traditions</em> and</div>
+<div class="line"><em>practices</em> of our community</div>
+</div>
+<div class="line-block">
+<div class="line">that make code <em>look like</em> Python</div>
+</div>
+</div>
+<div class="section" id="why-is-python-beautiful">
+<h1>Why is python beautiful?</h1>
+<p>Because of <em>us</em></p>
+</div>
+<div class="section" id="id3">
+
+<div class="line-block">
+<div class="line">So this talk weaves</div>
+<div class="line">together two topics:</div>
+</div>
+<ul class="simple">
+<li><em>Language design</em></li>
+<li><em>Coding practices</em></li>
+</ul>
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line">And this talk generally</div>
+<div class="line">frames these topics with:</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Math → language design</em></div>
+<div class="line"><em>Typesetting → coding practices</em></div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<p>Why <strong>math</strong> and <em>typesetting?</em></p>
+</div>
+<div class="section" id="id6">
+
+<div class="line-block">
+<div class="line">Because those are</div>
+<div class="line"><em>my</em> particular background</div>
+</div>
+</div>
+<div class="section" id="id7">
+
+<div class="line-block">
+<div class="line">You might love Python for</div>
+<div class="line">quite different reasons</div>
+</div>
+</div>
+<div class="section" id="id8">
+
+<div class="line-block">
+<div class="line">But to tell my own story:</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Math + Typesetting</em></div>
+</div>
+</div>
+<div class="section" id="first-a-meta-question">
+<h1>First, a meta-question</h1>
+<div class="line-block">
+<div class="line">I have a question about</div>
+<div class="line">your own thought process</div>
+</div>
+</div>
+<div class="section" id="id9">
+
+<div class="line-block">
+<div class="line">What do you think about,</div>
+<div class="line">what occupies mental space,</div>
+<div class="line">as you are typing code?</div>
+</div>
+</div>
+<div class="section" id="id10">
+
+<div class="line-block">
+<div class="line">For me:</div>
+</div>
+<ul class="simple">
+<li>My obligation stack</li>
+<li>The code’s visual layout</li>
+</ul>
+</div>
+<div class="section" id="the-stack">
+<h1>The Stack</h1>
+<div class="line-block">
+<div class="line">Consider the moment when</div>
+<div class="line">I start typing some code</div>
+</div>
+</div>
+<div class="section" id="id11">
+
+<div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span>
+    <span class="o">^</span>
+</pre></div>
+
+<ul class="simple">
+<li>(Obligation &quot;stack&quot; is empty)</li>
+</ul>
+</div>
+<div class="section" id="id12">
+
+<p><em>I type an open-paren</em></p>
+<div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">canvas</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span>
+                      <span class="o">^</span>
+</pre></div>
+
+<ul class="simple">
+<li>Owe a close paren</li>
+</ul>
+</div>
+<div class="section" id="id13">
+
+<p><em>And another</em></p>
+<div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">canvas</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="n">margin</span> <span class="o">+</span> <span class="p">(</span>
+                                <span class="o">^</span>
+</pre></div>
+
+<ul class="simple">
+<li>Owe a close paren</li>
+<li>Owe another close paren</li>
+</ul>
+</div>
+<div class="section" id="id14">
+
+<p><em>I open a bracket</em></p>
+<div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">canvas</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="n">margin</span> <span class="o">+</span> <span class="p">(</span><span class="n">indent</span><span class="p">[</span>
+                                       <span class="o">^</span>
+</pre></div>
+
+<ul class="simple">
+<li>Owe a close paren</li>
+<li>Owe another close paren</li>
+<li>Owe a close bracket</li>
+</ul>
+</div>
+<div class="section" id="id15">
+
+<p><em>And close it again</em></p>
+<div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">canvas</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="n">margin</span> <span class="o">+</span> <span class="p">(</span><span class="n">indent</span><span class="p">[</span><span class="n">LEFT</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+                                                <span class="o">^</span>
+</pre></div>
+
+<ul class="simple">
+<li>Owe a close paren</li>
+<li>Owe another close paren</li>
+</ul>
+</div>
+<div class="section" id="id16">
+
+<p>(And so forth)</p>
+</div>
+<div class="section" id="my-solution">
+<h1>My solution?</h1>
+<p><strong>Keep the obligation stack short!</strong></p>
+</div>
+<div class="section" id="id17">
+
+<div class="line-block">
+<div class="line">You can keep closing</div>
+<div class="line">the brackets nearby:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">canvas</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="n">margin</span> <span class="o">+</span> <span class="p">(</span><span class="n">indent</span><span class="p">[</span> <span class="p">]))</span>
+                                       <span class="o">^</span>
+</pre></div>
+
+</div>
+<div class="section" id="fight-the-stack">
+<h1>Fight the Stack!</h1>
+<ul class="simple">
+<li>Add that <strong>import</strong> now</li>
+<li>Stub out functions now</li>
+<li>Keep short-term TODOs</li>
+<li>Runs now with <tt class="docutils literal">print</tt></li>
+<li>Do not try to <em>remember</em> anything!</li>
+</ul>
+</div>
+<div class="section" id="so">
+<h1>So</h1>
+<div class="line-block">
+<div class="line"><em>Short</em> stacks</div>
+<div class="line">make <em>focus</em> possible</div>
+</div>
+</div>
+<div class="section" id="id18">
+
+<div class="line-block">
+<div class="line">Once we are focused,</div>
+<div class="line">what kind of code should</div>
+<div class="line">we be trying to write?</div>
+</div>
+</div>
+<div class="section" id="python-and-language-design">
+<h1>Python and Language Design</h1>
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line">What other languages have</div>
+<div class="line">I used over the years?</div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<p>My story, in brief:</p>
+<p>BASIC → C → awk → Python</p>
+</div>
+<div class="section" id="id21">
+
+<p>(Plus: 6809 assembly and machine code,
+nroff, TeX, Basic09, sed, LISP, Smalltalk,
+C++, C#, Java, Scheme, JavaScript)</p>
+</div>
+<div class="section" id="honorable-mention">
+<h1>Honorable Mention</h1>
+<p>Modula-3 → Java, Python</p>
+<ul class="simple">
+<li>Interfaces</li>
+<li>Exceptions</li>
+<li>Objects</li>
+<li>Import</li>
+</ul>
+</div>
+<div class="section" id="id22">
+
+<p>Python is <em>not</em> radical</p>
+<div class="line-block">
+<div class="line">It looks very much like</div>
+<div class="line">several earlier languages</div>
+</div>
+</div>
+<div class="section" id="c">
+<h1>C++</h1>
+<div class="highlight"><pre><span></span><span class="o">//</span>  <span class="n">sgp4fix</span> <span class="k">for</span> <span class="n">afspc</span> <span class="n">written</span> <span class="n">intrinsic</span> <span class="n">functions</span>
+<span class="o">//</span> <span class="n">nodep</span> <span class="n">used</span> <span class="n">without</span> <span class="n">a</span> <span class="n">trigonometric</span> <span class="n">function</span> <span class="n">ahead</span>
+<span class="k">if</span> <span class="p">((</span><span class="n">nodep</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">opsmode</span> <span class="o">==</span> <span class="s1">&#39;a&#39;</span><span class="p">))</span>
+    <span class="n">nodep</span> <span class="o">=</span> <span class="n">nodep</span> <span class="o">+</span> <span class="n">twopi</span><span class="p">;</span>
+<span class="n">xls</span>    <span class="o">=</span> <span class="n">mp</span> <span class="o">+</span> <span class="n">argpp</span> <span class="o">+</span> <span class="n">cosip</span> <span class="o">*</span> <span class="n">nodep</span><span class="p">;</span>
+<span class="n">dls</span>    <span class="o">=</span> <span class="n">pl</span> <span class="o">+</span> <span class="n">pgh</span> <span class="o">-</span> <span class="n">pinc</span> <span class="o">*</span> <span class="n">nodep</span> <span class="o">*</span> <span class="n">sinip</span><span class="p">;</span>
+<span class="n">xls</span>    <span class="o">=</span> <span class="n">xls</span> <span class="o">+</span> <span class="n">dls</span><span class="p">;</span>
+<span class="n">xnoh</span>   <span class="o">=</span> <span class="n">nodep</span><span class="p">;</span>
+<span class="n">nodep</span>  <span class="o">=</span> <span class="n">atan2</span><span class="p">(</span><span class="n">alfdp</span><span class="p">,</span> <span class="n">betdp</span><span class="p">);</span>
+</pre></div>
+
+</div>
+<div class="section" id="python">
+<h1>Python</h1>
+<div class="highlight"><pre><span></span><span class="c1">#   sgp4fix for afspc written intrinsic functions</span>
+<span class="c1">#  nodep used without a trigonometric function ahead</span>
+<span class="k">if</span> <span class="n">nodep</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">opsmode</span> <span class="o">==</span> <span class="s1">&#39;a&#39;</span><span class="p">:</span>
+    <span class="n">nodep</span> <span class="o">=</span> <span class="n">nodep</span> <span class="o">+</span> <span class="n">twopi</span><span class="p">;</span>
+<span class="n">xls</span>    <span class="o">=</span> <span class="n">mp</span> <span class="o">+</span> <span class="n">argpp</span> <span class="o">+</span> <span class="n">cosip</span> <span class="o">*</span> <span class="n">nodep</span><span class="p">;</span>
+<span class="n">dls</span>    <span class="o">=</span> <span class="n">pl</span> <span class="o">+</span> <span class="n">pgh</span> <span class="o">-</span> <span class="n">pinc</span> <span class="o">*</span> <span class="n">nodep</span> <span class="o">*</span> <span class="n">sinip</span><span class="p">;</span>
+<span class="n">xls</span>    <span class="o">=</span> <span class="n">xls</span> <span class="o">+</span> <span class="n">dls</span><span class="p">;</span>
+<span class="n">xnoh</span>   <span class="o">=</span> <span class="n">nodep</span><span class="p">;</span>
+<span class="n">nodep</span>  <span class="o">=</span> <span class="n">atan2</span><span class="p">(</span><span class="n">alfdp</span><span class="p">,</span> <span class="n">betdp</span><span class="p">);</span>
+</pre></div>
+
+</div>
+<div class="section" id="personal-aside">
+<h1>&lt;Personal Aside&gt;</h1>
+</div>
+<div class="section" id="q">
+<h1>Q:</h1>
+</div>
+<div class="section" id="id23">
+
+<div class="line-block">
+<div class="line">Why translate astronomy code to</div>
+<div class="line">Python instead of wrapping</div>
+<div class="line">the existing C++ library?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">xnodce</span> <span class="o">=</span> <span class="n">fmod</span><span class="p">(</span><span class="mf">4.5236020</span> <span class="o">-</span> <span class="mf">9.2422029e-4</span> <span class="o">*</span> <span class="n">day</span><span class="p">,</span> <span class="n">twopi</span><span class="p">);</span>
+<span class="n">stem</span>   <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">xnodce</span><span class="p">);</span>
+<span class="n">ctem</span>   <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">xnodce</span><span class="p">);</span>
+<span class="n">zcosil</span> <span class="o">=</span> <span class="mf">0.91375164</span> <span class="o">-</span> <span class="mf">0.03568096</span> <span class="o">*</span> <span class="n">ctem</span><span class="p">;</span>
+<span class="n">zsinil</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">zcosil</span> <span class="o">*</span> <span class="n">zcosil</span><span class="p">);</span>
+</pre></div>
+
+</div>
+<div class="section" id="a">
+<h1>A:</h1>
+<ul class="simple">
+<li>Windows installation: <em>hard</em></li>
+<li>Visual Studio Express: <em>no</em></li>
+<li>Amateur astronomers: <em>not coders</em></li>
+</ul>
+</div>
+<div class="section" id="id24">
+
+<p><em>Thus</em></p>
+<p>extension modules → pain</p>
+</div>
+<div class="section" id="id25">
+
+<div class="line-block">
+<div class="line">So I have undertaken</div>
+<div class="line">a really Big Project</div>
+</div>
+</div>
+<div class="section" id="rewrite-pyephem-in-pure-python">
+<h1>Rewrite PyEphem in pure Python!</h1>
+<div class="line-block">
+<div class="line">✓ Planets — <tt class="docutils literal">jplephem</tt></div>
+<div class="line">✓ Satellites — <tt class="docutils literal">sgp4</tt></div>
+<div class="line">&nbsp; Coordinates — <tt class="docutils literal">ephem</tt></div>
+</div>
+</div>
+<div class="section" id="id26">
+
+<p><em>Each piece is as independent package</em></p>
+<div class="line-block">
+<div class="line">✓ Planets — <tt class="docutils literal">jplephem</tt></div>
+<div class="line">✓ Satellites — <tt class="docutils literal">sgp4</tt></div>
+<div class="line">&nbsp; Coordinates — <tt class="docutils literal">ephem</tt></div>
+</div>
+</div>
+<div class="section" id="these-pure-python-modules">
+<h1>These pure-Python modules...</h1>
+<ul class="simple">
+<li>Work in <em>both</em> Python 2 and 3</li>
+<li>Require <em>no</em> C extensions</li>
+<li>Use <em>NumPy</em> if available</li>
+</ul>
+</div>
+<div class="section" id="id27">
+
+<p><em>And</em> — what about <strong>performance?</strong></p>
+</div>
+<div class="section" id="id28">
+
+<img alt="pypy_logo.png" src="pypy_logo.png" />
+</div>
+<div class="section" id="id29">
+
+<div class="line-block">
+<div class="line">Quick measurement suggests:</div>
+</div>
+<p><em>PyPy</em> &gt; <em>Python + C</em></p>
+</div>
+<div class="section" id="id30">
+
+<div class="line-block">
+<div class="line">So, that is why I have</div>
+<div class="line">been translating C++ code</div>
+<div class="line">to <strong>Python</strong> and thinking</div>
+<div class="line">about <em>languages</em></div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="line-block">
+<div class="line">Let me know if you</div>
+<div class="line">are <em>interested</em> in taking</div>
+<div class="line">a look at it during the sprits</div>
+</div>
+</div>
+<div class="section" id="id32">
+<h1>&lt;/Personal Aside&gt;</h1>
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line">So, why do C++ and Python</div>
+<div class="line">(and C, Pascal, Java, Algol, …)</div>
+<div class="line">look so much alike?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">xls</span>    <span class="o">=</span> <span class="n">xls</span> <span class="o">+</span> <span class="n">dls</span><span class="p">;</span>
+<span class="n">xnoh</span>   <span class="o">=</span> <span class="n">nodep</span><span class="p">;</span>
+<span class="n">nodep</span>  <span class="o">=</span> <span class="n">atan2</span><span class="p">(</span><span class="n">alfdp</span><span class="p">,</span> <span class="n">betdp</span><span class="p">);</span>
+</pre></div>
+
+</div>
+<div class="section" id="because-of-math">
+<h1>Because of math</h1>
+</div>
+<div class="section" id="id34">
+
+<p>Let me start with a complaint</p>
+</div>
+<div class="section" id="id35">
+
+<div class="line-block">
+<div class="line">Consider the keystrokes</div>
+<div class="line">necessary to step through</div>
+<div class="line">the following investigation</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">print</span> <span class="n">foo</span>
+<span class="k">print</span> <span class="nb">dir</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">bar</span>
+<span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">bar</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">bar</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">print</span> <span class="nb">dir</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">bar</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="k">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">bar</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">baz</span>
+</pre></div>
+
+</div>
+<div class="section" id="id36">
+
+<div class="line-block">
+<div class="line">What if a language’s operations</div>
+<div class="line">let you <em>keep typing</em> instead</div>
+<div class="line">of stopping to add parens?</div>
+</div>
+</div>
+<div class="section" id="id37">
+
+<p><em>3 popular approaches</em></p>
+<ol class="arabic simple">
+<li>jQuery</li>
+<li>Unix shell</li>
+<li>LISP</li>
+</ol>
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line">jQuery <em>chains</em> everything</div>
+<div class="line">through endless <strong>method calls</strong></div>
+</div>
+</div>
+<div class="section" id="id39">
+
+<div class="line-block">
+<div class="line">jQuery uses <em>chaining</em> to permit</div>
+<div class="line">“just-keep-typing” programming</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">$</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;h1&#39;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="s1">&#39;data-level&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">css</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">,</span> <span class="s1">&#39;block&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id40">
+
+<div class="line-block">
+<div class="line">If Python were more like</div>
+<div class="line">jQuery then debugging</div>
+<div class="line">might look more like:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">print</span> <span class="n">foo</span>
+<span class="k">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">dir</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">bar</span>
+<span class="k">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">bar</span><span class="o">.</span><span class="n">len</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">bar</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">bar</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">bar</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">baz</span>
+</pre></div>
+
+</div>
+<div class="section" id="id41">
+
+<div class="line-block">
+<div class="line"><em>Downside:</em> cannot symmetrically</div>
+<div class="line">express binary operation;</div>
+<div class="line">to <strong>add</strong> two items:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">foo</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+<span class="n">bar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="unix-pipline">
+<h1>Unix Pipline</h1>
+<div class="line-block">
+<div class="line">Inital data stream gets modified</div>
+<div class="line">by each of a series of filters:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">cat</span> <span class="n">log</span> <span class="o">|</span>
+    <span class="n">grep</span> <span class="s1">&#39;Connection error&#39;</span> <span class="o">|</span>
+    <span class="n">awk</span> <span class="s1">&#39;{print $2}&#39;</span> <span class="o">|</span>
+    <span class="n">sort</span> <span class="o">|</span>
+    <span class="n">uniq</span> <span class="o">-</span><span class="n">c</span>
+</pre></div>
+
+</div>
+<div class="section" id="id42">
+
+<div class="line-block">
+<div class="line">Interestingly, McIlroy’s original</div>
+<div class="line">idea for <strong>Unix</strong> pipelines</div>
+<div class="line">looked more like this:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">inputfile</span> <span class="n">sort</span> <span class="n">paginate</span> <span class="n">printerfile</span>
+</pre></div>
+
+</div>
+<div class="section" id="historial-aside">
+<h1>&lt;Historial Aside&gt;</h1>
+</div>
+<div class="section" id="id43">
+
+<div class="line-block">
+<div class="line">Donald Knuth once showed</div>
+<div class="line">his“literate programming”</div>
+<div class="line">approach in a <em>beautifully-</em></div>
+<div class="line"><em>documented</em> program</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Result: 10+ pages of Pascal</strong></div>
+</div>
+</div>
+<div class="section" id="id44">
+
+<div class="line-block">
+<div class="line">In his review of the paper,</div>
+<div class="line">McIlroy not only pointed out</div>
+<div class="line"><strong>several bugs</strong>, but offered a</div>
+<div class="line">bug-free <em>alternative—</em></div>
+</div>
+</div>
+<div class="section" id="id45">
+
+<div class="highlight"><pre><span></span><span class="n">tr</span> <span class="o">-</span><span class="n">cs</span> <span class="n">A</span><span class="o">-</span><span class="n">Za</span><span class="o">-</span><span class="n">z</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">|</span>
+<span class="n">tr</span> <span class="n">A</span><span class="o">-</span><span class="n">Z</span> <span class="n">a</span><span class="o">-</span><span class="n">z</span> <span class="o">|</span>
+<span class="n">sort</span> <span class="o">|</span>
+<span class="n">uniq</span> <span class="o">-</span><span class="n">c</span> <span class="o">|</span>
+<span class="n">sort</span> <span class="o">-</span><span class="n">rn</span> <span class="o">|</span>
+<span class="n">sed</span> <span class="err">$</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="n">q</span>
+</pre></div>
+
+</div>
+<div class="section" id="id46">
+
+<div class="line-block">
+<div class="line">No one who read his</div>
+<div class="line">review <strong>ever</strong> seems to have</div>
+<div class="line">forgotten the lesson:</div>
+</div>
+</div>
+<div class="section" id="id47">
+
+<div class="line-block">
+<div class="line"><em>Simple filters</em> that can</div>
+<div class="line">be <em>arbitrarily chained</em> are</div>
+<div class="line">more easily <strong>re-used,</strong> and more</div>
+<div class="line"><strong>robust,</strong> than almost any</div>
+<div class="line">other kind of code</div>
+</div>
+</div>
+<div class="section" id="id48">
+<h1>&lt;/Historial Aside&gt;</h1>
+</div>
+<div class="section" id="id49">
+
+<div class="line-block">
+<div class="line">So anyway: <em>pipelines</em></div>
+<div class="line">are an alternative when</div>
+<div class="line">you want more <em>simplicity</em></div>
+<div class="line">than arbitrary math expressions</div>
+</div>
+</div>
+<div class="section" id="lisp">
+<h1>LISP</h1>
+<p>Another kind of consistency</p>
+</div>
+<div class="section" id="id50">
+
+<div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span>
+</pre></div>
+
+<p><em>not LISP</em></p>
+</div>
+<div class="section" id="id51">
+
+<div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+
+<p><em>not LISP</em></p>
+</div>
+<div class="section" id="id52">
+
+<div class="line-block">
+<div class="line">Adding 3 numbers in LISP</div>
+<div class="line">looks <em>exactly like</em> calling a</div>
+<div class="line">function <tt class="docutils literal">f</tt> with 3 parameters:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="o">+</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span><span class="p">)</span>
+<span class="p">(</span><span class="n">f</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id53">
+
+<div class="line-block">
+<div class="line">No ambiguity or</div>
+<div class="line">order-of-operations:</div>
+<div class="line">each nested expression</div>
+<div class="line">gets its own parens</div>
+</div>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="o">*</span> <span class="p">(</span><span class="o">+</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="n">m</span><span class="p">)</span>
+<span class="p">(</span><span class="n">output</span> <span class="p">(</span><span class="n">concat</span> <span class="n">page1</span> <span class="n">page2</span><span class="p">)</span> <span class="n">printer</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="what-order">
+<h1>What order?</h1>
+<div class="line-block">
+<div class="line">LISP code always happens</div>
+<div class="line">from <em>inside to outside</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="nb">list</span> <span class="p">(</span><span class="n">nth</span> <span class="mi">0</span> <span class="n">ad</span><span class="o">-</span><span class="k">return</span><span class="o">-</span><span class="n">value</span><span class="p">)</span> <span class="p">;;</span> <span class="n">original</span> <span class="n">word</span>
+      <span class="p">(</span><span class="n">nth</span> <span class="mi">1</span> <span class="n">ad</span><span class="o">-</span><span class="k">return</span><span class="o">-</span><span class="n">value</span><span class="p">)</span> <span class="p">;;</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">file</span>
+      <span class="p">(</span><span class="n">remove</span><span class="o">-</span><span class="k">if</span> <span class="s1">&#39;contains-space-p</span>
+                 <span class="p">(</span><span class="n">nth</span> <span class="mi">2</span> <span class="n">ad</span><span class="o">-</span><span class="k">return</span><span class="o">-</span><span class="n">value</span><span class="p">))</span>
+      <span class="p">(</span><span class="n">remove</span><span class="o">-</span><span class="k">if</span> <span class="s1">&#39;contains-space-p</span>
+                 <span class="p">(</span><span class="n">nth</span> <span class="mi">3</span> <span class="n">ad</span><span class="o">-</span><span class="k">return</span><span class="o">-</span><span class="n">value</span><span class="p">))</span>
+      <span class="p">))))</span>
+</pre></div>
+
+</div>
+<div class="section" id="id54">
+
+<div class="line-block">
+<div class="line">LISP <em>refuses</em> to special-case</div>
+<div class="line">the traditional math operators</div>
+<div class="line">but insists on</div>
+</div>
+<p><strong>one syntax to rule them all</strong></p>
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line">So that's</div>
+<div class="line"><strong>jQuery, pipelines, LISP</strong></div>
+</div>
+<div class="line-block">
+<div class="line">But, Python chooses</div>
+<div class="line">to follow <em>math</em></div>
+</div>
+</div>
+<div class="section" id="id56">
+
+<div class="highlight"><pre><span></span>  <span class="err">↘</span>
+<span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span>      <span class="err">↘</span>
+<span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">+</span> <span class="n">z</span>
+</pre></div>
+
+</div>
+<div class="section" id="id57">
+
+<div class="line-block">
+<div class="line">But what if we</div>
+<div class="line">want the logarithm?</div>
+</div>
+</div>
+<div class="section" id="id58">
+
+<div class="line-block">
+<div class="line">We now have to add</div>
+<div class="line">symbols to <em>both</em> sides</div>
+</div>
+<div class="highlight"><pre><span></span>  <span class="err">↙</span>       <span class="err">↘</span>
+<span class="n">ln</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id59">
+
+<p>Negation?</p>
+</div>
+<div class="section" id="id60">
+
+<div class="highlight"><pre><span></span> <span class="err">↙</span>
+<span class="o">-</span> <span class="n">ln</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="lesson">
+<h1>Lesson</h1>
+<div class="line-block">
+<div class="line">Math symbols fly everywhere</div>
+</div>
+<ul class="simple">
+<li>Prefix operators</li>
+<li>Infix operators</li>
+<li>Functions</li>
+</ul>
+</div>
+<div class="section" id="id61">
+
+<div class="line-block">
+<div class="line">Python has four main ways</div>
+<div class="line">to expand an expression</div>
+</div>
+<ol class="arabic simple">
+<li>Prefix operator <tt class="docutils literal"><span class="pre">-z</span></tt></li>
+<li>Binary operator <tt class="docutils literal">x + y</tt></li>
+<li>Wrap in callable <tt class="docutils literal">f(x, y)</tt></li>
+<li>Attribute/method <tt class="docutils literal">f.bar</tt></li>
+</ol>
+</div>
+<div class="section" id="order-of-operations">
+<h1>Order of Operations</h1>
+<div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">c</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="n">b</span> <span class="o">*</span> <span class="n">c</span> <span class="o">+</span> <span class="n">a</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">In <em>both</em> of these expressions,</div>
+<div class="line">multiplication will happen <em>first</em></div>
+</div>
+</div>
+<div class="section" id="id62">
+
+<div class="line-block">
+<div class="line"><strong>PEP-8:</strong> you can <em>lay out</em> your code</div>
+<div class="line">to make the order <em>look</em> obvious</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">*</span><span class="n">c</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">c</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id63">
+
+<div class="highlight"><pre><span></span><span class="n">a</span><span class="o">.</span><span class="n">b</span><span class="p">()</span> <span class="o">+</span> <span class="n">c</span><span class="p">[</span><span class="n">d</span><span class="p">]</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Because they bind <em>so tightly</em>,</div>
+<div class="line">PEP-8 requires there be <em>no</em> spaces</div>
+<div class="line">between a name and <tt class="docutils literal">()</tt> or <tt class="docutils literal">[]</tt></div>
+</div>
+</div>
+<div class="section" id="another-math-advantage">
+<h1>Another math advantage</h1>
+<p><em>Context Freedom</em></p>
+<div class="line-block">
+<div class="line">This is a huge benefit derived</div>
+<div class="line">from the syntax of mathematics</div>
+</div>
+</div>
+<div class="section" id="id64">
+
+<div class="line-block">
+<div class="line">Python’s syntax is a</div>
+<div class="line">context-free grammar</div>
+</div>
+</div>
+<div class="section" id="id65">
+
+<div class="line-block">
+<div class="line">Means that a given</div>
+<div class="line">construct can have</div>
+<div class="line"><em>only one</em> meaning</div>
+</div>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="n">a</span> <span class="o">-</span><span class="n">b</span><span class="p">)</span>  <span class="c1"># Python - one possible meaning</span>
+<span class="p">(</span><span class="n">a</span> <span class="o">-</span><span class="n">b</span><span class="p">)</span>  <span class="c1"># Ruby - two possible meanings</span>
+</pre></div>
+
+</div>
+<div class="section" id="id66">
+
+<div class="line-block">
+<div class="line">Python’s <em>context-free</em> grammar</div>
+<div class="line">not only puts it in the mainstream</div>
+<div class="line">of decades of language design—</div>
+</div>
+</div>
+<div class="section" id="id67">
+
+<div class="line-block">
+<div class="line">—but makes it <em>easier</em> to read</div>
+<div class="line">snippets of code without having</div>
+<div class="line">to examine the <em>entire</em> file</div>
+</div>
+</div>
+<div class="section" id="id68">
+
+<div class="line-block">
+<div class="line">My point is not that Ruby people</div>
+<div class="line">ever actually write something like</div>
+<div class="line"><tt class="docutils literal">(a <span class="pre">-b)</span></tt> in a context in which</div>
+<div class="line">they could confuse theselves</div>
+</div>
+</div>
+<div class="section" id="id69">
+
+<div class="line-block">
+<div class="line">My point is that Python has</div>
+<div class="line">a logical inner <em>consistency</em></div>
+</div>
+<div class="line-block">
+<div class="line">And if you happen to be</div>
+<div class="line">math-ish and <strong>sensitive,</strong> the</div>
+<div class="line">consistency will make you <em>happy</em></div>
+</div>
+</div>
+<div class="section" id="intermediate-results">
+<h1>Intermediate results</h1>
+<div class="line-block">
+<div class="line">In Python, you can always</div>
+<div class="line">evaluate an expression <strong>partway</strong></div>
+<div class="line">and save the result</div>
+</div>
+</div>
+<div class="section" id="id70">
+
+<div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="mi">5</span>
+
+<span class="c1"># is ALWAYS equivalent to</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">5</span>
+</pre></div>
+
+</div>
+<div class="section" id="id71">
+
+<div class="line-block">
+<div class="line">For many computer languages,</div>
+<div class="line">this is <em>not</em> true of method calls!</div>
+</div>
+</div>
+<div class="section" id="id72">
+
+<div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">spreadsheet</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s1">&#39;D4&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">A method call <em>looks</em> like</div>
+<div class="line">an <strong>attribute lookup</strong> that returns</div>
+<div class="line">a callable that we <strong>invoke</strong></div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">spreadsheet</span><span class="o">.</span><span class="n">compute</span>  <span class="c1"># attr lookup</span>
+<span class="n">c</span><span class="p">(</span><span class="s1">&#39;D4&#39;</span><span class="p">)</span>              <span class="c1"># invoke callable</span>
+</pre></div>
+
+</div>
+<div class="section" id="id73">
+
+<div class="line-block">
+<div class="line">But appearance misleads!</div>
+</div>
+<div class="line-block">
+<div class="line">C++ and JavaScript</div>
+<div class="line"><em>special-case</em> method calls as a</div>
+<div class="line">ternary operator that is <em>not</em> the</div>
+<div class="line">same as <strong>lookup + invocation!</strong></div>
+</div>
+</div>
+<div class="section" id="id74">
+
+<div class="highlight"><pre><span></span><span class="c1"># Python is so awesome</span>
+
+<span class="n">draw</span> <span class="o">=</span> <span class="n">canvas</span><span class="o">.</span><span class="n">drawString</span>
+<span class="n">draw</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="s1">&#39;A rose is a rose.&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Like <em>every other</em> expression,</div>
+<div class="line">can <strong>save</strong> not-yet-called method</div>
+<div class="line">or <strong>passed</strong> it as a callback</div>
+</div>
+</div>
+<div class="section" id="id75">
+
+<p><em>Aaaaah, consistency!</em></p>
+</div>
+<div class="section" id="id76">
+
+<div class="line-block">
+<div class="line">There is one final</div>
+<div class="line">benefit that we should mention</div>
+<div class="line">of Python’s having a generally</div>
+<div class="line">math-friendly syntax</div>
+</div>
+</div>
+<div class="section" id="id77">
+
+<div class="line-block">
+<div class="line">Just like a math paper <em>defines</em></div>
+<div class="line">the symbols and operators it uses,</div>
+<div class="line">Python makes you <tt class="docutils literal">import</tt></div>
+<div class="line">the things you need</div>
+</div>
+</div>
+<div class="section" id="id78">
+
+<div class="line-block">
+<div class="line">Explicit <tt class="docutils literal">import</tt> means</div>
+<div class="line">you should never have to search</div>
+<div class="line">your entire codebase to find</div>
+<div class="line">a stray definition</div>
+</div>
+</div>
+<div class="section" id="please-remember">
+<h1>Please Remember</h1>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">piano</span>
+<span class="n">piano</span><span class="o">.</span><span class="n">Bench</span><span class="p">()</span>      <span class="c1"># yes!</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">The simplest <tt class="docutils literal">import</tt> syntax</div>
+<div class="line">expects you to <em>qualify</em> each class,</div>
+<div class="line">function with the module name</div>
+</div>
+</div>
+<div class="section" id="id79">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">piano</span>
+<span class="n">piano</span><span class="o">.</span><span class="n">PianoBench</span><span class="p">()</span>  <span class="c1"># no!</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">So you do <em>not</em> have to</div>
+<div class="line">qualify names with extra works</div>
+<div class="line">to make them “extra unique”</div>
+</div>
+</div>
+<div class="section" id="pep-8">
+<h1>PEP-8</h1>
+<div class="line-block">
+<div class="line">“The X11 library uses</div>
+<div class="line">a leading <em>X</em> for all its public</div>
+<div class="line">functions. In Python, this style is</div>
+<div class="line">generally deemed <strong>unnecessary</strong>”</div>
+</div>
+</div>
+<div class="section" id="id80">
+
+<div class="line-block">
+<div class="line">For example, <tt class="docutils literal">logging</tt></div>
+<div class="line">both gets this right:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Logger</span>
+<span class="k">class</span> <span class="nc">Handler</span>
+<span class="k">class</span> <span class="nc">Filter</span>
+</pre></div>
+
+</div>
+<div class="section" id="id81">
+
+<div class="line-block">
+<div class="line"><em>and</em> gets it wrong:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">LogRecord</span>
+</pre></div>
+
+</div>
+<div class="section" id="id82">
+
+<div class="line-block">
+<div class="line">The modern <tt class="docutils literal">json</tt> Standard</div>
+<div class="line">Library module is an example</div>
+<div class="line">of good practice</div>
+</div>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># not json_load() or jdump()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id83">
+<h1>So,</h1>
+<div class="line-block">
+<div class="line">if you keep names short,</div>
+<div class="line">then you leave the <em>caller</em> in charge</div>
+<div class="line">of whether to qualify them or not</div>
+</div>
+</div>
+<div class="section" id="id84">
+
+<div class="line-block">
+<div class="line">While we are on</div>
+<div class="line">the subject of imports:</div>
+</div>
+</div>
+<div class="section" id="import-loops">
+<h1>Import Loops</h1>
+<div class="line-block">
+<div class="line">I used to hate that Python</div>
+<div class="line">raises errors on import loops:</div>
+</div>
+<ul class="simple">
+<li>Module <tt class="docutils literal">a</tt> needs something</li>
+<li>From module <tt class="docutils literal">b</tt> which tries</li>
+<li>To import something from <tt class="docutils literal">a</tt></li>
+</ul>
+</div>
+<div class="section" id="id85">
+
+<div class="line-block">
+<div class="line">But I now suspect that an</div>
+<div class="line"><em>import loop</em> often indicates</div>
+<div class="line">a failure to carefully <strong>architect</strong></div>
+<div class="line">my code into proper <em>layers</em></div>
+</div>
+</div>
+<div class="section" id="id86">
+
+<!-- TODO: reword -->
+<div class="line-block">
+<div class="line">If you use <strong>dependency injection</strong></div>
+<div class="line">to keep <em>higher-level</em> code in charge</div>
+<div class="line">of <em>lower-level</em> modules, then</div>
+<div class="line">import loops do not occur</div>
+</div>
+</div>
+<div class="section" id="id87">
+
+<p>anyway</p>
+</div>
+<div class="section" id="id88">
+
+<div class="line-block">
+<div class="line">So those are some of the</div>
+<div class="line">benefits that Python inherits</div>
+<div class="line">from the <em>traditions</em> and the</div>
+<div class="line"><em>notation</em> of mathematics</div>
+</div>
+<!-- well - ugly.
+pep-8 still has __* ugliness, and a litany against function annotations
+ __ as special (dunder) comes from C where __FILE__ is special to compiler -->
+<!-- TODO: _.each() with callback leaves "framework" in control
+for ...: with iterator leaves YOU in control
+this is a BIG way that Python has shaped the solutions we like -->
+</div>
+<div class="section" id="typesetting">
+<h1>Typesetting!</h1>
+</div>
+<div class="section" id="confession">
+<h1>Confession:</h1>
+<div class="line-block">
+<div class="line">I re-format paragraphs by</div>
+<div class="line">hand to make them look good</div>
+</div>
+</div>
+<div class="section" id="id89">
+
+<div class="line-block">
+<div class="line">Depending on the line length,</div>
+<div class="line">the browser might split a</div>
+<div class="line">particularly difficult paragraph so</div>
+<div class="line">long and short lines interleave</div>
+</div>
+</div>
+<div class="section" id="id90">
+
+<div class="line-block">
+<div class="line"><em>(And, of course, that paragraph</em></div>
+<div class="line"><em>is deliberately an example!)</em></div>
+</div>
+</div>
+<div class="section" id="id91">
+
+<p>So what do I do?</p>
+</div>
+<div class="section" id="id92">
+
+<div class="line-block">
+<div class="line"><em>I break every</em></div>
+<div class="line"><em>paragraph manually</em></div>
+</div>
+</div>
+<div class="section" id="behold-the-majesty">
+<h1>Behold the majesty!</h1>
+<div class="line-block">
+<div class="line">Depending on the line</div>
+<div class="line"><strong>length,</strong> the browser might split a</div>
+<div class="line">particularly difficult paragraph so</div>
+<div class="line">long and short lines interleave</div>
+</div>
+</div>
+<div class="section" id="id93">
+<h1>Confession:</h1>
+<div class="line-block">
+<div class="line">I similarly re-format</div>
+<div class="line"><em>email</em> paragraphs</div>
+</div>
+</div>
+<div class="section" id="recent-discovery">
+<h1>Recent discovery</h1>
+<div class="line-block">
+<div class="line">Many email clients <strong>re-format</strong></div>
+<div class="line">plain-text email and re-wrap</div>
+<div class="line">each paragraph themselves!</div>
+</div>
+</div>
+<div class="section" id="id94">
+
+<div class="line-block">
+<div class="line">In such cases, my carefully</div>
+<div class="line">hand-wrapped paragraphs</div>
+<div class="line"><em>are for naught</em></div>
+</div>
+</div>
+<div class="section" id="quiz">
+<h1>Quiz</h1>
+<div class="line-block">
+<div class="line">How many of you use email</div>
+<div class="line">clients that keep <strong>80-column</strong></div>
+<div class="line"><em>plain-text</em> emails pristine</div>
+<div class="line">in a fixed-width font?</div>
+</div>
+</div>
+<div class="section" id="id95">
+
+<p><em>Three words</em></p>
+<p>OFF MY LAWN</p>
+</div>
+<div class="section" id="id96">
+
+<p>anyway</p>
+<!-- TODO: more about small steps, print statements? -->
+</div>
+<div class="section" id="id97">
+
+<div class="line-block">
+<div class="line">Where did I get so</div>
+<div class="line">interested in typesetting?</div>
+</div>
+<!-- TODO: image of book that actually got me interested in type? -->
+</div>
+<div class="section" id="id98">
+
+<img alt="tex0.jpg" src="tex0.jpg" />
+</div>
+<div class="section" id="motivation">
+<h1>Motivation</h1>
+<div class="line-block">
+<div class="line">Knuth’s publisher</div>
+<div class="line">was cutting costs</div>
+</div>
+</div>
+<div class="section" id="id99">
+
+<div class="line-block">
+<div class="line">So Volume 2</div>
+<div class="line">of Knuth's life’s work,</div>
+<div class="line"><em>The Art of Computer Programming,</em></div>
+<div class="line">looked pretty <strong>ugly</strong></div>
+</div>
+</div>
+<div class="section" id="id100">
+
+<img alt="tex_logo.png" src="tex_logo.png" style="width: 500px;" />
+<div class="line-block">
+<div class="line">“a new typesetting system</div>
+<div class="line">intended for the creation of</div>
+<div class="line">beautiful books” <em>(1978)</em></div>
+</div>
+</div>
+<div class="section" id="id101">
+
+<div class="line-block">
+<div class="line">He built the <em>whole stack</em></div>
+<div class="line">all by himself</div>
+</div>
+</div>
+<div class="section" id="id102">
+
+<div class="line-block">
+<div class="line">Font design <em>Computer Modern</em></div>
+<div class="line">Font rasterization <em>METAFONT</em></div>
+<div class="line">Plain-text markup <em>TeX macros</em></div>
+<div class="line">Device-independent output <em>DVI</em></div>
+<div class="line">Printing <em>DVI device driver</em></div>
+</div>
+</div>
+<div class="section" id="id103">
+
+<div class="line-block">
+<div class="line">Today we use the <strong>same stack</strong></div>
+<div class="line">only with different tools</div>
+</div>
+<div class="line-block">
+<div class="line"><em>FontCreator, FontForge</em></div>
+<div class="line"><em>ClearType, OpenType</em></div>
+<div class="line"><em>Markdown, RST</em></div>
+<div class="line"><em>PDF documents</em></div>
+<div class="line"><em>OS printer drivers</em></div>
+</div>
+</div>
+<div class="section" id="id104">
+
+<div class="line-block">
+<div class="line">Doing a full stack,</div>
+<div class="line">from designing a <em>typeface</em></div>
+<div class="line">to inventing algorithms for</div>
+<div class="line"><em>page layout</em>, was quite a</div>
+<div class="line">challenge for Knuth</div>
+</div>
+</div>
+<div class="section" id="id105">
+
+<div class="line-block">
+<div class="line"><em>“then there was the letter S.</em></div>
+</div>
+</div>
+<div class="section" id="id106">
+
+<div class="line-block">
+<div class="line"><em>None of my mathematical</em></div>
+<div class="line"><em>formulas would handle it, and</em></div>
+<div class="line"><em>I spent</em> <strong>several days</strong> <em>without</em></div>
+<div class="line"><em>sleep up at the lab”</em></div>
+</div>
+</div>
+<div class="section" id="id107">
+
+<div class="line-block">
+<div class="line">Donald finally came home and</div>
+<div class="line">showed Jill the results</div>
+</div>
+<div class="line-block">
+<div class="line">Her comment:</div>
+</div>
+</div>
+<div class="section" id="id108">
+
+<p><em>“…why don’t you make it S-shaped?”</em></p>
+</div>
+<div class="section" id="id109">
+
+<object data="Computer_modern_sample.svg" style="width: 780px; height: 540px;" type="image/svg+xml">
+Computer_modern_sample.svg</object>
+</div>
+<div class="section" id="id110">
+
+<img alt="tex1.png" src="tex1.png" />
+</div>
+<div class="section" id="id111">
+
+<div class="line-block">
+<div class="line">He immersed himself deeply</div>
+<div class="line">in the history of typography</div>
+</div>
+</div>
+<div class="section" id="id112">
+
+<div class="highlight"><pre><span></span>\<span class="n">ddangerexercise</span> <span class="n">Since</span> \<span class="n">TeX</span>\ <span class="n">reads</span> <span class="n">an</span> <span class="n">entire</span>
+<span class="n">paragraph</span> <span class="n">before</span> <span class="n">it</span> <span class="n">makes</span> <span class="nb">any</span> <span class="n">decisions</span> <span class="n">about</span> <span class="n">line</span>
+<span class="n">breaks</span><span class="p">,</span> <span class="n">the</span> <span class="n">computer</span><span class="s1">&#39;s memory capacity might</span>
+<span class="o">^^</span><span class="p">{</span><span class="n">capacity</span> <span class="n">exceeded</span><span class="p">}</span> <span class="n">be</span> <span class="n">exceeded</span> <span class="k">if</span> <span class="n">you</span> <span class="n">are</span>
+<span class="n">typesetting</span> <span class="n">the</span> <span class="n">works</span> <span class="n">of</span> <span class="n">some</span> <span class="o">^^</span><span class="p">{</span><span class="n">Joyce</span><span class="p">,</span> <span class="n">James</span><span class="p">}</span>
+<span class="o">^</span><span class="p">{</span><span class="n">philosopher</span><span class="p">}</span> <span class="ow">or</span> <span class="n">modernistic</span> <span class="n">novelist</span> <span class="n">who</span> <span class="n">writes</span>
+<span class="mi">200</span><span class="o">-</span><span class="n">line</span> <span class="n">paragraphs</span><span class="o">.</span> <span class="n">Suggest</span> <span class="n">a</span> <span class="n">way</span> <span class="n">to</span> <span class="n">cope</span> <span class="k">with</span> <span class="n">such</span>
+<span class="n">authors</span><span class="o">.</span>
+\<span class="n">answer</span> <span class="n">Assuming</span> <span class="n">that</span> <span class="n">the</span> <span class="n">author</span> <span class="ow">is</span> <span class="n">deceased</span> <span class="ow">and</span><span class="o">/</span><span class="ow">or</span>
+<span class="nb">set</span> <span class="ow">in</span> <span class="n">his</span> <span class="ow">or</span> <span class="n">her</span> <span class="n">ways</span><span class="p">,</span> <span class="n">the</span> <span class="n">remedy</span> <span class="ow">is</span> <span class="n">to</span> <span class="n">insert</span>
+<span class="err">`</span><span class="o">|</span><span class="p">{</span>\<span class="n">parfillskip</span><span class="o">=</span><span class="mi">0</span><span class="n">pt</span>\<span class="n">par</span>\<span class="n">parskip</span><span class="o">=</span><span class="mi">0</span><span class="n">pt</span>\<span class="n">noindent</span><span class="p">}</span><span class="o">|</span><span class="s1">&#39;</span>
+<span class="ow">in</span> <span class="n">random</span> <span class="n">places</span><span class="p">,</span> <span class="n">after</span> <span class="n">each</span> <span class="mi">50</span> <span class="n">lines</span> <span class="ow">or</span> <span class="n">so</span> <span class="n">of</span><span class="p">]</span>
+<span class="n">text</span><span class="o">.</span> \ <span class="p">(</span><span class="n">Every</span> <span class="n">space</span> <span class="n">between</span> <span class="n">words</span> <span class="ow">is</span> <span class="n">usually</span> <span class="n">a</span>
+<span class="n">feasible</span> <span class="n">breakpoint</span><span class="p">,</span> <span class="n">when</span> <span class="n">you</span> <span class="n">get</span> <span class="n">sufficiently</span>
+<span class="n">far</span> <span class="kn">from</span> <span class="nn">the</span> <span class="nn">beginning</span> <span class="nn">of</span> <span class="nn">a</span> <span class="nn">paragraph.</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id113">
+
+<p>A tempting definition—</p>
+</div>
+<div class="section" id="tex">
+<h1>“TeX”</h1>
+<div class="line-block">
+<div class="line">A computational engine</div>
+<div class="line">for converting <em>backslashes</em></div>
+<div class="line">into <strong>beautiful documents</strong></div>
+</div>
+</div>
+<div class="section" id="id114">
+<h1>&lt;Personal Aside&gt;</h1>
+</div>
+<div class="section" id="id115">
+
+<div class="line-block">
+<div class="line">I need to design a book,</div>
+<div class="line">but can no longer bear to</div>
+<div class="line">make myself use TeX</div>
+</div>
+</div>
+<div class="section" id="id116">
+
+<div class="line-block">
+<div class="line">So I have started a new project!</div>
+</div>
+<p><tt class="docutils literal"><span class="pre">python-bookbinding</span></tt></p>
+</div>
+<div class="section" id="id117">
+
+<div class="line-block">
+<div class="line">It turns text into <em>paragraphs</em></div>
+<div class="line">then paragraphs into <em>pages</em>, then</div>
+<div class="line">draws them in a real PDF using the</div>
+<div class="line">popular <tt class="docutils literal">reportlab</tt> library</div>
+</div>
+</div>
+<div class="section" id="id118">
+
+<div class="line-block">
+<div class="line">Python does have a built-in</div>
+<div class="line"><tt class="docutils literal">textwrap</tt> module for splitting</div>
+<div class="line">paragraphs into lines, but its</div>
+<div class="line">algorithm is <em>too simplistic</em></div>
+<div class="line">for professional quality</div>
+</div>
+</div>
+<div class="section" id="id119">
+
+<div class="line-block">
+<div class="line">So <tt class="docutils literal">bookbinding</tt> uses the</div>
+<div class="line">same <em>high-powered</em> typesetting</div>
+<div class="line">algorithms originally developed</div>
+<div class="line">by Knuth for TeX!</div>
+</div>
+<div class="line-block">
+<div class="line">(Thanks, Andrew Kutchling,</div>
+<div class="line">for <tt class="docutils literal">texlib</tt>!)</div>
+</div>
+</div>
+<div class="section" id="id120">
+
+<div class="line-block">
+<div class="line">Let me know if you</div>
+<div class="line">are <em>interested</em> in taking</div>
+<div class="line">a look at it during the sprits</div>
+</div>
+</div>
+<div class="section" id="id121">
+<h1>&lt;/Personal Aside&gt;</h1>
+</div>
+<div class="section" id="id122">
+<h1>So</h1>
+<p>Typesetting. Knuth.</p>
+</div>
+<div class="section" id="id123">
+
+<div class="line-block">
+<div class="line">With all those backslashes in TeX,</div>
+<div class="line">you <em>might</em> not think that Knuth</div>
+<div class="line">would have advice for writing</div>
+<div class="line">beautiful <strong>Python code</strong></div>
+</div>
+</div>
+<div class="section" id="but">
+<h1>But:</h1>
+<div class="line-block">
+<div class="line"><em>Python</em> code is based</div>
+<div class="line">on the syntax of <em>math</em></div>
+</div>
+</div>
+<div class="section" id="id124">
+
+<div class="line-block">
+<div class="line"><em>and</em></div>
+</div>
+<div class="line-block">
+<div class="line">Knuth became a world expert</div>
+<div class="line">on how <em>whitespace</em> should be</div>
+<div class="line">used when laying out <em>math!</em></div>
+</div>
+<img alt="tex5.png" src="tex5.png" />
+</div>
+<div class="section" id="id125">
+
+<div class="highlight"><pre><span></span><span class="err">$$</span> <span class="mi">1</span> <span class="o">+</span> \<span class="n">left</span><span class="p">(</span> <span class="mi">1</span> \<span class="n">over</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span> \<span class="n">right</span><span class="p">)</span><span class="o">^</span><span class="mi">3</span> <span class="err">$$</span>
+</pre></div>
+
+<img alt="tex5.png" src="tex5.png" />
+</div>
+<div class="section" id="id126">
+
+<div class="line-block">
+<div class="line">Whitespace. Expressions. Beauty.</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Knuth</em></div>
+</div>
+</div>
+<div class="section" id="id127">
+
+<div class="line-block">
+<div class="line">Whitespace. Expressions. Beauty.</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Python</em></div>
+</div>
+</div>
+<div class="section" id="id128">
+
+<div class="line-block">
+<div class="line">Yes, that brings us</div>
+<div class="line">again to considering:</div>
+</div>
+</div>
+<div class="section" id="id129">
+<h1>PEP-8</h1>
+</div>
+<div class="section" id="id130">
+
+<div class="line-block">
+<div class="line">You can think of PEP-8</div>
+<div class="line">as a set of <em>compositor’s rules</em></div>
+<div class="line">for <em>typesetting</em> Python code</div>
+<div class="line">on your screen</div>
+</div>
+</div>
+<div class="section" id="example">
+<h1>Example</h1>
+<div class="line-block">
+<div class="line">PEP-8 specifies the</div>
+<div class="line">basic shape of a “page” of code</div>
+</div>
+<div class="line-block">
+<div class="line"><em>“Limit all lines to a</em></div>
+<div class="line"><em>maximum of 79 characters.”</em></div>
+</div>
+</div>
+<div class="section" id="id131">
+
+<div class="line-block">
+<div class="line">This is an <em>exact</em> analogue to</div>
+<div class="line">the <strong>standard advice</strong> of graphic</div>
+<div class="line">designers about paragraph width:</div>
+</div>
+<p><em>45–75 characters</em></p>
+</div>
+<div class="section" id="id132">
+
+<div class="line-block">
+<div class="line">So how do you handle</div>
+<div class="line">the line-length restriction?</div>
+</div>
+</div>
+<div class="section" id="id133">
+
+<div class="line-block">
+<div class="line">When you reach the right edge,</div>
+<div class="line">you <em>might</em> be tempted to wrap</div>
+<div class="line">a Python statement across</div>
+<div class="line"><strong>several lines</strong> of code</div>
+</div>
+</div>
+<div class="section" id="id134">
+
+<div class="line-block">
+<div class="line">But what if you introduced a new name instead?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">canvas</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+    <span class="s1">&#39;Please press {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">↓</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Please press {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="naming-intermediate-values">
+<h1>Naming intermediate values</h1>
+<div class="highlight"><pre><span></span><span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Please press {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+</pre></div>
+
+<ul class="simple">
+<li>Removes ugly hanging indent</li>
+<li>Provides <strong>extra documentation</strong></li>
+</ul>
+</div>
+<div class="section" id="id135">
+
+<div class="line-block">
+<div class="line">This is actually an</div>
+<div class="line">idea I picked up from those</div>
+<div class="line">Extreme Programming (XP) guys</div>
+</div>
+</div>
+<div class="section" id="id136">
+
+<div class="line-block">
+<div class="line">XP people tended to use variable</div>
+<div class="line">names to Destroy All Comments</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">widget</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># forces re-draw</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">↓</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">yes_force_redraw</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">widget</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">yes_force_redraw</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id137">
+
+<div class="line-block">
+<div class="line">XP people also point out that</div>
+<div class="line">big “section title” comments can</div>
+<div class="line">often be replaced with a function</div>
+</div>
+</div>
+<div class="section" id="id138">
+
+<div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="c1"># Open the barn</span>
+
+<span class="n">barn</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Barn</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="n">barn</span><span class="o">.</span><span class="n">unlock</span><span class="p">()</span>
+<span class="n">barn</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+<span class="c1"># Saddle the horse</span>
+
+<span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id139">
+
+<div class="highlight"><pre><span></span>    <span class="o">...</span>
+    <span class="n">open_barn</span><span class="p">()</span>
+    <span class="n">saddle_horse</span><span class="p">()</span>
+    <span class="o">...</span>
+
+<span class="k">def</span> <span class="nf">open_barn</span><span class="p">():</span>
+    <span class="n">barn</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Barn</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">barn</span><span class="o">.</span><span class="n">unlock</span><span class="p">()</span>
+    <span class="n">barn</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id140">
+
+<div class="line-block">
+<div class="line">The XP movement took it <strong>too far</strong></div>
+<div class="line">but I really <em>love</em> using more names</div>
+<div class="line">that usefully replace comments or</div>
+<div class="line">let me avoid really <strong>long lines</strong></div>
+</div>
+</div>
+<div class="section" id="id141">
+
+<div class="highlight"><pre><span></span><span class="c1"># React if window too tall</span>
+
+<span class="k">if</span> <span class="n">win</span><span class="o">.</span><span class="n">x1</span> <span class="o">-</span> <span class="n">win</span><span class="o">.</span><span class="n">x0</span> <span class="o">&gt;</span> <span class="n">vp</span><span class="o">.</span><span class="n">h</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">↓</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">too_tall</span> <span class="o">=</span> <span class="p">(</span><span class="n">win</span><span class="o">.</span><span class="n">x1</span> <span class="o">-</span> <span class="n">win</span><span class="o">.</span><span class="n">x0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">vp</span><span class="o">.</span><span class="n">h</span>
+<span class="k">if</span> <span class="n">too_tall</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+
+<!-- Any place to put this?:
+I use comment to separate things because PEP-8 double line so ugly
+If I see 2 blank lines at the bottom of my editor I always think it's
+the file bottom. :) -->
+</div>
+<div class="section" id="id142">
+
+<div class="line-block">
+<div class="line">Another traditional</div>
+<div class="line">typesetter goal:</div>
+</div>
+<div class="line-block">
+<div class="line">The page should be an attractive</div>
+<div class="line"><em>block</em> of text without ugly <em>rivers</em></div>
+<div class="line">of whitespace spilling down it</div>
+</div>
+</div>
+<div class="section" id="id143">
+
+<img alt="kelmscott08.jpg" src="kelmscott08.jpg" />
+</div>
+<div class="section" id="id144">
+
+<div class="line-block">
+<div class="line">Attention to space</div>
+<div class="line">can also help the</div>
+<div class="line">look of our code</div>
+</div>
+</div>
+<div class="section" id="id145">
+
+<div class="highlight"><pre><span></span><span class="c1"># Yes:</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">long_variable</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># No:</span>
+<span class="n">x</span>             <span class="o">=</span> <span class="mi">1</span>
+<span class="n">y</span>             <span class="o">=</span> <span class="mi">2</span>
+<span class="n">long_variable</span> <span class="o">=</span> <span class="mi">3</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">For example, <em>extra whitespace</em></div>
+<div class="line">to align variable values</div>
+<div class="line">is <strong>forbidden</strong> by PEP=8</div>
+</div>
+</div>
+<div class="section" id="id146">
+
+<div class="line-block">
+<div class="line">Another layout idea</div>
+<div class="line">that I use comes from Linux</div>
+<div class="line">inventor <em>Linus Torvals</em></div>
+</div>
+</div>
+<div class="section" id="id147">
+
+<div class="line-block">
+<div class="line">Torvalds wrote the masterful</div>
+<div class="line"><em>“Linux kernal coding style”</em></div>
+<div class="line">for the C language</div>
+</div>
+</div>
+<div class="section" id="id148">
+
+<div class="line-block">
+<div class="line">“Now, some people will</div>
+<div class="line">claim that having <strong>8-character</strong></div>
+<div class="line"><strong>indentations</strong> makes the code move</div>
+<div class="line">too far to the right and makes it</div>
+<div class="line"><strong>hard to read</strong> on a 80-character</div>
+<div class="line">terminal screen.”</div>
+</div>
+</div>
+<div class="section" id="id149">
+
+<div class="line-block">
+<div class="line">“The answer to that is that</div>
+<div class="line">if you need <em>more than 3 levels</em></div>
+<div class="line">of indentation, you’re screwed</div>
+<div class="line">anyway, and should <em>fix</em></div>
+<div class="line"><em>your program.”</em></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>— Linus Torvalds</strong></div>
+</div>
+</div>
+<div class="section" id="id150">
+
+<div class="line-block">
+<div class="line">I actually agree with Linus here</div>
+</div>
+</div>
+<div class="section" id="id151">
+
+<div class="line-block">
+<div class="line">With each year that I keep</div>
+<div class="line">programming, I find more value</div>
+<div class="line">in code that stays very close</div>
+<div class="line">to the screen’s left margin</div>
+</div>
+</div>
+<div class="section" id="id152">
+
+<p>My indentation settings</p>
+<ul class="simple">
+<li>Python: 4 spaces</li>
+<li>JavaScript: 4 spaces</li>
+<li>Others: Emacs default</li>
+<li>HTML: 2 spaces</li>
+</ul>
+<div class="line-block">
+<div class="line">That last because web pages just</div>
+<div class="line">tend to be <em>deeper</em> than code!</div>
+</div>
+</div>
+<div class="section" id="id153">
+
+<div class="line-block">
+<div class="line">Indentation getting too deep?</div>
+<div class="line">Here are four tricks I use!</div>
+</div>
+</div>
+<div class="section" id="use-continue">
+<h1>#1 Use continue</h1>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_inconsequential</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">do_something</span><span class="p">()</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">continue</span>
+    <span class="k">if</span> <span class="n">is_inconsequential</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">continue</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">do_something</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="factor-out-a-new-method">
+<h1>#2 Factor out a new method</h1>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mymethod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+   <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+       <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_good</span><span class="p">():</span>
+           <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+               <span class="o">...</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mymethod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_good</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span> <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id154">
+
+<div class="line-block">
+<div class="line">But, if <tt class="docutils literal">self</tt> is not involved,</div>
+<div class="line">why make the routine a method?</div>
+</div>
+<p>Look again:</p>
+</div>
+<div class="section" id="id155">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mymethod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+   <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_good</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">finalize_widgets</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">finalize_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id156">
+
+<div class="line-block">
+<div class="line">Since the routine does not even</div>
+<div class="line">use <tt class="docutils literal">self</tt> you can pull it</div>
+<div class="line">out as a plain function</div>
+</div>
+</div>
+<div class="section" id="split-out-a-function">
+<h1>#3 Split out a function</h1>
+<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">mymethod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_good</span><span class="p">():</span>
+                <span class="n">_finalize_widgets</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_finalize_widgets</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id157">
+
+<div class="line-block">
+<div class="line">This, by the way, is a</div>
+<div class="line"><em>significant</em> way that Python</div>
+<div class="line">has been <strong>training</strong> its community</div>
+</div>
+</div>
+<div class="section" id="id158">
+
+<div class="line-block">
+<div class="line">Django made mistakes,</div>
+<div class="line">but is <em>far more Pythonic</em></div>
+<div class="line">than many competitors!</div>
+</div>
+<div class="line-block">
+<div class="line">It recognizes that a web view</div>
+<div class="line">could just be a <strong>plain function!</strong></div>
+</div>
+<p><em>(Flask, Bottle followed later)</em></p>
+</div>
+<div class="section" id="factor-out-an-iterator">
+<h1>#4 Factor out an iterator</h1>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">bitmap</span> <span class="ow">in</span> <span class="n">widget</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">pixel</span> <span class="ow">in</span> <span class="n">bitmap</span><span class="p">:</span>
+                <span class="n">pixel</span><span class="o">.</span><span class="n">align</span><span class="p">()</span>
+                <span class="n">pixel</span><span class="o">.</span><span class="n">darken</span><span class="p">()</span>
+                <span class="n">pixel</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id159">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">widget_pixels</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">bitmap</span> <span class="ow">in</span> <span class="n">widget</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">pixel</span> <span class="ow">in</span> <span class="n">bitmap</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">pixel</span>
+
+<span class="k">for</span> <span class="n">pixel</span> <span class="ow">in</span> <span class="n">widget_pixels</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+    <span class="n">pixel</span><span class="o">.</span><span class="n">align</span><span class="p">()</span>
+    <span class="n">pixel</span><span class="o">.</span><span class="n">darken</span><span class="p">()</span>
+    <span class="n">pixel</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id160">
+
+<div class="line-block">
+<div class="line"><em>Factoring out</em> iterators (#4)</div>
+<div class="line">to keep code shallow is</div>
+<div class="line">a <em>Python</em> superpower</div>
+</div>
+</div>
+<div class="section" id="id161">
+
+<div class="line-block">
+<div class="line">Another source</div>
+<div class="line">of <strong>ugly</strong> whitespace:</div>
+</div>
+<p><em>Large function calls</em></p>
+</div>
+<div class="section" id="id162">
+
+<div class="line-block">
+<div class="line">Unfortunately the following</div>
+<div class="line">is a PEP-8 recommendation:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">foo</span> <span class="o">=</span> <span class="n">long_function_name</span><span class="p">(</span><span class="n">var_one</span><span class="p">,</span> <span class="n">var_two</span><span class="p">,</span>
+                         <span class="n">var_three</span><span class="p">,</span> <span class="n">var_four</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id163">
+
+<div class="line-block">
+<div class="line">Which brings us to the</div>
+<div class="line"><em>5 Stages of Function Call Grief</em></div>
+</div>
+</div>
+<div class="section" id="stage-1-brevity">
+<h1>Stage 1: brevity</h1>
+<div class="highlight"><pre><span></span><span class="n">asymtotic_reduction</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="stage-2-80-columns">
+<h1>Stage 2: &gt;80 columns</h1>
+<div class="highlight"><pre><span></span><span class="n">asymtotic_reduction</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span>
+                    <span class="n">arg3</span><span class="p">,</span> <span class="n">arg4</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="stage-3-leftward-collapse">
+<h1>Stage 3: leftward collapse</h1>
+<div class="highlight"><pre><span></span><span class="n">asymtotic_reduction</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span>
+                    <span class="n">arg3</span><span class="p">,</span> <span class="n">arg4</span><span class="p">,</span>
+                    <span class="n">arg5</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">↓</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">asymtotic_reduction</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span>
+    <span class="n">arg3</span><span class="p">,</span> <span class="n">arg4</span><span class="p">,</span> <span class="n">arg5</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="stage-4-argument-ballooning">
+<h1>Stage 4: argument ballooning</h1>
+<div class="highlight"><pre><span></span><span class="n">asymtotic_reduction</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span>
+    <span class="n">die_on_error</span><span class="o">=</span><span class="n">arg3</span><span class="p">,</span> <span class="n">heigth</span><span class="o">=</span><span class="n">arg4</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="n">arg5</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="n">COLUMN_WIDTH</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="stage-5-an-argument-per-line">
+<h1>Stage 5: an argument-per-line</h1>
+<div class="highlight"><pre><span></span><span class="n">asymtotic_reduction</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">arg1</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">arg2</span><span class="p">,</span>
+    <span class="n">die_on_error</span><span class="o">=</span><span class="n">arg3</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="n">arg4</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="n">arg5</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="n">COLUMN_WIDTH</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="argument-per-line-is-awesome">
+<h1>Argument-per-line is AWESOME</h1>
+<div class="line-block">
+<div class="line">Every argument looks <em>the same</em></div>
+<div class="line">Orthogonal in <em>version-control</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">asymtotic_reduction</span><span class="p">(</span>
+    <span class="n">die_on_error</span><span class="o">=</span><span class="n">arg3</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="n">arg4</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="n">arg5</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="n">COLUMN_WIDTH</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id164">
+
+<div class="line-block">
+<div class="line">Why would adjancent lines</div>
+<div class="line"><strong>not</strong> be treated separately by</div>
+<div class="line">your version-control?</div>
+</div>
+</div>
+<div class="section" id="id165">
+
+<div class="line-block">
+<div class="line"><strong>The Problem:</strong> when adding or</div>
+<div class="line">changing Line <em>n</em> requires</div>
+<div class="line">another line <em>(n-1)</em></div>
+<div class="line">to be modified</div>
+</div>
+</div>
+<div class="section" id="id166">
+<h1>Example</h1>
+<div class="line-block">
+<div class="line">Most langauges today use</div>
+<div class="line">a statement <em>terminator</em></div>
+</div>
+<div class="line-block">
+<div class="line">Pascal decided to use</div>
+<div class="line">a statement <em>separator</em></div>
+</div>
+</div>
+<div class="section" id="id167">
+
+<p>Pascal statements are “highly coupled”</p>
+<div class="highlight"><pre><span></span>    <span class="n">x</span> <span class="p">:</span><span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+    <span class="n">y</span> <span class="p">:</span><span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">End</span><span class="p">;</span>
+        <span class="err">↓</span>
+    <span class="n">x</span> <span class="p">:</span><span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+    <span class="n">y</span> <span class="p">:</span><span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>  <span class="c1"># CHANGED</span>
+    <span class="n">z</span> <span class="p">:</span><span class="o">=</span> <span class="n">tan</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>   <span class="c1"># NEW</span>
+<span class="n">End</span><span class="p">;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id168">
+
+<div class="line-block">
+<div class="line">This, of course, makes your</div>
+<div class="line"><strong>version control</strong> system (git, hg)</div>
+<div class="line">flag <em>two</em> lines as changed!</div>
+</div>
+</div>
+<div class="section" id="c-langauge">
+<h1>C langauge</h1>
+<div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">biglist</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">112</span><span class="p">,</span>
+    <span class="mi">223</span>
+<span class="p">};</span>
+
+        <span class="err">↓</span>
+
+<span class="nb">int</span> <span class="n">biglist</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">112</span><span class="p">,</span>
+    <span class="mi">223</span><span class="p">,</span>    <span class="c1"># CHANGE</span>
+    <span class="mi">334</span>     <span class="c1"># NEW</span>
+<span class="p">};</span>
+</pre></div>
+
+</div>
+<div class="section" id="id169">
+
+<div class="line-block">
+<div class="line">When you design a language,</div>
+<div class="line"><strong>every construct</strong> that can span</div>
+<div class="line">lines should allow <em>utter symmetry</em></div>
+<div class="line">between the first, middle, and</div>
+<div class="line">last lines in the construct!</div>
+</div>
+</div>
+<div class="section" id="python-always-gets-this-right">
+<h1>Python always gets this right</h1>
+</div>
+<div class="section" id="id170">
+
+<p>Because Python is awesome</p>
+</div>
+<div class="section" id="id171">
+
+<div class="highlight"><pre><span></span><span class="n">big_tuple</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="mi">12</span><span class="p">,</span>
+    <span class="mi">23</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="n">big_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mi">34</span><span class="p">,</span>
+    <span class="mi">45</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="n">big_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;one&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;two&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id172">
+
+<p>So option #5 <em>argument-per-line</em> makes VC happy:</p>
+<div class="highlight"><pre><span></span><span class="n">asymtotic_reduction</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">arg1</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">arg2</span><span class="p">,</span>
+    <span class="n">die_on_error</span><span class="o">=</span><span class="n">arg3</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="n">arg4</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="n">arg5</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="n">COLUMN_WIDTH</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id173">
+
+<div class="line-block">
+<div class="line">I do sometimes make</div>
+<div class="line">exceptions if parameters can</div>
+<div class="line">be grouped logically</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">canvas</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">margin</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">line_height</span><span class="p">,</span>
+                  <span class="s1">&#39;The Naming of Cats&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id174">
+
+<div class="line-block">
+<div class="line">But, many experienced Python</div>
+<div class="line">programmers <em>immediately</em> snap</div>
+<div class="line">into arg-per-line mode</div>
+</div>
+</div>
+<div class="section" id="id175">
+
+<div class="line-block">
+<div class="line">The Python community</div>
+<div class="line">keeps developing <em>new practices;</em></div>
+<div class="line">PEP-8 was not the end!</div>
+</div>
+</div>
+<div class="section" id="id176">
+
+<img alt="twitter.png" src="twitter.png" />
+</div>
+<div class="section" id="id177">
+
+<p>Should PEP-8 continue evolving?</p>
+<p><em>Probably not</em></p>
+</div>
+<div class="section" id="id178">
+
+<div class="line-block">
+<div class="line">PEP-8 should remain an</div>
+<div class="line">essential <em>common denominator</em></div>
+</div>
+<div class="line-block">
+<div class="line">It is hard enough to get some</div>
+<div class="line">projects to adopt PEP-8 already!</div>
+</div>
+</div>
+<div class="section" id="id179">
+
+<div class="line-block">
+<div class="line">But we should find new ways</div>
+<div class="line">to <em>communicate</em> these ideas when</div>
+<div class="line">we run across the fact that several</div>
+<div class="line">of us have the <strong>same</strong> coding habit</div>
+</div>
+</div>
+<div class="section" id="id180">
+<h1>So</h1>
+<div class="line-block">
+<div class="line">Lists separated by</div>
+<div class="line">commas can be pretty</div>
+</div>
+</div>
+<div class="section" id="id181">
+<h1>But</h1>
+<div class="line-block">
+<div class="line">What about <em>terms</em> separated</div>
+<div class="line">by a series of <em>operators?</em></div>
+</div>
+<p><tt class="docutils literal">+ - * /</tt></p>
+</div>
+<div class="section" id="id182">
+
+<div class="line-block">
+<div class="line">Here, PEP-8 is actually <strong>harmful</strong></div>
+</div>
+</div>
+<div class="section" id="id183">
+<h1>PEP-8</h1>
+<div class="line-block">
+<div class="line">“The <strong>preferred</strong> place to break</div>
+<div class="line">around a binary operator is <em>after</em></div>
+<div class="line">the operator, not before it…”</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">width</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">height</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span>
+    <span class="n">color</span> <span class="o">==</span> <span class="s1">&#39;red&#39;</span> <span class="ow">and</span> <span class="n">emphasis</span> <span class="o">==</span> <span class="s1">&#39;strong&#39;</span> <span class="ow">or</span>
+    <span class="n">highlight</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">):</span>
+</pre></div>
+
+</div>
+<div class="section" id="id184">
+
+<div class="line-block">
+<div class="line">How do I <em>know</em> that</div>
+<div class="line">this is <strong>bad</strong> advice?</div>
+</div>
+</div>
+<div class="section" id="id185">
+
+<img alt="don.gif" src="don.gif" style="height: 420px;" />
+<p><strong>KNUTH</strong></p>
+</div>
+<div class="section" id="id186">
+
+<!-- TODO: use tex3.png which is about /frenchspacing ? -->
+<!-- TODO: use tex4.png which shows how to do that match equation in TeX? -->
+<img alt="tex5.png" src="tex5.png" />
+<p><em>Knuth = typesetting + math</em></p>
+</div>
+<div class="section" id="id187">
+
+<div class="line-block">
+<div class="line">It turns out that Knuth</div>
+<div class="line">has written hundreds of pages</div>
+<div class="line">about formatting expressions</div>
+</div>
+</div>
+<div class="section" id="id188">
+<h1>So</h1>
+<div class="line-block">
+<div class="line">What is his advice about</div>
+<div class="line">breaking them into lines?</div>
+</div>
+</div>
+<div class="section" id="id189">
+
+<div class="line-block">
+<div class="line"><em>“It’s quite an art to decide</em></div>
+<div class="line"><em>how to break long displayed</em></div>
+<div class="line"><em>formulas into several lines…”</em></div>
+</div>
+</div>
+<div class="section" id="id190">
+
+<!-- ; TEX never attempts to break them, because no set of rules
+is really adequate. The author of a mathematical manuscript is generally
+the best judge of what to do, since break positions depend on subtle
+factors of mathematical exposition. For example, -->
+<div class="line-block">
+<div class="line"><em>“…it is often desirable to</em></div>
+<div class="line"><em>emphasize some of the symmetry</em></div>
+<div class="line"><em>or other structure that</em></div>
+<div class="line"><em>underlies a formula…”</em></div>
+</div>
+<!-- , and such things require a solid understanding of exactly what
+is going on in that formula.” -->
+</div>
+<div class="section" id="laying-down-the-law">
+<h1>Laying down the law</h1>
+<div class="line-block">
+<div class="line"><em>“displayed formulas</em></div>
+<div class="line"><em>always break</em> <strong>before</strong> <em>binary</em></div>
+<div class="line"><em>operations and relations.”</em></div>
+</div>
+</div>
+<div class="section" id="pep-8-bad">
+<h1>PEP-8: bad</h1>
+<div class="highlight"><pre><span></span><span class="n">adjusted_income</span> <span class="o">=</span> <span class="p">(</span><span class="n">gross_wages</span> <span class="o">+</span>
+    <span class="n">taxable_interest</span> <span class="o">+</span>
+    <span class="p">(</span><span class="n">dividends</span> <span class="o">-</span> <span class="n">qualified_dividends</span><span class="p">)</span> <span class="o">-</span>
+    <span class="n">ira_deduction</span> <span class="o">-</span>
+    <span class="n">student_loan_interest</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id191">
+
+<div class="highlight"><pre><span></span><span class="n">adjusted_income</span> <span class="o">=</span> <span class="p">(</span><span class="n">gross_wages</span> <span class="o">+</span>
+    <span class="n">taxable_interest</span> <span class="o">+</span>
+    <span class="p">(</span><span class="n">dividends</span> <span class="o">-</span> <span class="n">qualified_dividends</span><span class="p">)</span> <span class="o">-</span>
+    <span class="n">ira_deduction</span> <span class="o">-</span>
+    <span class="n">student_loan_interest</span><span class="p">)</span>
+</pre></div>
+
+<ul class="simple">
+<li>Eye bounce back and forth</li>
+<li>Operators difficult to find</li>
+</ul>
+</div>
+<div class="section" id="knuth-instead-of-pep-8">
+<h1>Knuth, instead of PEP-8</h1>
+<div class="highlight"><pre><span></span><span class="n">adjusted_income</span> <span class="o">=</span> <span class="p">(</span><span class="n">gross_wages</span>
+    <span class="o">+</span> <span class="n">taxable_interest</span>
+    <span class="o">+</span> <span class="p">(</span><span class="n">dividends</span> <span class="o">-</span> <span class="n">qualified_dividends</span><span class="p">)</span>
+    <span class="o">-</span> <span class="n">ira_deduction</span>
+    <span class="o">-</span> <span class="n">student_loan_interest</span><span class="p">)</span>
+</pre></div>
+
+<ul class="simple">
+<li>Much easier to read</li>
+<li>Symmetry between terms</li>
+<li>Subtracted terms <em>look negative</em></li>
+</ul>
+</div>
+<div class="section" id="id192">
+<h1>So</h1>
+<div class="line-block">
+<div class="line">There are long traditions in math</div>
+<div class="line">that can help us improve how</div>
+<div class="line">we write our Python code</div>
+</div>
+</div>
+<div class="section" id="what-about-method-chains">
+<h1>What about method chains?</h1>
+<div class="line-block">
+<div class="line">With ORMs everywhere,</div>
+<div class="line">the question of chained</div>
+<div class="line">methods keeps coming up</div>
+</div>
+</div>
+<div class="section" id="id193">
+
+<div class="line-block">
+<div class="line">I <strong>never</strong> use <em>backslash</em></div>
+<div class="line"><em>continuation,</em> so I need another</div>
+<div class="line">way to do long chains!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="c1"># UGH BAD HURTS MY EYES</span>
+
+<span class="n">query</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;Smith&#39;</span><span class="p">)</span> \
+    <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;social_security_number&#39;</span><span class="p">)</span> \
+    <span class="o">.</span><span class="n">select_related</span><span class="p">(</span><span class="s1">&#39;spouse&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="option-1">
+<h1>Option #1</h1>
+<p>Close each method on next line</p>
+<div class="highlight"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;Smith&#39;</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;social_security_number&#39;</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">select_related</span><span class="p">(</span><span class="s1">&#39;spouse&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="option-2">
+<h1>Option #2</h1>
+<p>Use outer parens, period ends line</p>
+<div class="highlight"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="p">(</span><span class="n">Person</span><span class="o">.</span>
+    <span class="nb">filter</span><span class="p">(</span><span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;Smith&#39;</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;social_security_number&#39;</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">select_related</span><span class="p">(</span><span class="s1">&#39;spouse&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="option-3">
+<h1>Option #3</h1>
+<p>Use outer parens, period begins line</p>
+<div class="highlight"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="p">(</span><span class="n">Person</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;Smith&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;social_security_number&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">select_related</span><span class="p">(</span><span class="s1">&#39;spouse&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id194">
+
+<p>This option #3 is <em>my favorite</em></p>
+<div class="highlight"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="p">(</span><span class="n">Person</span><span class="o">.</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;Smith&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;social_security_number&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">select_related</span><span class="p">(</span><span class="s1">&#39;spouse&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">VC will be happy that adding a</div>
+<div class="line">4th method call does <em>not</em> require</div>
+<div class="line">the previous line to be adjusted!</div>
+</div>
+</div>
+<div class="section" id="id195">
+
+<div class="line-block">
+<div class="line">But, method chains still</div>
+<div class="line">seem to be an emerging Python</div>
+<div class="line">practice; I sometimes use</div>
+<div class="line">intermediate variables</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">q</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;Smith&#39;</span><span class="p">)</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;social_security_number&#39;</span><span class="p">)</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">select_related</span><span class="p">(</span><span class="s1">&#39;spouse&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="anyway">
+<h1>anyway</h1>
+<!-- TODO: image processing: scipy/numpy! version controlled scripts
+(thus, VC relevant)
+document typesetting: allowing code to run the show? -->
+</div>
+<div class="section" id="id196">
+<h1>So</h1>
+<div class="line-block">
+<div class="line">To be <strong>happy</strong> like me,</div>
+<div class="line">make code <em>pretty</em></div>
+</div>
+</div>
+<div class="section" id="id197">
+
+<div class="line-block">
+<div class="line">When at work, I <strong>avoid</strong></div>
+<div class="line">tweaking other people’s code</div>
+<div class="line">willy-nilly if I visit a module</div>
+<div class="line">for something <em>specific</em></div>
+</div>
+</div>
+<div class="section" id="id198">
+
+<div class="line-block">
+<div class="line">But <em>if</em> I touch a line of code</div>
+<div class="line">in the course of my duties, I am</div>
+<div class="line"><strong>always</strong> trying to find the next</div>
+<div class="line">tweak to make that section of</div>
+<div class="line">code really <em>beautiful</em></div>
+</div>
+</div>
+<div class="section" id="your-homework">
+<h1>Your Homework</h1>
+<ol class="arabic simple">
+<li>Re-read <strong>PEP-8</strong></li>
+<li><strong>“Linux kernel coding style”</strong></li>
+<li>Tell me refactoring <em>stories</em></li>
+<li>Ask for drive-by code <em>review</em></li>
+</ol>
+<p><em>Thank you!</em></p>
+</div>
+<div class="section" id="id199">
+
+<!-- single quote: ’
+double quotes: x“”x
+em-dash: — -->
+<script>
+  window.slide_transition_time = 200;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

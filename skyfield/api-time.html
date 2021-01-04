@@ -1,0 +1,449 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — Time</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-time">
+<h1>API Reference — Time<a class="headerlink" href="#api-reference-time" title="Permalink to this headline">¶</a></h1>
+<p>See the <a class="reference internal" href="time.html"><span class="doc">Dates and Time</span></a> guide for a careful and detailed discussion
+of the several time scales used by astronomers,
+and of how you can convert time to and from familiar time scales
+like UTC and the worldwide time zones that are adapted from it.</p>
+<div class="section" id="calendar-date">
+<span id="id1"></span><h2>Calendar date<a class="headerlink" href="#calendar-date" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>When building a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a calendar date,
+you can not only designate a single moment by its time and date,
+but you can also build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> representing a whole array of moments
+by supplying a Python list or NumPy array
+for either the year, month, day, hour, minute, or second.
+See <a class="reference internal" href="time.html#date-arrays"><span class="std std-ref">Date arrays</span></a>.</li>
+<li>By default,
+Skyfield uses the modern Gregorian calendar for all dates —
+even dates before the Gregorian calendar was introduced in 1582.</li>
+<li>You can instead opt to use the old Julian calendar for ancient dates,
+which is the most common practice among historians.
+See <a class="reference internal" href="time.html#choice-of-calendars"><span class="std std-ref">Ancient and modern dates</span></a>.</li>
+</ol>
+</div>
+<div class="section" id="timescale-for-building-and-converting-times">
+<h2>Timescale, for building and converting times<a class="headerlink" href="#timescale-for-building-and-converting-times" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="skyfield.timelib.Timescale">
+<em class="property">class </em><code class="descclassname">skyfield.timelib.</code><code class="descname">Timescale</code><span class="sig-paren">(</span><em>delta_t_recent</em>, <em>leap_dates</em>, <em>leap_offsets</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale" title="Permalink to this definition">¶</a></dt>
+<dd><p>The data necessary to express dates in different timescales.</p>
+<p>A <a class="reference internal" href="#skyfield.timelib.Timescale" title="skyfield.timelib.Timescale"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Timescale</span></code></a> provides time objects with the data tables they need
+to translate between different time scales: the schedule of UTC leap
+seconds, and the value of ∆T over time.  Most programs create a
+single <a class="reference internal" href="#skyfield.timelib.Timescale" title="skyfield.timelib.Timescale"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Timescale</span></code></a> which they use to build their <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> objects:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">1980</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
+<span class="go">&lt;Time tt=2444299.896425741&gt;</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="time.html#downloading-timescale-files"><span class="std std-ref">UT1 and downloading IERS data</span></a> if you are interested in
+checking how recent the data is in the files loaded by the
+timescale.</p>
+<dl class="method">
+<dt id="skyfield.timelib.Timescale.now">
+<code class="descname">now</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.now" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current date and time as a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> object.</p>
+<p>For the return value to be correct, your operating system time
+and timezone settings must be set so that the Python Standard
+Library constructor <code class="docutils literal notranslate"><span class="pre">datetime.datetime.utcnow()</span></code> returns a
+correct UTC date and time.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Timescale.from_datetime">
+<code class="descname">from_datetime</code><span class="sig-paren">(</span><em>datetime</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.from_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> for a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">datetime</span></code> must be “timezone-aware”: it must have a time
+zone object as its <code class="docutils literal notranslate"><span class="pre">tzinfo</span></code> attribute instead of <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Timescale.from_datetimes">
+<code class="descname">from_datetimes</code><span class="sig-paren">(</span><em>datetime_list</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.from_datetimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> for a list of Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code>s.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">datetime</span></code> objects must each be “timezone-aware”: they
+must each have a time zone object as their <code class="docutils literal notranslate"><span class="pre">tzinfo</span></code> attribute
+instead of <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Timescale.utc">
+<code class="descname">utc</code><span class="sig-paren">(</span><em>year</em>, <em>month=1</em>, <em>day=1</em>, <em>hour=0</em>, <em>minute=0</em>, <em>second=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.utc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a UTC <a class="reference internal" href="#calendar-date"><span class="std std-ref">Calendar date</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Timescale.tai">
+<code class="descname">tai</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=1</em>, <em>day=1</em>, <em>hour=0</em>, <em>minute=0</em>, <em>second=0.0</em>, <em>jd=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.tai" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from an International Atomic Time <a class="reference internal" href="#calendar-date"><span class="std std-ref">Calendar date</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Timescale.tai_jd">
+<code class="descname">tai_jd</code><span class="sig-paren">(</span><em>jd</em>, <em>fraction=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.tai_jd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from an International Atomic Time Julian date.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Timescale.tt">
+<code class="descname">tt</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=1</em>, <em>day=1</em>, <em>hour=0</em>, <em>minute=0</em>, <em>second=0.0</em>, <em>jd=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.tt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a Terrestrial Time <a class="reference internal" href="#calendar-date"><span class="std std-ref">Calendar date</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Timescale.tt_jd">
+<code class="descname">tt_jd</code><span class="sig-paren">(</span><em>jd</em>, <em>fraction=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.tt_jd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a Terrestrial Time Julian date.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Timescale.J">
+<code class="descname">J</code><span class="sig-paren">(</span><em>year</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.J" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a Terrestrial Time Julian year or array.</p>
+<p>Julian years are convenient uniform periods of exactly 365.25
+days of Terrestrial Time, centered on 2000 January 1 12h TT =
+Julian year 2000.0.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Timescale.tdb">
+<code class="descname">tdb</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=1</em>, <em>day=1</em>, <em>hour=0</em>, <em>minute=0</em>, <em>second=0.0</em>, <em>jd=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.tdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a Barycentric Dynamical Time <a class="reference internal" href="#calendar-date"><span class="std std-ref">Calendar date</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Timescale.tdb_jd">
+<code class="descname">tdb_jd</code><span class="sig-paren">(</span><em>jd</em>, <em>fraction=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.tdb_jd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a Barycentric Dynamical Time Julian date.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Timescale.ut1">
+<code class="descname">ut1</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=1</em>, <em>day=1</em>, <em>hour=0</em>, <em>minute=0</em>, <em>second=0.0</em>, <em>jd=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.ut1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a UT1 Universal Time <a class="reference internal" href="#calendar-date"><span class="std std-ref">Calendar date</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Timescale.ut1_jd">
+<code class="descname">ut1_jd</code><span class="sig-paren">(</span><em>jd</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.ut1_jd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a UT1 Universal Time Julian date.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Timescale.from_astropy">
+<code class="descname">from_astropy</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.from_astropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a Skyfield <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from an AstroPy time object.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="the-time-object">
+<h2>The Time object<a class="headerlink" href="#the-time-object" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="skyfield.timelib.Time">
+<em class="property">class </em><code class="descclassname">skyfield.timelib.</code><code class="descname">Time</code><span class="sig-paren">(</span><em>ts</em>, <em>tt</em>, <em>tt_fraction=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time" title="Permalink to this definition">¶</a></dt>
+<dd><p>A single moment in history, or an array of several moments.</p>
+<p>Skyfield programs don’t usually instantiate this class directly, but
+instead build time objects using one of the timescale methods listed
+at <a class="reference internal" href="api.html#timescale-summary"><span class="std std-ref">Time scales</span></a>.  If you do attempt the low-level operation
+of building a time object yourself, either leave <code class="docutils literal notranslate"><span class="pre">tt_fraction</span></code> at
+its default value of <code class="docutils literal notranslate"><span class="pre">None</span></code> — in which case Skyfield will assume
+the fraction is zero — or provide a <code class="docutils literal notranslate"><span class="pre">tt_fraction</span></code> array that has
+exactly the same dimensions as your <code class="docutils literal notranslate"><span class="pre">tt</span></code> array.</p>
+<p>Four basic floating-point values
+can be directly accessed as attributes:</p>
+<dl class="attribute">
+<dt id="skyfield.timelib.Time.tai">
+<code class="descname">tai</code><a class="headerlink" href="#skyfield.timelib.Time.tai" title="Permalink to this definition">¶</a></dt>
+<dd><p>International Atomic Time (TAI) as a Julian date.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.timelib.Time.tt">
+<code class="descname">tt</code><a class="headerlink" href="#skyfield.timelib.Time.tt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terrestrial Time (TT) as a Julian date.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.timelib.Time.J">
+<code class="descname">J</code><a class="headerlink" href="#skyfield.timelib.Time.J" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terrestrial Time (TT) as a floating point number of Julian years.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.timelib.Time.tdb">
+<code class="descname">tdb</code><a class="headerlink" href="#skyfield.timelib.Time.tdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Barycentric Dynamical Time (TDB) as a Julian date.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.timelib.Time.ut1">
+<code class="descname">ut1</code><a class="headerlink" href="#skyfield.timelib.Time.ut1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Universal Time (UT1) as a Julian date.</p>
+</dd></dl>
+
+<p>Two standard differences between time scales
+are also available as attributes:</p>
+<dl class="attribute">
+<dt id="skyfield.timelib.Time.delta_t">
+<code class="descname">delta_t</code><a class="headerlink" href="#skyfield.timelib.Time.delta_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>The difference TT − UT1 measured in seconds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.timelib.Time.dut1">
+<code class="descname">dut1</code><a class="headerlink" href="#skyfield.timelib.Time.dut1" title="Permalink to this definition">¶</a></dt>
+<dd><p>The difference UT1 − UTC measured in seconds.</p>
+</dd></dl>
+
+<p>All of the other ways of expressing the time
+and converting it to typical human systems
+like UTC and world time zones
+are offered through methods:</p>
+<dl class="method">
+<dt id="skyfield.timelib.Time.astimezone">
+<code class="descname">astimezone</code><span class="sig-paren">(</span><em>tz</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.astimezone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> in a particular timezone <code class="docutils literal notranslate"><span class="pre">tz</span></code>.</p>
+<p>If this time is an array, then an array of datetimes is returned
+instead of a single value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.astimezone_and_leap_second">
+<code class="descname">astimezone_and_leap_second</code><span class="sig-paren">(</span><em>tz</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.astimezone_and_leap_second" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> and leap second in a timezone.</p>
+<p>Convert this time to a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> and a leap second:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dt</span><span class="p">,</span> <span class="n">leap_second</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">astimezone_and_leap_second</span><span class="p">(</span><span class="n">tz</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The argument <code class="docutils literal notranslate"><span class="pre">tz</span></code> should be a <code class="docutils literal notranslate"><span class="pre">datetime</span></code> compatible
+timezone.</p>
+<p>The leap second value is provided because a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code>
+can only number seconds <code class="docutils literal notranslate"><span class="pre">0</span></code> through <code class="docutils literal notranslate"><span class="pre">59</span></code>, but leap seconds
+have a designation of at least <code class="docutils literal notranslate"><span class="pre">60</span></code>.  The leap second return
+value will normally be <code class="docutils literal notranslate"><span class="pre">0</span></code>, but will instead be <code class="docutils literal notranslate"><span class="pre">1</span></code> if the
+date and time are a UTC leap second.  Add the leap second value
+to the <code class="docutils literal notranslate"><span class="pre">second</span></code> field of the <code class="docutils literal notranslate"><span class="pre">datetime</span></code> to learn the real
+name of the second.</p>
+<p>If this time is an array, then an array of <code class="docutils literal notranslate"><span class="pre">datetime</span></code> objects
+and an array of leap second integers is returned, instead of a
+single value each.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.toordinal">
+<code class="descname">toordinal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.toordinal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the proleptic Gregorian ordinal of the UTC date.</p>
+<p>This method makes Skyfield <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> objects compatible with Python
+<a class="reference external" href="https://docs.python.org/3.5/library/datetime.html#datetime.datetime">datetime</a> objects, which also provide a <code class="docutils literal notranslate"><span class="pre">toordinal()</span></code>
+method.  Thanks to this method, a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> can often be used
+directly as a coordinate for a plot.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.utc_datetime">
+<code class="descname">utc_datetime</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.utc_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> in UTC.</p>
+<p>If this time is an array, then a list of datetimes is returned
+instead of a single value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.utc_datetime_and_leap_second">
+<code class="descname">utc_datetime_and_leap_second</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.utc_datetime_and_leap_second" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> in UTC, plus a leap second value.</p>
+<p>Convert this time to a <a class="reference external" href="https://docs.python.org/3.5/library/datetime.html#datetime.datetime">datetime</a> object and a leap second:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dt</span><span class="p">,</span> <span class="n">leap_second</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_datetime_and_leap_second</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The leap second value is provided because a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code>
+can only number seconds <code class="docutils literal notranslate"><span class="pre">0</span></code> through <code class="docutils literal notranslate"><span class="pre">59</span></code>, but leap seconds
+have a designation of at least <code class="docutils literal notranslate"><span class="pre">60</span></code>.  The leap second return
+value will normally be <code class="docutils literal notranslate"><span class="pre">0</span></code>, but will instead be <code class="docutils literal notranslate"><span class="pre">1</span></code> if the
+date and time are a UTC leap second.  Add the leap second value
+to the <code class="docutils literal notranslate"><span class="pre">second</span></code> field of the <code class="docutils literal notranslate"><span class="pre">datetime</span></code> to learn the real
+name of the second.</p>
+<p>If this time is an array, then an array of <code class="docutils literal notranslate"><span class="pre">datetime</span></code> objects
+and an array of leap second integers is returned, instead of a
+single value each.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.utc_iso">
+<code class="descname">utc_iso</code><span class="sig-paren">(</span><em>delimiter='T'</em>, <em>places=0</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.utc_iso" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to an ISO 8601 string like <code class="docutils literal notranslate"><span class="pre">2014-01-18T01:35:38Z</span></code> in UTC.</p>
+<p>If this time is an array of dates, then a sequence of strings is
+returned instead of a single string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.utc_jpl">
+<code class="descname">utc_jpl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.utc_jpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a string like <code class="docutils literal notranslate"><span class="pre">A.D.</span> <span class="pre">2014-Jan-18</span> <span class="pre">01:35:37.5000</span> <span class="pre">UTC</span></code>.</p>
+<p>Returns a string for this date and time in UTC, in the format
+used by the JPL HORIZONS system.  If this time is an array of
+dates, then a sequence of strings is returned instead of a
+single string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.utc_strftime">
+<code class="descname">utc_strftime</code><span class="sig-paren">(</span><em>format='%Y-%m-%d %H:%M:%S UTC'</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.utc_strftime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format the UTC time using a Python datetime formatting string.</p>
+<p>This calls Python’s <code class="docutils literal notranslate"><span class="pre">time.strftime()</span></code> to format the date and
+time.  A single string is returned or else a whole array of
+strings, depending on whether this time object is an array.
+The most commonly used formats are:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">%Y</span></code> four-digit year, <code class="docutils literal notranslate"><span class="pre">%y</span></code> two-digit year</li>
+<li><code class="docutils literal notranslate"><span class="pre">%m</span></code> month number, <code class="docutils literal notranslate"><span class="pre">%B</span></code> name, <code class="docutils literal notranslate"><span class="pre">%b</span></code> abbreviation</li>
+<li><code class="docutils literal notranslate"><span class="pre">%d</span></code> day of month</li>
+<li><code class="docutils literal notranslate"><span class="pre">%H</span></code> hour</li>
+<li><code class="docutils literal notranslate"><span class="pre">%M</span></code> minute</li>
+<li><code class="docutils literal notranslate"><span class="pre">%S</span></code> second</li>
+<li><code class="docutils literal notranslate"><span class="pre">%A</span></code> day of week, <code class="docutils literal notranslate"><span class="pre">%a</span></code> its abbreviation</li>
+</ul>
+<p>You can find the full list, along with options that control
+field widths and leading zeros, at:</p>
+<p><a class="reference external" href="https://docs.python.org/3/library/time.html#time.strftime">https://docs.python.org/3/library/time.html#time.strftime</a></p>
+<p>If the smallest time unit in your format is minutes or seconds,
+then the time is rounded to the nearest minute or second.
+Otherwise the value is truncated rather than rounded.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.tai_calendar">
+<code class="descname">tai_calendar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.tai_calendar" title="Permalink to this definition">¶</a></dt>
+<dd><p>TAI as a (year, month, day, hour, minute, second) <a class="reference internal" href="#calendar-date"><span class="std std-ref">Calendar date</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.tt_calendar">
+<code class="descname">tt_calendar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.tt_calendar" title="Permalink to this definition">¶</a></dt>
+<dd><p>TT as a (year, month, day, hour, minute, second) <a class="reference internal" href="#calendar-date"><span class="std std-ref">Calendar date</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.tdb_calendar">
+<code class="descname">tdb_calendar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.tdb_calendar" title="Permalink to this definition">¶</a></dt>
+<dd><p>TDB as a (year, month, day, hour, minute, second) <a class="reference internal" href="#calendar-date"><span class="std std-ref">Calendar date</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.ut1_calendar">
+<code class="descname">ut1_calendar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.ut1_calendar" title="Permalink to this definition">¶</a></dt>
+<dd><p>UT1 as a (year, month, day, hour, minute, second) <a class="reference internal" href="#calendar-date"><span class="std std-ref">Calendar date</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.tai_strftime">
+<code class="descname">tai_strftime</code><span class="sig-paren">(</span><em>format='%Y-%m-%d %H:%M:%S TAI'</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.tai_strftime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format TAI with a datetime strftime() format string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.tt_strftime">
+<code class="descname">tt_strftime</code><span class="sig-paren">(</span><em>format='%Y-%m-%d %H:%M:%S TT'</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.tt_strftime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format TT with a datetime strftime() format string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.tdb_strftime">
+<code class="descname">tdb_strftime</code><span class="sig-paren">(</span><em>format='%Y-%m-%d %H:%M:%S TDB'</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.tdb_strftime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format TDB with a datetime strftime() format string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.ut1_strftime">
+<code class="descname">ut1_strftime</code><span class="sig-paren">(</span><em>format='%Y-%m-%d %H:%M:%S UT1'</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.ut1_strftime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format UT1 with a datetime strftime() format string.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.timelib.Time.M">
+<code class="descname">M</code><a class="headerlink" href="#skyfield.timelib.Time.M" title="Permalink to this definition">¶</a></dt>
+<dd><p>3×3 rotation matrix: ICRS → equinox of this date.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.timelib.Time.MT">
+<code class="descname">MT</code><a class="headerlink" href="#skyfield.timelib.Time.MT" title="Permalink to this definition">¶</a></dt>
+<dd><p>3×3 rotation matrix: equinox of this date → ICRS.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">J</code></dt>
+<dd><p>Return a floating point Julian year or array of years for this date.</p>
+<p>Julian years are convenient uniform periods of exactly 365.25
+days of Terrestrial Time, centered on 2000 January 1 12h TT =
+Julian year 2000.0.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.timelib.Time.gmst">
+<code class="descname">gmst</code><a class="headerlink" href="#skyfield.timelib.Time.gmst" title="Permalink to this definition">¶</a></dt>
+<dd><p>Greenwich Mean Sidereal Time (GMST) in hours.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.timelib.Time.gast">
+<code class="descname">gast</code><a class="headerlink" href="#skyfield.timelib.Time.gast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Greenwich Apparent Sidereal Time (GAST) in hours.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.nutation_matrix">
+<code class="descname">nutation_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.nutation_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 3×3 nutation matrix N for this date.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.timelib.Time.precession_matrix">
+<code class="descname">precession_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Time.precession_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the 3×3 precession matrix P for this date.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="time-utilities">
+<h2>Time utilities<a class="headerlink" href="#time-utilities" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="skyfield.timelib.compute_calendar_date">
+<code class="descclassname">skyfield.timelib.</code><code class="descname">compute_calendar_date</code><span class="sig-paren">(</span><em>jd_integer</em>, <em>julian_before=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.compute_calendar_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert Julian day <code class="docutils literal notranslate"><span class="pre">jd_integer</span></code> into a calendar (year, month, day).</p>
+<p>Uses the proleptic Gregorian calendar unless <code class="docutils literal notranslate"><span class="pre">julian_before</span></code> is
+set to a specific Julian day, in which case the Julian calendar is
+used for dates older than that.</p>
+</dd></dl>
+
+</div>
+</div>
+
+  </body>
+</html>

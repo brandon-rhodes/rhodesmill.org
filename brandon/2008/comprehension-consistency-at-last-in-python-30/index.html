@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Comprehension consistency at last in Python 3.0!</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>Comprehension consistency at last in Python 3.0!</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>4 December 2008</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">computing, python</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+A new era is begun: <a href="http://www.python.org/download/releases/3.0/">Python 3.0 has been released</a>, bringing the bright and burning lights of reason, consistency, and symmetry to bear on my favorite language.  Guido van Rossum, the creator of Python, has carefully guided this final attempt to remove the warts that have accumulated over the language's 17-year lifetime, and the result is magical.
+</p>
+<div class="highlight"><pre><span class="n">Python</span> <span class="mf">3.0</span> <span class="p">(</span><span class="n">r30</span><span class="p">:</span><span class="mi">67503</span><span class="p">,</span> <span class="n">Dec</span>  <span class="mi">4</span> <span class="mi">2008</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span><span class="mi">23</span><span class="p">:</span><span class="mi">44</span><span class="p">)</span>
+<span class="p">[</span><span class="n">GCC</span> <span class="mf">4.3</span><span class="o">.</span><span class="mi">2</span><span class="p">]</span> <span class="n">on</span> <span class="n">linux2</span>
+<span class="n">Type</span> <span class="s">&quot;help&quot;</span><span class="p">,</span> <span class="s">&quot;copyright&quot;</span><span class="p">,</span> <span class="s">&quot;credits&quot;</span> <span class="ow">or</span> <span class="s">&quot;license&quot;</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span><span class="o">.</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span> <span class="n">n</span><span class="o">*</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">]</span>
+<span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">{</span> <span class="n">n</span><span class="o">*</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">{</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="o">*</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mi">16</span><span class="p">}</span></pre></div>
+
+<p>
+Magnificence!  Do you feel the waves of beauty crashing over you?  No, no, not over the sequence of squares&nbsp;— over the fact that <b>all three basic collection types now support comprehensions!</b>
+</p>
+<p>
+Comprehensions were first introduced in Python&nbsp;2.0, but with the terribly awkward stipulation that they were only possible for lists, not for dictionaries. This meant teaching newcomers to the language that list construction was a special case, and that the collections that had deserved their own constructor syntax (lists and dictionaries, at that time; sets came later) were not equally powerful. It also made necessary the awkward and expensive technique of building, and then immediately discarding, a list of tuples to quickly construct dictionaries:
+</p>
+<div class="highlight"><pre><span class="n">Python</span> <span class="mf">2.5</span><span class="o">.</span><span class="mi">2</span> <span class="p">(</span><span class="n">r252</span><span class="p">:</span><span class="mi">60911</span><span class="p">,</span> <span class="n">Nov</span> <span class="mi">14</span> <span class="mi">2008</span><span class="p">,</span> <span class="mi">19</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">32</span><span class="p">)</span>
+<span class="p">[</span><span class="n">GCC</span> <span class="mf">4.3</span><span class="o">.</span><span class="mi">2</span><span class="p">]</span> <span class="n">on</span> <span class="n">linux2</span>
+<span class="n">Type</span> <span class="s">&quot;help&quot;</span><span class="p">,</span> <span class="s">&quot;copyright&quot;</span><span class="p">,</span> <span class="s">&quot;credits&quot;</span> <span class="ow">or</span> <span class="s">&quot;license&quot;</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span><span class="o">.</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">dict</span><span class="p">([</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="o">*</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">])</span>
+<span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mi">16</span><span class="p">}</span></pre></div>
+
+<p>
+The arrival of generator expressions in&nbsp;2.4 did, at least, allow us to remove the ugly square brackets and avoid creating the list (though all of the tuples still got created then immediately discarded).  But the problem remained that dictionaries made from inline generators did not <i>look</i> like dictionaries syntactically.
+</p>
+<p>
+But, no more!   They have even updated the scandalously withdrawn <a href="http://www.python.org/dev/peps/pep-0274/">PEP&nbsp;274</a> to announce that the feature has finally arrived.  After the aching and painful years of the Python&nbsp;2 series, the language once again shines bright and clear as a model of clever symmetries and low mental impedance.  Python's famously tight "feature set" can, now more easily than ever, fit comfortably into the programmer's brain.
+</p>
+<p>
+What shall I write first in Python&nbsp;3.0?  I wonder.
+</p>
+<p>
+But you can be sure that my code will find lots of excuses for constructing dictionaries.
+</p>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'rhodesmill';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<p class="byline">©2020</p>
+
+</body>
+</html>

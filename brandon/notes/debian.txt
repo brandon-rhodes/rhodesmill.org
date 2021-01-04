@@ -1,0 +1,69 @@
+Debian Linux does many things quite well, well enough in fact that I
+have adopted it as my distribution of choice.
+
+---- Lossy dpkg -l Output ----
+
+One glaring problem is the horrible `dpkg -l' command, whose author
+breaks the longstanding Unix tradition of refusing to truncate fields
+in order to format an output table.  Proper Unix utilities all make
+extra room for large field values so no information is lost.  Programs
+that scan tables use whitespace or other separators, rather than fixed
+character columns, to avoid getting confused by this.  A good example
+is the ls(1) command which expands the file size field for very large
+files, rather than either truncate the value or use another format:
+
+-rw-r--r--    1 grendel  users    122185728 Nov  2 09:13 Invader Zim - 101
+-rw-r--r--    1 grendel  users    61841408 Nov  1 11:46 Invader Zim - 102a
+-rw-r--r--    1 grendel  users    62228480 Nov  1 11:49 Invader Zim - 102b
+-rw-r--r--    1 grendel  users    122249216 Nov  2 06:55 Invader Zim - Halloween
+-rw-r--r--    1 grendel  users    50552832 Feb  3 16:12 InvaderZim-111a
+-rw-r--r--    1 grendel  users    52201472 Feb  3 16:24 InvaderZim-111b
+
+You see?  The date and file name are simply moved rightward when the
+file size is too large to fit within the normal eight characters.
+
+Thus we recoil in horror when, for instance, trying to determine which
+kernel images are listed in our package database:
+
+$ dpkg -l 'kernel-image*'
+Desired=Unknown/Install/Remove/Purge/Hold
+| Status=Not/Installed/Config-files/Unpacked/Failed-config/Half-installed
+|/ Err?=(none)/Hold/Reinst-required/X=both-problems (Status,Err: uppercase=bad)
+||/ Name           Version        Description
++++-==============-==============-============================================
+un  kernel-image   <none>         (no description available)
+pn  kernel-image-2 <none>         (no description available)
+ii  kernel-image-2 2.4.16-1       Linux kernel image for version 2.4.16 on PPr
+pn  kernel-image-2 <none>         (no description available)
+pn  kernel-image-2 <none>         (no description available)
+pn  kernel-image-2 <none>         (no description available)
+
+Because the utility ruthlessly truncates the package names, we cannot
+see what kernel versions are listed; and in fact dpkg(8) does not even
+provide an *option* allowing wider output!
+
+Fortunately we are saved by the fact that dpkg(8) uses the COLUMNS
+variable to determine how much screen width across which to spangle
+its output.  This allows us to write a small command of our own which
+I call `mypkgs':
+
+<++> mypkgs
+COLUMNS=256 dpkg -l \*$1\* | awk 'NR>5 {printf "%s %18s %-s\n",$1,$3,$2}'
+<-->
+
+Note that my choice was to automatically place wildcard asterisks
+around the search string given, so the command works like so:
+
+$ mypkgs kernel-image
+un             <none> kernel-image
+pn             <none> kernel-image-2.2.19
+ii           2.4.16-1 kernel-image-2.4.16-686
+pn             <none> kernel-image-2.4.9-686
+pn             <none> kernel-image-2.4.9-686-smp
+pn             <none> kernel-image-2.4.9-k6
+
+And we can breathe a collective sigh of relief; full package names are
+now visible without having to enter the awkward world of dselect(8).
+
+Why the packages listed are not those listed on the Debian web site
+listing of current packages is yet to be determined.

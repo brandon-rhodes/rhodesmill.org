@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PyCon Trivia Night, Second Edition</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>PyCon Trivia Night, Second Edition</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>16 April 2015</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">computing, python</td>
+</tr>
+</tbody>
+</table>
+<p>As was the case
+during first year that the conference was in Montréal,
+I was invited for PyCon&nbsp;2015 to lead an evening dinner trivia contest
+on the first full conference day.</p>
+<p>Wanting to help the audience celebrate
+all of the advances that are being made in Python&nbsp;3,
+I skewed my questions heavily in the direction
+of the strides that the core developers are taking
+with the new version of the language.
+Alas!
+My focus was not as popular with the audience
+as I had hoped.
+It turns out that Python&nbsp;2.7 is still far more popular
+than its predecessor,
+and many contestants were frustrated
+about being asked so many questions and details
+about a language hardly anybody used.
+So I made a promise to the audience:
+if a third trivia dinner happens at PyCon&nbsp;2016 in Portland,
+that I will make it Retro Python Trivia Night
+and ask all of the questions about the Python&nbsp;2 series!</p>
+<p>The questions follow,
+then the answers are way down at the bottom of the post
+so you can try answering on your own
+before you scroll down and peek.
+Enjoy!</p>
+<hr class="docutils" />
+<div class="section" id="first-round-questions">
+<h2>First Round Questions</h2>
+<ol class="arabic simple" start="0">
+<li>To open a URL in the user’s
+default browser, you would use
+which Standard Library module?</li>
+<li>In Python&nbsp;3, an integer
+with a leading <tt class="docutils literal">0</tt> is
+now a syntax error.
+How do you write the old value
+<tt class="docutils literal">0123</tt> in modern Python&nbsp;3?</li>
+<li>What does the optional second
+argument to <tt class="docutils literal">sum()</tt> do?</li>
+<li>What does the optional final
+argument to <tt class="docutils literal">slice()</tt> do?</li>
+<li>For or against?
+Is PEP-8 for or against
+this code’s formatting?</li>
+</ol>
+<div class="highlight"><pre><span class="n">def</span> <span class="n">complex</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">imag</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">:</span></pre></div>
+
+<ol class="arabic simple" start="5">
+<li>For or against?
+Is PEP-8 for or against
+this code’s formatting?</li>
+</ol>
+<div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="n">this_is_one_thing</span>
+        <span class="n">and</span> <span class="n">that_is_another_thing</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">do_something</span><span class="p">()</span></pre></div>
+
+<ol class="arabic simple" start="6">
+<li>Which is NOT a built-in
+that was newly added
+in Python 3?
+<tt class="docutils literal">ascii()</tt>
+<tt class="docutils literal">bytearray()</tt>
+<tt class="docutils literal">exec()</tt></li>
+<li>The <tt class="docutils literal">a[b]</tt> operation,
+backed by the method <tt class="docutils literal">__getitem__()</tt>,
+is supported by both <tt class="docutils literal">list</tt> and <tt class="docutils literal">dict</tt>.
+But a <tt class="docutils literal">list</tt> raises <tt class="docutils literal">IndexError</tt>
+while a <tt class="docutils literal">dict</tt> raises <tt class="docutils literal">KeyError</tt>.
+What is the most <em>specific</em> Python
+exception you can catch that covers both
+<tt class="docutils literal">IndexError</tt> and <tt class="docutils literal">KeyError</tt>?</li>
+<li>What do the letters <tt class="docutils literal">gai</tt>
+stand for in the Standard
+Library’s <tt class="docutils literal">gaierror?</tt></li>
+<li>“A Foolish Consistency
+is the <em>(what?)</em> of Little Minds”</li>
+</ol>
+</div>
+<div class="section" id="second-round-questions">
+<h2>Second Round Questions</h2>
+<ol class="arabic simple" start="0">
+<li>Which Standard Library module
+does <em>not</em> parse command line arguments
+when invoked with the <tt class="docutils literal"><span class="pre">-m</span></tt> option?<ol class="loweralpha">
+<li><tt class="docutils literal">json</tt></li>
+<li><tt class="docutils literal">webbrowser</tt></li>
+<li><tt class="docutils literal">uu</tt></li>
+</ol>
+</li>
+<li>The functions in the <tt class="docutils literal">uuid</tt> module
+run from <tt class="docutils literal">uuid1()</tt> through what?
+(BONUS: Which number is skipped?)</li>
+<li>What does the optional third
+argument to <tt class="docutils literal">getattr()</tt> do?</li>
+<li>What does the optional third
+argument to <tt class="docutils literal">pow()</tt> do?</li>
+<li>For or against?
+Is PEP-8 for or against
+this line of code?</li>
+</ol>
+<div class="highlight"><pre><span class="n">hypot2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span></pre></div>
+
+<ol class="arabic simple" start="5">
+<li>For or against?
+Is PEP-8 for or against
+this code’s formatting?</li>
+</ol>
+<div class="highlight"><pre><span class="n">def</span> <span class="n">munge</span><span class="p">(</span><span class="n">sep</span><span class="o">:</span> <span class="n">AnyStr</span> <span class="o">=</span> <span class="n">None</span><span class="p">)</span><span class="o">:</span></pre></div>
+
+<ol class="arabic simple" start="6">
+<li>Which one of these three
+is <strong>NOT</strong> a built-in that was
+removed in Python 3?
+<tt class="docutils literal">apply()</tt>
+<tt class="docutils literal">compile()</tt>
+<tt class="docutils literal">file()</tt></li>
+<li>PEP-8 recommends that lines of code
+have, at most, how many characters?</li>
+<li>What does the letter <tt class="docutils literal">h</tt>
+stand for in the Standard
+Library’s <tt class="docutils literal">herror?</tt></li>
+<li>Special cases aren’t
+special enough to <em>_</em>?</li>
+</ol>
+</div>
+<div class="section" id="third-round-questions">
+<h2>Third Round Questions</h2>
+<ol class="arabic simple" start="0">
+<li>In Python 3.4, which Standard Library
+module now parses command line
+options if invoked with <tt class="docutils literal">python</tt> <tt class="docutils literal"><span class="pre">-m</span></tt>?<ol class="loweralpha">
+<li><tt class="docutils literal">zlib</tt></li>
+<li><tt class="docutils literal">tarfile</tt></li>
+<li><tt class="docutils literal">hashlib</tt></li>
+</ol>
+</li>
+<li>What happens if you run <tt class="docutils literal">python <span class="pre">-m</span> turtle</tt>?</li>
+<li><tt class="docutils literal">import sys; delattr(sys, 'getrefcount')</tt>
+What is the result?<ol class="loweralpha">
+<li><tt class="docutils literal">TypeError</tt></li>
+<li><tt class="docutils literal">AttributeError</tt></li>
+<li><tt class="docutils literal">sys.getrefcount()</tt> disappears</li>
+<li><tt class="docutils literal">sys.getrefcount()</tt> remains</li>
+</ol>
+</li>
+<li>What does the optional final
+argument to <tt class="docutils literal">property()</tt> do?</li>
+<li>For or against?
+Is PEP-8 for or against
+this line of code?</li>
+</ol>
+<div class="highlight"><pre><span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span></pre></div>
+
+<ol class="arabic simple" start="5">
+<li>When writing English comments,
+PEP-8 recommends <em>what?</em><ol class="loweralpha">
+<li><em>Chicago Manual of Style</em></li>
+<li><em>The Elements of Style</em></li>
+<li><em>Associated Press Stylebook</em></li>
+<li>Always ending with a period</li>
+</ol>
+</li>
+<li>In Python&nbsp;3, which of the
+following expressions will throw
+an exception (choose all that apply)?<ol class="loweralpha">
+<li><tt class="docutils literal"><span class="pre">bytearray(memoryview(bytes()))</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">bytes(bytearray(memoryview()))</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">memoryview(bytes(bytearray()))</span></tt></li>
+</ol>
+</li>
+<li>PEP-8 recommends that lines
+with comments or docstrings have,
+at most, how many characters?</li>
+<li>In Python 3.3, which
+did <strong>NOT</strong> become a
+synonym of <tt class="docutils literal">OSError?</tt>
+<tt class="docutils literal">EnvironmentError</tt> <tt class="docutils literal">WindowsError</tt> <tt class="docutils literal">VMSError</tt></li>
+<li>Namespaces are <em>what?</em></li>
+</ol>
+</div>
+<hr class="docutils" />
+<div class="section" id="the-winning-teams">
+<h2>The Winning Teams</h2>
+<p>The teams with the highest scores are sorted at the top
+— congratulations, everyone!</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="71%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="10%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Trivia Team</th>
+<th class="head">1</th>
+<th class="head">2</th>
+<th class="head">3</th>
+<th class="head">Total</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Import Antigravity</td>
+<td>9</td>
+<td>11</td>
+<td>7½</td>
+<td>27½</td>
+</tr>
+<tr><td>__dogs__</td>
+<td>8</td>
+<td>9</td>
+<td>5½</td>
+<td>22½</td>
+</tr>
+<tr><td>JSON &amp; the kwargonauts</td>
+<td>9</td>
+<td>9</td>
+<td>4</td>
+<td>22</td>
+</tr>
+<tr><td>Unless You're Dutch</td>
+<td>9</td>
+<td>7</td>
+<td>5½</td>
+<td>21½</td>
+</tr>
+<tr><td>Team PHP</td>
+<td>8</td>
+<td>4</td>
+<td>7</td>
+<td>19</td>
+</tr>
+<tr><td>Cache Invalidation</td>
+<td>7</td>
+<td>8</td>
+<td>3½</td>
+<td>18½</td>
+</tr>
+<tr><td>Accidental Combustion</td>
+<td>7</td>
+<td>8</td>
+<td>3½</td>
+<td>18½</td>
+</tr>
+<tr><td>Literally LVH</td>
+<td>8</td>
+<td>6</td>
+<td>3</td>
+<td>17</td>
+</tr>
+<tr><td>Brandon Rhodes's Team</td>
+<td>8</td>
+<td>5</td>
+<td>4</td>
+<td>17</td>
+</tr>
+<tr><td>Badgers</td>
+<td>7</td>
+<td>7</td>
+<td>3</td>
+<td>17</td>
+</tr>
+<tr><td>Team Spam, Spam, and Spam</td>
+<td>6</td>
+<td>6</td>
+<td>5</td>
+<td>17</td>
+</tr>
+<tr><td>The Holy Hand Grenade of Antioch</td>
+<td>8</td>
+<td>5</td>
+<td>3½</td>
+<td>16½</td>
+</tr>
+<tr><td>The Ran Vossums</td>
+<td>7</td>
+<td>5</td>
+<td>4½</td>
+<td>16½</td>
+</tr>
+<tr><td>**kwargs</td>
+<td>7</td>
+<td>5</td>
+<td>4½</td>
+<td>16½</td>
+</tr>
+<tr><td>U+1F40D</td>
+<td>5</td>
+<td>8</td>
+<td>3½</td>
+<td>16½</td>
+</tr>
+<tr><td>Give Us Free Drinks On The House</td>
+<td>6</td>
+<td>5</td>
+<td>3½</td>
+<td>14½</td>
+</tr>
+<tr><td>from answers import *</td>
+<td>4</td>
+<td>6</td>
+<td>4½</td>
+<td>14½</td>
+</tr>
+<tr><td>raise NameError</td>
+<td>4</td>
+<td>5</td>
+<td>5½</td>
+<td>14½</td>
+</tr>
+<tr><td>Why is the rum always gone? WHY!?</td>
+<td>5</td>
+<td>2</td>
+<td>2</td>
+<td>9</td>
+</tr>
+<tr><td>Data, the gathering</td>
+<td>—</td>
+<td>3</td>
+<td>3½</td>
+<td>6½</td>
+</tr>
+</tbody>
+</table>
+<p>A dash in the table above indicates a missing answer sheet,
+that was either never written
+or that did not make it from the team’s table
+to my own table up at the front of the venue.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="first-round-answers">
+<h2>First Round Answers</h2>
+<ol class="arabic simple" start="0">
+<li><tt class="docutils literal">webbrowser</tt></li>
+<li>Two possible answers are <tt class="docutils literal">83</tt> or <tt class="docutils literal">0o123</tt>.</li>
+<li>Provide the initial value,
+which is also the default returned
+if the sequence is empty.</li>
+<li>The final argument to <tt class="docutils literal">slice()</tt> provides the step increment
+that will be the difference between successive values
+in the returned sequence.</li>
+<li>PEP-8 is against <tt class="docutils literal">complex(real, imag = 0.0)</tt>
+because the <tt class="docutils literal">=</tt> attaching a default value to a keyword argument
+should not have spaces around it.</li>
+<li>PEP-8 is in favor of extra indentation
+to visually distinguish extra lines of an <tt class="docutils literal">if</tt> condition
+from the 4-space-indented code that follows.</li>
+<li><tt class="docutils literal">bytearray()</tt> already exists in Python&nbsp;2.</li>
+<li><tt class="docutils literal">LookupError</tt> is the superclass of <tt class="docutils literal">IndexError</tt> and <tt class="docutils literal">KeyError</tt>.</li>
+<li>It means “getaddrinfo() error.”</li>
+<li>“A Foolish Consistency is the <em>Hobgoblin</em> of Little Minds” —
+the title of the first major section of PEP-8
+after its Introduction.</li>
+</ol>
+</div>
+<div class="section" id="second-round-answers">
+<h2>Second Round Answers</h2>
+<ol class="arabic simple" start="0">
+<li>The <tt class="docutils literal">json</tt> module cannot be invoked as a command.</li>
+<li>The highest numbered UUID function is <tt class="docutils literal">uuid5()</tt>,
+and <tt class="docutils literal">uuid2</tt> is the one which is skipped and does not exist.</li>
+<li>The third argument to <tt class="docutils literal">getattr(obj, name, x)</tt>
+is the default returned if not attribute of that name exists.</li>
+<li>The third argument to <tt class="docutils literal">pow()</tt> provides the modulo
+that should be applied to the return value.</li>
+<li>PEP-8 is against the formatting of <tt class="docutils literal">x * x + y * y</tt>
+because there is no visual hint indicating
+that multiplication binds more tightly than addition.</li>
+<li>PEP-8 likes how <tt class="docutils literal">def munge(sep: AnyStr = None):</tt>
+puts spaces between the annotation type and the argument’s default
+value.</li>
+<li>Python&nbsp;3 elected not to remove the <tt class="docutils literal">compile()</tt> builtin.</li>
+<li>PEP-8 recommends 79 or 99 characters per line,
+depending on how generously one reads it,
+so both answers were considered correct for the trivia scoring.</li>
+<li>An <tt class="docutils literal">herror</tt> is a “host error” from the networking code.</li>
+<li>“Special cases aren't special enough to <em>break the rules.”</em></li>
+</ol>
+</div>
+<div class="section" id="third-round-answers">
+<h2>Third Round Answers</h2>
+<ol class="arabic simple" start="0">
+<li>Python&nbsp;3 gave a command line interface to the <tt class="docutils literal">tarfile</tt> module.</li>
+<li>A graphical turtle demo starts running,
+show the kinds of drawing primitives and patterns it supports.</li>
+<li><strong>c</strong> — true to Python’s mutable nature,
+there is no law against removing this attribute
+or, in general, against removing things from <tt class="docutils literal">sys</tt>.
+Run <tt class="docutils literal">del</tt> and the function disappears.</li>
+<li>The final (optional) argument to <tt class="docutils literal">property()</tt>
+provides the property’s docstring.
+I had always thought it provided the deleter,
+but there was another argument after that I hadn’t know about!</li>
+<li>PEP-8 is, amazingly enough —
+and the trivia crowd protested out loud when I announced it —
+<em>against</em> the formatting of <tt class="docutils literal">c = (a + b) * (a - b)</tt>
+because it wants less whitespace around more tightly
+binding operations even if parentheses are present.</li>
+<li>PEP-8 recommends that <em>The Elements of Style</em>
+guide the English used in Python comments.</li>
+<li>The expression <tt class="docutils literal"><span class="pre">bytes(bytearray(memoryview()))</span></tt>
+because <tt class="docutils literal">memoryview()</tt> cannot be called with no arguments —
+a memory view must be a view of some other value.</li>
+<li>Comments and docstrings are limited to 72 characters by PEP-8.</li>
+<li><tt class="docutils literal">VMSError</tt></li>
+<li>From PEP-20, the Zen of Python:
+“Namespaces are one honking great idea -- let's do more of those!”</li>
+</ol>
+</div>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'rhodesmill';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<p class="byline">©2020</p>
+
+</body>
+</html>

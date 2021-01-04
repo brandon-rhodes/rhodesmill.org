@@ -1,0 +1,997 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<p>Quick links to the sections below:</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#opening-files" id="id1">Opening files</a></li>
+<li><a class="reference internal" href="#time-scales" id="id2">Time scales</a></li>
+<li><a class="reference internal" href="#time-objects" id="id3">Time objects</a></li>
+<li><a class="reference internal" href="#time-utilities" id="id4">Time utilities</a></li>
+<li><a class="reference internal" href="#vector-functions" id="id5">Vector functions</a></li>
+<li><a class="reference internal" href="#planetary-ephemerides" id="id6">Planetary ephemerides</a></li>
+<li><a class="reference internal" href="#planetary-magnitudes" id="id7">Planetary magnitudes</a></li>
+<li><a class="reference internal" href="#planetary-reference-frames" id="id8">Planetary reference frames</a></li>
+<li><a class="reference internal" href="#almanac" id="id9">Almanac</a></li>
+<li><a class="reference internal" href="#topocentric-locations" id="id10">Topocentric locations</a></li>
+<li><a class="reference internal" href="#kepler-orbits" id="id11">Kepler orbits</a></li>
+<li><a class="reference internal" href="#earth-satellites" id="id12">Earth satellites</a></li>
+<li><a class="reference internal" href="#stars-and-other-distant-objects" id="id13">Stars and other distant objects</a></li>
+<li><a class="reference internal" href="#astronomical-positions" id="id14">Astronomical positions</a></li>
+<li><a class="reference internal" href="#position-methods-and-attributes" id="id15">Position methods and attributes</a></li>
+<li><a class="reference internal" href="#position-methods-specific-to-one-class" id="id16">Position methods specific to one class</a></li>
+<li><a class="reference internal" href="#reference-frames" id="id17">Reference frames</a></li>
+<li><a class="reference internal" href="#constellations" id="id18">Constellations</a></li>
+<li><a class="reference internal" href="#searching" id="id19">Searching</a></li>
+<li><a class="reference internal" href="#osculating-orbital-elements" id="id20">Osculating orbital elements</a></li>
+<li><a class="reference internal" href="#units" id="id21">Units</a></li>
+<li><a class="reference internal" href="#trigonometry" id="id22">Trigonometry</a></li>
+</ul>
+</div>
+<div class="section" id="opening-files">
+<h2><a class="toc-backref" href="#id1">Opening files</a><a class="headerlink" href="#opening-files" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># File you already have.</span>
+
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load_file</span>
+<span class="n">planets</span> <span class="o">=</span> <span class="n">load_file</span><span class="p">(</span><span class="s1">&#39;~/Downloads/de405.bsp&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-iokit.html#skyfield.iokit.load_file" title="skyfield.iokit.load_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_file</span></code></a>(path)</td>
+<td>Open a file on your local drive, using its extension to guess its type.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># File you want Skyfield to download automatically.</span>
+
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de405.bsp&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader" title="skyfield.iokit.Loader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Loader</span></code></a>(directory[,&nbsp;verbose,&nbsp;expire])</td>
+<td>A tool for downloading and opening astronomical data files.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.build_url" title="skyfield.iokit.Loader.build_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Loader.build_url</span></code></a>(filename)</td>
+<td>Return the URL Skyfield will try downloading for a given filename.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.days_old" title="skyfield.iokit.Loader.days_old"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Loader.days_old</span></code></a>(filename)</td>
+<td>Return how recently <code class="docutils literal notranslate"><span class="pre">filename</span></code> was modified, measured in days.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.download" title="skyfield.iokit.Loader.download"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Loader.download</span></code></a>(url[,&nbsp;filename,&nbsp;backup])</td>
+<td>Download a file, even if it’s already on disk; return its path.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.path_to" title="skyfield.iokit.Loader.path_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Loader.path_to</span></code></a>(filename)</td>
+<td>Return the path to <code class="docutils literal notranslate"><span class="pre">filename</span></code> in this loader’s directory.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.timescale" title="skyfield.iokit.Loader.timescale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Loader.timescale</span></code></a>([delta_t,&nbsp;builtin])</td>
+<td>Return a <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale" title="skyfield.timelib.Timescale"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Timescale</span></code></a> built using official Earth rotation data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.tle_file" title="skyfield.iokit.Loader.tle_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Loader.tle_file</span></code></a>(url[,&nbsp;reload,&nbsp;filename,&nbsp;ts,&nbsp;…])</td>
+<td>Load and parse a TLE file, returning a list of Earth satellites.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="time-scales">
+<span id="timescale-summary"></span><span id="api-timescale"></span><h2><a class="toc-backref" href="#id2">Time scales</a><a class="headerlink" href="#time-scales" title="Permalink to this headline">¶</a></h2>
+<p>A script will typically start by building a single Skyfield <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale" title="skyfield.timelib.Timescale"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Timescale</span></code></a>
+to use for all date and time conversions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">api</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Its methods are:</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.now" title="skyfield.timelib.Timescale.now"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.now</span></code></a>()</td>
+<td>Return the current date and time as a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.from_datetime" title="skyfield.timelib.Timescale.from_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.from_datetime</span></code></a>(datetime)</td>
+<td>Return a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> for a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.from_datetimes" title="skyfield.timelib.Timescale.from_datetimes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.from_datetimes</span></code></a>(datetime_list)</td>
+<td>Return a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> for a list of Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code>s.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.utc" title="skyfield.timelib.Timescale.utc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.utc</span></code></a>(year[,&nbsp;month,&nbsp;day,&nbsp;hour,&nbsp;…])</td>
+<td>Build a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a UTC <a class="reference internal" href="api-time.html#calendar-date"><span class="std std-ref">Calendar date</span></a>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.tai" title="skyfield.timelib.Timescale.tai"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.tai</span></code></a>([year,&nbsp;month,&nbsp;day,&nbsp;hour,&nbsp;…])</td>
+<td>Build a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from an International Atomic Time <a class="reference internal" href="api-time.html#calendar-date"><span class="std std-ref">Calendar date</span></a>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.tai_jd" title="skyfield.timelib.Timescale.tai_jd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.tai_jd</span></code></a>(jd[,&nbsp;fraction])</td>
+<td>Build a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from an International Atomic Time Julian date.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.tt" title="skyfield.timelib.Timescale.tt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.tt</span></code></a>([year,&nbsp;month,&nbsp;day,&nbsp;hour,&nbsp;…])</td>
+<td>Build a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a Terrestrial Time <a class="reference internal" href="api-time.html#calendar-date"><span class="std std-ref">Calendar date</span></a>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.tt_jd" title="skyfield.timelib.Timescale.tt_jd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.tt_jd</span></code></a>(jd[,&nbsp;fraction])</td>
+<td>Build a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a Terrestrial Time Julian date.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.J" title="skyfield.timelib.Timescale.J"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.J</span></code></a>(year)</td>
+<td>Build a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a Terrestrial Time Julian year or array.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.tdb" title="skyfield.timelib.Timescale.tdb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.tdb</span></code></a>([year,&nbsp;month,&nbsp;day,&nbsp;hour,&nbsp;…])</td>
+<td>Build a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a Barycentric Dynamical Time <a class="reference internal" href="api-time.html#calendar-date"><span class="std std-ref">Calendar date</span></a>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.tdb_jd" title="skyfield.timelib.Timescale.tdb_jd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.tdb_jd</span></code></a>(jd[,&nbsp;fraction])</td>
+<td>Build <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a Barycentric Dynamical Time Julian date.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.ut1" title="skyfield.timelib.Timescale.ut1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.ut1</span></code></a>([year,&nbsp;month,&nbsp;day,&nbsp;hour,&nbsp;…])</td>
+<td>Build a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a UT1 Universal Time <a class="reference internal" href="api-time.html#calendar-date"><span class="std std-ref">Calendar date</span></a>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.ut1_jd" title="skyfield.timelib.Timescale.ut1_jd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.ut1_jd</span></code></a>(jd)</td>
+<td>Build a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a UT1 Universal Time Julian date.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.from_astropy" title="skyfield.timelib.Timescale.from_astropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.from_astropy</span></code></a>(t)</td>
+<td>Build a Skyfield <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from an AstroPy time object.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="time-objects">
+<span id="api-time"></span><h2><a class="toc-backref" href="#id3">Time objects</a><a class="headerlink" href="#time-objects" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> class is Skyfield’s way of representing
+either a single time, or a whole array of times.
+The same time can be represented in several different time scales.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">t.tai</span></code></td>
+<td>International Atomic Time (TAI) as a Julian date.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">t.tt</span></code></td>
+<td>Terrestrial Time (TT) as a Julian date.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">t.J</span></code></td>
+<td>Terrestrial Time (TT) as floating point Julian years.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">t.tdb</span></code></td>
+<td>Barycentric Dynamical Time (TDB) as a Julian date.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">t.ut1</span></code></td>
+<td>Universal Time (UT1) as a Julian date.</td>
+</tr>
+</tbody>
+</table>
+<p>A couple of offsets between time scales are also available.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">t.delta_t</span></code></td>
+<td>Difference TT − UT1 in seconds.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">t.dut1</span></code></td>
+<td>Difference UT1 − UTC in seconds.</td>
+</tr>
+</tbody>
+</table>
+<p>Other time scales and conversions are available through its methods.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_jpl" title="skyfield.timelib.Time.utc_jpl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.utc_jpl</span></code></a>()</td>
+<td>Convert to a string like <code class="docutils literal notranslate"><span class="pre">A.D.2014-Jan-18</span> <span class="pre">01:35:37.5000</span> <span class="pre">UTC</span></code>..</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_iso" title="skyfield.timelib.Time.utc_iso"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.utc_iso</span></code></a>([delimiter,&nbsp;places])</td>
+<td>Convert to an ISO 8601 string like <code class="docutils literal notranslate"><span class="pre">2014-01-18T01:35:38Z</span></code> in UTC.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_strftime" title="skyfield.timelib.Time.utc_strftime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.utc_strftime</span></code></a>([format])</td>
+<td>Format the UTC time using a Python datetime formatting string.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_datetime" title="skyfield.timelib.Time.utc_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.utc_datetime</span></code></a>()</td>
+<td>Convert to a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> in UTC.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_datetime_and_leap_second" title="skyfield.timelib.Time.utc_datetime_and_leap_second"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.utc_datetime_and_leap_second</span></code></a>()</td>
+<td>Convert to a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> in UTC, plus a leap second value.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.astimezone" title="skyfield.timelib.Time.astimezone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.astimezone</span></code></a>(tz)</td>
+<td>Convert to a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> in a particular timezone <code class="docutils literal notranslate"><span class="pre">tz</span></code>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.astimezone_and_leap_second" title="skyfield.timelib.Time.astimezone_and_leap_second"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.astimezone_and_leap_second</span></code></a>(tz)</td>
+<td>Convert to a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> and leap second in a timezone.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.toordinal" title="skyfield.timelib.Time.toordinal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.toordinal</span></code></a>()</td>
+<td>Return the proleptic Gregorian ordinal of the UTC date.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.tai_calendar" title="skyfield.timelib.Time.tai_calendar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.tai_calendar</span></code></a>()</td>
+<td>TAI as a (year, month, day, hour, minute, second) <a class="reference internal" href="api-time.html#calendar-date"><span class="std std-ref">Calendar date</span></a>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.tt_calendar" title="skyfield.timelib.Time.tt_calendar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.tt_calendar</span></code></a>()</td>
+<td>TT as a (year, month, day, hour, minute, second) <a class="reference internal" href="api-time.html#calendar-date"><span class="std std-ref">Calendar date</span></a>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.tdb_calendar" title="skyfield.timelib.Time.tdb_calendar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.tdb_calendar</span></code></a>()</td>
+<td>TDB as a (year, month, day, hour, minute, second) <a class="reference internal" href="api-time.html#calendar-date"><span class="std std-ref">Calendar date</span></a>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.ut1_calendar" title="skyfield.timelib.Time.ut1_calendar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.ut1_calendar</span></code></a>()</td>
+<td>UT1 as a (year, month, day, hour, minute, second) <a class="reference internal" href="api-time.html#calendar-date"><span class="std std-ref">Calendar date</span></a>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.tai_strftime" title="skyfield.timelib.Time.tai_strftime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.tai_strftime</span></code></a>([format])</td>
+<td>Format TAI with a datetime strftime() format string.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.tt_strftime" title="skyfield.timelib.Time.tt_strftime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.tt_strftime</span></code></a>([format])</td>
+<td>Format TT with a datetime strftime() format string.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.tdb_strftime" title="skyfield.timelib.Time.tdb_strftime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.tdb_strftime</span></code></a>([format])</td>
+<td>Format TDB with a datetime strftime() format string.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.ut1_strftime" title="skyfield.timelib.Time.ut1_strftime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.ut1_strftime</span></code></a>([format])</td>
+<td>Format UT1 with a datetime strftime() format string.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.M" title="skyfield.timelib.Time.M"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.M</span></code></a></td>
+<td>3×3 rotation matrix: ICRS → equinox of this date.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.MT" title="skyfield.timelib.Time.MT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.MT</span></code></a></td>
+<td>3×3 rotation matrix: equinox of this date → ICRS.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.gmst" title="skyfield.timelib.Time.gmst"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.gmst</span></code></a></td>
+<td>Greenwich Mean Sidereal Time (GMST) in hours.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.gast" title="skyfield.timelib.Time.gast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.gast</span></code></a></td>
+<td>Greenwich Apparent Sidereal Time (GAST) in hours.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.nutation_matrix" title="skyfield.timelib.Time.nutation_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.nutation_matrix</span></code></a>()</td>
+<td>Compute the 3×3 nutation matrix N for this date.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.precession_matrix" title="skyfield.timelib.Time.precession_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.precession_matrix</span></code></a>()</td>
+<td>Compute the 3×3 precession matrix P for this date.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="time-utilities">
+<h2><a class="toc-backref" href="#id4">Time utilities</a><a class="headerlink" href="#time-utilities" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.compute_calendar_date" title="skyfield.timelib.compute_calendar_date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_calendar_date</span></code></a>(jd_integer[,&nbsp;…])</td>
+<td>Convert Julian day <code class="docutils literal notranslate"><span class="pre">jd_integer</span></code> into a calendar (year, month, day).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="vector-functions">
+<h2><a class="toc-backref" href="#id5">Vector functions</a><a class="headerlink" href="#vector-functions" title="Permalink to this headline">¶</a></h2>
+<p>The common API shared by planets, Earth locations, and Earth satellites.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-vectors.html#skyfield.vectorlib.VectorFunction" title="skyfield.vectorlib.VectorFunction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VectorFunction</span></code></a></td>
+<td>Given a time, computes a corresponding position.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-vectors.html#skyfield.vectorlib.VectorFunction.at" title="skyfield.vectorlib.VectorFunction.at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VectorFunction.at</span></code></a>(t)</td>
+<td>At time <code class="docutils literal notranslate"><span class="pre">t</span></code>, compute the target’s position relative to the center.</td>
+</tr>
+</tbody>
+</table>
+<p>Either adding two vector functions <code class="docutils literal notranslate"><span class="pre">v1</span> <span class="pre">+</span> <span class="pre">v2</span></code> or subtracting them <code class="docutils literal notranslate"><span class="pre">v1</span> <span class="pre">-</span> <span class="pre">v2</span></code>
+produces a new function of time that, when invoked with <code class="docutils literal notranslate"><span class="pre">.at(t)</span></code>,
+returns the sum or difference of the vectors returned by the two functions.</p>
+</div>
+<div class="section" id="planetary-ephemerides">
+<h2><a class="toc-backref" href="#id6">Planetary ephemerides</a><a class="headerlink" href="#planetary-ephemerides" title="Permalink to this headline">¶</a></h2>
+<p>By downloading a <a class="reference internal" href="api-ephemeris.html#skyfield.jpllib.SpiceKernel" title="skyfield.jpllib.SpiceKernel"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SpiceKernel</span></code></a> file,
+Skyfield users can build vector functions
+predicting the positions of the Moon, Sun, and planets.
+See <a class="reference internal" href="planets.html"><span class="doc">Planets, and Choosing an Ephemeris</span></a>.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-ephemeris.html#skyfield.jpllib.SpiceKernel" title="skyfield.jpllib.SpiceKernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpiceKernel</span></code></a>(path)</td>
+<td>Ephemeris file in NASA .bsp format.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-ephemeris.html#skyfield.jpllib.SpiceKernel.close" title="skyfield.jpllib.SpiceKernel.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpiceKernel.close</span></code></a>()</td>
+<td>Close this ephemeris file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-ephemeris.html#skyfield.jpllib.SpiceKernel.comments" title="skyfield.jpllib.SpiceKernel.comments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpiceKernel.comments</span></code></a>()</td>
+<td>Return the comments string of this kernel.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-ephemeris.html#skyfield.jpllib.SpiceKernel.names" title="skyfield.jpllib.SpiceKernel.names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpiceKernel.names</span></code></a>()</td>
+<td>Return all target names that are valid with this kernel.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-ephemeris.html#skyfield.jpllib.SpiceKernel.decode" title="skyfield.jpllib.SpiceKernel.decode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpiceKernel.decode</span></code></a>(name)</td>
+<td>Translate a target name into its integer code.</td>
+</tr>
+</tbody>
+</table>
+<p>Kernels also support lookup using the Python <code class="docutils literal notranslate"><span class="pre">kernel['Mars']</span></code> syntax,
+in which case they return a function of time
+that returns vectors from the Solar System barycenter to the named body.</p>
+</div>
+<div class="section" id="planetary-magnitudes">
+<h2><a class="toc-backref" href="#id7">Planetary magnitudes</a><a class="headerlink" href="#planetary-magnitudes" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="skyfield.magnitudelib.planetary_magnitude">
+<code class="descclassname">skyfield.magnitudelib.</code><code class="descname">planetary_magnitude</code><span class="sig-paren">(</span><em>position</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.magnitudelib.planetary_magnitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given the position of a planet, return its visual magnitude.</p>
+<p>This prototype function — which so far only supports Mercury, Venus,
+Earth, Jupiter, and Uranus — computes the visual magnitude of a
+planet, given its position relative to an observer.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.magnitudelib</span> <span class="kn">import</span> <span class="n">planetary_magnitude</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">astrometric</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">eph</span><span class="p">[</span><span class="s1">&#39;jupiter barycenter&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">planetary_magnitude</span><span class="p">(</span><span class="n">astrometric</span><span class="p">))</span>
+<span class="go">-2.73</span>
+</pre></div>
+</div>
+<p>The routine does not yet take into account whether the observer is
+facing the equator or poles of Uranus, so will only be accurate to
+within about 0.1&nbsp;magnitudes.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="planetary-reference-frames">
+<h2><a class="toc-backref" href="#id8">Planetary reference frames</a><a class="headerlink" href="#planetary-reference-frames" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-planetary.html#skyfield.planetarylib.PlanetaryConstants" title="skyfield.planetarylib.PlanetaryConstants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlanetaryConstants</span></code></a></td>
+<td>Planetary constants manager.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-planetary.html#skyfield.planetarylib.Frame" title="skyfield.planetarylib.Frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Frame</span></code></a></td>
+<td>Planetary constants frame, for building rotation matrices.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="almanac">
+<h2><a class="toc-backref" href="#id9">Almanac</a><a class="headerlink" href="#almanac" title="Permalink to this headline">¶</a></h2>
+<p>Routines to search for events like sunrise, sunset, and Moon phase.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.phase_angle" title="skyfield.almanac.phase_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phase_angle</span></code></a>(ephemeris,&nbsp;body,&nbsp;t)</td>
+<td>Compute the phase angle of a body viewed from Earth.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.fraction_illuminated" title="skyfield.almanac.fraction_illuminated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fraction_illuminated</span></code></a>(ephemeris,&nbsp;body,&nbsp;t)</td>
+<td>Compute the illuminated fraction of a body viewed from Earth.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.seasons" title="skyfield.almanac.seasons"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seasons</span></code></a>(ephemeris)</td>
+<td>Build a function of time that returns the quarter of the year.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.moon_phase" title="skyfield.almanac.moon_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moon_phase</span></code></a>(ephemeris,&nbsp;t)</td>
+<td>Return the Moon phase 0°–360° at time <code class="docutils literal notranslate"><span class="pre">t</span></code>, where 180° is Full Moon.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.moon_phases" title="skyfield.almanac.moon_phases"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moon_phases</span></code></a>(ephemeris)</td>
+<td>Build a function of time that returns the moon phase 0 through 3.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.moon_nodes" title="skyfield.almanac.moon_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moon_nodes</span></code></a>(ephemeris)</td>
+<td>Build a function of time that identifies lunar nodes.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.oppositions_conjunctions" title="skyfield.almanac.oppositions_conjunctions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oppositions_conjunctions</span></code></a>(ephemeris,&nbsp;target)</td>
+<td>Build a function to find oppositions and conjunctions with the Sun.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.meridian_transits" title="skyfield.almanac.meridian_transits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meridian_transits</span></code></a>(ephemeris,&nbsp;target,&nbsp;topos)</td>
+<td>Build a function of time for finding when a body transits the meridian.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.sunrise_sunset" title="skyfield.almanac.sunrise_sunset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sunrise_sunset</span></code></a>(ephemeris,&nbsp;topos)</td>
+<td>Build a function of time that returns whether the Sun is up.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.dark_twilight_day" title="skyfield.almanac.dark_twilight_day"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dark_twilight_day</span></code></a>(ephemeris,&nbsp;topos)</td>
+<td>Build a function of time returning whether it is dark, twilight, or day.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.risings_and_settings" title="skyfield.almanac.risings_and_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">risings_and_settings</span></code></a>(ephemeris,&nbsp;target,&nbsp;topos)</td>
+<td>Build a function of time that returns whether a body is up.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.eclipselib.lunar_eclipses" title="skyfield.eclipselib.lunar_eclipses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lunar_eclipses</span></code></a>(start_time,&nbsp;end_time,&nbsp;eph)</td>
+<td>Return the lunar eclipses between <code class="docutils literal notranslate"><span class="pre">start_time</span></code> and <code class="docutils literal notranslate"><span class="pre">end_time</span></code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="topocentric-locations">
+<h2><a class="toc-backref" href="#id10">Topocentric locations</a><a class="headerlink" href="#topocentric-locations" title="Permalink to this headline">¶</a></h2>
+<p>You can create a vector function
+that computes the location of any position on the Earth’s surface.
+Start with a reference model of the Earth’s exact shape:</p>
+<ul class="simple">
+<li><a class="reference internal" href="api-topos.html#skyfield.toposlib.wgs84" title="skyfield.toposlib.wgs84"><code class="xref any py py-data docutils literal notranslate"><span class="pre">wgs84</span></code></a></li>
+<li><a class="reference internal" href="api-topos.html#skyfield.toposlib.iers2010" title="skyfield.toposlib.iers2010"><code class="xref any py py-data docutils literal notranslate"><span class="pre">iers2010</span></code></a></li>
+</ul>
+<p>Then ask the model for the location of a given longitude and latitude:</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid" title="skyfield.toposlib.Geoid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid</span></code></a>(name,&nbsp;radius_m,&nbsp;inverse_flattening)</td>
+<td>An Earth ellipsoid; maps latitudes and longitudes to x,y,z positions.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.latlon" title="skyfield.toposlib.Geoid.latlon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.latlon</span></code></a>(latitude_degrees,&nbsp;longitude_degrees)</td>
+<td>Return the geographic position of a given latitude and longitude.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.subpoint" title="skyfield.toposlib.Geoid.subpoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.subpoint</span></code></a>(position)</td>
+<td>Return Earth latitude and longitude beneath a celestial <code class="docutils literal notranslate"><span class="pre">position</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Finally, the resulting geographic location
+can compute its position at any specified time
+by combining its coordinates with the orientation and rotation of the Earth:</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a>(model,&nbsp;latitude,&nbsp;…)</td>
+<td>The position of a latitude and longitude on Earth.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition.at" title="skyfield.toposlib.GeographicPosition.at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeographicPosition.at</span></code></a>(t)</td>
+<td>At time <code class="docutils literal notranslate"><span class="pre">t</span></code>, compute the target’s position relative to the center.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition.lst_hours_at" title="skyfield.toposlib.GeographicPosition.lst_hours_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeographicPosition.lst_hours_at</span></code></a>(t)</td>
+<td>Return this position’s Local Sidereal Time in hours at time <code class="docutils literal notranslate"><span class="pre">t</span></code>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition.refract" title="skyfield.toposlib.GeographicPosition.refract"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeographicPosition.refract</span></code></a>(altitude_degrees,&nbsp;…)</td>
+<td>Predict how the atmosphere will refract a position.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition.rotation_at" title="skyfield.toposlib.GeographicPosition.rotation_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeographicPosition.rotation_at</span></code></a>(t)</td>
+<td>Compute rotation from GCRS to this location’s altazimuth system.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="kepler-orbits">
+<h2><a class="toc-backref" href="#id11">Kepler orbits</a><a class="headerlink" href="#kepler-orbits" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="kepler-orbits.html"><span class="doc">Kepler Orbits</span></a>
+for computing the positions of comets, asteroids, and other minor planets.</p>
+</div>
+<div class="section" id="earth-satellites">
+<h2><a class="toc-backref" href="#id12">Earth satellites</a><a class="headerlink" href="#earth-satellites" title="Permalink to this headline">¶</a></h2>
+<p>By downloading TLE satellite element sets,
+Skyfield users can build vector functions
+that predict their positions.
+See <a class="reference internal" href="earth-satellites.html"><span class="doc">Earth Satellites</span></a>.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite" title="skyfield.sgp4lib.EarthSatellite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EarthSatellite</span></code></a>(line1,&nbsp;line2[,&nbsp;name,&nbsp;ts])</td>
+<td>An Earth satellite loaded from a TLE file and propagated with SGP4.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite.from_satrec" title="skyfield.sgp4lib.EarthSatellite.from_satrec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EarthSatellite.from_satrec</span></code></a>(satrec,&nbsp;ts)</td>
+<td>Build an EarthSatellite from a raw sgp4 Satrec object.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="stars-and-other-distant-objects">
+<h2><a class="toc-backref" href="#id13">Stars and other distant objects</a><a class="headerlink" href="#stars-and-other-distant-objects" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-stars.html#skyfield.starlib.Star" title="skyfield.starlib.Star"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Star</span></code></a></td>
+<td>The position in the sky of a star or other fixed object.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="astronomical-positions">
+<h2><a class="toc-backref" href="#id14">Astronomical positions</a><a class="headerlink" href="#astronomical-positions" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a> three-dimensional position vector serves as the base class
+for all of the following position classes.  Each class represents an
+(x,y,z) <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> vector oriented to the axes of
+the International Celestial Reference Frame, an inertial system that is
+an update to J2000 and that does not rotate with respect to the
+universe.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF</span></code></a></td>
+<td>An (x,y,z) position and velocity oriented to the ICRF axes.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric" title="skyfield.positionlib.Barycentric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Barycentric</span></code></a></td>
+<td>An (x,y,z) position measured from the Solar System barycenter.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric" title="skyfield.positionlib.Astrometric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Astrometric</span></code></a></td>
+<td>An astrometric (x,y,z) position relative to a particular observer.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent" title="skyfield.positionlib.Apparent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Apparent</span></code></a></td>
+<td>An apparent <code class="docutils literal notranslate"><span class="pre">[x</span> <span class="pre">y</span> <span class="pre">z]</span></code> position relative to a particular observer.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.Geocentric" title="skyfield.positionlib.Geocentric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geocentric</span></code></a></td>
+<td>An (x,y,z) position measured from the center of the Earth.</td>
+</tr>
+</tbody>
+</table>
+<p>Positions are usually generated by the <code class="docutils literal notranslate"><span class="pre">at(t)</span></code> method of a vector
+function, rather than being constructed manually.  But you can also
+build a position directly from a raw vector, or from right ascension and
+declination coordinates with
+<a class="reference internal" href="api-position.html#skyfield.positionlib.position_of_radec" title="skyfield.positionlib.position_of_radec"><code class="xref py py-func docutils literal notranslate"><span class="pre">skyfield.positionlib.position_of_radec()</span></code></a>.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.position_of_radec" title="skyfield.positionlib.position_of_radec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">position_of_radec</span></code></a>(ra_hours,&nbsp;dec_degrees[,&nbsp;…])</td>
+<td>Build a position object from a right ascension and declination.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="position-methods-and-attributes">
+<h2><a class="toc-backref" href="#id15">Position methods and attributes</a><a class="headerlink" href="#position-methods-and-attributes" title="Permalink to this headline">¶</a></h2>
+<p>All position objects have three attributes
+which provide access to their raw data:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">ICRF.t</span></code></td>
+<td>The <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> of the position.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">ICRF.position</span></code></td>
+<td>A <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> array giving x,&nbsp;y,&nbsp;z.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">ICRF.velocity</span></code></td>
+<td>A <a class="reference internal" href="api-units.html#skyfield.units.Velocity" title="skyfield.units.Velocity"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Velocity</span></code></a> array giving ẋ,&nbsp;ẏ,&nbsp;ż.</td>
+</tr>
+</tbody>
+</table>
+<p>If a position lacks a velocity,
+then the attribute is simply the value <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>All positions support a basic set of methods:</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.distance" title="skyfield.positionlib.ICRF.distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.distance</span></code></a>()</td>
+<td>Compute the distance from the origin to this position.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.speed" title="skyfield.positionlib.ICRF.speed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.speed</span></code></a>()</td>
+<td>Compute the magnitude of the velocity vector.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.radec</span></code></a>([epoch])</td>
+<td>Compute equatorial (RA, declination, distance)</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.separation_from" title="skyfield.positionlib.ICRF.separation_from"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.separation_from</span></code></a>(another_icrf)</td>
+<td>Return the angle between this position and another.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz" title="skyfield.positionlib.ICRF.frame_xyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.frame_xyz</span></code></a>(frame)</td>
+<td>Return this position as an (x,y,z) vector in a reference frame.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz_and_velocity" title="skyfield.positionlib.ICRF.frame_xyz_and_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.frame_xyz_and_velocity</span></code></a>(frame)</td>
+<td>Return (x,y,z) position and velocity vectors in a reference frame.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_latlon" title="skyfield.positionlib.ICRF.frame_latlon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.frame_latlon</span></code></a>(frame)</td>
+<td>Return longitude, latitude, and distance in the given frame.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_time_and_frame_vectors" title="skyfield.positionlib.ICRF.from_time_and_frame_vectors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_time_and_frame_vectors</span></code></a>(t,&nbsp;frame,&nbsp;…)</td>
+<td>Constructor: build a position from two vectors in a reference frame.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_sunlit" title="skyfield.positionlib.ICRF.is_sunlit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.is_sunlit</span></code></a>(ephemeris)</td>
+<td>Return whether a position in Earth orbit is in sunlight.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_altaz" title="skyfield.positionlib.ICRF.from_altaz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_altaz</span></code></a>([alt,&nbsp;az,&nbsp;alt_degrees,&nbsp;…])</td>
+<td>Generate an Apparent position from an altitude and azimuth.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="position-methods-specific-to-one-class">
+<h2><a class="toc-backref" href="#id16">Position methods specific to one class</a><a class="headerlink" href="#position-methods-specific-to-one-class" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Barycentric.observe</span></code></a>(body)</td>
+<td>Compute the <a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric" title="skyfield.positionlib.Astrometric"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Astrometric</span></code></a> position of a body from this location.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric.apparent" title="skyfield.positionlib.Astrometric.apparent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Astrometric.apparent</span></code></a>()</td>
+<td>Compute an <a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent" title="skyfield.positionlib.Apparent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Apparent</span></code></a> position for this body.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent.altaz" title="skyfield.positionlib.Apparent.altaz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Apparent.altaz</span></code></a>([temperature_C,&nbsp;pressure_mbar])</td>
+<td>Compute (alt, az, distance) relative to the observer’s horizon</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="reference-frames">
+<h2><a class="toc-backref" href="#id17">Reference frames</a><a class="headerlink" href="#reference-frames" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-framelib.html#skyfield.framelib.true_equator_and_equinox_of_date" title="skyfield.framelib.true_equator_and_equinox_of_date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skyfield.framelib.true_equator_and_equinox_of_date</span></code></a></td>
+<td>The dynamical frame of the Earth’s true equator and equinox of date.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-framelib.html#skyfield.framelib.itrs" title="skyfield.framelib.itrs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skyfield.framelib.itrs</span></code></a></td>
+<td>The International Terrestrial Reference System (ITRS).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-framelib.html#skyfield.framelib.ecliptic_frame" title="skyfield.framelib.ecliptic_frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skyfield.framelib.ecliptic_frame</span></code></a></td>
+<td>Reference frame of the true ecliptic and equinox of date.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-framelib.html#skyfield.framelib.ecliptic_J2000_frame" title="skyfield.framelib.ecliptic_J2000_frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skyfield.framelib.ecliptic_J2000_frame</span></code></a></td>
+<td>Reference frame of the true ecliptic and equinox at J2000.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-framelib.html#skyfield.framelib.galactic_frame" title="skyfield.framelib.galactic_frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skyfield.framelib.galactic_frame</span></code></a></td>
+<td>Galactic System II reference frame.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="constellations">
+<h2><a class="toc-backref" href="#id18">Constellations</a><a class="headerlink" href="#constellations" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="skyfield.api.load_constellation_map">
+<code class="descclassname">skyfield.api.</code><code class="descname">load_constellation_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.api.load_constellation_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Skyfield’s constellation boundaries and return a lookup function.</p>
+<p>Skyfield carries an internal map of constellation boundaries that is
+optimized for quick position lookup.  Call this function to load the
+map and return a function mapping position to constellation name.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">position_of_radec</span><span class="p">,</span> <span class="n">load_constellation_map</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">constellation_at</span> <span class="o">=</span> <span class="n">load_constellation_map</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">north_pole</span> <span class="o">=</span> <span class="n">position_of_radec</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">constellation_at</span><span class="p">(</span><span class="n">north_pole</span><span class="p">)</span>
+<span class="go">&#39;UMi&#39;</span>
+</pre></div>
+</div>
+<p>If you pass an array of positions, you’ll receive an array of names.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.api.load_constellation_names">
+<code class="descclassname">skyfield.api.</code><code class="descname">load_constellation_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.api.load_constellation_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of abbreviation-name tuples, like <code class="docutils literal notranslate"><span class="pre">('Aql',</span> <span class="pre">'Aquila')</span></code>.</p>
+<p>You can pass the list to Python’s <code class="docutils literal notranslate"><span class="pre">dict()</span></code> to build a dictionary
+that turns a constellation abbreviation into a full name:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load_constellation_names</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">load_constellation_names</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;UMa&#39;</span><span class="p">]</span>
+<span class="go">&#39;Ursa Major&#39;</span>
+</pre></div>
+</div>
+<p>By swapping the order of the two items, you can map the other way,
+from a full name back to an abbreviation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">load_constellation_names</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;Ursa Major&#39;</span><span class="p">]</span>
+<span class="go">&#39;UMa&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.data.stellarium.parse_constellations">
+<code class="descclassname">skyfield.data.stellarium.</code><code class="descname">parse_constellations</code><span class="sig-paren">(</span><em>lines</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.data.stellarium.parse_constellations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of constellation outlines.</p>
+<p>Each constellation outline is a list of edges, each of which is
+drawn between a pair of specific stars:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+    <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">[(</span><span class="n">star1</span><span class="p">,</span> <span class="n">star2</span><span class="p">),</span> <span class="p">(</span><span class="n">star3</span><span class="p">,</span> <span class="n">star4</span><span class="p">),</span> <span class="o">...</span><span class="p">]),</span>
+    <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">[(</span><span class="n">star1</span><span class="p">,</span> <span class="n">star2</span><span class="p">),</span> <span class="p">(</span><span class="n">star3</span><span class="p">,</span> <span class="n">star4</span><span class="p">),</span> <span class="o">...</span><span class="p">]),</span>
+    <span class="o">...</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Each name is a 3-letter constellation abbreviation; each star is an
+integer Hipparcos catalog number.  See <a class="reference internal" href="example-plots.html#neowise-chart"><span class="std std-ref">Drawing a finder chart for comet NEOWISE</span></a> for an
+example of how to combine this data with the Hipparcos star catalog
+to draw constellation lines on a chart.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.data.stellarium.parse_star_names">
+<code class="descclassname">skyfield.data.stellarium.</code><code class="descname">parse_star_names</code><span class="sig-paren">(</span><em>lines</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.data.stellarium.parse_star_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the names in a Stellarium <code class="docutils literal notranslate"><span class="pre">star_names.fab</span></code> file.</p>
+<p>Returns a list of named tuples, each of which offers a <code class="docutils literal notranslate"><span class="pre">.hip</span></code>
+attribute with a Hipparcos catalog number and a <code class="docutils literal notranslate"><span class="pre">.name</span></code> attribute
+with the star name.  Do not depend on the tuple having only length
+two; additional fields may be added in the future.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="searching">
+<h2><a class="toc-backref" href="#id19">Searching</a><a class="headerlink" href="#searching" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="skyfield.searchlib.find_discrete">
+<code class="descclassname">skyfield.searchlib.</code><code class="descname">find_discrete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.searchlib.find_discrete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the times at which a discrete function of time changes value.</p>
+<p>This routine is used to find instantaneous events like sunrise,
+transits, and the seasons.  See <a class="reference internal" href="searches.html"><span class="doc">Searching for the dates of astronomical events</span></a> for how to use it
+yourself.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.searchlib.find_maxima">
+<code class="descclassname">skyfield.searchlib.</code><code class="descname">find_maxima</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.searchlib.find_maxima" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the local maxima in the values returned by a function of time.</p>
+<p>This routine is used to find events like highest altitude and
+maximum elongation.  See <a class="reference internal" href="searches.html"><span class="doc">Searching for the dates of astronomical events</span></a> for how to use it yourself.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.searchlib.find_minima">
+<code class="descclassname">skyfield.searchlib.</code><code class="descname">find_minima</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.searchlib.find_minima" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the local minima in the values returned by a function of time.</p>
+<p>This routine is used to find events like minimum elongation.  See
+<a class="reference internal" href="searches.html"><span class="doc">Searching for the dates of astronomical events</span></a> for how to use it yourself.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="osculating-orbital-elements">
+<h2><a class="toc-backref" href="#id20">Osculating orbital elements</a><a class="headerlink" href="#osculating-orbital-elements" title="Permalink to this headline">¶</a></h2>
+<p>This routine returns osculating orbital elements for an object’s
+instantaneous position and velocity.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-elements.html#skyfield.elementslib.osculating_elements_of" title="skyfield.elementslib.osculating_elements_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">osculating_elements_of</span></code></a>(position[,&nbsp;…])</td>
+<td>Produce the osculating orbital elements for a position.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="64%" />
+<col width="36%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.apoapsis_distance</span></code></td>
+<td>Distance object</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.argument_of_latitude</span></code></td>
+<td>Angle object</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.argument_of_periapsis</span></code></td>
+<td>Angle object</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.eccentric_anomaly</span></code></td>
+<td>Angle object</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.eccentricity</span></code></td>
+<td>numpy.ndarray</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.inclination</span></code></td>
+<td>Angle object</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.longitude_of_ascending_node</span></code></td>
+<td>Angle object</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.longitude_of_periapsis</span></code></td>
+<td>Angle object</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.mean_anomaly</span></code></td>
+<td>Angle object</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.mean_longitude</span></code></td>
+<td>Angle object</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.mean_motion_per_day</span></code></td>
+<td>Angle object</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.periapsis_distance</span></code></td>
+<td>Distance object</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.periapsis_time</span></code></td>
+<td>Time object</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.period_in_days</span></code></td>
+<td>numpy.ndarray</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.semi_latus_rectum</span></code></td>
+<td>Distance object</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.semi_major_axis</span></code></td>
+<td>Distance object</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.semi_minor_axis</span></code></td>
+<td>Distance object</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.time</span></code></td>
+<td>Time object</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.true_anomaly</span></code></td>
+<td>Angle object</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">OsculatingElements.true_longitude</span></code></td>
+<td>Angle object</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="units">
+<h2><a class="toc-backref" href="#id21">Units</a><a class="headerlink" href="#units" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a></td>
+<td>Distance measure.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">Distance.au</span></code></td>
+<td>Astronomical Units.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">Distance.km</span></code></td>
+<td>Kilometers.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">Distance.m</span></code></td>
+<td>Meters.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Velocity" title="skyfield.units.Velocity"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Velocity</span></code></a></td>
+<td>Velocity measure.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">Velocity.au_per_d</span></code></td>
+<td>Astronomical Units.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">Velocity.km_per_s</span></code></td>
+<td>Kilometers.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a></td>
+<td>Angle measure.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">Angle.degrees</span></code></td>
+<td>Degrees of arc (360 in a complete circle).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">Angle.hours</span></code></td>
+<td>Hours of arc (24 in a complete circle).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">Angle.radians</span></code></td>
+<td>Radians (τ = 2π in a complete circle).</td>
+</tr>
+</tbody>
+</table>
+<p>All three kinds of quantity support one or more methods.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance.length" title="skyfield.units.Distance.length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Distance.length</span></code></a>()</td>
+<td>Compute the length when this is an x,y,z vector.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance.light_seconds" title="skyfield.units.Distance.light_seconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Distance.light_seconds</span></code></a>()</td>
+<td>Return the length of this vector in light seconds.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance.to" title="skyfield.units.Distance.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Distance.to</span></code></a>(unit)</td>
+<td>Convert this distance to the given AstroPy unit.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Velocity.to" title="skyfield.units.Velocity.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Velocity.to</span></code></a>(unit)</td>
+<td>Convert this velocity to the given AstroPy unit.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.arcminutes" title="skyfield.units.Angle.arcminutes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.arcminutes</span></code></a>()</td>
+<td>Return the angle in arcminutes.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.arcseconds" title="skyfield.units.Angle.arcseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.arcseconds</span></code></a>()</td>
+<td>Return the angle in arcseconds.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.mas" title="skyfield.units.Angle.mas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.mas</span></code></a>()</td>
+<td>Return the angle in milliarcseconds.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.to" title="skyfield.units.Angle.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.to</span></code></a>(unit)</td>
+<td>Convert this angle to the given AstroPy unit.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.hms" title="skyfield.units.Angle.hms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.hms</span></code></a>([warn])</td>
+<td>Convert to a tuple (hours, minutes, seconds).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.signed_hms" title="skyfield.units.Angle.signed_hms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.signed_hms</span></code></a>([warn])</td>
+<td>Convert to a tuple (sign, hours, minutes, seconds).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.hstr" title="skyfield.units.Angle.hstr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.hstr</span></code></a>([places,&nbsp;warn])</td>
+<td>Convert to a string like <code class="docutils literal notranslate"><span class="pre">12h</span> <span class="pre">07m</span> <span class="pre">30.00s</span></code>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.dms" title="skyfield.units.Angle.dms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.dms</span></code></a>([warn])</td>
+<td>Convert to a tuple (degrees, minutes, seconds).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.signed_dms" title="skyfield.units.Angle.signed_dms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.signed_dms</span></code></a>([warn])</td>
+<td>Convert to a tuple (sign, degrees, minutes, seconds).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.dstr" title="skyfield.units.Angle.dstr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.dstr</span></code></a>([places,&nbsp;warn])</td>
+<td>Convert to a string like <code class="docutils literal notranslate"><span class="pre">181deg</span> <span class="pre">52'</span> <span class="pre">30.0&quot;</span></code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="trigonometry">
+<h2><a class="toc-backref" href="#id22">Trigonometry</a><a class="headerlink" href="#trigonometry" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-trigonometry.html#skyfield.trigonometry.position_angle_of" title="skyfield.trigonometry.position_angle_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">position_angle_of</span></code></a>(anglepair1,&nbsp;anglepair2)</td>
+<td>Return the position angle of one position with respect to another.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+  </body>
+</html>

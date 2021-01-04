@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Concentric CSS</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>Concentric CSS</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>10 September 2011</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">computing</td>
+</tr>
+</tbody>
+</table>
+<p>(My official Concentric CSS “style.css” is in a
+<a class="reference external" href="https://github.com/brandon-rhodes/Concentric-CSS/">GitHub repository</a>)</p>
+<p>Perhaps my mind is unusually visual,
+but I have no idea how people clearly picture the effects of their CSS rules
+when following the common advice
+to sort their properties alphabetically within each declaration block
+(as in the answers to
+<a class="reference external" href="http://stackoverflow.com/questions/4878655/conventional-order-of-css-attributes">this Stack Overflow question</a>).</p>
+<p>The main alternative to alphabetization seems to be a
+<a class="reference external" href="http://fordinteractive.com/2009/02/order-of-the-day-css-properties/">CSS property order that claims to be based on the box model</a>
+but which tackles properties in a sadly haphazard order.
+It starts with <tt class="docutils literal">display</tt> and <tt class="docutils literal">position</tt>,
+which are a great start,
+but these are immediately followed by the <tt class="docutils literal">height</tt> and <tt class="docutils literal">width</tt> —
+even though these dimensions only apply to the content,
+which is nestled down inside the deepest level of the box!
+The order then continues to skip around wildly,
+jumping outside the box to talk about the margins,
+then jumping almost all the way back inside
+to talk about the padding.
+Finally it gets to the borders,
+even though they will actually be sandwiched
+<em>between</em> the margins and the padding
+when rendered by the browser.</p>
+<p>For reference, here is the box model
+as illustrated in the CSS standard itself:</p>
+<img alt="http://www.w3.org/TR/CSS2/images/boxdim.png" src="http://www.w3.org/TR/CSS2/images/boxdim.png" />
+<p>The fact that <tt class="docutils literal">width</tt> and <tt class="docutils literal">height</tt> apply only to the content,
+and not to the padding or anything else,
+is a crucial issue in CSS —
+an issue that causes newcomers a lot of grief.
+For everyone's sanity,
+I&nbsp;need the order in which I declare properties
+to reflect the structure of the box itself,
+with the <tt class="docutils literal">width</tt> and <tt class="docutils literal">height</tt> coming after
+the decorations that wrap around them.</p>
+<p>I call the result <strong>Concentric CSS</strong>
+and the basic template looks something like this:</p>
+<div class="highlight"><pre><span class="p">{</span>
+    <span class="k">display</span><span class="o">:</span> <span class="p">;</span>    <span class="c">/* Where and how the box is placed */</span>
+    <span class="k">position</span><span class="o">:</span> <span class="p">;</span>
+    <span class="k">float</span><span class="o">:</span> <span class="p">;</span>
+    <span class="k">clear</span><span class="o">:</span> <span class="p">;</span>
+
+    <span class="k">visibility</span><span class="o">:</span> <span class="p">;</span> <span class="c">/* Can the box be seen? */</span>
+    <span class="k">opacity</span><span class="o">:</span> <span class="p">;</span>
+    <span class="k">z-index</span><span class="o">:</span> <span class="p">;</span>
+
+    <span class="k">margin</span><span class="o">:</span> <span class="p">;</span>     <span class="c">/* Layers of the box model */</span>
+    <span class="k">outline</span><span class="o">:</span> <span class="p">;</span>
+    <span class="k">border</span><span class="o">:</span> <span class="p">;</span>
+    <span class="k">background</span><span class="o">:</span> <span class="p">;</span>
+    <span class="k">padding</span><span class="o">:</span> <span class="p">;</span>
+
+    <span class="k">width</span><span class="o">:</span> <span class="p">;</span>      <span class="c">/* Content dimensions and scrollbars */</span>
+    <span class="k">height</span><span class="o">:</span> <span class="p">;</span>
+    <span class="k">overflow</span><span class="o">:</span> <span class="p">;</span>
+
+    <span class="k">color</span><span class="o">:</span> <span class="p">;</span>      <span class="c">/* Text */</span>
+    <span class="k">text</span><span class="o">:</span> <span class="p">;</span>
+    <span class="k">font</span><span class="o">:</span> <span class="p">;</span>
+<span class="p">}</span></pre></div>
+
+<p>Are you surprised that I sandwiched <tt class="docutils literal">background</tt>
+between the border and padding instead of saving it until later?
+My reasoning is that the <tt class="docutils literal">padding</tt> is the first part of the box
+that actually gets painted with the background color —
+I have positioned <tt class="docutils literal">background</tt> so that everything beneath it
+gets the background color, while everything above has its own
+color (borders) or is transparent (margins).</p>
+<p>I am not certain about my choice
+of where to place the <tt class="docutils literal">overflow</tt> property.
+Its current position is dictated by the fact that it is often triggered
+by too small a height and width —
+so it often serves as a kind of “else clause”
+to say what should happen if the height and width
+are too constraining, and so the property makes sense next to them.
+But one of the consequences of <tt class="docutils literal">overflow</tt> can be
+that scrollbars appear around the box,
+and an argument could be made for putting <tt class="docutils literal">overflow</tt>
+up between the borders and padding,
+because that is exactly the place where
+<a class="reference external" href="http://www.w3.org/TR/CSS2/visufx.html#propdef-overflow">the standard</a>
+insists that scrollbars be drawn.</p>
+<p>For the sake of completeness
+I have written up my preferred property order —
+with a much more exhaustive list of properties
+than in the sketch shown above —
+as a
+<a class="reference external" href="https://github.com/brandon-rhodes/Concentric-CSS/blob/master/style.css">style.css</a>
+file that lives in its own
+<a class="reference external" href="https://github.com/brandon-rhodes/Concentric-CSS/">GitHub repository</a>.
+I&nbsp;welcome comments and improvements,
+especially ones that will make this ordering
+an even better reflection of the box model.
+I want my CSS to make as much sense as possible
+both to the newcomer as well as the seasoned professional!</p>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'rhodesmill';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<p class="byline">©2020</p>
+
+</body>
+</html>

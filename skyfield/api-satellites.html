@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — Earth Satellites</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-earth-satellites">
+<h1>API Reference — Earth Satellites<a class="headerlink" href="#api-reference-earth-satellites" title="Permalink to this headline">¶</a></h1>
+<p>See <a class="reference internal" href="earth-satellites.html"><span class="doc">Earth Satellites</span></a> for an introduction to downloading Earth
+satellite data and computing their positions with Skyfield.</p>
+<dl class="class">
+<dt id="skyfield.sgp4lib.EarthSatellite">
+<em class="property">class </em><code class="descclassname">skyfield.sgp4lib.</code><code class="descname">EarthSatellite</code><span class="sig-paren">(</span><em>line1</em>, <em>line2</em>, <em>name=None</em>, <em>ts=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.sgp4lib.EarthSatellite" title="Permalink to this definition">¶</a></dt>
+<dd><p>An Earth satellite loaded from a TLE file and propagated with SGP4.</p>
+<p>An earth satellite object is a Skyfield vector function, so you can
+either call its <code class="docutils literal notranslate"><span class="pre">at()</span></code> method to generate its position in the sky
+or else use addition and subtraction to combine it with other
+vectors.</p>
+<p>Satellite parameters are generally only accurate for a week or two
+around the <em>epoch</em> of the parameters, the date for which they were
+generated, which is available as an attribute:</p>
+<dl class="docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">epoch</span></code></dt>
+<dd>A Skyfield <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> giving the exact
+epoch moment for these satellite orbit parameters.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt>
+<dd>Satellite name</dd>
+</dl>
+<p>When building a satellite, use the arguments <code class="docutils literal notranslate"><span class="pre">line1</span></code> and <code class="docutils literal notranslate"><span class="pre">line2</span></code>
+to provide the two data lines from a TLE file as separate strings.
+Optional <code class="docutils literal notranslate"><span class="pre">name</span></code> lets you give a name to the satellite, accessible
+later through the <code class="docutils literal notranslate"><span class="pre">name</span></code> attribute.  <code class="docutils literal notranslate"><span class="pre">ts</span></code> is a
+<a class="reference internal" href="api-time.html#skyfield.timelib.Timescale" title="skyfield.timelib.Timescale"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timescale</span></code></a> object, used to generate the
+<code class="docutils literal notranslate"><span class="pre">epoch</span></code> value; if it is not provided, the satellite will use a
+built in <code class="docutils literal notranslate"><span class="pre">Timescale</span></code> object.</p>
+<p>If you are interested in the catalog entry details, the SGP4 model
+parameters for a particular satellite can be accessed through its
+<code class="docutils literal notranslate"><span class="pre">model</span></code> attribute:</p>
+<dl class="docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">model.satnum</span></code></dt>
+<dd>The unique satellite NORAD catalog number given in the TLE file.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.classification</span></code></dt>
+<dd>Satellite classification, or else <code class="docutils literal notranslate"><span class="pre">'U'</span></code> for “Unknown”</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.intldesg</span></code></dt>
+<dd>International designator</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.epochyr</span></code></dt>
+<dd>Full four-digit year of this element set’s epoch moment.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.epochdays</span></code></dt>
+<dd>Fractional days into the year of the epoch moment.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.jdsatepoch</span></code></dt>
+<dd>Julian date of the epoch (computed from <code class="docutils literal notranslate"><span class="pre">epochyr</span></code> and <code class="docutils literal notranslate"><span class="pre">epochdays</span></code>).</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.ndot</span></code></dt>
+<dd>First time derivative of the mean motion (ignored by SGP4).</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.nddot</span></code></dt>
+<dd>Second time derivative of the mean motion (ignored by SGP4).</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.bstar</span></code></dt>
+<dd>Ballistic drag coefficient B* in inverse earth radii.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.ephtype</span></code></dt>
+<dd>Ephemeris type (ignored by SGP4 as determination now automatic)</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.elnum</span></code></dt>
+<dd>Element number</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.inclo</span></code></dt>
+<dd>Inclination in radians.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.nodeo</span></code></dt>
+<dd>Right ascension of ascending node in radians.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.ecco</span></code></dt>
+<dd>Eccentricity.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.argpo</span></code></dt>
+<dd>Argument of perigee in radians.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.mo</span></code></dt>
+<dd>Mean anomaly in radians.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.no_kozai</span></code></dt>
+<dd>Mean motion in radians per minute.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">model.revnum</span></code></dt>
+<dd>Revolution number at epoch [Revs]</dd>
+</dl>
+<dl class="classmethod">
+<dt id="skyfield.sgp4lib.EarthSatellite.from_satrec">
+<em class="property">classmethod </em><code class="descname">from_satrec</code><span class="sig-paren">(</span><em>satrec</em>, <em>ts</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.sgp4lib.EarthSatellite.from_satrec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build an EarthSatellite from a raw sgp4 Satrec object.</p>
+<p>This lets you provide raw numeric orbital elements instead of
+the text of a TLE set.  See <a class="reference internal" href="earth-satellites.html#from-satrec"><span class="std std-ref">Build a satellite from orbital elements</span></a> for detais.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.sgp4lib.EarthSatellite.ITRF_position_velocity_error">
+<code class="descname">ITRF_position_velocity_error</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.sgp4lib.EarthSatellite.ITRF_position_velocity_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the ITRF position, velocity, and error at time <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.t" title="skyfield.positionlib.ICRF.t"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">t</span></code></a>.</p>
+<p>The position is an x,y,z vector measured in au, the velocity is
+an x,y,z vector measured in au/day, and the error is a vector of
+possible error messages for the time or vector of times <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.t" title="skyfield.positionlib.ICRF.t"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">t</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.sgp4lib.EarthSatellite.find_events">
+<code class="descname">find_events</code><span class="sig-paren">(</span><em>topos</em>, <em>t0</em>, <em>t1</em>, <em>altitude_degrees=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.sgp4lib.EarthSatellite.find_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the times at which the satellite rises, culminates, and sets.</p>
+<p>Searches between <code class="docutils literal notranslate"><span class="pre">t0</span></code> and <code class="docutils literal notranslate"><span class="pre">t1</span></code>, which should each be a
+Skyfield <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> object, for passes of
+this satellite above the location <code class="docutils literal notranslate"><span class="pre">topos</span></code> that reach at least
+<code class="docutils literal notranslate"><span class="pre">altitude_degrees</span></code> above the horizon.</p>
+<p>Returns a tuple <code class="docutils literal notranslate"><span class="pre">(t,</span> <span class="pre">events)</span></code> whose first element is a
+<a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> array and whose second element
+is an array of events:</p>
+<ul class="simple">
+<li>0 — Satellite rose above <code class="docutils literal notranslate"><span class="pre">altitude_degrees</span></code>.</li>
+<li>1 — Satellite culminated and started to descend again.</li>
+<li>2 — Satellite fell below <code class="docutils literal notranslate"><span class="pre">altitude_degrees</span></code>.</li>
+</ul>
+<p>Note that multiple culminations in a row are possible when,
+without setting, the satellite reaches a second peak altitude
+after descending partway down the sky from the first one.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+  </body>
+</html>

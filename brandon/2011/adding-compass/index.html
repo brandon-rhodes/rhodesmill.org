@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Adding Compass to your project</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>Adding Compass to your project</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>13 May 2011</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">computing</td>
+</tr>
+</tbody>
+</table>
+<p>The <a class="reference external" href="http://compass-style.org/">Compass CSS authoring framework</a>
+has become one of the standard tools
+that gets installed when I start working on a new web application.
+I&nbsp;always version-control
+not only the <tt class="docutils literal">.scss</tt> Sass source files that I myself write,
+but also the <tt class="docutils literal">.css</tt> CSS files that Compass compiles from them.
+That way, anyone who checks out the project
+immediately gets a working web site
+without having to install Compass —
+or even having to know that it exists,
+if they are not themselves involved in writing the CSS.</p>
+<p>But those of us who work on the CSS do need Compass,
+so I have a standard technique that I copy from project to project
+that installs Compass into a small, local Ruby environment,
+providing the same kind of isolation and reproducibility
+that Python has taught me to know and love
+thanks to <a class="reference external" href="http://www.virtualenv.org/">virtualenv</a>.</p>
+<p>The process goes like this.</p>
+<p>First I create a <tt class="docutils literal">compass/</tt> directory,
+typically up at the top level of the project,
+that initially contains nothing but a pair of shell scripts.
+The first script, <tt class="docutils literal">install.sh</tt>, knows how to get Compass
+downloaded and installed:</p>
+<div class="highlight"><pre><span class="c">#!/bin/bash</span>
+<span class="c"># compass/install.sh - install Compass under the &quot;./Gem&quot; directory</span>
+
+<span class="k">if</span> ! which gem &gt;/dev/null ;<span class="k">then</span>
+<span class="k">    </span><span class="nb">echo</span> <span class="s1">&#39;Error: no &quot;gem&quot; command available&#39;</span>
+    <span class="nb">echo</span> <span class="s1">&#39;Please &quot;sudo aptitude install rubygems1.8&quot; or &quot;ruby1.9.1&quot;&#39;</span>
+    <span class="nb">exit </span>1
+<span class="k">fi</span>
+<span class="nv">BASE</span><span class="o">=</span><span class="k">$(</span>dirname <span class="k">$(</span>readlink -f <span class="k">$(</span>which <span class="s2">&quot;$0&quot;</span><span class="k">)))</span>
+<span class="nb">cd</span> <span class="nv">$BASE</span>  <span class="c"># the directory where this script lives</span>
+gem install -i Gem compass
+gem install -i Gem compass-susy-plugin</pre></div>
+
+<p>When this shell script is run, a <tt class="docutils literal">compass/Gem/</tt> directory
+gets created with the <tt class="docutils literal">compass</tt> command down inside of it.
+To let me forget where the binary is located
+and how it can be safely invoked,
+a second shell script named <tt class="docutils literal">compass.sh</tt> wraps up the details:</p>
+<div class="highlight"><pre><span class="c">#!/bin/bash</span>
+<span class="c"># compass/compass.sh - properly invoke the &quot;Compass&quot; program</span>
+
+<span class="nv">BASE</span><span class="o">=</span><span class="k">$(</span>dirname <span class="k">$(</span>readlink -f <span class="k">$(</span>which <span class="s2">&quot;$0&quot;</span><span class="k">)))</span>
+<span class="nb">export </span><span class="nv">GEM_HOME</span><span class="o">=</span><span class="nv">$BASE</span>/Gem
+<span class="nb">export </span><span class="nv">RUBYLIB</span><span class="o">=</span><span class="nv">$BASE</span>/Gem/lib
+<span class="nv">$BASE</span>/Gem/bin/compass <span class="s2">&quot;$@&quot;</span></pre></div>
+
+<p>I always tell my version-control system
+to ignore the <tt class="docutils literal">compass/Gem/</tt> directory
+and the 5,115 files that Ruby creates beneath it;
+instead, I simply remember to re-run <tt class="docutils literal">install.sh</tt>
+after each fresh checkout
+when I want to get to work on the CSS.</p>
+<p>When I first start a project,
+I need an initial set of <tt class="docutils literal">.scss</tt> files to start editing,
+which can be supplied through the Compass command <tt class="docutils literal">create</tt>.
+Usually I want the CSS output to be written
+somewhere outside of the <tt class="docutils literal">compass/</tt> directory,
+so my initialization steps go something like this:</p>
+<div class="highlight"><pre><span class="err">$</span> <span class="n">cd</span> <span class="n">compass</span><span class="o">/</span>
+<span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">install</span><span class="p">.</span><span class="n">sh</span>
+<span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">compass</span><span class="p">.</span><span class="n">sh</span> <span class="n">create</span>
+<span class="err">$</span> <span class="n">rm</span> <span class="o">-</span><span class="n">r</span> <span class="n">stylesheets</span><span class="o">/</span>    <span class="err">#</span> <span class="n">where</span> <span class="n">Compass</span> <span class="n">wanted</span> <span class="n">the</span> <span class="n">output</span> <span class="n">CSS</span><span class="o">!</span>
+<span class="err">$</span> <span class="n">emacs</span> <span class="n">config</span><span class="p">.</span><span class="n">rb</span>
+<span class="cp"># There, I adjust the line: css_dir = &quot;../webapp/static/css&quot;</span>
+<span class="cp"># Plus, I also tend to set: line_comments = false</span>
+<span class="cp"># Of course, use your editor-of-choice for this step!</span></pre></div>
+
+<p>I check into version control the <tt class="docutils literal">config.rb</tt> file
+and the <tt class="docutils literal">compass/src/</tt> directory of pristine <tt class="docutils literal">.scss</tt> files.
+I tell my version-control system to ignore
+the <tt class="docutils literal"><span class="pre">.sass-cache/</span></tt> directory that gets created inside of <tt class="docutils literal">compass/</tt>
+each time the CSS is rebuilt.</p>
+<p>Once those changes checked in,
+I never need to run the <tt class="docutils literal">create</tt> command again
+for the whole lifetime of the project.
+Instead, whenever I am ready to work on the CSS,
+I simply open the <tt class="docutils literal">.scss</tt> files in my editor
+and in another window I do this:</p>
+<div class="highlight"><pre><span class="err">$</span> <span class="n">cd</span> <span class="n">compass</span><span class="o">/</span>
+<span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">compass</span><span class="p">.</span><span class="n">sh</span> <span class="n">watch</span></pre></div>
+
+<p>Just as a good development web server
+will auto-restart when you finish editing a file and hit <em>Save</em>,
+the Compass <tt class="docutils literal">watch</tt> command will sit patiently all day
+and re-compile your Sass files to CSS whenever it sees you change them.
+By leaving it running, I can edit a <tt class="docutils literal">.scss</tt> file
+and then hit <em>Reload</em> in my browser almost immediately to see the result
+without having to stop and run any intermediate commands.</p>
+<p>The files, therefore, that wind up in my version control are these:</p>
+<div class="highlight"><pre><span class="n">compass</span><span class="o">/</span><span class="n">compass</span><span class="p">.</span><span class="n">sh</span>
+<span class="n">compass</span><span class="o">/</span><span class="n">config</span><span class="p">.</span><span class="n">rb</span>
+<span class="n">compass</span><span class="o">/</span><span class="n">install</span><span class="p">.</span><span class="n">sh</span>
+<span class="n">compass</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">_base</span><span class="p">.</span><span class="n">scss</span>
+<span class="n">compass</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">_defaults</span><span class="p">.</span><span class="n">scss</span>
+<span class="n">compass</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">ie</span><span class="p">.</span><span class="n">scss</span>
+<span class="n">compass</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">print</span><span class="p">.</span><span class="n">scss</span>
+<span class="n">compass</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">screen</span><span class="p">.</span><span class="n">scss</span></pre></div>
+
+<p>And, of course, I also version-control
+the CSS files that Compass writes as output,
+over where I put them in the “main directory” of my web application:</p>
+<div class="highlight"><pre><span class="n">webapp</span><span class="o">/</span><span class="k">static</span><span class="o">/</span><span class="n">css</span><span class="o">/</span><span class="n">ie</span><span class="p">.</span><span class="n">css</span>
+<span class="n">webapp</span><span class="o">/</span><span class="k">static</span><span class="o">/</span><span class="n">css</span><span class="o">/</span><span class="n">print</span><span class="p">.</span><span class="n">css</span>
+<span class="n">webapp</span><span class="o">/</span><span class="k">static</span><span class="o">/</span><span class="n">css</span><span class="o">/</span><span class="n">screen</span><span class="p">.</span><span class="n">css</span></pre></div>
+
+<p>This all works out extremely well.
+Normal developers and deployers look under the <tt class="docutils literal">webapp/</tt> directory
+and see what looks like normal,
+if preternaturally well-written and organized,
+CSS files exactly where they expect to find them.
+Only we CSS geeks on the project
+know that they are written by shuffling over to the Compass directory
+and firing up a program that compiles them from simpler source files.
+And thanks to my handy little pair of shell scripts,
+the Compass install itself is always completely automated.</p>
+<p>Of course, as you can tell from the error message
+that <tt class="docutils literal">install.sh</tt> prints if it cannot find Ruby,
+these scripts are aimed at an audience using Ubuntu or Debian.
+Please note in your comments to this post
+how you might expand those instructions
+to help people using Fedora, MacOS&nbsp;X, or other operating systems!</p>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'rhodesmill';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<p class="byline">©2020</p>
+
+</body>
+</html>

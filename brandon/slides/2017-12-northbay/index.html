@@ -1,0 +1,2171 @@
+<html><head><title>Slides for "The Dictionary Even Mightier"</title><meta charset="UTF-8"></head></title><body><pre><span style="background-color:#a3b0b8;color:#ffffff">                                                          
+</span><span style="background-color:#a0aeb9;color:#ffffff">                                                          
+</span><span style="background-color:#b8b9b3;color:#ffffff">                                                          
+</span><span style="background-color:#d2c1a5;color:#ffffff">                                  </span><span style="background-color:#d2c1a5;color:#000000">v</span><span style="background-color:#d2c1a5;color:#ffffff">                       
+</span><span style="background-color:#e8c08a;color:#ffffff">                                                          
+</span><span style="background-color:#f6a74e;color:#ffffff">                            </span><span style="background-color:#fdff8b;color:#ffffff">    </span><span style="background-color:#f6a74e;color:#ffffff">                          
+</span><span style="background-color:#fba141;color:#ffffff">                          </span><span style="background-color:#fdff8b;color:#ffffff">        </span><span style="background-color:#fba141;color:#ffffff">                        
+</span><span style="background-color:#ed884a;color:#ffffff">                    </span><span style="background-color:#ed884a;color:#000000">◢</span><span style="background-color:#ed884a;color:#ffffff">    </span><span style="background-color:#fdff8b;color:#ffffff">          </span><span style="background-color:#ed884a;color:#ffffff">                       
+</span><span style="background-color:#6d7292;color:#ffffff">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                   </span><span style="background-color:#ffffff;color:#040404">Animating with ASCII</span><span style="background-color:#ffffff;color:#000000">                   
+                                                          
+               </span><span style="background-color:#ffffff;color:#040404">(Or, An Analysis Of The Code</span><span style="background-color:#ffffff;color:#000000">               
+                </span><span style="background-color:#ffffff;color:#040404">Behind My PyCon 2017 Talk)</span><span style="background-color:#ffffff;color:#000000">                
+                                                          
+                                                          
+                         </span><span style="background-color:#ffffff;color:#040404">Keynote</span><span style="background-color:#ffffff;color:#000000">                          
+                  </span><span style="background-color:#ffffff;color:#040404">North Bay Python 2017</span><span style="background-color:#ffffff;color:#000000">                   
+                     </span><span style="background-color:#ffffff;color:#040404">@brandon_rhodes</span><span style="background-color:#ffffff;color:#000000">                      
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                     </span><span style="background-color:#ffffff;color:#040404">PyCon 2017 talk</span><span style="background-color:#ffffff;color:#000000">                      
+                   </span><span style="background-color:#ffffff;color:#040404">used ASCII animation</span><span style="background-color:#ffffff;color:#000000">                   
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                     PyCon 2017 talk                      
+                   used ASCII animation                   
+                                                          
+                          </span><span style="background-color:#ffffff;color:#040404">(demo)</span><span style="background-color:#ffffff;color:#000000">                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                     </span><span style="background-color:#ffffff;color:#040404">PyCon 2017 talk</span><span style="background-color:#ffffff;color:#000000">                      
+                   </span><span style="background-color:#ffffff;color:#040404">used ASCII animation</span><span style="background-color:#ffffff;color:#000000">                   
+                                                          
+                   </span><span style="background-color:#ffffff;color:#040404">“How did you do it?”</span><span style="background-color:#ffffff;color:#000000">                   
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                     PyCon 2017 talk                      
+                   used ASCII animation                   
+                                                          
+                   “How did you do it?”                   
+                         </span><span style="background-color:#ffffff;color:#040404">“Badly”</span><span style="background-color:#ffffff;color:#000000">                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                 </span><span style="background-color:#ffffff;color:#040404">Guardrails for My Talks</span><span style="background-color:#ffffff;color:#000000">                  
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                    </span><span style="background-color:#ffffff;color:#040404">1. Per-slide timer</span><span style="background-color:#ffffff;color:#000000">                    
+                                                          
+      </span><span style="background-color:#ffffff;color:#040404">number_of_seconds_left / number_of_slides_left</span><span style="background-color:#ffffff;color:#000000">      
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+              </span><span style="background-color:#ffffff;color:#040404">2. Constrain the design space</span><span style="background-color:#ffffff;color:#000000">               
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+              2. Constrain the design space               
+                                                          
+                  </span><span style="background-color:#ffffff;color:#040404">Normal presentations:</span><span style="background-color:#ffffff;color:#000000">                   
+          </span><span style="background-color:#ffffff;color:#040404">RestructuredText →  HTML + Custom CSS</span><span style="background-color:#ffffff;color:#000000">           
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+              2. Constrain the design space               
+                                                          
+                  Normal presentations:                   
+          RestructuredText →  HTML + Custom CSS           
+                                                          
+                   </span><span style="background-color:#ffffff;color:#040404">ASCII presentations:</span><span style="background-color:#ffffff;color:#000000">                   
+                    </span><span style="background-color:#ffffff;color:#040404">• Python script</span><span style="background-color:#ffffff;color:#000000">                       
+                    </span><span style="background-color:#ffffff;color:#040404">• Terminal window</span><span style="background-color:#ffffff;color:#000000">                     
+                    </span><span style="background-color:#ffffff;color:#040404">• Ubuntu Mono</span><span style="background-color:#ffffff;color:#000000">                         
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                     </span><span style="background-color:#ffffff;color:#040404">3. Brief slides</span><span style="background-color:#ffffff;color:#000000">                      
+                                                          
+                          </span><span style="background-color:#ffffff;color:#040404">Lessig</span><span style="background-color:#ffffff;color:#000000">                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                  </span><span style="background-color:#ffffff;color:#040404">Short slides are less</span><span style="background-color:#ffffff;color:#000000">                   
+                 </span><span style="background-color:#ffffff;color:#040404">distracting for audience</span><span style="background-color:#ffffff;color:#000000">                 
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                       </span><span style="background-color:#ffffff;color:#040404">Short slides</span><span style="background-color:#ffffff;color:#000000">                       
+                    </span><span style="background-color:#ffffff;color:#040404">keep you on track</span><span style="background-color:#ffffff;color:#000000">                     
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                  </span><span style="background-color:#ffffff;color:#040404">Short slides decrease</span><span style="background-color:#ffffff;color:#000000">                   
+                 </span><span style="background-color:#ffffff;color:#040404">the load on your memory</span><span style="background-color:#ffffff;color:#000000">                  
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+           </span><span style="background-color:#ffffff;color:#040404">Rule: if I discover during practice</span><span style="background-color:#ffffff;color:#000000">            
+            </span><span style="background-color:#ffffff;color:#040404">that a slide has two ideas inside,</span><span style="background-color:#ffffff;color:#000000">            
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+           Rule: if I discover during practice            
+            that a slide has two ideas inside,            
+                </span><span style="background-color:#ffffff;color:#040404">I split it into two slides</span><span style="background-color:#ffffff;color:#000000">                
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                       </span><span style="background-color:#ffffff;color:#040404">4. Big font</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                       4. Big font                        
+                                                          
+            </span><span style="background-color:#ffffff;color:#040404">This is the biggest terminal font</span><span style="background-color:#ffffff;color:#000000">             
+           </span><span style="background-color:#ffffff;color:#040404">that still fits the code on slide 86</span><span style="background-color:#ffffff;color:#000000">           
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                 </span><span style="background-color:#ffffff;color:#040404">Guardrails for My Talks</span><span style="background-color:#ffffff;color:#000000">                  
+                                                          
+              </span><span style="background-color:#ffffff;color:#040404">1. Per-slide timer</span><span style="background-color:#ffffff;color:#000000">                          
+              </span><span style="background-color:#ffffff;color:#040404">2. Constrain the design space</span><span style="background-color:#ffffff;color:#000000">               
+              </span><span style="background-color:#ffffff;color:#040404">3. Brief slides</span><span style="background-color:#ffffff;color:#000000">                             
+              </span><span style="background-color:#ffffff;color:#040404">4. Big font</span><span style="background-color:#ffffff;color:#000000">                                 
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                        </span><span style="background-color:#ffffff;color:#040404">PyCon 2017</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                        PyCon 2017                        
+                                                          
+           </span><span style="background-color:#ffffff;color:#040404">Wrote my own ASCII animation library</span><span style="background-color:#ffffff;color:#000000">           
+         </span><span style="background-color:#ffffff;color:#040404">because I couldn’t understand the others</span><span style="background-color:#ffffff;color:#000000">         
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                        </span><span style="background-color:#ffffff;color:#040404">Challenges</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+                     </span><span style="background-color:#ffffff;color:#040404">1. Technical</span><span style="background-color:#ffffff;color:#000000">                         
+                     </span><span style="background-color:#ffffff;color:#040404">2. Architectural</span><span style="background-color:#ffffff;color:#000000">                     
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                 </span><span style="background-color:#ffffff;color:#040404">The Technical Challenges</span><span style="background-color:#ffffff;color:#000000">                 
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+              </span><span style="background-color:#ffffff;color:#040404">f / space = Forward one slide</span><span style="background-color:#ffffff;color:#000000">               
+              </span><span style="background-color:#ffffff;color:#040404">b = Backward one slide</span><span style="background-color:#ffffff;color:#000000">                      
+              </span><span style="background-color:#ffffff;color:#040404">r = Repeat slide</span><span style="background-color:#ffffff;color:#000000">                            
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+              </span><span style="background-color:#ffffff;color:#040404">keystroke = sys.stdin.read(1)</span><span style="background-color:#ffffff;color:#000000">               
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+              keystroke = sys.stdin.read(1)               
+                                                          
+                  </span><span style="background-color:#ffffff;color:#040404">— the animation froze</span><span style="background-color:#ffffff;color:#000000">                   
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+          </span><span style="background-color:#ffffff;color:#040404">if select([sys.stdin], (), (), 0)[0]:</span><span style="background-color:#ffffff;color:#000000">           
+              </span><span style="background-color:#ffffff;color:#040404">keystroke = sys.stdin.read(1)</span><span style="background-color:#ffffff;color:#000000">               
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+            </span><span style="background-color:#ffffff;color:#040404">But my program still didn’t see my</span><span style="background-color:#ffffff;color:#000000">            
+             </span><span style="background-color:#ffffff;color:#040404">keystrokes until I pressed Enter</span><span style="background-color:#ffffff;color:#000000">             
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                     </span><span style="background-color:#ffffff;color:#040404">You might think</span><span style="background-color:#ffffff;color:#000000">                      
+                                                          
+                </span><span style="background-color:#ffffff;color:#040404">(your process) ↔  terminal</span><span style="background-color:#ffffff;color:#000000">                
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                    </span><span style="background-color:#ffffff;color:#040404">You would be wrong</span><span style="background-color:#ffffff;color:#000000">                    
+                                                          
+          </span><span style="background-color:#ffffff;color:#040404">(your process) ↔  termios ↔  terminal</span><span style="background-color:#ffffff;color:#000000">           
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                         </span><span style="background-color:#ffffff;color:#040404">termios</span><span style="background-color:#ffffff;color:#000000">                          
+                                                          
+            </span><span style="background-color:#ffffff;color:#040404">controlled not by write(), but an</span><span style="background-color:#ffffff;color:#000000">             
+           </span><span style="background-color:#ffffff;color:#040404">out-of-band system call tcsetattr()</span><span style="background-color:#ffffff;color:#000000">            
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                   </span><span style="background-color:#ffffff;color:#040404">“man termios”, or —</span><span style="background-color:#ffffff;color:#000000">                    
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#040404">$ stty -a</span><span style="background-color:#ffffff;color:#000000">                                                 
+</span><span style="background-color:#ffffff;color:#040404">speed 38400 baud; rows 17; columns 56; line = 0;</span><span style="background-color:#ffffff;color:#000000">          
+</span><span style="background-color:#ffffff;color:#040404">intr = ^C; quit = ^\; erase = ^?; kill = ^U; eof = ^D;</span><span style="background-color:#ffffff;color:#000000">    
+</span><span style="background-color:#ffffff;color:#040404">eol = <undef>; eol2 = <undef>; swtch = <undef>;</span><span style="background-color:#ffffff;color:#000000">           
+</span><span style="background-color:#ffffff;color:#040404">start = ^Q; stop = ^S; susp = ^Z; rprnt = ^R;</span><span style="background-color:#ffffff;color:#000000">             
+</span><span style="background-color:#ffffff;color:#040404">werase = ^W; lnext = ^V; discard = ^O; min = 1; time = 0;</span><span style="background-color:#ffffff;color:#000000"> 
+</span><span style="background-color:#ffffff;color:#040404">-parenb -parodd -cmspar cs8 -hupcl -cstopb cread -clocal</span><span style="background-color:#ffffff;color:#000000">  
+</span><span style="background-color:#ffffff;color:#040404">-crtscts</span><span style="background-color:#ffffff;color:#000000">                                                  
+</span><span style="background-color:#ffffff;color:#040404">-ignbrk -brkint -ignpar -parmrk -inpck -istrip -inlcr</span><span style="background-color:#ffffff;color:#000000">     
+</span><span style="background-color:#ffffff;color:#040404">-igncr icrnl -ixon -ixoff -iuclc -ixany -imaxbel iutf8</span><span style="background-color:#ffffff;color:#000000">    
+</span><span style="background-color:#ffffff;color:#040404">opost -olcuc -ocrnl onlcr -onocr -onlret -ofill -ofdel</span><span style="background-color:#ffffff;color:#000000">    
+</span><span style="background-color:#ffffff;color:#040404">nl0 cr0 tab0 bs0 vt0 ff0</span><span style="background-color:#ffffff;color:#000000">                                  
+</span><span style="background-color:#ffffff;color:#040404">isig icanon iexten echo echoe echok -echonl -noflsh</span><span style="background-color:#ffffff;color:#000000">       
+</span><span style="background-color:#ffffff;color:#040404">-xcase -tostop -echoprt echoctl echoke -flusho -extproc</span><span style="background-color:#ffffff;color:#000000">   
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+     </span><span style="background-color:#ffffff;color:#040404">Why have a driver between you and the terminal?</span><span style="background-color:#ffffff;color:#000000">      
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+      </span><span style="background-color:#ffffff;color:#040404">$ man termios</span><span style="background-color:#ffffff;color:#000000">                                       
+      </span><span style="background-color:#ffffff;color:#040404">⋮</span><span style="background-color:#ffffff;color:#000000">                                                   
+             </span><span style="background-color:#ffffff;color:#040404">ONLCR  (XSI) Map NL to CR-NL on output.</span><span style="background-color:#ffffff;color:#000000">      
+      </span><span style="background-color:#ffffff;color:#040404">⋮</span><span style="background-color:#ffffff;color:#000000">                                                   
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+             </span><span style="background-color:#ffffff;color:#040404">CR: Moves cursor to left margin</span><span style="background-color:#ffffff;color:#000000">              
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+             CR: Moves cursor to left margin              
+                                                          
+                                                          
+  </span><span style="background-color:#ffffff;color:#040404">def update_progress_bar(percent):</span><span style="background-color:#ffffff;color:#000000">                       
+      </span><span style="background-color:#ffffff;color:#040404">out = sys.stdout</span><span style="background-color:#ffffff;color:#000000">                                    
+      </span><span style="background-color:#ffffff;color:#040404">out.write('\rFile {:.1f}% done'.format(percent))</span><span style="background-color:#ffffff;color:#000000">    
+      </span><span style="background-color:#ffffff;color:#040404">out.flush()</span><span style="background-color:#ffffff;color:#000000">                                         
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+              </span><span style="background-color:#ffffff;color:#040404">LF: Moves cursor straight down</span><span style="background-color:#ffffff;color:#000000">              
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                     </span><span style="background-color:#ffffff;color:#040404">For simplicity,</span><span style="background-color:#ffffff;color:#000000">                      
+                 </span><span style="background-color:#ffffff;color:#040404">UNIX files put only a LF</span><span style="background-color:#ffffff;color:#000000">                 
+                 </span><span style="background-color:#ffffff;color:#040404">at the end of each line</span><span style="background-color:#ffffff;color:#000000">                  
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#040404">$ ps</span><span style="background-color:#ffffff;color:#000000">                                                      
+  </span><span style="background-color:#ffffff;color:#040404">PID TTY          TIME CMD</span><span style="background-color:#ffffff;color:#000000">                               
+ </span><span style="background-color:#ffffff;color:#040404">3712 pts/0    00:00:04 zsh</span><span style="background-color:#ffffff;color:#000000">                               
+ </span><span style="background-color:#ffffff;color:#040404">4412 pts/0    00:00:00 ps</span><span style="background-color:#ffffff;color:#000000">                                
+ </span><span style="background-color:#ffffff;color:#040404">8375 pts/0    00:23:22 emacs</span><span style="background-color:#ffffff;color:#000000">                             
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">$ ps                                                      
+  PID TTY          TIME CMD                               
+ 3712 pts/0    00:00:04 zsh                               
+ 4412 pts/0    00:00:00 ps                                
+ 8375 pts/0    00:23:22 emacs                             
+                                                          
+</span><span style="background-color:#ffffff;color:#040404">$ stty -onlcr</span><span style="background-color:#ffffff;color:#000000">                                             
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">$ ps                                                      
+  PID TTY          TIME CMD                               
+ 3712 pts/0    00:00:04 zsh                               
+ 4412 pts/0    00:00:00 ps                                
+ 8375 pts/0    00:23:22 emacs                             
+                                                          
+$ stty -onlcr                                             
+                                                          
+</span><span style="background-color:#ffffff;color:#040404">$ ps</span><span style="background-color:#ffffff;color:#000000">                                                      
+  </span><span style="background-color:#ffffff;color:#040404">PID TTY          TIME CMD</span><span style="background-color:#ffffff;color:#000000">                               
+                            </span><span style="background-color:#ffffff;color:#040404">3712 pts/0    00:00:04 zsh</span><span style="background-color:#ffffff;color:#000000">    
+                                                       </span><span style="background-color:#ffffff;color:#040404">442
+2 pts/0    00:00:00 ps</span><span style="background-color:#ffffff;color:#000000">                                    
+                      </span><span style="background-color:#ffffff;color:#040404">8375 pts/0    00:23:22 emacs</span><span style="background-color:#ffffff;color:#000000">        
+                                                  </span><span style="background-color:#ffffff;color:#040404">$</span><span style="background-color:#ffffff;color:#000000">       
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+           </span><span style="background-color:#ffffff;color:#040404">$ man termios</span><span style="background-color:#ffffff;color:#000000">                                  
+           </span><span style="background-color:#ffffff;color:#040404">⋮</span><span style="background-color:#ffffff;color:#000000">                                              
+                  </span><span style="background-color:#ffffff;color:#040404">ECHO   Echo input characters.</span><span style="background-color:#ffffff;color:#000000">           
+           </span><span style="background-color:#ffffff;color:#040404">⋮</span><span style="background-color:#ffffff;color:#000000">                                              
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                 </span><span style="background-color:#ffffff;color:#040404">termios also includes a</span><span style="background-color:#ffffff;color:#000000">                  
+                  </span><span style="background-color:#ffffff;color:#040404">built-in TEXT EDITOR —</span><span style="background-color:#ffffff;color:#000000">                  
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                 termios also includes a                  
+                  built-in TEXT EDITOR —                  
+                                                          
+               </span><span style="background-color:#ffffff;color:#040404">that’s turned on by default!</span><span style="background-color:#ffffff;color:#000000">               
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+  </span><span style="background-color:#ffffff;color:#040404">$ man termios</span><span style="background-color:#ffffff;color:#000000">                                           
+  </span><span style="background-color:#ffffff;color:#040404">⋮</span><span style="background-color:#ffffff;color:#000000">                                                       
+         </span><span style="background-color:#ffffff;color:#040404">ICANON Enable canonical mode (described below).</span><span style="background-color:#ffffff;color:#000000">  
+  </span><span style="background-color:#ffffff;color:#040404">⋮</span><span style="background-color:#ffffff;color:#000000">                                                       
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+  $ man termios                                           
+  ⋮                                                       
+         ICANON Enable canonical mode (described below).  
+  ⋮                                                       
+                                                          
+                          </span><span style="background-color:#ffffff;color:#040404">(demo)</span><span style="background-color:#ffffff;color:#000000">                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                         </span><span style="background-color:#ffffff;color:#040404">$ reset</span><span style="background-color:#ffffff;color:#000000">                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                         $ reset                          
+                                                          
+                         </span><span style="background-color:#ffffff;color:#040404">man page:</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                         $ reset                          
+                                                          
+                         man page:                        
+                                                          
+  </span><span style="background-color:#ffffff;color:#040404">“This is useful after a program dies leaving a</span><span style="background-color:#ffffff;color:#000000">          
+   </span><span style="background-color:#ffffff;color:#040404">terminal in an abnormal state.  Note, you may have to</span><span style="background-color:#ffffff;color:#000000">  
+   </span><span style="background-color:#ffffff;color:#040404">type <LF>reset<LF> (the line-feed character is</span><span style="background-color:#ffffff;color:#000000">         
+   </span><span style="background-color:#ffffff;color:#040404">normally control-J) to get the terminal to work, as</span><span style="background-color:#ffffff;color:#000000">    
+   </span><span style="background-color:#ffffff;color:#040404">carriage-return may no longer work in the abnormal</span><span style="background-color:#ffffff;color:#000000">     
+   </span><span style="background-color:#ffffff;color:#040404">state.”</span><span style="background-color:#ffffff;color:#000000">                                                
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                    </span><span style="background-color:#ffffff;color:#040404">>>> import termios</span><span style="background-color:#ffffff;color:#000000">                    
+                    </span><span style="background-color:#ffffff;color:#040404">>>> termios.ICANON</span><span style="background-color:#ffffff;color:#000000">                    
+                    </span><span style="background-color:#ffffff;color:#040404">2</span><span style="background-color:#ffffff;color:#000000">                                     
+                    </span><span style="background-color:#ffffff;color:#040404">>>> termios.ECHO</span><span style="background-color:#ffffff;color:#000000">                      
+                    </span><span style="background-color:#ffffff;color:#040404">8</span><span style="background-color:#ffffff;color:#000000">                                     
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                 </span><span style="background-color:#ffffff;color:#040404">>>> bin(termios.ICANON)</span><span style="background-color:#ffffff;color:#000000">                  
+                 </span><span style="background-color:#ffffff;color:#040404">'0b10'</span><span style="background-color:#ffffff;color:#000000">                                   
+                 </span><span style="background-color:#ffffff;color:#040404">>>> bin(termios.ECHO)</span><span style="background-color:#ffffff;color:#000000">                    
+                 </span><span style="background-color:#ffffff;color:#040404">'0b1000'</span><span style="background-color:#ffffff;color:#000000">                                 
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                    </span><span style="background-color:#ffffff;color:#040404">Turning flags on:</span><span style="background-color:#ffffff;color:#000000">                     
+                                                          
+          </span><span style="background-color:#ffffff;color:#040404">>>> oflags = termios.tcgetattr(fd)[3]</span><span style="background-color:#ffffff;color:#000000">           
+                                                          
+          </span><span style="background-color:#ffffff;color:#040404">>>> bin(oflags)</span><span style="background-color:#ffffff;color:#000000">                                 
+          </span><span style="background-color:#ffffff;color:#040404">'0b1000101000110011</span><span style="background-color:#ffffff;color:#000000">                             
+                                                          
+          </span><span style="background-color:#ffffff;color:#040404">>>> oflags = oflags | termios.ECHO</span><span style="background-color:#ffffff;color:#000000">              
+                                                          
+          </span><span style="background-color:#ffffff;color:#040404">>>> bin(oflags)</span><span style="background-color:#ffffff;color:#000000">                                 
+          </span><span style="background-color:#ffffff;color:#040404">'0b1000101000111011'</span><span style="background-color:#ffffff;color:#000000">                            
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                    </span><span style="background-color:#ffffff;color:#040404">Turning flags off:</span><span style="background-color:#ffffff;color:#000000">                    
+                                                          
+           </span><span style="background-color:#ffffff;color:#040404">>>> bin(~termios.ECHO + 2**32)</span><span style="background-color:#ffffff;color:#000000">                 
+           </span><span style="background-color:#ffffff;color:#040404">'0b11111111111111111111111111110111'</span><span style="background-color:#ffffff;color:#000000">           
+                                                          
+           </span><span style="background-color:#ffffff;color:#040404">>>> oflags = oflags & ~termios.ECHO</span><span style="background-color:#ffffff;color:#000000">            
+                                                          
+           </span><span style="background-color:#ffffff;color:#040404">>>> bin(oflags)</span><span style="background-color:#ffffff;color:#000000">                                
+           </span><span style="background-color:#ffffff;color:#040404">'0b1000101000110011'</span><span style="background-color:#ffffff;color:#000000">                           
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+               </span><span style="background-color:#ffffff;color:#040404">So, what about the terminal?</span><span style="background-color:#ffffff;color:#000000">               
+                                                          
+          </span><span style="background-color:#ffffff;color:#040404">(your process) ↔  termios ↔  terminal</span><span style="background-color:#ffffff;color:#000000">           
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+           </span><span style="background-color:#ffffff;color:#040404">ANSI escape codes: “in-band” signal</span><span style="background-color:#ffffff;color:#000000">            
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                        </span><span style="background-color:#ffffff;color:#040404">train.txt</span><span style="background-color:#ffffff;color:#000000">                         
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+          </span><span style="background-color:#ffffff;color:#040404">ESC = '\033'</span><span style="background-color:#ffffff;color:#000000">                                    
+          </span><span style="background-color:#ffffff;color:#040404">HIDE_CURSOR = ESC + '[?25l'</span><span style="background-color:#ffffff;color:#000000">                     
+          </span><span style="background-color:#ffffff;color:#040404">SHOW_CURSOR = ESC + '[?12l' + ESC + '[?25h'</span><span style="background-color:#ffffff;color:#000000">     
+          </span><span style="background-color:#ffffff;color:#040404">GOTO_ORIGIN = ESC + '[H'</span><span style="background-color:#ffffff;color:#000000">                        
+          </span><span style="background-color:#ffffff;color:#040404">FG = ESC + '[38;2;{0[0]};{0[1]};{0[2]}m'</span><span style="background-color:#ffffff;color:#000000">        
+          </span><span style="background-color:#ffffff;color:#040404">BG = ESC + '[48;2;{0[0]};{0[1]};{0[2]}m'</span><span style="background-color:#ffffff;color:#000000">        
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+             </span><span style="background-color:#ffffff;color:#040404">try:</span><span style="background-color:#ffffff;color:#000000">                                         
+                 </span><span style="background-color:#ffffff;color:#040404">set_echo_and_icanon(0)</span><span style="background-color:#ffffff;color:#000000">                   
+                 </span><span style="background-color:#ffffff;color:#040404">write(HIDE_CURSOR)</span><span style="background-color:#ffffff;color:#000000">                       
+                 </span><span style="background-color:#ffffff;color:#040404">...</span><span style="background-color:#ffffff;color:#000000">                                      
+             </span><span style="background-color:#ffffff;color:#040404">finally:</span><span style="background-color:#ffffff;color:#000000">                                     
+                 </span><span style="background-color:#ffffff;color:#040404">set_echo_and_icanon(1)</span><span style="background-color:#ffffff;color:#000000">                   
+                 </span><span style="background-color:#ffffff;color:#040404">write(SHOW_CURSOR)</span><span style="background-color:#ffffff;color:#000000">                       
+                 </span><span style="background-color:#ffffff;color:#040404">write(BG.format(rgb(black)))</span><span style="background-color:#ffffff;color:#000000">             
+                 </span><span style="background-color:#ffffff;color:#040404">write(FG.format(rgb(white)))</span><span style="background-color:#ffffff;color:#000000">             
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                           </span><span style="background-color:#ffffff;color:#040404">2.7</span><span style="background-color:#ffffff;color:#000000">                            
+                           </span><span style="background-color:#ffffff;color:#040404">3.5</span><span style="background-color:#ffffff;color:#000000">                            
+                           </span><span style="background-color:#ffffff;color:#040404">3.6</span><span style="background-color:#ffffff;color:#000000">                            
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                          </span><span style="background-color:#ffffff;color:#040404">exec()</span><span style="background-color:#ffffff;color:#000000">                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                          exec()                          
+                                                          
+            </span><span style="background-color:#ffffff;color:#040404">Replaces a process with a new one</span><span style="background-color:#ffffff;color:#000000">             
+        </span><span style="background-color:#ffffff;color:#040404">without leaving a dangling parent process</span><span style="background-color:#ffffff;color:#000000">         
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+               </span><span style="background-color:#ffffff;color:#040404">zsh$ ps</span><span style="background-color:#ffffff;color:#000000">                                    
+                 </span><span style="background-color:#ffffff;color:#040404">PID TTY          TIME CMD</span><span style="background-color:#ffffff;color:#000000">                
+                </span><span style="background-color:#ffffff;color:#040404">7807 pts/16   00:00:00 zsh</span><span style="background-color:#ffffff;color:#000000">                
+                </span><span style="background-color:#ffffff;color:#040404">7975 pts/16   00:00:00 ps</span><span style="background-color:#ffffff;color:#000000">                 
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+               zsh$ ps                                    
+                 PID TTY          TIME CMD                
+                7807 pts/16   00:00:00 zsh                
+                7975 pts/16   00:00:00 ps                 
+                                                          
+               </span><span style="background-color:#ffffff;color:#040404">zsh$ exec /bin/bash</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+               zsh$ ps                                    
+                 PID TTY          TIME CMD                
+                7807 pts/16   00:00:00 zsh                
+                7975 pts/16   00:00:00 ps                 
+                                                          
+               zsh$ exec /bin/bash                        
+                                                          
+               </span><span style="background-color:#ffffff;color:#040404">bash$ ps</span><span style="background-color:#ffffff;color:#000000">                                   
+                 </span><span style="background-color:#ffffff;color:#040404">PID TTY          TIME CMD</span><span style="background-color:#ffffff;color:#000000">                
+                </span><span style="background-color:#ffffff;color:#040404">7807 pts/16   00:00:00 bash</span><span style="background-color:#ffffff;color:#000000">               
+                </span><span style="background-color:#ffffff;color:#040404">7993 pts/16   00:00:00 ps</span><span style="background-color:#ffffff;color:#000000">                 
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+      </span><span style="background-color:#ffffff;color:#040404">python = ...  # path to correct binary</span><span style="background-color:#ffffff;color:#000000">              
+      </span><span style="background-color:#ffffff;color:#040404">os.execvp(python, [python], next_slide_number)</span><span style="background-color:#ffffff;color:#000000">      
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+      python = ...  # path to correct binary              
+      os.execvp(python, [python], next_slide_number)      
+                                                          
+     </span><span style="background-color:#ffffff;color:#040404">• Each slide can have a different Python version</span><span style="background-color:#ffffff;color:#000000">     
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+      python = ...  # path to correct binary              
+      os.execvp(python, [python], next_slide_number)      
+                                                          
+     • Each slide can have a different Python version     
+     </span><span style="background-color:#ffffff;color:#040404">• No need for auto-reload!</span><span style="background-color:#ffffff;color:#000000">                           
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                   </span><span style="background-color:#ffffff;color:#040404">Dictionary stability</span><span style="background-color:#ffffff;color:#000000">                   
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+   </span><span style="background-color:#ffffff;color:#040404">def main():</span><span style="background-color:#ffffff;color:#000000">                                            
+       </span><span style="background-color:#ffffff;color:#040404">if os.environ['PYTHONHASHSEED'] != '0':</span><span style="background-color:#ffffff;color:#000000">            
+           </span><span style="background-color:#ffffff;color:#040404">print("You forgot to set PYTHONHASHSEED=0")</span><span style="background-color:#ffffff;color:#000000">    
+           </span><span style="background-color:#ffffff;color:#040404">sys.exit(2)</span><span style="background-color:#ffffff;color:#000000">                                    
+       </span><span style="background-color:#ffffff;color:#040404">...</span><span style="background-color:#ffffff;color:#000000">                                                
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+       </span><span style="background-color:#ffffff;color:#040404">def main():</span><span style="background-color:#ffffff;color:#000000">                                        
+           </span><span style="background-color:#ffffff;color:#040404">if os.environ['PYTHONHASHSEED'] != '0':</span><span style="background-color:#ffffff;color:#000000">        
+               </span><span style="background-color:#ffffff;color:#040404">cmd = [sys.executable] + sys.argv</span><span style="background-color:#ffffff;color:#000000">          
+               </span><span style="background-color:#ffffff;color:#040404">env = dict(os.environ)</span><span style="background-color:#ffffff;color:#000000">                     
+               </span><span style="background-color:#ffffff;color:#040404">env['PYTHONHASHSEED'] = '0'</span><span style="background-color:#ffffff;color:#000000">                
+               </span><span style="background-color:#ffffff;color:#040404">os.execvpe(sys.executable, cmd, env)</span><span style="background-color:#ffffff;color:#000000">       
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                        </span><span style="background-color:#ffffff;color:#040404">Challenges</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+                     </span><span style="background-color:#ffffff;color:#040404">1. Technical</span><span style="background-color:#ffffff;color:#000000">                         
+                     </span><span style="background-color:#ffffff;color:#040404">2. Architectural</span><span style="background-color:#ffffff;color:#000000">                     
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+              </span><span style="background-color:#ffffff;color:#040404">How can I store the screen to</span><span style="background-color:#ffffff;color:#000000">               
+            </span><span style="background-color:#ffffff;color:#040404">allow random-access modification?</span><span style="background-color:#ffffff;color:#000000">             
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+              How can I store the screen to               
+            allow random-access modification?             
+                                                          
+        </span><span style="background-color:#ffffff;color:#040404">canvas = [</span><span style="background-color:#ffffff;color:#000000">                                        
+            </span><span style="background-color:#ffffff;color:#040404">[' ', ' ', ' ', ...],    # characters</span><span style="background-color:#ffffff;color:#000000">         
+            </span><span style="background-color:#ffffff;color:#040404">[(1,1,1), (1,1,1), ...], # foreground</span><span style="background-color:#ffffff;color:#000000">         
+            </span><span style="background-color:#ffffff;color:#040404">[(0,0,0), (0,0,0), ...], # background</span><span style="background-color:#ffffff;color:#000000">         
+        </span><span style="background-color:#ffffff;color:#040404">]</span><span style="background-color:#ffffff;color:#000000">                                                 
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+        </span><span style="background-color:#ffffff;color:#040404">def scrawl(canvas, x, y, text, fg, bg):</span><span style="background-color:#ffffff;color:#000000">           
+            </span><span style="background-color:#ffffff;color:#040404">i = y * WIDTH + x</span><span style="background-color:#ffffff;color:#000000">                             
+            </span><span style="background-color:#ffffff;color:#040404">j = i + len(string)</span><span style="background-color:#ffffff;color:#000000">                           
+            </span><span style="background-color:#ffffff;color:#040404">chars, foreground, background = canvas</span><span style="background-color:#ffffff;color:#000000">        
+            </span><span style="background-color:#ffffff;color:#040404">chars[i:j] = text</span><span style="background-color:#ffffff;color:#000000">                             
+            </span><span style="background-color:#ffffff;color:#040404">fgcolors[i:j] = [fg] * len(string)</span><span style="background-color:#ffffff;color:#000000">            
+            </span><span style="background-color:#ffffff;color:#040404">bgcolors[i:j] = [bg] * len(string)</span><span style="background-color:#ffffff;color:#000000">            
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+       </span><span style="background-color:#ffffff;color:#040404">yield GOTO_ORIGIN</span><span style="background-color:#ffffff;color:#000000">                                  
+                                                          
+       </span><span style="background-color:#ffffff;color:#040404">old_fg, old_bg = None, None</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+       </span><span style="background-color:#ffffff;color:#040404">for character, fg, bg in zip(*canvas)[:-1]:</span><span style="background-color:#ffffff;color:#000000">        
+           </span><span style="background-color:#ffffff;color:#040404">if fg != ofg:</span><span style="background-color:#ffffff;color:#000000">                                  
+               </span><span style="background-color:#ffffff;color:#040404">yield FG.format(fg)</span><span style="background-color:#ffffff;color:#000000">                        
+               </span><span style="background-color:#ffffff;color:#040404">ofg = fg</span><span style="background-color:#ffffff;color:#000000">                                   
+           </span><span style="background-color:#ffffff;color:#040404">if bg != obg:</span><span style="background-color:#ffffff;color:#000000">                                  
+               </span><span style="background-color:#ffffff;color:#040404">yield BG.format(bg)</span><span style="background-color:#ffffff;color:#000000">                        
+               </span><span style="background-color:#ffffff;color:#040404">obg = bg</span><span style="background-color:#ffffff;color:#000000">                                   
+           </span><span style="background-color:#ffffff;color:#040404">yield character</span><span style="background-color:#ffffff;color:#000000">                                
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                     </span><span style="background-color:#ffffff;color:#040404">How did I write</span><span style="background-color:#ffffff;color:#000000">                      
+                </span><span style="background-color:#ffffff;color:#040404">animations using scrawl()?</span><span style="background-color:#ffffff;color:#000000">                
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+             </span><span style="background-color:#ffffff;color:#040404">Animations unfold through time</span><span style="background-color:#ffffff;color:#000000">               
+                                                          
+           </span><span style="background-color:#ffffff;color:#040404">├─effect 1─┤</span><span style="background-color:#ffffff;color:#000000">                                   
+                      </span><span style="background-color:#ffffff;color:#040404">├────effect 2────┤</span><span style="background-color:#ffffff;color:#000000">                  
+                                 </span><span style="background-color:#ffffff;color:#040404">├─effect 3─┤</span><span style="background-color:#ffffff;color:#000000">             
+                                                          
+           </span><span style="background-color:#ffffff;color:#040404">├──────────┼──────────┼──────────┤</span><span style="background-color:#ffffff;color:#000000">             
+           </span><span style="background-color:#ffffff;color:#040404">0s         1s         2s         3s</span><span style="background-color:#ffffff;color:#000000">            
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+             </span><span style="background-color:#ffffff;color:#040404">Animations unfold through time</span><span style="background-color:#ffffff;color:#000000">               
+                                                          
+           </span><span style="background-color:#ffffff;color:#040404">├─effect 1─┤</span><span style="background-color:#ffffff;color:#000000">                                   
+                      </span><span style="background-color:#ffffff;color:#040404">├────effect 2────┤</span><span style="background-color:#ffffff;color:#000000">                  
+                                 </span><span style="background-color:#ffffff;color:#040404">├─effect 3─┤</span><span style="background-color:#ffffff;color:#000000">             
+                                                          
+           </span><span style="background-color:#ffffff;color:#040404">├┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┼┤</span><span style="background-color:#ffffff;color:#000000">             
+           </span><span style="background-color:#ffffff;color:#040404">0s         1s         2s         3s</span><span style="background-color:#ffffff;color:#000000">            
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+          </span><span style="background-color:#ffffff;color:#040404">script = [</span><span style="background-color:#ffffff;color:#000000">                                      
+              </span><span style="background-color:#ffffff;color:#040404">[function1],             # frame 1</span><span style="background-color:#ffffff;color:#000000">          
+              </span><span style="background-color:#ffffff;color:#040404">[function1],             # frame 2</span><span style="background-color:#ffffff;color:#000000">          
+              </span><span style="background-color:#ffffff;color:#040404">[function2],             # frame 3</span><span style="background-color:#ffffff;color:#000000">          
+              </span><span style="background-color:#ffffff;color:#040404">[function2, function3],  # frame 4</span><span style="background-color:#ffffff;color:#000000">          
+              </span><span style="background-color:#ffffff;color:#040404">[function2, function3],  # frame 5</span><span style="background-color:#ffffff;color:#000000">          
+              </span><span style="background-color:#ffffff;color:#040404">[function3],             # frame 6</span><span style="background-color:#ffffff;color:#000000">          
+              </span><span style="background-color:#ffffff;color:#040404">...</span><span style="background-color:#ffffff;color:#000000">                                         
+          </span><span style="background-color:#ffffff;color:#040404">]</span><span style="background-color:#ffffff;color:#000000">                                               
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                    </span><span style="background-color:#ffffff;color:#040404">Sample animation:</span><span style="background-color:#ffffff;color:#000000">                     
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                        Beautiful                         
+                        is better                         
+                        </span><span style="background-color:#ffffff;color:#1d1d1d">than ugly</span><span style="background-color:#ffffff;color:#000000">                         
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+     </span><span style="background-color:#ffffff;color:#040404">def slide_5(script):</span><span style="background-color:#ffffff;color:#000000">                                 
+         </span><span style="background-color:#ffffff;color:#040404">fade_in(script, 0.0, 1.0, 5, 5, 'Beautiful')</span><span style="background-color:#ffffff;color:#000000">     
+         </span><span style="background-color:#ffffff;color:#040404">fade_in(script, 1.0, 1.0, 5, 6, 'is better')</span><span style="background-color:#ffffff;color:#000000">     
+         </span><span style="background-color:#ffffff;color:#040404">fade_in(script, 2.0, 1.0, 5, 7, 'than ugly')</span><span style="background-color:#ffffff;color:#000000">     
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+          </span><span style="background-color:#ffffff;color:#040404">script = [</span><span style="background-color:#ffffff;color:#000000">                                      
+              </span><span style="background-color:#ffffff;color:#040404">[function1],             # frame 1</span><span style="background-color:#ffffff;color:#000000">          
+              </span><span style="background-color:#ffffff;color:#040404">[function1],             # frame 2</span><span style="background-color:#ffffff;color:#000000">          
+              </span><span style="background-color:#ffffff;color:#040404">[function2],             # frame 3</span><span style="background-color:#ffffff;color:#000000">          
+              </span><span style="background-color:#ffffff;color:#040404">[function2, function3],  # frame 4</span><span style="background-color:#ffffff;color:#000000">          
+              </span><span style="background-color:#ffffff;color:#040404">...</span><span style="background-color:#ffffff;color:#000000">                                         
+                                                          
+                 </span><span style="background-color:#ffffff;color:#040404">fade_in() needs a callable</span><span style="background-color:#ffffff;color:#000000">               
+                 </span><span style="background-color:#ffffff;color:#040404">to insert into the script</span><span style="background-color:#ffffff;color:#000000">                
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                         </span><span style="background-color:#ffffff;color:#040404">Option 1:</span><span style="background-color:#ffffff;color:#000000">                        
+                       </span><span style="background-color:#ffffff;color:#040404">Bound method</span><span style="background-color:#ffffff;color:#000000">                       
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#040404">class FadeIn(object):</span><span style="background-color:#ffffff;color:#000000">                                     
+    </span><span style="background-color:#ffffff;color:#040404">def __init__(self, script, start, duration, x, y, s):</span><span style="background-color:#ffffff;color:#000000"> 
+        </span><span style="background-color:#ffffff;color:#040404">self.duration = duration</span><span style="background-color:#ffffff;color:#000000">                          
+        </span><span style="background-color:#ffffff;color:#040404">self.x = x</span><span style="background-color:#ffffff;color:#000000">                                        
+        </span><span style="background-color:#ffffff;color:#040404">self.y = y</span><span style="background-color:#ffffff;color:#000000">                                        
+        </span><span style="background-color:#ffffff;color:#040404">self.string = s</span><span style="background-color:#ffffff;color:#000000">                                   
+        </span><span style="background-color:#ffffff;color:#040404">end = start + duration</span><span style="background-color:#ffffff;color:#000000">                            
+        </span><span style="background-color:#ffffff;color:#040404">for i in range(int(start * HZ), int(end * HZ)):</span><span style="background-color:#ffffff;color:#000000">   
+            </span><span style="background-color:#ffffff;color:#040404">script[i].append(self.draw)</span><span style="background-color:#ffffff;color:#000000">                   
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">class FadeIn(object):                                     
+    def __init__(self, script, start, duration, x, y, s): 
+        self.duration = duration                          
+        self.x = x                                        
+        self.y = y                                        
+        self.string = s                                   
+        end = start + duration                            
+        for i in range(int(start * HZ), int(end * HZ)):   
+            script[i].append(self.draw)                   
+                                                          
+    </span><span style="background-color:#ffffff;color:#040404">def draw(self, t, canvas):  # `t`: time since `start`</span><span style="background-color:#ffffff;color:#000000"> 
+        </span><span style="background-color:#ffffff;color:#040404">r = t / self.duration if t < self.duration else 1</span><span style="background-color:#ffffff;color:#000000"> 
+        </span><span style="background-color:#ffffff;color:#040404">fg = gray(r)</span><span style="background-color:#ffffff;color:#000000">                                      
+        </span><span style="background-color:#ffffff;color:#040404">scrawl(canvas, self.x, self.y, self.string, fg)</span><span style="background-color:#ffffff;color:#000000">   
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                        </span><span style="background-color:#ffffff;color:#040404">Option 2:</span><span style="background-color:#ffffff;color:#000000">                         
+                        </span><span style="background-color:#ffffff;color:#040404">A closure</span><span style="background-color:#ffffff;color:#000000">                         
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+   </span><span style="background-color:#ffffff;color:#040404">def fade_in(script, start, duration, x, y, string):</span><span style="background-color:#ffffff;color:#000000">    
+                                                          
+       </span><span style="background-color:#ffffff;color:#040404">def draw(t, canvas):</span><span style="background-color:#ffffff;color:#000000">                               
+           </span><span style="background-color:#ffffff;color:#040404">r = t / duration if t < duration else 1.0</span><span style="background-color:#ffffff;color:#000000">      
+           </span><span style="background-color:#ffffff;color:#040404">scrawl(canvas, x, y, string, gray(r))</span><span style="background-color:#ffffff;color:#000000">          
+                                                          
+       </span><span style="background-color:#ffffff;color:#040404">end = start + duration</span><span style="background-color:#ffffff;color:#000000">                             
+       </span><span style="background-color:#ffffff;color:#040404">for i in range(int(start * HZ), int(end * HZ)):</span><span style="background-color:#ffffff;color:#000000">    
+           </span><span style="background-color:#ffffff;color:#040404">script[i].append(draw)</span><span style="background-color:#ffffff;color:#000000">                         
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+           </span><span style="background-color:#ffffff;color:#040404">Problem: what if the text I need to</span><span style="background-color:#ffffff;color:#000000">            
+          </span><span style="background-color:#ffffff;color:#040404">fade is itself produced by a function?</span><span style="background-color:#ffffff;color:#000000">          
+                                                          
+                </span><span style="background-color:#ffffff;color:#040404">def draw_dictionary(...):</span><span style="background-color:#ffffff;color:#000000">                 
+                                                          
+                            </span><span style="background-color:#ffffff;color:#040404">→</span><span style="background-color:#ffffff;color:#000000">                             
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+  </span><span style="background-color:#ffffff;color:#040404">def fade_in(script, start, duration, x, y, animation):</span><span style="background-color:#ffffff;color:#000000">  
+                                                          
+      </span><span style="background-color:#ffffff;color:#040404">def draw(t, canvas):</span><span style="background-color:#ffffff;color:#000000">                                
+          </span><span style="background-color:#ffffff;color:#040404">r = t / duration if t < duration else 1.0</span><span style="background-color:#ffffff;color:#000000">       
+          </span><span style="background-color:#ffffff;color:#040404">?</span><span style="background-color:#ffffff;color:#000000">                                               
+          </span><span style="background-color:#ffffff;color:#040404">... animation(t, canvas) ...</span><span style="background-color:#ffffff;color:#000000">                    
+          </span><span style="background-color:#ffffff;color:#040404">?</span><span style="background-color:#ffffff;color:#000000">                                               
+                                                          
+      </span><span style="background-color:#ffffff;color:#040404">end = start + duration</span><span style="background-color:#ffffff;color:#000000">                              
+      </span><span style="background-color:#ffffff;color:#040404">for i in range(int(start * HZ), int(end * HZ)):</span><span style="background-color:#ffffff;color:#000000">     
+          </span><span style="background-color:#ffffff;color:#040404">script[i].append(draw)</span><span style="background-color:#ffffff;color:#000000">                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                  </span><span style="background-color:#ffffff;color:#040404">Monkey patch scrawl()?</span><span style="background-color:#ffffff;color:#000000">                  
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                            </span><span style="background-color:#ffffff;color:#040404">No</span><span style="background-color:#ffffff;color:#000000">                            
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                            No                            
+                                                          
+          </span><span style="background-color:#ffffff;color:#040404">Monkey patching is software bankruptcy</span><span style="background-color:#ffffff;color:#000000">          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+          </span><span style="background-color:#ffffff;color:#040404">Problem: animations aren’t composable</span><span style="background-color:#ffffff;color:#000000">           
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                   </span><span style="background-color:#ffffff;color:#040404">Crucial observation:</span><span style="background-color:#ffffff;color:#000000">                   
+                                                          
+            </span><span style="background-color:#ffffff;color:#040404">`canvas` is never actually touched</span><span style="background-color:#ffffff;color:#000000">            
+               </span><span style="background-color:#ffffff;color:#040404">by an effect like fade_in()!</span><span style="background-color:#ffffff;color:#000000">               
+                                                          
+                            </span><span style="background-color:#ffffff;color:#040404">→</span><span style="background-color:#ffffff;color:#000000">                             
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                  </span><span style="background-color:#ffffff;color:#040404">Solution: Noun →  Verb</span><span style="background-color:#ffffff;color:#000000">                  
+                  </span><span style="background-color:#ffffff;color:#040404">───────────────────────</span><span style="background-color:#ffffff;color:#000000">                 
+                                                          
+         </span><span style="background-color:#ffffff;color:#040404">def draw(t, canvas):</span><span style="background-color:#ffffff;color:#000000">                             
+             </span><span style="background-color:#ffffff;color:#040404">scrawl(canvas, 4, 5, 'Hello', blue)</span><span style="background-color:#ffffff;color:#000000">          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                  Solution: Noun →  Verb                  
+                  ───────────────────────                 
+                                                          
+         def draw(t, canvas):                             
+             scrawl(canvas, 4, 5, 'Hello', blue)          
+                                                          
+                           </span><span style="background-color:#ffffff;color:#040404">↓</span><span style="background-color:#ffffff;color:#000000">                              
+                                                          
+         </span><span style="background-color:#ffffff;color:#040404">def draw(t, scrawl):</span><span style="background-color:#ffffff;color:#000000">                             
+             </span><span style="background-color:#ffffff;color:#040404">scrawl(4, 5, 'Hello', blue)</span><span style="background-color:#ffffff;color:#000000">                  
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                    </span><span style="background-color:#ffffff;color:#040404">Win: Composability</span><span style="background-color:#ffffff;color:#000000">                    
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+    </span><span style="background-color:#ffffff;color:#040404">def fade_in(script, start, duration, animation):</span><span style="background-color:#ffffff;color:#000000">      
+                                                          
+        </span><span style="background-color:#ffffff;color:#040404">def draw(t, scrawl):</span><span style="background-color:#ffffff;color:#000000">                              
+                                                          
+            </span><span style="background-color:#ffffff;color:#040404">def my_scrawl(x, y, text, fg, bg):</span><span style="background-color:#ffffff;color:#000000">            
+                </span><span style="background-color:#ffffff;color:#040404">faded_fg = blend(bg, fg, r)</span><span style="background-color:#ffffff;color:#000000">               
+                </span><span style="background-color:#ffffff;color:#040404">scrawl(x, y, text, faded_fg, bg)</span><span style="background-color:#ffffff;color:#000000">          
+                                                          
+            </span><span style="background-color:#ffffff;color:#040404">r = t / duration if t < duration else 1.0</span><span style="background-color:#ffffff;color:#000000">     
+            </span><span style="background-color:#ffffff;color:#040404">animation(t, my_scrawl)</span><span style="background-color:#ffffff;color:#000000">                       
+                                                          
+        </span><span style="background-color:#ffffff;color:#040404">for i in range(int(start * HZ), len(script)):</span><span style="background-color:#ffffff;color:#000000">     
+            </span><span style="background-color:#ffffff;color:#040404">script[i].append(self.draw)</span><span style="background-color:#ffffff;color:#000000">                   
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                        </span><span style="background-color:#ffffff;color:#040404">PyCon 2017</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                        PyCon 2017                        
+                                                          
+                </span><span style="background-color:#ffffff;color:#040404">SO MANY WRAPPER FUNCTIONS</span><span style="background-color:#ffffff;color:#000000">                 
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                          </span><span style="background-color:#ffffff;color:#040404">Review</span><span style="background-color:#ffffff;color:#000000">                          
+                                                          
+                                                          
+</span><span style="background-color:#ffffff;color:#040404">fade_in(script,...)</span><span style="background-color:#ffffff;color:#000000">                                       
+</span><span style="background-color:#ffffff;color:#040404">│</span><span style="background-color:#ffffff;color:#000000">                                                         
+</span><span style="background-color:#ffffff;color:#040404">└draw(t,scrawl,…)  d_dict(t,scrawl,…)  d_item(t,scrawl,…)</span><span style="background-color:#ffffff;color:#000000"> 
+ </span><span style="background-color:#ffffff;color:#040404">│                 │</span><span style="background-color:#ffffff;color:#000000">                                      
+ </span><span style="background-color:#ffffff;color:#040404">└my_scrawl(...)   └my_scrawl(...)</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                       </span><span style="background-color:#ffffff;color:#040404">Let’s trace—</span><span style="background-color:#ffffff;color:#000000">                       
+                                                          
+                                                          
+</span><span style="background-color:#ffffff;color:#040404">fade_in(script,...)</span><span style="background-color:#ffffff;color:#000000">                                       
+                                                          
+ </span><span style="background-color:#ffffff;color:#040404">draw(t,scrawl,…)  d_dict(t,scrawl,…)  d_item(t,scrawl,…)</span><span style="background-color:#ffffff;color:#000000"> 
+                                                          
+  </span><span style="background-color:#ffffff;color:#040404">my_scrawl(...)    my_scrawl(...)</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+          </span><span style="background-color:#ffffff;color:#040404">1. fade_in() call as slide is built</span><span style="background-color:#ffffff;color:#000000">             
+                                                          
+</span><span style="background-color:#ffffff;color:#040404">⬎</span><span style="background-color:#ffffff;color:#000000">                                                         
+</span><span style="background-color:#ffffff;color:#040404">fade_in(script,...)</span><span style="background-color:#ffffff;color:#000000">                                       
+</span><span style="background-color:#ffffff;color:#040404">↵</span><span style="background-color:#ffffff;color:#000000">                                                         
+ </span><span style="background-color:#ffffff;color:#040404">draw(t,scrawl,…)  d_dict(t,scrawl,…)  d_item(t,scrawl,…)</span><span style="background-color:#ffffff;color:#000000"> 
+                                                          
+  </span><span style="background-color:#ffffff;color:#040404">my_scrawl(...)    my_scrawl(...)</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+               </span><span style="background-color:#ffffff;color:#040404">2. draw() to paint a canvas</span><span style="background-color:#ffffff;color:#000000">                
+                                                          
+                                                          
+</span><span style="background-color:#ffffff;color:#040404">fade_in(script,...)</span><span style="background-color:#ffffff;color:#000000">                                       
+</span><span style="background-color:#ffffff;color:#040404">⬎</span><span style="background-color:#ffffff;color:#000000">                                                         
+ </span><span style="background-color:#ffffff;color:#040404">draw(t,scrawl,…)→ d_dict(t,scrawl,…)→ d_item(t,scrawl,…)</span><span style="background-color:#ffffff;color:#000000"> 
+</span><span style="background-color:#ffffff;color:#040404">↵</span><span style="background-color:#ffffff;color:#000000">                                                         
+</span><span style="background-color:#ffffff;color:#040404">← my_scrawl(...)  ← my_scrawl(...)     ↲</span><span style="background-color:#ffffff;color:#000000">                  
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                    </span><span style="background-color:#ffffff;color:#040404">1. It worked</span><span style="background-color:#ffffff;color:#000000">                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                    1. It worked                          
+                    </span><span style="background-color:#ffffff;color:#040404">2. I wasn’t happy</span><span style="background-color:#ffffff;color:#000000">                     
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                   </span><span style="background-color:#ffffff;color:#040404">Think about the data</span><span style="background-color:#ffffff;color:#000000">                   
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                   </span><span style="background-color:#ffffff;color:#040404">t=105                t=105</span><span style="background-color:#ffffff;color:#000000">             
+</span><span style="background-color:#ffffff;color:#040404">⬎</span><span style="background-color:#ffffff;color:#000000">                                                         
+ </span><span style="background-color:#ffffff;color:#040404">draw(t,scrawl,…)→ d_dict(t,scrawl,…)→ d_item(t,scrawl,…)</span><span style="background-color:#ffffff;color:#000000"> 
+</span><span style="background-color:#ffffff;color:#040404">↵</span><span style="background-color:#ffffff;color:#000000">                                                         
+</span><span style="background-color:#ffffff;color:#040404">← my_scrawl(...)  ← my_scrawl(...)     ↲</span><span style="background-color:#ffffff;color:#000000">                  
+                                                          
+</span><span style="background-color:#ffffff;color:#040404">6,7,'[item]',gray  5,6,'[item]',black  0,1,'item',black</span><span style="background-color:#ffffff;color:#000000">   
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+          </span><span style="background-color:#ffffff;color:#040404">Can we create a “good parts” version?</span><span style="background-color:#ffffff;color:#000000">           
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                   </span><span style="background-color:#ffffff;color:#040404">“No-Scrawl” Solution</span><span style="background-color:#ffffff;color:#000000">                   
+                                                          
+                </span><span style="background-color:#ffffff;color:#040404">Restructure to explicitly</span><span style="background-color:#ffffff;color:#000000">                 
+                </span><span style="background-color:#ffffff;color:#040404">defer drawing until later</span><span style="background-color:#ffffff;color:#000000">                 
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                        </span><span style="background-color:#ffffff;color:#040404">New design</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+        </span><span style="background-color:#ffffff;color:#040404">`frame`: list [(x, y, text, fg, bg), ...]</span><span style="background-color:#ffffff;color:#000000">         
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                        New design                        
+                                                          
+        `frame`: list [(x, y, text, fg, bg), ...]         
+        </span><span style="background-color:#ffffff;color:#040404">`animation`: generator that returns frames</span><span style="background-color:#ffffff;color:#000000">        
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                        Beautiful                         
+                        is better                         
+                        </span><span style="background-color:#ffffff;color:#1d1d1d">than ugly</span><span style="background-color:#ffffff;color:#000000">                         
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+      </span><span style="background-color:#ffffff;color:#040404">def center_text(y, text, fg=black, bg=white):</span><span style="background-color:#ffffff;color:#000000">       
+          </span><span style="background-color:#ffffff;color:#040404">"""Center `text` at height `y`."""</span><span style="background-color:#ffffff;color:#000000">              
+          </span><span style="background-color:#ffffff;color:#040404">x = (WIDTH - len(text)) // 2</span><span style="background-color:#ffffff;color:#000000">                    
+          </span><span style="background-color:#ffffff;color:#040404">frame = [(x, y, text, fg, bg)]</span><span style="background-color:#ffffff;color:#000000">                  
+          </span><span style="background-color:#ffffff;color:#040404">while True:</span><span style="background-color:#ffffff;color:#000000">                                     
+              </span><span style="background-color:#ffffff;color:#040404">yield frame</span><span style="background-color:#ffffff;color:#000000">                                 
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+   </span><span style="background-color:#ffffff;color:#040404">def fade_in(duration, animation):</span><span style="background-color:#ffffff;color:#000000">                      
+       </span><span style="background-color:#ffffff;color:#040404">"""Fade another animation into visibility."""</span><span style="background-color:#ffffff;color:#000000">      
+                                                          
+       </span><span style="background-color:#ffffff;color:#040404">levels = [i / duration for i in range(duration)]</span><span style="background-color:#ffffff;color:#000000">   
+                                                          
+       </span><span style="background-color:#ffffff;color:#040404">for level, frame in zip(levels, animation):</span><span style="background-color:#ffffff;color:#000000">        
+           </span><span style="background-color:#ffffff;color:#040404">yield [</span><span style="background-color:#ffffff;color:#000000">                                        
+               </span><span style="background-color:#ffffff;color:#040404">(x, y, text, blend(bg, fg, level), bg)</span><span style="background-color:#ffffff;color:#000000">     
+               </span><span style="background-color:#ffffff;color:#040404">for (x, y, text, fg, bg) in frame</span><span style="background-color:#ffffff;color:#000000">          
+           </span><span style="background-color:#ffffff;color:#040404">]</span><span style="background-color:#ffffff;color:#000000">                                              
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+     </span><span style="background-color:#ffffff;color:#040404">def concat(*args):</span><span style="background-color:#ffffff;color:#000000">                                   
+         </span><span style="background-color:#ffffff;color:#040404">"""Run several animations simultaneously."""</span><span style="background-color:#ffffff;color:#000000">     
+         </span><span style="background-color:#ffffff;color:#040404">for frames in zip(*args):</span><span style="background-color:#ffffff;color:#000000">                        
+             </span><span style="background-color:#ffffff;color:#040404">yield [tup for frame in frames</span><span style="background-color:#ffffff;color:#000000">               
+                        </span><span style="background-color:#ffffff;color:#040404">for item in frame]</span><span style="background-color:#ffffff;color:#000000">                
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+ </span><span style="background-color:#ffffff;color:#040404">def zen():</span><span style="background-color:#ffffff;color:#000000">                                               
+     </span><span style="background-color:#ffffff;color:#040404">line1 = center_text(5, 'Beautiful')</span><span style="background-color:#ffffff;color:#000000">                  
+     </span><span style="background-color:#ffffff;color:#040404">line2 = center_text(6, 'is better')</span><span style="background-color:#ffffff;color:#000000">                  
+     </span><span style="background-color:#ffffff;color:#040404">line3 = center_text(7, 'than ugly')</span><span style="background-color:#ffffff;color:#000000">                  
+                                                          
+     </span><span style="background-color:#ffffff;color:#040404">yield from fade_in(line1, HZ)</span><span style="background-color:#ffffff;color:#000000">                        
+     </span><span style="background-color:#ffffff;color:#040404">yield from concat(line1, fade_in(line2, HZ))</span><span style="background-color:#ffffff;color:#000000">         
+     </span><span style="background-color:#ffffff;color:#040404">yield from concat(line1, line2, fade_in(line3, HZ))</span><span style="background-color:#ffffff;color:#000000">  
+     </span><span style="background-color:#ffffff;color:#040404">yield next(line1) + next(line2) + next(line3)</span><span style="background-color:#ffffff;color:#000000">        
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                        Beautiful                         
+                        is better                         
+                        </span><span style="background-color:#ffffff;color:#212121">than ugly</span><span style="background-color:#ffffff;color:#000000">                         
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                        </span><span style="background-color:#ffffff;color:#040404">Challenges</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                        Challenges                        
+                                                          
+                   </span><span style="background-color:#ffffff;color:#040404">1. Technical: A</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                        Challenges                        
+                                                          
+                   1. Technical: A                        
+                   </span><span style="background-color:#ffffff;color:#040404">2. Architectural: C-</span><span style="background-color:#ffffff;color:#000000">                   
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                                                          
+                        Challenges                        
+                                                          
+                   1. Technical: A                        
+                   2. Architectural: C-                   
+                                                          
+            </span><span style="background-color:#ffffff;color:#040404">My code wound up more complicated</span><span style="background-color:#ffffff;color:#000000">             
+         </span><span style="background-color:#ffffff;color:#040404">than the problem it was trying to solve</span><span style="background-color:#ffffff;color:#000000">          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                        </span><span style="background-color:#ffffff;color:#040404">Conclusion</span><span style="background-color:#ffffff;color:#000000">                        
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                        Conclusion                        
+                                                          
+                  </span><span style="background-color:#ffffff;color:#040404">You can give the talk</span><span style="background-color:#ffffff;color:#000000">                   
+                 </span><span style="background-color:#ffffff;color:#040404">“The Clean Architecture”</span><span style="background-color:#ffffff;color:#000000">                 
+                 </span><span style="background-color:#ffffff;color:#040404">at PyCon Ireland in 2014</span><span style="background-color:#ffffff;color:#000000">                 
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+                                                          
+----------------------------------------------------------
+</span><span style="background-color:#ffffff;color:#000000">                                                          
+                                                          
+                        Conclusion                        
+                                                          
+                  You can give the talk                   
+                 “The Clean Architecture”                 
+                 at PyCon Ireland in 2014                 
+                                                          
+                   </span><span style="background-color:#ffffff;color:#040404">— and still struggle</span><span style="background-color:#ffffff;color:#000000">                   
+                   </span><span style="background-color:#ffffff;color:#040404">to produce code that</span><span style="background-color:#ffffff;color:#000000">                   
+                     </span><span style="background-color:#ffffff;color:#040404">is shaped enough</span><span style="background-color:#ffffff;color:#000000">                     
+                      </span><span style="background-color:#ffffff;color:#040404">like its data</span></pre>

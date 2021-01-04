@@ -1,0 +1,883 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>slides.rst</title>
+<link rel="stylesheet" href="/css/slides.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="flexing-sqlalchemy-s-relational-power">
+<h1>Flexing SQLAlchemy's Relational Power</h1>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line">─────────────────────────────────────</div>
+<div class="line"><tt class="docutils literal">PyCon</tt> — Brandon Rhodes — 9 March 2012</div>
+<div class="line">─────────────────────────────────────</div>
+</div>
+</div>
+<div class="section" id="slide">
+
+<div class="line-block">
+<div class="line">De-normalized data is <em>tempting</em></div>
+</div>
+<ol class="arabic simple">
+<li>View can read a <em>single</em> chunk</li>
+<li>Easy to shard and <em>scale reads</em></li>
+</ol>
+<div class="line-block">
+<div class="line">But writes become <em>costly</em></div>
+</div>
+</div>
+<div class="section" id="mongodb-supports-de-normalization">
+<h1>MongoDB supports de-normalization</h1>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Inception&quot;</span><span class="p">,</span>
+ <span class="n">year</span><span class="p">:</span> <span class="mi">2010</span><span class="p">,</span>
+ <span class="n">actors</span><span class="p">:</span> <span class="p">[</span>
+  <span class="p">{</span>
+   <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Leonardo DiCaprio&quot;</span><span class="p">,</span>
+   <span class="n">born</span><span class="p">:</span> <span class="mi">1974</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+   <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Joseph Gordon-Levitt&quot;</span><span class="p">,</span>
+   <span class="n">born</span><span class="p">:</span> <span class="mi">1981</span>
+  <span class="p">}</span>
+ <span class="p">]}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id1">
+
+<p>But costs <em>space</em>, makes writes <em>expensive</em></p>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Inception&quot;</span><span class="p">,</span>
+ <span class="n">year</span><span class="p">:</span> <span class="mi">2010</span><span class="p">,</span>
+ <span class="n">actors</span><span class="p">:</span> <span class="p">[</span>
+  <span class="p">{</span>
+   <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Leonardo DiCaprio&quot;</span><span class="p">,</span>
+   <span class="n">born</span><span class="p">:</span> <span class="mi">1974</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+   <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Joseph Gordon-Levitt&quot;</span><span class="p">,</span>
+   <span class="n">born</span><span class="p">:</span> <span class="mi">1981</span>
+  <span class="p">}</span>
+ <span class="p">]}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id2">
+
+<div class="line-block">
+<div class="line">So we often do</div>
+<div class="line">some normalization</div>
+</div>
+</div>
+<div class="section" id="more-normalized-mongodb-data">
+<h1>More normalized MongoDB data</h1>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Inception&quot;</span><span class="p">,</span>
+ <span class="n">year</span><span class="p">:</span> <span class="mi">2010</span><span class="p">,</span>
+ <span class="n">actors</span><span class="p">:</span> <span class="p">[</span><span class="mi">59382</span><span class="p">,</span> <span class="mi">48311</span><span class="p">]}</span>
+
+<span class="p">{</span><span class="n">actor_id</span><span class="p">:</span> <span class="mi">59382</span><span class="p">,</span>
+ <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Leonardo DiCaprio&quot;</span><span class="p">,</span>
+ <span class="n">born</span><span class="p">:</span> <span class="mi">1974</span><span class="p">}</span>
+
+<span class="p">{</span><span class="n">actor_id</span><span class="p">:</span> <span class="mi">48311</span><span class="p">,</span>
+ <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Joseph Gordon-Levitt&quot;</span><span class="p">,</span>
+ <span class="n">born</span><span class="p">:</span> <span class="mi">1981</span><span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="relational-design">
+<h1>Relational: Design</h1>
+<div class="line-block">
+<div class="line">Relational databases take this</div>
+<div class="line">to its logical extreme</div>
+</div>
+</div>
+<div class="section" id="id3">
+<h1>Relational: Design</h1>
+<ol class="arabic simple">
+<li>Tables have fixed set of columns</li>
+<li>No composite data types</li>
+<li>Thus, no inline lists</li>
+</ol>
+</div>
+<div class="section" id="id4">
+
+<div class="highlight"><pre><span></span>                     <span class="n">Role</span>
+              <span class="err">┌────────┬────────┐</span>
+              <span class="err">│</span><span class="n">movie_id</span><span class="err">│</span><span class="n">actor_id</span><span class="err">│</span>
+              <span class="err">│</span>    <span class="o">.</span>   <span class="err">│</span>    <span class="o">.</span>   <span class="err">│</span>
+              <span class="err">│</span>  <span class="mi">391853</span><span class="err">│</span>  <span class="mi">11425</span> <span class="err">│</span>
+              <span class="err">│</span>  <span class="mi">391853</span><span class="err">│</span>   <span class="mi">2217</span> <span class="err">│</span>
+              <span class="err">│</span>    <span class="o">.</span>   <span class="err">│</span>    <span class="o">.</span>   <span class="err">│</span>
+              <span class="err">└────────┴────────┘</span>
+       <span class="n">Movie</span>                    <span class="n">Actor</span>
+<span class="err">┌──────┬──────┬────┐┌─────┬──────────────────┐</span>
+<span class="err">│</span> <span class="nb">id</span>   <span class="err">│</span> <span class="n">name</span> <span class="err">│</span><span class="n">year</span><span class="err">││</span>  <span class="nb">id</span> <span class="err">│</span>       <span class="n">name</span>       <span class="err">│</span>
+<span class="err">│</span>   <span class="o">.</span>  <span class="err">│</span>  <span class="o">.</span>   <span class="err">│</span>    <span class="err">││</span>   <span class="o">.</span> <span class="err">│</span>         <span class="o">.</span>        <span class="err">│</span>
+<span class="err">│</span><span class="mi">391853</span><span class="err">│</span><span class="n">Sleuth</span><span class="err">│</span><span class="mi">1972</span><span class="err">││</span> <span class="mi">2217</span><span class="err">│</span><span class="n">Caine</span><span class="p">,</span> <span class="n">Michael</span> <span class="p">(</span><span class="n">I</span><span class="p">)</span><span class="err">│</span>
+<span class="err">│</span>   <span class="o">.</span>  <span class="err">│</span>  <span class="o">.</span>   <span class="err">│</span>    <span class="err">││</span><span class="mi">11425</span><span class="err">│</span><span class="n">Olivier</span><span class="p">,</span> <span class="n">Laurence</span> <span class="err">│</span>
+<span class="err">└──────┴──────┴────┘│</span>   <span class="o">.</span> <span class="err">│</span>         <span class="o">.</span>        <span class="err">│</span>
+                    <span class="err">└─────┴──────────────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="relational-consequences">
+<h1>Relational: Consequences</h1>
+<ol class="arabic simple">
+<li>A view often needs <em>several</em> data stores.</li>
+<li>But you can now always scale <em>writes</em></li>
+</ol>
+</div>
+<div class="section" id="q">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">So how do we <em>pull together</em></div>
+<div class="line">the related information that a</div>
+<div class="line">relational database atomizes?</div>
+</div>
+</div>
+<div class="section" id="a">
+<h1>A:</h1>
+<p>The <em>Relational Algebra</em></p>
+</div>
+<div class="section" id="sql">
+<h1>SQL</h1>
+<div class="highlight"><pre><span></span><span class="n">SELECT</span> <span class="n">movie</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">actor</span><span class="o">.</span><span class="n">name</span>
+  <span class="n">FROM</span> <span class="n">movie</span>
+  <span class="n">JOIN</span> <span class="n">role</span> <span class="n">ON</span> <span class="p">(</span><span class="n">movie</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">role</span><span class="o">.</span><span class="n">movie_id</span><span class="p">)</span>
+  <span class="n">JOIN</span> <span class="n">actor</span> <span class="n">ON</span> <span class="p">(</span><span class="n">actor</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">role</span><span class="o">.</span><span class="n">actor_id</span><span class="p">)</span>
+  <span class="n">WHERE</span> <span class="n">movie</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Inception&#39;</span><span class="p">;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id5">
+
+<div class="line-block">
+<div class="line">Storage is <em>slow</em></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">How can we gather several</div>
+<div class="line">pieces of data efficiently?</div>
+</div>
+</div>
+<div class="section" id="id7">
+<h1>A:</h1>
+<p><em>Indexes save us</em></p>
+<p>(but query plans become complex!)</p>
+</div>
+<div class="section" id="id8">
+
+<p>Neat blog post:</p>
+<p><strong>“What Your Computer Does While You Wait”</strong></p>
+<p><em>— Gustavo Duarte</em></p>
+</div>
+<div class="section" id="id9">
+
+<div class="highlight"><pre><span></span>  <span class="err">┌─────┐</span>
+  <span class="err">│</span> <span class="n">CPU</span> <span class="err">│</span>
+  <span class="err">└─────┘</span>
+     <span class="err">↕</span>
+<span class="o">*</span><span class="n">information</span><span class="o">*</span>
+</pre></div>
+
+</div>
+<div class="section" id="id10">
+
+<div class="highlight"><pre><span></span>  <span class="err">┌─────┐</span>
+  <span class="err">│</span> <span class="n">CPU</span> <span class="err">│</span>
+  <span class="err">└─────┘</span>
+     <span class="err">↕</span>
+<span class="err">┌──────────┐</span>
+<span class="err">│</span> <span class="n">L1</span> <span class="n">Cache</span> <span class="err">│</span>  <span class="mi">3</span> <span class="n">seconds</span><span class="p">:</span> <span class="n">paper</span> <span class="n">on</span> <span class="n">desk</span>
+<span class="err">└──────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id11">
+
+<div class="highlight"><pre><span></span>  <span class="err">┌─────┐</span>
+  <span class="err">│</span> <span class="n">CPU</span> <span class="err">│</span>
+  <span class="err">└─────┘</span>
+     <span class="err">↕</span>
+<span class="err">┌──────────┐</span>
+<span class="err">│</span> <span class="n">L1</span> <span class="n">Cache</span> <span class="err">│</span>   <span class="mi">3</span> <span class="n">seconds</span><span class="p">:</span> <span class="n">paper</span> <span class="n">on</span> <span class="n">desk</span>
+<span class="err">└──────────┘</span>
+     <span class="err">↕</span>
+<span class="err">┌──────────┐</span>
+<span class="err">│</span> <span class="n">L2</span> <span class="n">Cache</span> <span class="err">│</span>  <span class="mi">14</span> <span class="n">seconds</span><span class="p">:</span> <span class="n">book</span> <span class="kn">from</span> <span class="nn">shelf</span>
+<span class="err">└──────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id12">
+
+<div class="highlight"><pre><span></span>  <span class="err">┌─────┐</span>
+  <span class="err">│</span> <span class="n">CPU</span> <span class="err">│</span>
+  <span class="err">└─────┘</span>
+     <span class="err">↕</span>
+<span class="err">┌──────────┐</span>
+<span class="err">│</span> <span class="n">L1</span> <span class="n">Cache</span> <span class="err">│</span>   <span class="mi">3</span> <span class="n">seconds</span><span class="p">:</span> <span class="n">paper</span> <span class="n">on</span> <span class="n">desk</span>
+<span class="err">└──────────┘</span>
+     <span class="err">↕</span>
+<span class="err">┌──────────┐</span>
+<span class="err">│</span> <span class="n">L2</span> <span class="n">Cache</span> <span class="err">│</span>  <span class="mi">14</span> <span class="n">seconds</span><span class="p">:</span> <span class="n">book</span> <span class="kn">from</span> <span class="nn">shelf</span>
+<span class="err">└──────────┘</span>
+     <span class="err">↕</span>
+  <span class="err">┌─────┐</span>
+  <span class="err">│</span> <span class="n">RAM</span> <span class="err">│</span>  <span class="mi">4</span> <span class="n">minutes</span><span class="p">:</span> <span class="n">walk</span> <span class="n">down</span> <span class="n">the</span> <span class="n">hall</span>
+  <span class="err">└─────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id13">
+
+<div class="highlight"><pre><span></span>     <span class="err">↕</span>
+<span class="err">┌──────────┐</span>
+<span class="err">│</span> <span class="n">L1</span> <span class="n">Cache</span> <span class="err">│</span>   <span class="mi">3</span> <span class="n">seconds</span><span class="p">:</span> <span class="n">paper</span> <span class="n">on</span> <span class="n">desk</span>
+<span class="err">└──────────┘</span>
+     <span class="err">↕</span>
+<span class="err">┌──────────┐</span>
+<span class="err">│</span> <span class="n">L2</span> <span class="n">Cache</span> <span class="err">│</span>  <span class="mi">14</span> <span class="n">seconds</span><span class="p">:</span> <span class="n">book</span> <span class="kn">from</span> <span class="nn">shelf</span>
+<span class="err">└──────────┘</span>
+     <span class="err">↕</span>
+  <span class="err">┌─────┐</span>
+  <span class="err">│</span> <span class="n">RAM</span> <span class="err">│</span>  <span class="mi">4</span> <span class="n">minutes</span><span class="p">:</span> <span class="n">walk</span> <span class="n">down</span> <span class="n">the</span> <span class="n">hall</span>
+  <span class="err">└─────┘</span>
+     <span class="err">↕</span>
+ <span class="err">┌───────┐</span>             <span class="n">Disk</span> <span class="n">seek</span><span class="p">:</span>
+ <span class="err">│</span> <span class="n">Disks</span> <span class="err">│</span>  <span class="err">“</span><span class="n">like</span> <span class="n">leaving</span> <span class="n">the</span> <span class="n">building</span> <span class="n">to</span> <span class="n">roam</span>
+ <span class="err">└───────┘</span>   <span class="n">the</span> <span class="n">earth</span> <span class="k">for</span> <span class="mi">1</span> <span class="n">year</span> <span class="mi">3</span> <span class="n">months</span><span class="err">”</span>
+</pre></div>
+
+</div>
+<div class="section" id="id14">
+
+<p>So disk access must be minimized</p>
+</div>
+<div class="section" id="id15">
+
+<div class="line-block">
+<div class="line">Keeping records sorted on disk</div>
+<div class="line">is <em>not feasible</em></div>
+</div>
+<ol class="arabic simple">
+<li>Too costly to insert new records</li>
+<li>You can only sort by one attribute</li>
+</ol>
+</div>
+<div class="section" id="id16">
+
+<p>So we use indexes</p>
+</div>
+<div class="section" id="id17">
+
+<div class="highlight"><pre><span></span><span class="n">INDEX</span>          <span class="n">TABLE</span>          <span class="n">INDEX</span>
+
+               <span class="n">movie</span>
+        <span class="err">┌────────┬────────┐</span>
+        <span class="err">│</span> <span class="n">title</span>  <span class="err">│</span>  <span class="n">year</span>  <span class="err">│</span>
+    <span class="err">┌</span>   <span class="err">│</span>        <span class="err">│</span>        <span class="err">│</span>   <span class="err">┐</span>
+   <span class="err">┌┤</span>   <span class="err">│</span>        <span class="err">│</span>        <span class="err">│</span>   <span class="err">├┐</span>
+  <span class="err">┌┤╞</span>   <span class="err">│</span>        <span class="err">│</span>        <span class="err">│</span>   <span class="err">╡├┐</span>
+  <span class="err">│└┤</span>   <span class="err">│</span>        <span class="err">│</span>        <span class="err">│</span>   <span class="err">├┘│</span>
+ <span class="err">─┤</span> <span class="err">╞</span>   <span class="err">│</span>        <span class="err">│</span>        <span class="err">│</span>   <span class="err">╡</span> <span class="err">├─</span>
+  <span class="err">│┌┤</span>   <span class="err">│</span>        <span class="err">│</span>        <span class="err">│</span>   <span class="err">├┐│</span>
+  <span class="err">└┤╞</span>   <span class="err">│</span>        <span class="err">│</span>        <span class="err">│</span>   <span class="err">╡├┘</span>
+   <span class="err">└┤</span>   <span class="err">│</span>        <span class="err">│</span>        <span class="err">│</span>   <span class="err">├┘</span>
+    <span class="err">└</span>   <span class="err">│</span>        <span class="err">│</span>        <span class="err">│</span>   <span class="err">┘</span>
+        <span class="err">└────────┴────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id18">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">“If you have to move the disk head</div>
+<div class="line">around to several <em>indexes</em> and <em>tables</em></div>
+<div class="line">doesn't that kill performance?”</div>
+</div>
+</div>
+<div class="section" id="id19">
+<h1>A:</h1>
+<p>one query</p>
+<div class="highlight"><pre><span></span>    <span class="n">fetch</span>               <span class="n">fetch</span>
+    <span class="n">index</span>               <span class="n">table</span>
+    <span class="n">block</span>               <span class="n">block</span>
+      <span class="err">↓</span>                   <span class="err">↓</span>
+<span class="err">┌┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┐</span> <span class="n">Disk</span>
+<span class="err">└┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┘</span> <span class="n">blocks</span>
+
+         <span class="err">→</span>  <span class="n">disk</span> <span class="n">head</span>  <span class="err">→</span>
+</pre></div>
+
+</div>
+<div class="section" id="id20">
+<h1>A:</h1>
+<p><em>n</em> queries:</p>
+<div class="highlight"><pre><span></span>    <span class="n">many</span>                <span class="n">many</span>
+    <span class="n">index</span>               <span class="n">table</span>
+    <span class="n">blocks</span>              <span class="n">blocks</span>
+   <span class="err">↓↓↓</span> <span class="err">↓↓</span> <span class="err">↓</span>         <span class="err">↓↓</span> <span class="err">↓↓↓↓</span> <span class="err">↓↓</span> <span class="err">↓↓↓</span>
+<span class="err">┌┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┐</span> <span class="n">Disk</span>
+<span class="err">└┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┘</span> <span class="n">blocks</span>
+
+         <span class="err">→</span>  <span class="n">disk</span> <span class="n">head</span>  <span class="err">→</span>
+          <span class="n">single</span> <span class="n">sweep</span><span class="err">!</span>
+</pre></div>
+
+</div>
+<div class="section" id="id21">
+
+<div class="line-block">
+<div class="line">Most relational databases always</div>
+<div class="line"><em>append</em> new data to the end of a table</div>
+</div>
+<div class="highlight"><pre><span></span>      <span class="n">older</span> <span class="n">data</span>           <span class="n">new</span> <span class="n">data</span> <span class="err">→</span>
+                            <span class="err">↓↓↓↓↓↓</span>
+<span class="err">┌┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┐</span> <span class="n">DB</span>
+<span class="err">└┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┘</span> <span class="n">table</span>
+</pre></div>
+
+</div>
+<div class="section" id="id22">
+
+<div class="line-block">
+<div class="line">Even when you update an <em>already existing</em> row</div>
+<div class="line">the database <em>appends</em> the new copy to the end</div>
+</div>
+<div class="highlight"><pre><span></span>      <span class="n">older</span> <span class="n">data</span>           <span class="n">new</span> <span class="n">data</span> <span class="err">→</span>
+                            <span class="err">↓↓↓↓↓↓</span>
+<span class="err">┌┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┐</span> <span class="n">DB</span>
+<span class="err">└┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┘</span> <span class="n">table</span>
+</pre></div>
+
+</div>
+<div class="section" id="id23">
+
+<div class="line-block">
+<div class="line"><em>Speed:</em> disk head can stay in place</div>
+<div class="line"><em>Transactions:</em> several writes “go live” at once</div>
+</div>
+<div class="highlight"><pre><span></span>      <span class="n">older</span> <span class="n">data</span>           <span class="n">new</span> <span class="n">data</span> <span class="err">→</span>
+                            <span class="err">↓↓↓↓↓↓</span>
+<span class="err">┌┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┐</span> <span class="n">DB</span>
+<span class="err">└┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┘</span> <span class="n">table</span>
+</pre></div>
+
+</div>
+<div class="section" id="id24">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">How do we write our code to play</div>
+<div class="line">to a relational DB's <em>strengths</em>?</div>
+</div>
+</div>
+<div class="section" id="optimization">
+<h1>Optimization</h1>
+<ol class="arabic simple">
+<li>Asking the DB a <em>single question</em></li>
+<li>Doing EXPLAIN and adding indexes</li>
+</ol>
+</div>
+<div class="section" id="asking-the-database-a-single-question">
+<h1>Asking the database a single question</h1>
+</div>
+<div class="section" id="id25">
+
+<p>At first, queries might look obvious</p>
+</div>
+<div class="section" id="id26">
+
+<div class="highlight"><pre><span></span><span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="n">movie</span> <span class="n">WHERE</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Inception&#39;</span><span class="p">;</span>
+</pre></div>
+
+<p><em>Obviously, use title index</em></p>
+</div>
+<div class="section" id="id27">
+<h1>Q:</h1>
+<p>But <em>which index</em> do we use here?</p>
+<div class="highlight"><pre><span></span><span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="n">movie</span>
+
+  <span class="n">FROM</span> <span class="n">movie</span>
+  <span class="n">JOIN</span> <span class="n">role</span> <span class="n">ON</span> <span class="p">(</span><span class="n">movie</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">role</span><span class="o">.</span><span class="n">movie_id</span><span class="p">)</span>
+  <span class="n">JOIN</span> <span class="n">actor</span> <span class="n">ON</span> <span class="p">(</span><span class="n">role</span><span class="o">.</span><span class="n">actor_id</span> <span class="o">=</span> <span class="n">actor</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+  <span class="n">WHERE</span> <span class="n">movie</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Inception&#39;</span>
+    <span class="n">AND</span> <span class="n">actor</span><span class="o">.</span><span class="n">born</span> <span class="o">=</span> <span class="mi">1974</span><span class="p">;</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Do we start with the <em>title</em></div>
+<div class="line">or with the <em>year</em>?</div>
+</div>
+</div>
+<div class="section" id="id28">
+<h1>A:</h1>
+<p>Query optimization</p>
+</div>
+<div class="section" id="id29">
+
+<div class="highlight"><pre><span></span><span class="n">WHERE</span> <span class="n">movie</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Inception&#39;</span>
+  <span class="n">AND</span> <span class="n">actor</span><span class="o">.</span><span class="n">born</span> <span class="o">=</span> <span class="mi">1974</span><span class="p">;</span>
+</pre></div>
+
+<p><em>You have domain knowledge!</em></p>
+<div class="line-block">
+<div class="line">You know that <em>few</em> movies have this title</div>
+<div class="line">but that <em>many</em> actors were born in 1974</div>
+</div>
+</div>
+<div class="section" id="guess-what">
+<h1>Guess what?</h1>
+<p>Postgres knows too!</p>
+</div>
+<div class="section" id="id30">
+
+<div class="line-block">
+<div class="line">A good relational database</div>
+<div class="line"><em>keeps statistics</em> on the distribution</div>
+<div class="line">of values in every column of every table</div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="line-block">
+<div class="line">So the database can choose</div>
+<div class="line">from among the <em>fastest</em> ways</div>
+<div class="line">to answer your query</div>
+</div>
+<p><strong>If—</strong></p>
+</div>
+<div class="section" id="id32">
+
+<div class="line-block">
+<div class="line">—<strong>if</strong> you ask the <em>whole question</em></div>
+<div class="line">as a <em>single query</em></div>
+</div>
+</div>
+<div class="section" id="this-can-be-optimized">
+<h1>This can be optimized</h1>
+<div class="highlight"><pre><span></span><span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="n">movie</span>
+  <span class="n">FROM</span> <span class="n">movie</span> <span class="n">JOIN</span> <span class="n">role</span> <span class="err">…</span> <span class="n">JOIN</span> <span class="n">actor</span> <span class="err">…</span>
+  <span class="n">WHERE</span> <span class="n">movie</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Inception&#39;</span>
+    <span class="n">AND</span> <span class="n">actor</span><span class="o">.</span><span class="n">born</span> <span class="o">=</span> <span class="mi">1974</span><span class="p">;</span>
+</pre></div>
+
+</div>
+<div class="section" id="this-cannot-be-optimized">
+<h1>This cannot be optimized</h1>
+<div class="highlight"><pre><span></span><span class="n">SELECT</span> <span class="nb">id</span> <span class="n">FROM</span> <span class="n">actor</span>
+  <span class="n">WHERE</span> <span class="n">actor</span><span class="o">.</span><span class="n">born</span> <span class="o">=</span> <span class="mi">1974</span><span class="p">;</span>
+
+<span class="n">SELECT</span> <span class="nb">id</span> <span class="n">FROM</span> <span class="n">movie</span>
+  <span class="n">WHERE</span> <span class="n">movie</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Inception&#39;</span><span class="p">;</span>
+
+<span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="n">role</span>
+  <span class="n">WHERE</span> <span class="n">actor_id</span> <span class="n">IN</span> <span class="p">(</span><span class="mi">4182</span><span class="p">,</span> <span class="mi">4343</span><span class="p">,</span> <span class="err">…</span><span class="p">)</span>
+    <span class="n">AND</span> <span class="n">movie_id</span> <span class="n">IN</span> <span class="p">(</span><span class="mi">79463</span><span class="p">);</span>
+</pre></div>
+
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line"><em>“But wait,”</em></div>
+</div>
+<div class="line-block">
+<div class="line">I hear you cry,</div>
+</div>
+<div class="line-block">
+<div class="line"><em>“Why would someone write so</em></div>
+<div class="line"><em>many tiny queries?”</em></div>
+</div>
+</div>
+<div class="section" id="id34">
+<h1>A:</h1>
+<div class="line-block">
+<div class="line">Because they are using an ORM</div>
+<div class="line">and never learn about joins</div>
+</div>
+</div>
+<div class="section" id="id35">
+
+<div class="line-block">
+<div class="line">They learn the <em>simplest call possible</em></div>
+<div class="line">to pull objects from the database—</div>
+</div>
+</div>
+<div class="section" id="id36">
+
+<div class="line-block">
+<div class="line">—and try to survive forever with nothing</div>
+<div class="line">more complex than single-mode calls to</div>
+<div class="line"><tt class="docutils literal"><span class="pre">query().filter_by()</span></tt> followed</div>
+<div class="line">by attribute accesses</div>
+</div>
+</div>
+<div class="section" id="id37">
+
+<p>So they write code like this—</p>
+</div>
+<div class="section" id="id38">
+
+<div class="highlight"><pre><span></span><span class="n">actor</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Actor</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">born</span><span class="o">=</span><span class="mi">1974</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">actor</span><span class="o">.</span><span class="n">roles</span><span class="p">:</span>
+    <span class="n">movie</span> <span class="o">=</span> <span class="n">role</span><span class="o">.</span><span class="n">movie</span>
+    <span class="k">if</span> <span class="n">movie</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Inception&#39;</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">actor</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+
+</div>
+<div class="section" id="the-o-error">
+<h1>The “O” Error</h1>
+<div class="line-block">
+<div class="line">is thinking that you can take the <em>“O”</em></div>
+<div class="line">part of <em>“ORM”</em> and ignore the rest</div>
+</div>
+</div>
+<div class="section" id="id39">
+<h1>The “O” Error</h1>
+<div class="line-block">
+<div class="line">is assuming that</div>
+<div class="line">“Object-Relational <em>Mapper</em>”</div>
+<div class="line">really means</div>
+<div class="line">“Relational <em>Hider/Concealer/Absolver</em>”</div>
+</div>
+</div>
+<div class="section" id="mapper">
+<h1>“Mapper”</h1>
+<p><em>maps things</em></p>
+</div>
+<div class="section" id="id40">
+<h1>“Mapper”</h1>
+<div class="line-block">
+<div class="line">Maps relational concepts</div>
+<div class="line">into a non-relational language</div>
+<div class="line">so that relations become <em>visible</em> and</div>
+<div class="line"><em>manipulable</em> within its native syntax</div>
+</div>
+</div>
+<div class="section" id="id41">
+
+<div class="line-block">
+<div class="line">When using an ORM</div>
+<div class="line">you <em>still</em> need to</div>
+<div class="line">understand relations</div>
+</div>
+<div class="line-block">
+<div class="line"><em>At least a little bit</em></div>
+</div>
+</div>
+<div class="section" id="so-what-s-the-point">
+<h1>So what's the point?</h1>
+</div>
+<div class="section" id="id42">
+<h1>So what's the point?</h1>
+<div class="line-block">
+<div class="line">Why use an ORM if you still</div>
+<div class="line">have to understand relations?</div>
+</div>
+</div>
+<div class="section" id="id43">
+<h1>So what's the point?</h1>
+<div class="line-block">
+<div class="line">What should you be <em>expecting</em></div>
+<div class="line">your ORM to accomplish for you?</div>
+</div>
+</div>
+<div class="section" id="some-advantages-of-an-orm">
+<h1>Some advantages of an ORM</h1>
+<ol class="arabic simple">
+<li>Access fields like <em>attributes</em></li>
+<li>Access relations like <em>lists</em></li>
+<li><em>Build query</em> from many filters</li>
+<li>Provide powerful <em>unit of work</em></li>
+</ol>
+</div>
+<div class="section" id="id44">
+
+<div class="highlight"><pre><span></span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+    <span class="s2">&quot;SELECT title FROM movie WHERE title = :t&quot;</span><span class="p">,</span>
+    <span class="p">{</span><span class="n">t</span><span class="o">=</span><span class="n">title_field</span><span class="p">})</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s1">&#39;Title:&#39;</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">↑</div>
+<div class="line">The ORM's job is to turn <em>this</em></div>
+<div class="line">into <em>this</em></div>
+<div class="line">↓</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Movie</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">movie</span> <span class="ow">in</span> <span class="n">query</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s1">&#39;Title:&#39;</span><span class="p">,</span> <span class="n">movie</span><span class="o">.</span><span class="n">title</span>
+</pre></div>
+
+</div>
+<div class="section" id="game-plan">
+<h1>Game Plan</h1>
+<ol class="arabic simple">
+<li>Gain some basic <tt class="docutils literal">SELECT</tt> and <tt class="docutils literal">JOIN</tt> skills</li>
+<li>Learn how to express <tt class="docutils literal">JOIN</tt> in Python</li>
+<li>Learn to <tt class="docutils literal">EXPLAIN</tt> problem queries</li>
+<li>Learn to fix them with indexes</li>
+</ol>
+</div>
+<div class="section" id="use-logging">
+<h1>Use logging</h1>
+<div class="line-block">
+<div class="line">Connecting through SQLAlchemy with <tt class="docutils literal">echo=True</tt></div>
+<div class="line">can let you investigate during development</div>
+</div>
+<div class="line-block">
+<div class="line">You can also log queries at runtime</div>
+</div>
+</div>
+<div class="section" id="use-explain">
+<h1>Use EXPLAIN</h1>
+<div class="highlight"><pre><span></span><span class="n">sqlite</span><span class="o">&gt;</span> <span class="n">EXPLAIN</span> <span class="n">QUERY</span> <span class="n">PLAN</span> <span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="n">movie</span>
+  <span class="n">JOIN</span> <span class="n">role</span> <span class="n">ON</span> <span class="p">(</span><span class="n">movie</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">movie_id</span><span class="p">)</span>
+  <span class="n">JOIN</span> <span class="n">actor</span> <span class="n">ON</span> <span class="p">(</span><span class="n">actor</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">actor_id</span><span class="p">)</span>
+  <span class="n">WHERE</span> <span class="n">movie</span><span class="o">.</span><span class="n">year</span> <span class="o">=</span> <span class="mi">1974</span>
+    <span class="n">AND</span> <span class="n">actor</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Connery, Sean&#39;</span><span class="p">;</span>
+
+<span class="mi">0</span><span class="o">|</span><span class="mi">0</span><span class="o">|</span><span class="mi">2</span><span class="o">|</span><span class="n">SEARCH</span> <span class="n">TABLE</span> <span class="n">actor</span>
+   <span class="n">USING</span> <span class="n">INDEX</span> <span class="n">idx_actor_name</span> <span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="err">?</span><span class="p">)</span> <span class="p">(</span><span class="o">~</span><span class="mi">2</span> <span class="n">rows</span><span class="p">)</span>
+<span class="mi">0</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">SEARCH</span> <span class="n">TABLE</span> <span class="n">role</span>
+   <span class="n">USING</span> <span class="n">INDEX</span> <span class="n">i1</span> <span class="p">(</span><span class="n">actor_id</span><span class="o">=</span><span class="err">?</span><span class="p">)</span> <span class="p">(</span><span class="o">~</span><span class="mi">4</span> <span class="n">rows</span><span class="p">)</span>
+<span class="mi">0</span><span class="o">|</span><span class="mi">2</span><span class="o">|</span><span class="mi">0</span><span class="o">|</span><span class="n">SEARCH</span> <span class="n">TABLE</span> <span class="n">movie</span>
+   <span class="n">USING</span> <span class="n">INTEGER</span> <span class="n">PRIMARY</span> <span class="n">KEY</span> <span class="p">(</span><span class="n">rowid</span><span class="o">=</span><span class="err">?</span><span class="p">)</span> <span class="p">(</span><span class="o">~</span><span class="mi">1</span> <span class="n">rows</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="learn-to-identify-common-patterns">
+<h1>Learn to identify common patterns</h1>
+</div>
+<div class="section" id="id45">
+
+<div class="line-block">
+<div class="line">A common problem: cavalier access of an</div>
+<div class="line">attribute that kicks off a new query</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">movies</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Movie</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">1981</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">movie</span> <span class="ow">in</span> <span class="n">movies</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">movie</span><span class="o">.</span><span class="n">roles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">movie</span><span class="o">.</span><span class="n">title</span>
+</pre></div>
+
+</div>
+<div class="section" id="id46">
+
+<p>That code produces:</p>
+<div class="highlight"><pre><span></span><span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="n">movie</span> <span class="n">WHERE</span> <span class="n">year</span> <span class="o">=</span> <span class="mi">1981</span><span class="p">;</span>
+<span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="n">role</span> <span class="n">WHERE</span> <span class="n">movie_id</span> <span class="o">=</span> <span class="mi">82</span><span class="p">;</span>
+<span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="n">role</span> <span class="n">WHERE</span> <span class="n">movie_id</span> <span class="o">=</span> <span class="mi">123</span><span class="p">;</span>
+<span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="n">role</span> <span class="n">WHERE</span> <span class="n">movie_id</span> <span class="o">=</span> <span class="mi">127</span><span class="p">;</span>
+<span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="n">role</span> <span class="n">WHERE</span> <span class="n">movie_id</span> <span class="o">=</span> <span class="mi">131</span><span class="p">;</span>
+<span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="n">role</span> <span class="n">WHERE</span> <span class="n">movie_id</span> <span class="o">=</span> <span class="mi">282</span><span class="p">;</span>
+<span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id47">
+
+<p>The programmer should really do an eager load</p>
+<div class="highlight"><pre><span></span><span class="n">movies</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Movie</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">1981</span><span class="p">)</span> \
+    <span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">subqueryload</span><span class="p">(</span><span class="n">Movie</span><span class="o">.</span><span class="n">roles</span><span class="p">))</span>
+<span class="o">...</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="n">movies</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Movie</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">1981</span><span class="p">)</span> \
+    <span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">joinedload</span><span class="p">(</span><span class="n">Movie</span><span class="o">.</span><span class="n">roles</span><span class="p">))</span>
+<span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id48">
+
+<div class="line-block">
+<div class="line">The eager load lets SQLAlchemy know</div>
+<div class="line">everything you need <em>ahead of time</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">SELECT</span> <span class="o">*</span>
+  <span class="n">FROM</span> <span class="n">movie</span> <span class="n">JOIN</span> <span class="n">role</span> <span class="n">ON</span> <span class="p">(</span><span class="n">movie_id</span> <span class="o">=</span> <span class="n">movie</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+  <span class="n">WHERE</span> <span class="n">movie</span><span class="o">.</span><span class="n">year</span> <span class="o">=</span> <span class="mi">1981</span><span class="p">;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id49">
+
+<div class="line-block">
+<div class="line">Another pattern:</div>
+<div class="line">Programmers should aggregate all</div>
+<div class="line">conditions into a <em>single</em> query</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Movie</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Role</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Actor</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">Movie</span><span class="o">.</span><span class="n">year</span><span class="o">==</span><span class="mi">1974</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">Actor</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="s1">&#39;Connery, Sean&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="outer-join">
+<h1>Outer Join</h1>
+<div class="line-block">
+<div class="line">A left outer join returns a row</div>
+<div class="line">for each model on the left side,</div>
+<div class="line">even those with zero matching</div>
+<div class="line">objects on the right</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Movie</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">Movie</span><span class="o">.</span><span class="n">year</span><span class="o">=</span><span class="mi">1975</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">outerjoin</span><span class="p">(</span><span class="n">Role</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">Role</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Batman&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="caveat">
+<h1>Caveat</h1>
+<div class="line-block">
+<div class="line">An ORM makes using a relation</div>
+<div class="line">look <em>native</em> and <em>pretty</em> in Python</div>
+</div>
+<p><strong>But</strong></p>
+<div class="line-block">
+<div class="line">an ORM introduces complexities</div>
+<div class="line">and surprises of its own</div>
+</div>
+</div>
+<div class="section" id="two-example-surprises">
+<h1>Two example surprises:</h1>
+<ol class="arabic simple">
+<li>Django ORM lacks a unit-of-work pattern</li>
+<li>SQLAlchemy <em>has</em> a unit-of-work pattern</li>
+</ol>
+</div>
+<div class="section" id="i-am-excited-about-nosql">
+<h1>I am excited about NoSQL</h1>
+<p>Why?</p>
+</div>
+<div class="section" id="id50">
+
+<div class="line-block">
+<div class="line">Because I see programmers</div>
+<div class="line">sitting down and reading database</div>
+<div class="line">documentation and <em>understanding</em> it</div>
+</div>
+</div>
+<div class="section" id="id51">
+
+<div class="line-block">
+<div class="line"><em>Remember:</em> the first breakout-hit database</div>
+<div class="line">among Web programmers was a NoSQL solution!</div>
+</div>
+</div>
+<div class="section" id="id52">
+
+<img alt="../../2011-09-pyconpl/mysql-logo.jpg" src="../../2011-09-pyconpl/mysql-logo.jpg" />
+</div>
+<div class="section" id="id53">
+
+<img alt="../../2011-09-pyconpl/mysql-logo.jpg" src="../../2011-09-pyconpl/mysql-logo.jpg" />
+<p>When it first came out:</p>
+<ul class="simple">
+<li>No transactions</li>
+<li>No joins</li>
+<li>No sub-queries</li>
+<li>That's <em>NoSQL!</em></li>
+</ul>
+</div>
+<div class="section" id="id54">
+
+<img alt="../../2011-09-pyconpl/mysql-logo.jpg" src="../../2011-09-pyconpl/mysql-logo.jpg" />
+<div class="line-block">
+<div class="line">Was a simple key-value store</div>
+<div class="line">supporting compound static</div>
+<div class="line">types for the values</div>
+</div>
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line">If a document database</div>
+<div class="line">or a key-value store</div>
+<div class="line"><em>fits</em> your brain</div>
+</div>
+<div class="line-block">
+<div class="line"><em>behaves</em> like you expect</div>
+</div>
+<div class="line-block">
+<div class="line">then <strong>use it!</strong></div>
+</div>
+</div>
+<div class="section" id="id56">
+
+<div class="line-block">
+<div class="line"><em>Don't</em></div>
+</div>
+<div class="line-block">
+<div class="line">use a relational database</div>
+<div class="line">because you think doing so is somehow</div>
+<div class="line">“right” or “noble”</div>
+</div>
+<div class="line-block">
+<div class="line"><em>if</em></div>
+</div>
+<div class="line-block">
+<div class="line">you hope that your ORM will</div>
+<div class="line">let you <em>hide</em> from how relations work</div>
+</div>
+</div>
+<div class="section" id="id57">
+
+<p>Use a data store that—</p>
+<div class="line-block">
+<div class="line">—fits your <em>application</em></div>
+<div class="line">—that fits your <em>data</em></div>
+<div class="line">—that you <em>understand</em></div>
+</div>
+</div>
+<div class="section" id="and">
+<h1>And</h1>
+<div class="line-block">
+<div class="line"><em>Relational databases</em> are awesome</div>
+<div class="line"><em>SQLAlchemy</em> is awesome</div>
+<div class="line"><em>Python</em> is awesome</div>
+</div>
+</div>
+<div class="section" id="thank-you">
+<h1>Thank you!</h1>
+</div>
+<div class="section" id="id58">
+
+<script>
+  window.slide_transition_time = 200;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides.js"></script></div>
+<div class="section" id="id59">
+
+<p>Local variables:
+mode:text
+fill-column:59
+End:</p>
+</div>
+</div>
+</body>
+</html>

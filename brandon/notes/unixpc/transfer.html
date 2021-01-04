@@ -1,0 +1,615 @@
+<html>
+<head>
+<style>
+ em { font-style: normal; font-variant: small-caps; }
+</style>
+<title>Transferring files from a Unix PC to Linux</title>
+</head>
+
+<h1>Transferring files from the <em>Unix</em>&nbsp;PC</h1>
+
+(Some technical notes
+by <a href="http://www.rhodesmill.org/brandon">Brandon Craig Rhodes</a>.)
+<p>
+The <em>Unix</em>&nbsp;PC was a 1980s-era personal computer;
+there is more information about it at the
+<a href="http://unixpc.taronga.com/"><em>Unix</em>&nbsp;PC Archive</a> page.
+<p>
+I recently decided to copy the files
+off of my account on an old <em>Unix</em>&nbsp;PC
+before they are finally lost to a hardware failure.
+This turned out to be more involved than I expected,
+requiring an impromptu refresher course
+on its user interface and communications software.
+Here I present the results
+so that others who want to salvage data from these venerable personal computers
+can do so with the minimum of hassle.
+Necessary equipment are the <em>Unix</em>&nbsp;PC in question,
+a null modem cable as described at greater length below,
+and another computer that can offer a serial command line
+with X-modem software.
+For the latter I used my Linux laptop,
+but any decent operating system should do.
+<p>
+Because this page includes numerous screen shots
+of the <em>Unix</em>&nbsp;PC in action,
+it may also provide an occasion for nostalgia at this wonderful machine
+that provided both <em>Unix</em> System&nbsp;V to the desktop <i>and</i>
+a windows interface with integrated mouse.
+<p>
+In addition to describing in detail how to perform file transfer
+using the native <em>Unix</em>&nbsp;PC software,
+this page also describes:
+<ul>
+<li>
+ How to <a href="#19200">give any <em>Unix</em>&nbsp;PC account
+ a Hardware Setup menu</a> usually available only to <b><tt>root</tt></b>,
+ in case you lack access to the root account
+ but still need to configure the serial port yourself.
+<li>
+ How to <a href="#19200">use the serial port at 19,200&nbsp;baud</a>,
+ twice the normal limit of 9600&nbsp;baud,
+ by creating a custom RS-232 Profile
+ in your <b><tt>Profiles/</tt></b> directory.</p>
+</ul>
+<p>
+Before proceeding,
+one or two notes are in order
+about navigating the <em>Unix</em>&nbsp;PC's interface.
+<p>
+When you log in to the <em>Unix</em>&nbsp;PC
+you are presented with a menu called your <b><tt>Office</tt></b>.
+As you select entries from it,
+more windows will be opened on the screen,
+some representing file folders,
+others presenting menus of options,
+and still others containing running programs.
+You can always bring up a list of the currently open windows
+by clicking with the mouse
+on the <b>W</b> in the upper right hand corner of the screen,
+or by pressing <b><tt>&lt;Shift&gt;</tt></b>
+and either <b><tt>&lt;Suspd&gt;</tt></b> or <b><tt>&lt;Rsume&gt;</tt></b>;
+pressing <b><tt>&lt;Suspd&gt;</tt></b> or <b><tt>&lt;Rsume&gt;</tt></b>
+without holding down <b><tt>&lt;Shift&gt;</tt></b>
+will usually cycle among the open windows,
+but may not, depending on the application you are using.
+<p>
+To log off the <em>Unix</em>&nbsp;PC,
+return to the Office and press <b><tt>&lt;Exit&gt;</tt></b>.
+To shut the machine down so you can safely power it off,
+return to the Office,
+press <b><tt>&lt;Cmd&gt;</tt></b>,
+and select <b><tt>|Shutdown|</tt></b> from the menu of commands.
+
+<h2>Connecting the <em>Unix</em>&nbsp;PC to another machine</h2>
+
+You will want to connect the serial ports
+of your computer and the <em>Unix</em>&nbsp;PC with a <i>null modem</i> cable,
+that swaps the RS-232 signals around
+so that each machine transmits into the other's receive line.
+A web search for &ldquo;null modem&rdquo;
+should bring up dozens of pages showing the basic design,
+and null modem cables are available commercially.
+But there are two complications of which you should be aware:
+<ul>
+<li>
+ The <em>Unix</em>&nbsp;PC has a full DB25 serial port
+ (modern computers have small DB9 serial ports).
+<li>
+ The <em>Unix</em>&nbsp;PC serial port is female
+ (modern computers use male connectors and female cables).
+</ul>
+So if you are building your own null modem cable,
+it will need a female connector on one end for your personal computer,
+and a male DB25 connector on the end for the <em>Unix</em>&nbsp;PC.
+If instead you acquire a null modem cable built for modern personal computers,
+you will need a small male-male DB25 cable or gender changer
+to connect its female end to the female port on the <em>Unix</em>&nbsp;PC.
+<p>
+<a name="flow">Note</a>
+that you will almost certainly want a fully connected null modem cable
+so that you can enable <i>hardware flow control</i>.
+Some homemade null modem cables are rudimentary,
+and only bother connecting the Transmitted Data and Received Data lines &mdash;
+leaving unconnected the Request to Send&nbsp;(RTS)
+and Clear to Send&nbsp;(CTS) lines,
+with which RS-232 devices traditionally signal each other
+when they are ready to receive data.
+While this omission rarely affects modern machines,
+whose speed and well-buffered serial port hardware make data loss unlikely,
+the <em>Unix</em>&nbsp;PC easily finds itself overwhelmed at high data rates.
+Unless the <em>Unix</em>&nbsp;PC can control when it receives data
+through a connection between its RTS line and the CTS pin on the other machine,
+you will probably find that only very low baud rates
+prevent bytes from being lost.
+<p>
+When the RTS and CTS signals are unavailable,
+one can enable <i>software flow control</i> as an alternative;
+but this works only for text connections,
+and breaks badly when you attempt to transfer files.
+It reserves two special characters
+(usually those sent on the keyboard
+by <tt><b>&lt;Cntl&gt;</b>+<b>&lt;S&gt;</b></tt>
+and <tt><b>&lt;Cntl&gt;</b>+<b>&lt;Q&gt;</b></tt>)
+as signals which tell the other machine to halt and resume transmission.
+You can test this out on the <em>Unix</em>&nbsp;PC
+at any <em>Unix</em> prompt &mdash;
+begin listing a long directory (try <b><tt>ls</tt>&nbsp;<tt>/usr/bin</tt></b>)
+and then press <tt><b>&lt;Cntl&gt;</b>+<b>&lt;S&gt;</b></tt>;
+the scrolling output should pause and wait
+until you press <tt><b>&lt;Cntl&gt;</b>+<b>&lt;Q&gt;</b></tt> to resume it.
+<p>
+The problem with software flow control
+is that file transfer protocols generally feel free
+to use any characters they please,
+and the first <tt><b>&lt;Cntl&gt;</b>+<b>&lt;S&gt;</b></tt>
+that happens to be sent
+freezes the connection and halts the file transfer.
+The procedures below will therefore assume
+either that your are using hardware flow control
+with correctly connected CTS and RTS lines,
+or that you will select a slow enough data rate
+that flow control is not necessary.
+
+<h2>Configuring the RS-232 interface of the <em>Unix</em>&nbsp;PC</h2>
+
+<img src="rs232-setup-a.jpg" align=right>
+After logging in you should be presented with your Office menu.
+Select <b><tt>|Administration|</tt></b>,
+then <b><tt>|Hardware</tt> <tt>Setup|</tt></b>,
+and finally <b><tt>|RS232</tt> <tt>Setup|</tt></b>
+to bring up the serial port configuration dialogue, shown at right.
+(In case the hardware setup entry is missing from your administration menu,
+there is a <a href="#adding">section below</a> that describes how to add it.)
+<p>
+The RS-232 dialogue presents three fields.
+At the <b><tt>Device</tt> <tt>Type</tt></b> field,
+press <b><tt>&lt;Cmd&gt;</tt></b> and choose <b><tt>|COMPTUER|</tt></b>.
+For the <b><tt>Device</tt> <tt>Speed</tt></b> use anything you want;
+we will be making outgoing connections,
+which ignore this setting and use their own baud rate.
+Choose <b><tt>|Yes|</tt></b> for hardware flow control
+if your null modem cable connects
+the RTS and CTS lines of your two computers,
+as described in the previous section;
+otherwise choose <b><tt>|No|</tt></b>
+to prevent the <em>Unix</em>&nbsp;PC for waiting forever
+for a Clear to Send signal that will never reach it.
+<p>
+When done, press <b><tt>&lt;Enter&gt;</tt></b> to submit the form.
+
+<br clear=right>
+<p>
+<img src="rs232-connection-type.jpg" align=right>
+A final dialogue box will appear,
+asking whether you want the port configured
+to accept incoming connections or make outgoing ones.
+Press <b><tt>&lt;Cmd&gt;</tt></b>
+and select <b><tt>|CALLER</tt> <tt>only|</tt></b>
+to prepare the port for outgoing connections.
+Press <b><tt>&lt;Enter&gt;</tt></b> to submit the form
+and you should get the message:
+<blockquote><b><tt>The RS232 port is now set up.<br>
+Please press Enter to continue.</b></tt></blockquote>
+This indicates that the port is now ready for use.
+<p>
+Had you chosen <b><tt>|HOST</tt> <tt>only|</tt></b> instead,
+the port would prepare to answer incoming connections from another machine.
+But the <em>Unix</em>&nbsp;PC will apparently only offer a login prompt
+when it senses carrier detect &mdash;
+a signal which most null modem cables cannot provide.
+We will therefore rely upon outgoing connections,
+which can easily be made to ignore the lack of carrier detect.
+
+<br clear=right>
+<h2>Creating a profile for your serial port</h2>
+<p>
+<img src="profiles-empty.jpg" align=right>
+Next you must create an RS-232 profile
+specifying the communications settings you want to use.
+You can create as many profiles as you wish,
+one for each combination of serial port settings you find useful.
+For the moment we will create a single entry
+for standard 9600&nbsp;bps operations.
+Each profile is actually a file in your
+<blockquote>
+<b><tt>~/Filecabinet/Profiles/</tt></b>
+</blockquote>
+directory with an <b><tt>:A2</tt></b> extension.
+Profiles can easily be created from the file manager
+through the following procedure.
+<p>
+From your Office, select <b><tt>|Filecabinet|</tt></b>
+and from inside it select your <b><tt>|Profiles|</tt></b> directory.
+You may find it empty, as shown at the right,
+or it may already contain several profiles;
+in either case we will create a new one for this project.
+Once in the <b><tt>Profiles</tt></b> window,
+press the <b><tt>&lt;Creat&gt;</tt></b> key on the left side of your keyboard
+(you could also press <b><tt>&lt;Cmd&gt</tt></b>
+and select <b><tt>|Create|</tt></b> from the menu).
+This will bring up a list of file types that you can create.
+Select <b><tt>|RS-232</tt> <tt>Profile|</tt></b> from the available file types,
+enter the name <b><tt>9600-local</tt></b> for the new file,
+and press <b><tt>&lt;Enter&gt;</tt></b>.
+<br clear=right>
+<p>
+<img src="terminal-setup.jpg" align=right>
+This should bring you to the <b><tt>Terminal</tt> <tt>Setup</tt></b> screen
+where all of the attributes of your new profile are displayed.
+The basic communications settings
+are set to reasonable defaults in the illustration on the right:
+the fastest speed of <b><tt>|9600|</tt></b>&nbsp;bps,
+<b><tt>|No|</tt></b> parity checking in either direction,
+the ubiquitous <b><tt>|VT100|</tt></b> terminal type,
+and eight-bit characters separated by one stop bit.
+<p>
+There are two options we can ignore and leave disabled.
+<b><tt>Character</tt> <tt>Echo</tt></b> provides for the rare case
+of connecting to a system that does not echo your keystrokes;
+when enabled, 
+the <em>Unix</em>&nbsp;PC itself will echo your keystrokes
+so you can see what you are typing.
+<b><tt>Auto</tt> <tt>Login</tt></b>
+lets you construct a script that automatically responds to prompts
+as you connect to another system.
+<p>
+The remaining three options, however,
+are critical to the proper operation of your data connection:
+<dl>
+<dt><tt><b>RS232 Modem Control</b></tt>
+<dd>
+ This option determines whether the <em>Unix</em>&nbsp;PC
+ will respect the <i>carrier detect</i> signal,
+ with which modems indicate an active telephone data connection.
+ When <b><tt>|Yes|</tt></b> is selected,
+ only the terminal emulator itself
+ can communicate in the absence of carrier detect;
+ all other operations, like file transfers,
+ hang when carrier detect is dropped &mdash;
+ preventing them from flooding the modem's command line with garbage
+ should the telephone connection die unexpectedly.
+ <p>
+ But null modem cables rarely provide carrier detect,
+ so you should select <b><tt>|No|</tt></b>
+ when making a serial connection directly to another computer.
+ The symptom of leaving this option enabled when directly connecting
+ is that you can log into the remote system normally,
+ but attempts to transfer files hang.
+
+<dt><tt><b>Flow Control to Host</b></tt><br>
+<dd>
+ If you said <b><tt>|Yes|</tt></b> to hardware flow control
+ in the device setup window,
+ this option tells the <em>Unix</em>&nbsp;PC
+ to only send data when receiving a Clear to Send signal.
+ Though it is unlikely that the <em>Unix</em>&nbsp;PC will be able
+ to send data fast enough to challenge a modern computer,
+ this option is always a good idea &mdash;
+ so long as your null modem cable supports CTS,
+ and the other machine is configured to send RTS when ready to receive data.
+ But if deficiencies in your null modem cable
+ or the configuration of the other machine
+ are preventing the <em>Unix</em>&nbsp;PC from ever receiving a CTS signal,
+ disable this option so it can transmit without&nbsp;CTS.
+ <p>
+ If instead you answered <b><tt>|No|</tt></b> to hardware flow control,
+ this option tells the <em>Unix</em>&nbsp;PC
+ to monitor the characters sent by the other machine
+ for start and stop characters;
+ leave it disabled,
+ to prevent the file transfer protocol from accidentally pausing the connection
+ if it uses those characters itself.
+ </p>
+
+<dt><tt><b>Flow Control from Host</b></tt>
+<dd>
+ If you said <b><tt>|Yes|</tt></b> to hardware flow control
+ in the device setup window,
+ this option tells the <em>Unix</em>&nbsp;PC that it can use its RTS signal
+ to control when the remote machine transmits data.
+ If your null modem cable correctly connects
+ the <em>Unix</em>&nbsp;PC's RTS line to the other machine's CTS pin,
+ and the other machine is configured to only transmit when receiving CTS,
+ then you should certainly activate this option
+ so that you can use high baud rates without losing data
+ at moments when the <em>Unix</em>&nbsp;PC becomes overwhelmed.
+ If your cable or other computer does not support this signal,
+ you will want to leave this option off and try using low baud rates.
+ <p>
+ But if your answer was <b><tt>|No|</tt></b> to hardware flow control,
+ this option tells the <em>Unix</em>&nbsp;PC
+ to send a <tt><b>&lt;Cntl&gt;</b>+<b>&lt;S&gt;</b></tt>
+ when it is feeling overwhelmed
+ and then a <tt><b>&lt;Cntl&gt;</b>+<b>&lt;Q&gt;</b></tt>
+ when it is ready to receive more data.
+ This will wreak havoc with any file transfer
+ and should certainly be disabled.
+ </p>
+</dl>
+
+Once you have chosen appropriate settings,
+press <tt><b>&lt;Enter&gt;</b></tt> to save your settings to the profile.
+You can always select the profile again
+from the <b><tt>Profiles</tt></b> window
+if you want to further modify its settings.
+
+<br clear=right>
+<h2>Adding a data entry to your directory</h2>
+<p>
+<img src="call-screen-empty.jpg" align=right>
+We are almost ready to make our connection.
+From your Office,
+select <b><tt>|Telephone|</tt></b> to bring up your call screen;
+this may be empty like the one shown at the left,
+or it may contain several entries already.
+We are going to create a data connection entry
+that uses the RS-232 profile we just designed.
+Press <tt><b>&lt;F7&gt;</b></tt> which,
+you can see from the bottom of the screen,
+allows you to edit your telephone directory,
+and select <b><tt>|Create</tt> <tt>data</tt> <tt>entry|</tt></b>
+from the list of commands.
+
+<br clear=right>
+<p>
+<img src="create-data-entry.jpg" align=right>
+You can leave most of the new data entry blank.
+As in the example to the right,
+give it a name you will recognize when you return to the call screen,
+and make sure that <b><tt>In</tt> <tt>Call</tt> <tt>Screen</tt></b>
+is set to <b><tt>|Yes|</tt></b> so that it will be listed.
+Use the <b><tt>Data</tt> <tt>Profile</tt> <tt>Name</tt></b>
+to associate it with the data profile you created earlier,
+and make sure it will use <b><tt>|Serial</tt> <tt>Port</tt> <tt>0|</tt></b>.
+<p>
+Press <tt><b>&lt;Enter&gt;</b></tt> when you have completed your changes
+to return to the call screen.
+If after returning to the call screen
+you want to edit the data profile again,
+simply highlight it,
+press <tt><b>&lt;F7&gt;</b></tt>,
+and select <b><tt>|Modify</tt> <tt>data</tt> <tt>entry|</tt></b>
+from the list of commands.
+
+<br clear=right>
+<h2>Connecting and transferring files</h2>
+<p>
+<img src="call-screen-9600.jpg" align=right>
+Finally we are ready to connect to your other machine
+and copy files off of the <em>Unix</em>&nbsp;PC!
+Connect your null modem cable to the <em>Unix</em>&nbsp;PC
+and your other machine,
+using any necessary converters
+to deal with the gender of the <em>Unix</em>&nbsp;PC's serial port.
+Then highlight the call screen data entry we have just created,
+as shown at right,
+and press <tt><b>&lt;Enter&gt;</b></tt>.
+The <em>Unix</em>&nbsp;PC will churn
+while the asynchronous terminal emulator is loaded
+(the program is called <tt><b>async_main</b></tt>),
+and then the screen will go black
+and you will have access to the serial line.
+<p>
+Your first question upon entering the terminal emulator
+is probably how to leave,
+since it uses the full screen and does not provide a window border.
+On the <em>Unix</em>&nbsp;PC you can always move to another window
+by clicking <b>W</b> in the upper right hand corner of the screen,
+or pressing either <tt><b>&lt;Shift&gt;</b>+<b>&lt;Suspd&gt;</b></tt>
+and <tt><b>&lt;Shift&gt;</b>+<b>&lt;Rsume&gt;</b></tt>.
+The terminal emulator will continue running while you do other tasks,
+and will be ready when you return.
+But you can also get the attention of the terminal emulator itself:
+<ul>
+<li>
+ <tt><b>&lt;Shift&gt;</b>+<b>&lt;Cmd&gt;</b></tt>
+ gives you a list of available commands.
+<li>
+<tt><b>&lt;Shift&gt;</b>+<b>&lt;Exit&gt;</b></tt>
+ closes the terminal emulator and returns you to the call screen.
+</ul>
+
+We are now ready to activate a login prompt on the other machine.
+<br clear=right>
+<p>
+<img src="async-showing-linux.jpg" align=right>
+In this example the other machine is my Linux laptop,
+but any operating system with a decent command line will do.
+From the root prompt of my Linux machine
+I can provide the serial port with a login prompt simply by typing:
+
+<blockquote>
+<tt>$ <b>getty -L -h /dev/ttyS0 9600 vt100</b></tt>
+</blockquote>
+
+where <b><tt>-L</tt></b> tells <b><tt>getty</tt></b>
+the connection is local and it need not wait for carrier detect,
+and <b><tt>-h</tt></b> turns on hardware flow control.
+You might want to omit <b><tt>-h</tt></b>
+if your null modem cable does not support the CTS and RTS signals.
+Read your own <i>getty</i>(8) man page for details,
+and check whether you enabled hardware flow control
+in the communications profile you created earlier.
+<p>
+At right you can see that <b><tt>getty</tt></b>
+immediately printed a login banner.
+I entered the username and password of my account on the laptop,
+and &mdash; after the usual welcomes and disclaimers &mdash;
+was presented with a login shell.
+<p>
+Since the <em>umodem</em> file transfer protocol
+supported by the <em>Unix</em>&nbsp;PC
+turns out to be an implementation of the standard X-Modem protocol,
+I have run the <b><tt>rx</tt></b> command
+which is sitting and waiting for an X-Modem transmission to begin.
+Its argument tells it the file
+into which it should place the data it receives;
+here I have named the file <b><tt>ksh</tt></b>,
+because I will be transmitting <b><tt>/bin/ksh</tt></b>
+from the <em>Unix</em>&nbsp;PC.
+
+<br clear=right>
+<p>
+<img src="async-transmitting.jpg" align=right>
+Now that the laptop is ready to receive a file,
+I press <tt><b>&lt;Shift&gt;</b>+<b>&lt;Cmd&gt;</b></tt>,
+select <b><tt>|Transmit</tt> <tt>File</tt> <tt>-</tt>
+<tt>UMODEM|</tt></b> from the command menu,
+select the <b><tt>|Binary|</tt></b> transfer mode
+and enter the file name <b><tt>/bin/ksh</tt></b>,
+and finally press <tt><b>&lt;Enter&gt;</b></tt> to begin the transfer.
+The status of the file transfer will be displayed
+as in the screen shown at the right,
+and once the tranfer begins the program will begin printing
+<pre><b><tt>Sent sector 1.
+Sent sector 2.
+Sent sector 3.
+Sent sector 4.</tt></b></pre>
+and so forth until the complete file has been transmitted.
+<p>
+At any time you can return to the command menu
+and select <b><tt>|*Terminate</tt> <tt>File</tt> <tt>Transfer|</tt></b>
+to interrupt the file transfer.
+<p>
+You should be returned to the terminal emulator,
+and the <b><tt>rx</tt></b> command on your other machine
+should return you to the command prompt,
+once the file transfer has completed.
+<p>
+There are two drawback to this file transfer method.
+First, it is somewhat slow &mdash;
+X-Modem does not send each block
+until the receiver has verified the checksum of the previous block,
+making the serial line sit idle between blocks
+until the receiver acknowledges its receipt.
+Second, X-modem is not careful to end the file at exactly the right place
+and you will usually find it padded with a few null characters on the end,
+which must be snipped off before the checksums of the original file
+and its copy will match.
+But as this seems to be the only error-checked file transfer method
+natively supported by the <em>Unix</em>&nbsp;PC,
+these limitations are best endured.
+
+<br clear=right>
+
+<h2><a name="adding">Adding entries to your Administration menu</a></h2>
+
+Depending on the privileges of the user you have logged in as,
+the <em>Unix</em>&nbsp;PC may not present you
+with the <b><tt>|Hardware Setup|</tt></b> option
+in your <b><tt>Administration</tt></b> menu.
+It turns out that any user can gain this option
+simply by creating
+an <b><tt>Administration</tt></b> file in his home directory
+with the entries he needs;
+I usually add both a <b><tt>Hardware Setup</tt></b> entry
+and one that provides a root prompt:
+
+<blockquote><pre><b>Name = Hardware Setup
+Default = Open
+Open = UA Hardware
+Help = EXEC -d /usr/bin/uahelp -h /usr/lib/ua/admin.hlp -t "Hardware Setup"
+
+Name = Root Shell
+Default = Run
+Run = EXEC -pwd /bin/ksh</b></pre></blockquote>
+
+After making changes to this file
+you must log out and back in to bring them into effect.
+<p>
+It must have seemed reasonable on these small machines
+to allow knowledgeable console users access to a root prompt.
+Users must not take advantage of this to undertake mischief.
+I have only supplied these details to assist any administrator
+who finds himself in charge of a <em>Unix</em>&nbsp;PC
+whose root password was long ago forgotten,
+but who might have access to another user account;
+note in particular that the <b><tt>tutor</tt></b> account
+comes installed on the <em>Unix</em>&nbsp;PC without a password.
+<p>
+For complete documentation on adding entries to your Office menus,
+see the <i>ua</i>(4) manual page.
+You can see more examples in the <b><tt>/usr/lib/ua</tt></b> directory
+of your <em>Unix</em>&nbsp;PC,
+where all of the default menu entries are defined.
+
+<h2><a name="19200">Communicating at 19,200 bits per second</a></h2>
+
+While the <em>Unix</em>&nbsp;PC dialogue for editing RS-232 profiles
+shows <b><tt>9600</tt></b> as the highest available speed,
+the serial port hardware itself is capable of transmitting at 19,200&nbsp;bps.
+To select this speed one must manually edit the profile,
+which is somewhat difficult;
+unlike most <em>Unix</em> configuration files,
+these communications profiles are encoded in a binary format.
+If only <em>Unix</em> had provided a utility
+for turning <b><tt>od(1)</tt></b> output back into binary,
+we could accomplish tasks like this with a simple text editor!
+<p>
+The only place in the <em>Unix</em>&nbsp;PC documentation
+where this higher speed is mentioned is its <i>termio</i>(7) man page &mdash;
+even the <i>stty</i>(1) man page
+shows <b><tt>9600</tt></b> as the highest baud rate,
+followed by <b><tt>exta</tt></b> and <b><tt>extb</tt></b>,
+which select externally clocked data rates.
+But the application interface for terminal control
+described in <i>termio</i>(7) shows
+that the <i>c_cflag</i> field of the <i>termio</i> struct
+can have the values:
+<blockquote><pre><b>B9600   0000015</b>  9600 baud
+<b>B19200  0000016</b>  19200 baud
+<b>EXTB    0000017</b>  External B</pre></blockquote>
+It turns out that each communications profile
+specifies the baud rate in the byte at offset seven.
+We can examine the 9600 baud profile we have already created
+by selecting <b><tt>UNIX System</tt></b> from the <b><tt>Office</tt></b>
+and running the commands:
+<blockquote><pre>
+$ <b>cd Profiles </b>
+$ <b>od 9600-local:A2</b>
+0000000 053504 012004 000000 004075 000000 000000 000000 000000
+0000020 000000 000000 000000 000000 000000 000000 000000 000000
+*
+0001514</pre></blockquote>
+The value 075 in byte seven
+seems to combine the values <b><tt>B9600</tt></b> and <b><tt>CS8</tt></b>
+from the definition of <i>c_cflag</i> in <i>termio</i>(7),
+specifying 9600&nbsp;bps using eight-bit bytes.
+To increase the baud rate we must simply replace <b><tt>B9600</tt></b>
+with <b><tt>B19200</tt></b>, making the value&nbsp;076.
+Since <em>Unix</em> does not provide a tool for manipulating binary files,
+use your favorite editor at the command prompt
+to create this <b><tt>tmp.c</tt></b> file:
+<blockquote><pre><b>#include &lt;fcntl.h&gt;
+int main() {
+	char c = 076;
+	int fd = open("19200-local:A2", O_RDWR);
+	lseek(fd, 7, 0);
+	write(fd, &c, 1);
+}
+</b></pre></blockquote>
+Creating your 19,200&nbsp;bps profile is now as easy as:
+<blockquote><pre>
+$ <b>cp 9600-local:A2 19200-local:A2</b>
+$ <b>cc tmp.c</b>
+$ <b>./a.out</b>
+</pre></blockquote>
+You can verify that this operation succeeded by examining the new file
+and confirming that its seventh byte has been set to the desired value:
+<blockquote><pre>
+$ <b>od 19200-local:A2</b>
+0000000 053504 012004 000000 004076 000000 000000 000000 000000
+0000020 000000 000000 000000 000000 000000 000000 000000 000000
+*
+0001514
+</pre></blockquote>
+Now return to your <b><tt>Telephone</tt></b> window
+and create an entry using this new profile
+to begin communicating at high speed.
+</p>
+<hr>
+Last updated
+by <a href="http://www.rhodesmill.org/brandon">Brandon Craig Rhodes</a>
+on 26&nbsp;Dec&nbsp;2003.
+</body></html>

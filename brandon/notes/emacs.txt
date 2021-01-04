@@ -1,0 +1,83 @@
+Emacs has been my editor since the late 1980s.  The following have
+been useful through my years of using GNU emacs.
+
+---- Viewing Microsoft Word Documents within Gnus ----
+
+Other researchers often forward Microsoft Word documents as MIME
+attachments.  Gnus knows about MIME attachments but upon selecting
+them one discovers that saving them to a file is the best it can do in
+the way of processing them.  But there is at least one free system,
+wvWare, for viewing Word documents under Linux; the challenge was to
+arrange for Emacs to call it internally.
+
+The command-line utilities which come with wvWare are poorly written.
+Note only do not support standard input and output, but they create
+temporary files in the current working directory without even checking
+whether they are overwriting any files of your own!  (See the code of
+"wvText" for an example.)  So before using them from Emacs it behooves
+us to create a "wvTextStdin" command which performs the function of
+"wvText" but uses the standard input and output.
+
+After installing wvWare (accomplished under Debian by typing `apt-get
+install wv') I placed the following command in my path:
+
+<++> wvTextStdin
+#!/bin/zsh
+# Allow wvText to read from the standard input.
+
+t=$(basename $(tempfile))
+cat "$@" > /tmp/$f.doc
+cd /tmp
+wvText $f.doc $f.txt
+cat $f.txt
+rm -f $f.doc $f.txt
+<-->
+
+Finally the following lines had to be added to .emacs (well, actually
+to .xemacs/init.el) so that clicking on Word attachments would expand
+them in-line:
+
+<++>
+(defun mm-inline-msword (handle)
+  "Return foo bar"
+  (let (text)
+    (with-temp-buffer
+      (mm-insert-part handle)
+      (call-process-region (point-min) (point-max) "wvTextStdin" t t nil)
+      (setq text (buffer-string)))
+    (mm-insert-inline handle text)))
+
+(setq mm-automatic-display
+      (append mm-automatic-display
+            '("application/msword")))
+
+(setq mm-inlined-types
+      (append mm-inlined-types
+            '("application/msword" "application/octet-stream")))
+
+(setq mm-inline-media-tests
+      (append mm-inline-media-tests
+	      '(("application/msword" mm-inline-msword identity))
+	      '(("application/octet-stream" mm-inline-msword 
+		 (lambda (handle)
+		   (let* ((type (mm-handle-type handle))
+			  (name-pair (assq 'name type))
+			  (name (cdr name-pair)))
+		     (if name (equal ".doc" (substring name -4 nil)))
+		     ))))))
+<-->
+
+The "mm-inline-msword" function, when given a Word attachment, feeds
+it to the "wvTextStdin" command we wrote above and places the output
+in the article buffer.  Then three "setq" calls add entries for new
+MIME types to some internal lists.  The last function is somewhat
+complicated because word documents arrive in my email not only typed
+as "application/msword", but sometimes as "application/octet-stream"
+attachments which can only be identified as Word documents by noting
+that their file names end with ".doc".
+
+Links:
+
+Using MIME in Gnus        http://www.gnus.org/manual/gnus_129.html#SEC128
+Customizing Emacs MIME    http://www.gnus.org/manual/emacs-mime_20.html#SEC19
+wv utility	          http://www.wvware.com/

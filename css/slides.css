@@ -1,0 +1,183 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/slides.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+body {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+q, blockquote {
+  quotes: none;
+}
+q:before, q:after, blockquote:before, blockquote:after {
+  content: "";
+  content: none;
+}
+
+a img {
+  border: none;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+  display: block;
+}
+
+/* http://www.colourlovers.com/palette/299662/safeword */
+body {
+  font-family: "Inconsolata";
+  background-color: #000;
+  color: #fff;
+}
+
+.slide {
+  display: table;
+  position: absolute;
+  -moz-transform: scale(0.2, 0.2);
+  -webkit-transform: scale(0.2, 0.2);
+  -o-transform: scale(0.2, 0.2);
+  -ms-transform: scale(0.2, 0.2);
+  transform: scale(0.2, 0.2);
+}
+
+.full-size-slide {
+  -moz-transform: scale(1, 1);
+  -webkit-transform: scale(1, 1);
+  -o-transform: scale(1, 1);
+  -ms-transform: scale(1, 1);
+  transform: scale(1, 1);
+}
+
+.slide > .section {
+  display: table-cell;
+  height: 580px;
+}
+
+.section {
+  background-color: #f5e5d0;
+  margin-bottom: 1em;
+  -moz-border-radius: 3em;
+  -webkit-border-radius: 3em;
+  -o-border-radius: 3em;
+  -ms-border-radius: 3em;
+  -khtml-border-radius: 3em;
+  border-radius: 3em;
+  width: 780px;
+  border: 10px solid #d89845;
+  color: #000;
+  vertical-align: middle;
+  font-size: 32px;
+  text-align: center;
+}
+
+#slide h1 {
+  display: none;
+}
+
+h1 {
+  font-weight: bold;
+}
+
+ul, ol {
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5em;
+  text-align: left;
+}
+
+ul {
+  list-style: disc;
+}
+
+ol {
+  list-style: decimal;
+}
+
+h1, p, .line-block, .highlight {
+  margin: 0.8em 0em;
+}
+
+pre {
+  font-family: "DejaVu Sans Mono";
+  display: inline-block;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
+  -o-border-radius: 0.5em;
+  -ms-border-radius: 0.5em;
+  -khtml-border-radius: 0.5em;
+  border-radius: 0.5em;
+  -moz-box-shadow: 0 0 0.5em #e1af6f;
+  -webkit-box-shadow: 0 0 0.5em #e1af6f;
+  -o-box-shadow: 0 0 0.5em #e1af6f;
+  box-shadow: 0 0 0.5em #e1af6f;
+  background-color: #faf3e9;
+  padding: 0.5em;
+  line-height: 1.2em;
+  text-align: left;
+  font-size: 24px;
+}
+
+tt {
+  color: #c54b2c;
+}
+
+em {
+  font-style: italic;
+  color: #0b746b;
+}
+
+strong {
+  font-weight: bold;
+}
+
+/* Extra pygments */
+.p {
+  color: #9b3b23;
+}
+
+/* Timer */
+.timer {
+  position: absolute;
+  text-align: center;
+  font-size: 24px;
+}
+
+.emergency {
+  color: #f44;
+}

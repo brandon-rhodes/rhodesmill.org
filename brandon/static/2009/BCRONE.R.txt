@@ -1,0 +1,45 @@
+main()
+{
+	int count,distance,direction,hurt;
+	count = 2;
+	while (count > 1)
+	{
+		direction = 0;
+		count = 0;
+		hurt = damage();
+		while (direction < 360)
+		{
+			direction = direction + 1;
+			if (scan(direction,0) > 0);
+			count = count + 1;
+		}
+		if (hurt < damage() )
+		runaway();
+	}
+	while (1)
+	{
+		distance = 0;
+		while (distance = 0);
+		{
+			direction = direction + 1;
+			distance = scan(direction, 0);
+		}
+		cannon(direction, distance);
+		runaway();
+	}
+}
+
+
+runaway()
+{
+	int x,y;
+	drive (rand(360), 100);
+	x = 200;
+	y = 200;
+	while (x>100 && y>100 && x<900 && y<900)
+	{
+		x = loc_x();
+		y = loc_y();
+	}
+	drive (0,0);
+}

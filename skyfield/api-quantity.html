@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — Units</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-units">
+<h1>API Reference — Units<a class="headerlink" href="#api-reference-units" title="Permalink to this headline">¶</a></h1>
+<p>When you ask positions to return distances, velocities, or angles,
+they return instances of the following classes.</p>
+<dl class="class">
+<dt id="skyfield.units.Distance">
+<em class="property">class </em><code class="descclassname">skyfield.units.</code><code class="descname">Distance</code><span class="sig-paren">(</span><em>au=None</em>, <em>km=None</em>, <em>m=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>A distance, stored internally as au and available in other units.</p>
+<p>You can initialize a <code class="docutils literal"><span class="pre">Distance</span></code> by providing a single float or a
+float array as either an <code class="docutils literal"><span class="pre">au=</span></code> parameter or a <code class="docutils literal"><span class="pre">km=</span></code> parameter.</p>
+<dl class="method">
+<dt id="skyfield.units.Distance.to">
+<code class="descname">to</code><span class="sig-paren">(</span><em>unit</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Distance.to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert this distance to the given AstroPy unit.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="skyfield.units.Velocity">
+<em class="property">class </em><code class="descclassname">skyfield.units.</code><code class="descname">Velocity</code><span class="sig-paren">(</span><em>au_per_d</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>A velocity, stored internally as au/day and available in other units.</p>
+<p>You can initialize a <code class="docutils literal"><span class="pre">Velocity</span></code> by providing a float or float
+array to its <code class="docutils literal"><span class="pre">au_per_d=</span></code> parameter.</p>
+<dl class="method">
+<dt id="skyfield.units.Velocity.to">
+<code class="descname">to</code><span class="sig-paren">(</span><em>unit</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Velocity.to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert this velocity to the given AstroPy unit.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="skyfield.units.Angle">
+<em class="property">class </em><code class="descclassname">skyfield.units.</code><code class="descname">Angle</code><span class="sig-paren">(</span><em>angle=None</em>, <em>radians=None</em>, <em>degrees=None</em>, <em>hours=None</em>, <em>preference=None</em>, <em>signed=False</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="skyfield.units.Angle.hms">
+<code class="descname">hms</code><span class="sig-paren">(</span><em>warn=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.hms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a tuple (hours, minutes, seconds).</p>
+<p>All three quantities will have the same sign as the angle itself.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.signed_hms">
+<code class="descname">signed_hms</code><span class="sig-paren">(</span><em>warn=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.signed_hms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a tuple (sign, hours, minutes, seconds).</p>
+<p>The <code class="docutils literal"><span class="pre">sign</span></code> will be either +1 or -1, and the other quantities
+will all be positive.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.hstr">
+<code class="descname">hstr</code><span class="sig-paren">(</span><em>places=2</em>, <em>warn=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.hstr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a string like <code class="docutils literal"><span class="pre">12h</span> <span class="pre">07m</span> <span class="pre">30.00s</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.dms">
+<code class="descname">dms</code><span class="sig-paren">(</span><em>warn=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.dms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a tuple (degrees, minutes, seconds).</p>
+<p>All three quantities will have the same sign as the angle itself.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.signed_dms">
+<code class="descname">signed_dms</code><span class="sig-paren">(</span><em>warn=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.signed_dms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a tuple (degrees, hours, minutes, seconds).</p>
+<p>The <code class="docutils literal"><span class="pre">sign</span></code> will be either +1 or -1, and the other quantities
+will all be positive.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.dstr">
+<code class="descname">dstr</code><span class="sig-paren">(</span><em>places=1</em>, <em>warn=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.dstr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a string like <code class="docutils literal"><span class="pre">181deg</span> <span class="pre">52'</span> <span class="pre">30.0&quot;</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.to">
+<code class="descname">to</code><span class="sig-paren">(</span><em>unit</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert this angle to the given AstroPy unit.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+  </body>
+</html>

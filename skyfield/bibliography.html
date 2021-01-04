@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibliography</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="bibliography">
+<h1>Bibliography<a class="headerlink" href="#bibliography" title="Permalink to this headline">¶</a></h1>
+<p>Further reading on the concepts and technology behind Skyfield.</p>
+<p><em>USNO Circular 179</em>
+by George H. Kaplan, October 2005</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.usno.navy.mil/USNO/astronomical-applications/publications/Circular_179.pdf/at_download/file">https://www.usno.navy.mil/USNO/astronomical-applications/publications/Circular_179.pdf/at_download/file</a></p>
+<p>My favorite introduction to how the International Astronomical Union
+responded in 1997 and 2000 to the problems with the old J2000 system
+by adopting the ICRS and a new Earth rotation model.  Thanks to
+Kaplan’s explanations, I finally understood the maneuvers of the
+USNO’s freely available <a class="reference external" href="http://aa.usno.navy.mil/software/novas/novas_py/novaspy_intro.php">NOVAS library</a> (which comes with a Python
+interface!)  when dealing with dates and coordinate systems, and I
+was able to perform the same calculations correctly in Skyfield.  It
+also provided a useful introduction to the JPL ephemerides that
+NOVAS uses.</p>
+</div></blockquote>
+<p><em>User’s Guide to NOVAS Version F3.1,</em> March 2011</p>
+<blockquote>
+<div><p><a class="reference external" href="http://aa.usno.navy.mil/software/novas/novas_f/NOVAS_F3.1_Guide.pdf">http://aa.usno.navy.mil/software/novas/novas_f/NOVAS_F3.1_Guide.pdf</a></p>
+<p>There were also several useful tidbits of information in the United
+States Naval Observatory’s guide to using NOVAS.  It tends towards
+more practical and user oriented advice than does the Circular, and
+of course was also my guide to the library’s concepts when I used it
+as my model for Skyfield’s internal astrometry routines.</p>
+</div></blockquote>
+<p><em>SPICE Required Reading documents</em></p>
+<blockquote>
+<div><p><a class="reference external" href="https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/kernel.html">https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/kernel.html</a>
+<a class="reference external" href="https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/spk.html">https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/spk.html</a>
+<a class="reference external" href="https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/daf.html">https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/daf.html</a></p>
+<p>When implementing Skyfield’s sister library <a class="reference external" href="https://pypi.python.org/pypi/jplephem">jplephem</a>, these
+documents were invaluable for their detailed description of the .bsp
+binary file format as well as the description of how the SPICE
+system combines multiple ephemeris segments to learn the
+displacement between two Solar System objects.</p>
+</div></blockquote>
+<p><em>JPL Solar System Dynamics directory of ephemeris PDFs</em></p>
+<blockquote>
+<div><p><a class="reference external" href="ftp://ssd.jpl.nasa.gov/pub/eph/planets/ioms/">ftp://ssd.jpl.nasa.gov/pub/eph/planets/ioms/</a></p>
+<p>I cannot always find the official documentation describing a
+particular JPL ephemeris, but this directory is always a good
+starting point, as it collects several of the PDFs together in one
+place.</p>
+</div></blockquote>
+<p><em>Historical values of the Earth’s clock error ∆T and the calculation of
+eclipses</em> by Morrison &amp; Stephenson, 2004</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><a class="reference external" href="http://adsabs.harvard.edu/full/2004JHA....35..327M">http://adsabs.harvard.edu/full/2004JHA….35..327M</a></div>
+<div class="line"><a class="reference external" href="http://articles.adsabs.harvard.edu/cgi-bin/nph-iarticle_query?2004JHA....35..327M&amp;data_type=PDF_HIGH&amp;type=PRINTER&amp;filetype=.pdf">Full PDF</a></div>
+</div>
+<p>Detailed discussion of the fact that ∆T has the shape of a parabola
+over history because, omitting short-term variations, the shortening
+length of Earth’s day makes the difference between modern clock time
+and actual sunrise and sunset skew ever longer over the centuries as
+the tiny error introduced each year gradually accumulates.  Ancient
+eclipses for which records survive are our one point-source of data
+about how far the error had accumulated each century.</p>
+</div></blockquote>
+<p><em>Delta T: Past, Present and Future</em> at the United States Naval Observatory</p>
+<blockquote>
+<div><p><a class="reference external" href="http://asa.usno.navy.mil/SecK/DeltaT.html">http://asa.usno.navy.mil/SecK/DeltaT.html</a></p>
+<p>A few well-presented plots of ∆T and its behavior over the past few
+centuries.  I tended to have this page always open in another tab
+while reading about ∆T on other sites, so that I could correlate the
+descriptions of each text against the visuals here.</p>
+</div></blockquote>
+<p><em>IERS Rapid Service/Prediction Center</em>
+links at the United States Naval Observatory</p>
+<blockquote>
+<div><p><a class="reference external" href="http://maia.usno.navy.mil/">http://maia.usno.navy.mil/</a></p>
+<p>The many links on this page helped me sort out the various raw
+sources of Earth orientation data that are available, and decide on
+the ones that needed to be built into Skyfield.  I also made many
+visits to the IERS web site itself:</p>
+<p><a class="reference external" href="http://www.iers.org/IERS/EN/DataProducts/EarthOrientationData/eop.html">http://www.iers.org/IERS/EN/DataProducts/EarthOrientationData/eop.html</a></p>
+<p>but found the USNO site to always be the better starting point.</p>
+</div></blockquote>
+<p><em>The ∆T pages at the NASA Eclipse Web Site</em></p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><a class="reference external" href="http://eclipse.gsfc.nasa.gov/SEhelp/deltatpoly2004.html">http://eclipse.gsfc.nasa.gov/SEhelp/deltatpoly2004.html</a></div>
+</div>
+<p>While most of the pages about ∆T at the Eclipse Web Site are a basic
+introduction to the concept, the “Polynomial Expressions” page
+provides something new: the polynomials that Espenak and Meeus used
+as their fit to ∆T when building their <em>Five Millennium Canon of
+Solar Eclipses: −1999 to +3000.</em></p>
+<p>When the day comes that I implement eclipse logic in Skyfield, I
+will be interested in comparing my results against the <a class="reference external" href="http://eclipse.gsfc.nasa.gov/5MCSE/5MCSE-Text11.pdf">Espenak and
+Meeus paper itself</a>!</p>
+</div></blockquote>
+</div>
+
+  </body>
+</html>

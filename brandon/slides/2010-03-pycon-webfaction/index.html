@@ -1,0 +1,925 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="generator" content="Docutils 0.10: http://docutils.sourceforge.net/">
+<meta name="version" content="S5 1.1">
+<title></title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 7514 2012-09-14 14:27:12Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
+}
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, .code .error {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+pre.code .ln { color: grey; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+.doctest-block , .literal-block .hll { background-color: #ffffcc }
+.doctest-block , .literal-block  { background: #f8f8f8; }
+.doctest-block .c, .literal-block .c { color: #408080; font-style: italic } /* Comment */
+.doctest-block .err, .literal-block .err { border: 1px solid #FF0000 } /* Error */
+.doctest-block .k, .literal-block .k { color: #008000; font-weight: bold } /* Keyword */
+.doctest-block .o, .literal-block .o { color: #666666 } /* Operator */
+.doctest-block .cm, .literal-block .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.doctest-block .cp, .literal-block .cp { color: #BC7A00 } /* Comment.Preproc */
+.doctest-block .c1, .literal-block .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.doctest-block .cs, .literal-block .cs { color: #408080; font-style: italic } /* Comment.Special */
+.doctest-block .gd, .literal-block .gd { color: #A00000 } /* Generic.Deleted */
+.doctest-block .ge, .literal-block .ge { font-style: italic } /* Generic.Emph */
+.doctest-block .gr, .literal-block .gr { color: #FF0000 } /* Generic.Error */
+.doctest-block .gh, .literal-block .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.doctest-block .gi, .literal-block .gi { color: #00A000 } /* Generic.Inserted */
+.doctest-block .go, .literal-block .go { color: #888888 } /* Generic.Output */
+.doctest-block .gp, .literal-block .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.doctest-block .gs, .literal-block .gs { font-weight: bold } /* Generic.Strong */
+.doctest-block .gu, .literal-block .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.doctest-block .gt, .literal-block .gt { color: #0044DD } /* Generic.Traceback */
+.doctest-block .kc, .literal-block .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.doctest-block .kd, .literal-block .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.doctest-block .kn, .literal-block .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.doctest-block .kp, .literal-block .kp { color: #008000 } /* Keyword.Pseudo */
+.doctest-block .kr, .literal-block .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.doctest-block .kt, .literal-block .kt { color: #B00040 } /* Keyword.Type */
+.doctest-block .m, .literal-block .m { color: #666666 } /* Literal.Number */
+.doctest-block .s, .literal-block .s { color: #BA2121 } /* Literal.String */
+.doctest-block .na, .literal-block .na { color: #7D9029 } /* Name.Attribute */
+.doctest-block .nb, .literal-block .nb { color: #008000 } /* Name.Builtin */
+.doctest-block .nc, .literal-block .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.doctest-block .no, .literal-block .no { color: #880000 } /* Name.Constant */
+.doctest-block .nd, .literal-block .nd { color: #AA22FF } /* Name.Decorator */
+.doctest-block .ni, .literal-block .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.doctest-block .ne, .literal-block .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.doctest-block .nf, .literal-block .nf { color: #0000FF } /* Name.Function */
+.doctest-block .nl, .literal-block .nl { color: #A0A000 } /* Name.Label */
+.doctest-block .nn, .literal-block .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.doctest-block .nt, .literal-block .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.doctest-block .nv, .literal-block .nv { color: #19177C } /* Name.Variable */
+.doctest-block .ow, .literal-block .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.doctest-block .w, .literal-block .w { color: #bbbbbb } /* Text.Whitespace */
+.doctest-block .mf, .literal-block .mf { color: #666666 } /* Literal.Number.Float */
+.doctest-block .mh, .literal-block .mh { color: #666666 } /* Literal.Number.Hex */
+.doctest-block .mi, .literal-block .mi { color: #666666 } /* Literal.Number.Integer */
+.doctest-block .mo, .literal-block .mo { color: #666666 } /* Literal.Number.Oct */
+.doctest-block .sb, .literal-block .sb { color: #BA2121 } /* Literal.String.Backtick */
+.doctest-block .sc, .literal-block .sc { color: #BA2121 } /* Literal.String.Char */
+.doctest-block .sd, .literal-block .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.doctest-block .s2, .literal-block .s2 { color: #BA2121 } /* Literal.String.Double */
+.doctest-block .se, .literal-block .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.doctest-block .sh, .literal-block .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.doctest-block .si, .literal-block .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.doctest-block .sx, .literal-block .sx { color: #008000 } /* Literal.String.Other */
+.doctest-block .sr, .literal-block .sr { color: #BB6688 } /* Literal.String.Regex */
+.doctest-block .s1, .literal-block .s1 { color: #BA2121 } /* Literal.String.Single */
+.doctest-block .ss, .literal-block .ss { color: #19177C } /* Literal.String.Symbol */
+.doctest-block .bp, .literal-block .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.doctest-block .vc, .literal-block .vc { color: #19177C } /* Name.Variable.Class */
+.doctest-block .vg, .literal-block .vg { color: #19177C } /* Name.Variable.Global */
+.doctest-block .vi, .literal-block .vi { color: #19177C } /* Name.Variable.Instance */
+.doctest-block .il, .literal-block .il { color: #666666 } /* Literal.Number.Integer.Long */</style>
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow">
+<meta name="controlVis" content="hidden">
+<!-- style sheet links -->
+<script src="ui/default/slides.js" type="text/javascript"></script>
+<link rel="stylesheet" href="ui/default/slides.css" type="text/css" media="projection" id="slideProj">
+<link rel="stylesheet" href="ui/default/outline.css" type="text/css" media="screen" id="outlineStyle">
+<link rel="stylesheet" href="ui/default/print.css" type="text/css" media="print" id="slidePrint">
+<link rel="stylesheet" href="ui/default/opera.css" type="text/css" media="projection" id="operaFix">
+
+<style type="text/css">
+#currentSlide {display: none;}
+</style>
+</head>
+<body>
+<div class="layout">
+<div id="controls"></div>
+<div id="currentSlide"></div>
+<div id="header">
+
+</div>
+<div id="footer">
+
+</div>
+</div>
+<div class="presentation">
+<div class="slide" id="slide0">
+
+
+<table><tr><td>
+<!-- Definitions of interpreted text roles (classes) for S5/HTML data. -->
+<!-- This data file has been placed in the public domain. -->
+<!-- Colours
+======= -->
+<!-- Text Sizes
+========== -->
+<!-- Display in Slides (Presentation Mode) Only
+========================================== -->
+<!-- Display in Outline Mode Only
+============================ -->
+<!-- Display in Print Only
+===================== -->
+<!-- Display in Handout Mode Only
+============================ -->
+<!-- Incremental Display
+=================== -->
+<div class="line-block">
+<div class="line">PREPARE!</div>
+</div>
+
+</td></tr></table>
+</div>
+<div class="slide" id="learning-web-hosting-best-practices-from-webfaction">
+<table><tr><td>
+<h1>Learning Web Hosting Best-Practices From WebFaction</h1>
+<div class="line-block">
+<div class="line">Brandon Craig Rhodes</div>
+<div class="line">PyCon 2010</div>
+</div>
+</td></tr></table>
+</div>
+<div class="slide" id="slides-of-targeting">
+<table><tr><td>
+<h1>3 slides of targeting</h1>
+</td></tr></table>
+</div>
+<div class="slide" id="what-this-is-not">
+<table><tr><td>
+<h1>What this is not</h1>
+<ul class="simple">
+<li>Not an ad</li>
+<li>Contains no affiliate link</li>
+<li>Not by a WebFaction employee</li>
+<li>Not vetted by WebFaction</li>
+<li>Not about dedicated hosting</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="shared-hosting">
+<table><tr><td>
+<h1>Shared hosting</h1>
+<ul class="simple">
+<li>You are a mere UNIX user</li>
+<li>Many UNIX users per box</li>
+<li>Useful for small sites</li>
+<li>Costs a few dollars a month</li>
+<li>Saves me lots of admin costs</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="preview-what-did-i-learn">
+<table><tr><td>
+<h1>Preview: What did I learn?</h1>
+<ul class="simple">
+<li>I can tolerate shared hosting</li>
+<li>Working starting points are productive</li>
+<li>Control Panel that I could live with</li>
+<li>Permissions that Just Work</li>
+<li>Fear no indirection</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="the-webfaction-landscape">
+<table><tr><td>
+<h1>The WebFaction Landscape</h1>
+</td></tr></table>
+</div>
+<div class="slide" id="what-is-on-each-web-server">
+<table><tr><td>
+<h1>What is on each web server?</h1>
+<ul class="simple">
+<li>You get a shell account</li>
+<li>Postgres and MySQL are already running</li>
+<li>WebFaction owns the privileged ports</li>
+<li>Control panel (web or XML-RPC) controls:<ul>
+<li>Web sites</li>
+<li>DNS entries</li>
+<li>Mailboxes</li>
+<li>Outgoing SMTP</li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="untitled">
+<table><tr><td>
+<img alt="landscape.png" src="landscape.png">
+</td></tr></table>
+</div>
+<div class="slide" id="using-the-control-panel">
+<table><tr><td>
+<h1>Using the Control Panel</h1>
+<ul class="simple">
+<li>Add your domain name (&#8220;example.com&#8221;)</li>
+<li>Create web apps</li>
+<li>Create a site to link them</li>
+</ul>
+<pre class="literal-block">
+Domain       Path    Application
+-----------  ------  -----------
+example.com  /       &#8220;my_static_files&#8221;
+             /blog   &#8220;my_wordpress&#8221;
+</pre>
+</td></tr></table>
+</div>
+<div class="slide" id="id1">
+<table><tr><td>
+<img alt="figures/app-type.png" src="figures/app-type.png">
+</td></tr></table>
+</div>
+<div class="slide" id="id2">
+<table><tr><td>
+<div class="line-block">
+<div class="line">Lots of Python apps</div>
+</div>
+<pre class="literal-block">
+CherryPy
+Django release  (both mod_python and mod_wsgi)
+Django trunk    (both mod_python and mod_wsgi)
+mod_python
+mod_wsgi
+Plone
+Pylons
+Trac
+TurboGears
+Zope
+</pre>
+<pre class="literal-block">
+plus Drupal, Joomla, Rails, WordPress
+</pre>
+</td></tr></table>
+</div>
+<div class="slide" id="your-account">
+<table><tr><td>
+<h1>Your Account</h1>
+<div class="line-block">
+<div class="line">After creating four web apps</div>
+<div class="line">through the Control Panel, your</div>
+<div class="line">account might look like this:</div>
+</div>
+<pre class="literal-block">
+/home/you
+&#9492;&#9472;&#9472; webapps
+    &#9500;&#9472;&#9472; django-test/
+    &#9500;&#9472;&#9472; django-prod/
+    &#9500;&#9472;&#9472; static/
+    &#9492;&#9472;&#9472; wordpress/
+</pre>
+<div class="line-block">
+<div class="line">But what lies inside?</div>
+</div>
+</td></tr></table>
+</div>
+<div class="slide" id="id3">
+<table><tr><td>
+<div class="line-block">
+<div class="line">Simple static site</div>
+</div>
+<pre class="literal-block">
+~/static
+&#9500;&#9472;&#9472; logo.png
+&#9500;&#9472;&#9472; banner.jpg
+&#9500;&#9472;&#9472; extra.css
+&#9492;&#9472;&#9472; ul-corner2.jpg
+</pre>
+</td></tr></table>
+</div>
+<div class="slide" id="id4">
+<table><tr><td>
+<p>paster-based app (pylons, turbogears2)</p>
+<pre class="literal-block">
+~/webapps/mystore
+&#9500;&#9472;&#9472; MANIFEST.in
+&#9500;&#9472;&#9472; README.txt
+&#9500;&#9472;&#9472; bin &#9472; paster, nosetests, test ...
+&#9500;&#9472;&#9472; development.ini
+&#9500;&#9472;&#9472; docs &#9472; index.txt
+&#9500;&#9472;&#9472; lib
+&#9474;   &#9492;&#9472;&#9472; python2.5 &#9472; (Python packages)
+&#9500;&#9472;&#9472; mystore
+&#9474;   &#9492;&#9472;&#9472; (app source code)
+&#9500;&#9472;&#9472; setup.cfg
+&#9492;&#9472;&#9472; setup.py
+</pre>
+</td></tr></table>
+</div>
+<div class="slide" id="id5">
+<table><tr><td>
+<p>mod_wsgi or mod_python (like django)</p>
+<pre class="literal-block">
+~/webapps/my-django-app
+&#9500;&#9472;&#9472; apache2
+&#9474;   &#9500;&#9472;&#9472; bin &#9472; httpd, start, stop, ...
+&#9474;   &#9500;&#9472;&#9472; conf &#9472; httpd.conf, mime.types
+&#9474;   &#9492;&#9472;&#9472; lib, logs, modules ...
+&#9500;&#9472;&#9472; bin
+&#9474;   &#9492;&#9472;&#9472; django-admin.py ...
+&#9500;&#9472;&#9472; lib
+&#9474;   &#9492;&#9472;&#9472; python2.5 &#9472; (Python packages)
+&#9500;&#9472;&#9472; myproject
+&#9474;   &#9492;&#9472;&#9472; manage.py, settings.py, urls.py ...
+&#9492;&#9472;&#9472; myproject.wsgi
+</pre>
+</td></tr></table>
+</div>
+<div class="slide" id="the-contract">
+<table><tr><td>
+<h1>The Contract</h1>
+<ul class="simple">
+<li>The Control Panel:<ul>
+<li>Creates and starts the app</li>
+<li>Creates a crontab entry</li>
+<li>Never touches the app again!</li>
+</ul>
+</li>
+<li>You:<ul>
+<li>Add, modify, remove files</li>
+<li>Stop and start the service</li>
+<li>Edit your crontab</li>
+<li>WF just watches the TCP port!</li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="quick-start">
+<table><tr><td>
+<h1>Quick Start</h1>
+<ul class="simple">
+<li>They get you started</li>
+<li>Configuration works immediately</li>
+<li>Can use development host name</li>
+</ul>
+<pre class="literal-block">
+     myacct.webfactional.com
+blog.myacct.webfactional.com
+test.myacct.webfactional.com
+ tg2.myacct.webfactional.com
+</pre>
+</td></tr></table>
+</div>
+<div class="slide" id="custom-apps">
+<table><tr><td>
+<h1>&#8220;Custom&#8221; apps</h1>
+<div class="line-block">
+<div class="line">Since WF only really cares</div>
+<div class="line">that your TCP port answers HTTP,</div>
+<div class="line">you can dispense with everything else:</div>
+</div>
+<div class="line-block">
+<div class="line">Adding a &#8220;custom&#8221; app in the Control</div>
+<div class="line">Panel just allocates a port and adds</div>
+<div class="line">an empty directory!</div>
+</div>
+</td></tr></table>
+</div>
+<div class="slide" id="id6">
+<table><tr><td>
+<img alt="figures/app-custom.png" src="figures/app-custom.png">
+</td></tr></table>
+</div>
+<div class="slide" id="id7">
+<table><tr><td>
+<img alt="figures/app-custom2.png" src="figures/app-custom2.png">
+</td></tr></table>
+</div>
+<div class="slide" id="id8">
+<table><tr><td>
+<img alt="landscape.png" src="landscape.png">
+</td></tr></table>
+</div>
+<div class="slide" id="permissions">
+<table><tr><td>
+<h1>Permissions</h1>
+<pre class="literal-block">
+$ ls -ld webapps/
+drwxr-xr-x 10 root root 4096 Feb 11 11:05 webapps/
+</pre>
+<ul class="simple">
+<li>Only writable by the control panel</li>
+<li>Assures consistency</li>
+<li>Probably helps with support</li>
+<li>But also provides orthogonality!</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="security">
+<table><tr><td>
+<h1>Security</h1>
+<div class="line-block">
+<div class="line">When so many users share a box</div>
+<div class="line">(often, &gt;100 per WebFaction machine)</div>
+<div class="line">how do you keep them separate?</div>
+</div>
+<ul class="simple">
+<li>This is a stability question</li>
+<li>
+<em>And</em> a security question</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="the-dilemma">
+<table><tr><td>
+<h1>The Dilemma</h1>
+<div class="line-block">
+<div class="line">
+<strong>Q:</strong> How can the web server</div>
+<div class="line">read all of the following files</div>
+<div class="line">but other users not see them?</div>
+</div>
+<pre class="literal-block">
+/home/you/webapps/yoursite/.htaccess
+/home/you/webapps/yoursite/.htpassword
+/home/you/webapps/yoursite/index.html
+/home/you/webapps/yoursite/logo.png
+/home/you/webapps/yoursite/portrait.jpg
+</pre>
+<ul class="simple">
+<li>Put the web server in your group?</li>
+<li>Somehow chgrp them to "www-data"?</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="the-answer-acls">
+<table><tr><td>
+<h1>The Answer: ACLs</h1>
+<pre class="literal-block">
+$ ls -ld ~
+drwxr-x---+ 22 rhodesmill rhodesmill 4096 ...
+</pre>
+<ul class="simple">
+<li>What does the &#8220;+&#8221; mean?</li>
+<li>That ACLs are active</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="id9">
+<table><tr><td>
+<h1>The Answer: ACLs</h1>
+<pre class="literal-block">
+$ getfacl ~
+# file: home/rhodesmill
+# owner: rhodesmill
+# group: rhodesmill
+user::rwx
+user:apache:r-x
+user:nginx:r-x
+group::--x
+mask::r-x
+other::---
+</pre>
+</td></tr></table>
+</div>
+<div class="slide" id="consequences">
+<table><tr><td>
+<h1>Consequences</h1>
+<ul class="simple">
+<li>Default umask can be 0002</li>
+<li>Other users cannot see <em>anything</em>
+</li>
+<li>Web servers can pass and see files</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="the-boundaries">
+<table><tr><td>
+<h1>The Boundaries</h1>
+<ul class="simple">
+<li>File system<ul>
+<li>nginx can read public files</li>
+<li>apache can read public files</li>
+</ul>
+</li>
+<li>Incoming TCP connections<ul>
+<li>Web servers connect to your ports</li>
+</ul>
+</li>
+<li>Outgoing TCP connections<ul>
+<li>Different username/pw for each database</li>
+<li>Different password to send/receive email</li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="almost-everything-in-home">
+<table><tr><td>
+<h1>Almost everything in $HOME</h1>
+<ul class="simple">
+<li>Except mailboxes and databases</li>
+<li>Their logs go in ~/logs/frontend/</li>
+<li>Your logs go in ~/logs/user/</li>
+<li>Log analyzers are just normal apps</li>
+<li>You can:<ul>
+<li>Compile new Apache modules</li>
+<li>Build extra libraries and applications</li>
+<li>(dev packages regularly present!)</li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="package-management">
+<table><tr><td>
+<h1>Package Management</h1>
+<ul class="simple">
+<li>Their Python looks two extra places:</li>
+</ul>
+<pre class="literal-block">
+~/lib/pythonX.Y
+~/webapps/foo/lib/pythonX.Y
+</pre>
+<ul class="simple">
+<li>Their easy_install uses ~/lib</li>
+<li>Can override with tedious arguments</li>
+<li>Unlike virtualenv, sensitive to <em>where</em> Python script lives
+rather than <em>which</em> Python interpreter is used</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="the-tedious-arguments">
+<table><tr><td>
+<h1>(The tedious arguments)</h1>
+<pre class="literal-block">
+easy_install-X.Y \
+ --install-dir=$HOME/webapps/app/lib/PythonX.Y
+ --script-dir=$HOME/webapps/app/bin
+</pre>
+</td></tr></table>
+</div>
+<div class="slide" id="downsides">
+<table><tr><td>
+<h1>Downsides</h1>
+<ul class="simple">
+<li>Idiosyncratic</li>
+<li>Non-standard</li>
+<li>Non-obvious</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="upsides">
+<table><tr><td>
+<h1>Upsides</h1>
+<div class="line-block">
+<div class="line">A script in a given directory</div>
+<div class="line">
+<em>always</em> runs in the same environment</div>
+</div>
+<div class="line-block">
+<div class="line">Libraries that link libpython</div>
+<div class="line">follow the same rules as scripts</div>
+<div class="line">run from the command line</div>
+</div>
+<div class="line-block">
+<div class="line">It is concentric</div>
+</div>
+</td></tr></table>
+</div>
+<div class="slide" id="summary-what-works">
+<table><tr><td>
+<h1>Summary: What works?</h1>
+<ul class="simple">
+<li>Working starting points are productive</li>
+<li>Control Panel can be useful</li>
+<li>Permissions can Just Work</li>
+<li>Indirection increases flexibility</li>
+<li>Using standard tools</li>
+<li>Clear boundaries</li>
+</ul>
+</td></tr></table>
+</div>
+<div class="slide" id="the-end">
+<table><tr><td>
+<h1>The End</h1>
+<img alt="landscape.png" src="landscape.png">
+</td></tr></table>
+</div>
+<div class="slide" id="notes-on-things-to-add-to-the-slides-above">
+<table><tr><td>
+<h1>(Notes on things to add to the slides above)</h1>
+<p>setfacl -R -m d:u:purple:--- $HOME/webapps/*</p>
+<pre class="literal-block">
+easy_install
+easy_install-X.Y \
+ --install-dir=$HOME/webapps/app/lib/PythonX.Y
+ --script-dir=$HOME/webapps/app_name/bin
+</pre>
+<p>ack! extra webapps lib dir is confusing
+because only happens on 1st import of new module!</p>
+<p>solves problem of how to get interactive prompt, scripts, etc
+to all follow same rules about adding new sys.paths</p>
+<ul class="simple">
+<li>in my own hosting tried one-size-fits all
+vs webfaction is not afraid of adding a level of indirection</li>
+<li>I was afraid of control panels
+vs webfaction provides control panels with real APIs</li>
+</ul>
+</td></tr></table>
+</div>
+</div>
+</body>
+</html>

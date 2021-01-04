@@ -1,0 +1,1389 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>slides.rst</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<!-- goal of 100 slides for 50 minutes? -->
+<div class="section" id="the-clean-architecture-in-python">
+<h1>The Clean Architecture in Python</h1>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>&#64;brandon_rhodes</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><em>PyCon Ireland</em></div>
+<div class="line"><em>2013</em></div>
+</div>
+<!-- TODO: do clean diagram first -->
+</div>
+<div class="section" id="the-inspiration">
+<h1>The inspiration</h1>
+</div>
+<div class="section" id="slide">
+
+<div class="line-block">
+<div class="line">Uncle Bob Martin’s</div>
+<div class="line"><strong>Clean Architecture</strong></div>
+</div>
+<p><a class="reference external" href="http://blog.8thlight.com/uncle-bob/2011/11/22/Clean-Architecture.html">http://blog.8thlight.com/uncle-bob/2011/11/22/Clean-Architecture.html</a></p>
+<p><a class="reference external" href="http://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html">http://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html</a></p>
+</div>
+<div class="section" id="id1">
+
+<img alt="../2013-05-djangoconeu/clean-architecture.jpg" src="../2013-05-djangoconeu/clean-architecture.jpg" />
+</div>
+<div class="section" id="the-pith">
+<h1>The pith</h1>
+</div>
+<div class="section" id="id2">
+
+<div class="line-block">
+<div class="line">We programmers spontaneously</div>
+<div class="line">use subroutines <strong>backwards</strong></div>
+</div>
+</div>
+<div class="section" id="subroutine">
+<h1>subroutine</h1>
+<ul class="simple">
+<li>Python <strong>function</strong></li>
+<li>Python <strong>method</strong></li>
+</ul>
+</div>
+<div class="section" id="id3">
+
+<div class="line-block">
+<div class="line">For <em>how long</em> have</div>
+<div class="line">programmers tended to use</div>
+<div class="line">subroutines <strong>backwards</strong>?</div>
+</div>
+</div>
+<div class="section" id="years">
+<h1>60 years</h1>
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line"><strong>1952</strong></div>
+<div class="line"><em>ACM national meeting</em></div>
+<div class="line">Pittsburgh, Pennsylvania</div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<div class="highlight"><pre><span></span><span class="n">THE</span> <span class="n">USE</span> <span class="n">OF</span> <span class="n">SUB</span><span class="o">-</span><span class="n">ROUTINES</span> <span class="n">IN</span> <span class="n">PROGRAMMES</span>
+
+<span class="n">D</span><span class="o">.</span> <span class="n">J</span><span class="o">.</span> <span class="n">Wheeler</span>
+
+<span class="n">Cambridge</span> <span class="o">&amp;</span> <span class="n">Illinois</span> <span class="n">Universities</span>
+</pre></div>
+
+</div>
+<div class="section" id="context">
+<h1>context</h1>
+<div class="line-block">
+<div class="line">Typical computer:</div>
+<div class="line"><strong>1,000 words</strong> of RAM,</div>
+<div class="line"><em>1,000 operations</em> per second,</div>
+<div class="line">required a dozen people</div>
+</div>
+</div>
+<div class="section" id="id6">
+
+<div class="line-block">
+<div class="line">How complex could programming</div>
+<div class="line">even <em>be</em> with only <strong>1k</strong> of memory?</div>
+</div>
+</div>
+<div class="section" id="wheeler-1952">
+<h1>Wheeler (1952)</h1>
+<div class="line-block">
+<div class="line">“the preparation of a</div>
+<div class="line"><strong>library sub-routine</strong> requires</div>
+<div class="line">a considerable amount of work</div>
+</div>
+</div>
+<div class="section" id="id7">
+
+<div class="line-block">
+<div class="line">“However, even after it has</div>
+<div class="line">been coded and tested there still</div>
+<div class="line">remains the <em>considerable</em> task of writing</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>a description</strong></div>
+</div>
+<div class="line-block">
+<div class="line">so that people not acquainted</div>
+<div class="line">with the interior coding can</div>
+<div class="line">nevertheless use it <em>easily.</em></div>
+</div>
+</div>
+<div class="section" id="id8">
+
+<p><strong>“This last task may be the most difficult.”</strong></p>
+</div>
+<div class="section" id="id9">
+
+<div class="line-block">
+<div class="line">What does Wheeler advertise</div>
+<div class="line"><strong>subroutines</strong> as being good <em>at</em>?</div>
+</div>
+</div>
+<div class="section" id="id10">
+
+<p>Hiding complexity</p>
+</div>
+<div class="section" id="id11">
+
+<div class="line-block">
+<div class="line">“All <em>complexities</em> should —</div>
+<div class="line">if possible — be <strong>buried</strong></div>
+<div class="line">out of sight.”</div>
+</div>
+</div>
+<div class="section" id="our-mistake">
+<h1>Our mistake?</h1>
+</div>
+<div class="section" id="id12">
+<h1>Our mistake</h1>
+<ol class="arabic simple">
+<li>Bury <strong>I/O</strong></li>
+<li>Fail to bury <em>anything else</em></li>
+</ol>
+</div>
+<div class="section" id="id13">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>                      <span class="c1"># Listing 1</span>
+<span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">urlencode</span>
+
+<span class="k">def</span> <span class="nf">find_definition</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="s1">&#39;define &#39;</span> <span class="o">+</span> <span class="n">word</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://api.duckduckgo.com/?&#39;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="n">urlencode</span><span class="p">({</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="n">q</span><span class="p">,</span> <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;json&#39;</span><span class="p">})</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">definition</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Definition&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">definition</span> <span class="o">==</span> <span class="sa">u</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;that is not a word&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">definition</span>
+</pre></div>
+
+</div>
+<div class="section" id="id14">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_definition</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="s1">&#39;define &#39;</span> <span class="o">+</span> <span class="n">word</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://api.duckduckgo.com/?&#39;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="n">urlencode</span><span class="p">({</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="n">q</span><span class="p">,</span> <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;json&#39;</span><span class="p">})</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+    <span class="n">definition</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Definition&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">definition</span> <span class="o">==</span> <span class="sa">u</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;that is not a word&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">definition</span>
+</pre></div>
+
+</div>
+<div class="section" id="id15">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_definition</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>           <span class="c1"># Listing 2</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="s1">&#39;define &#39;</span> <span class="o">+</span> <span class="n">word</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://api.duckduckgo.com/?&#39;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="n">urlencode</span><span class="p">({</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="n">q</span><span class="p">,</span> <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;json&#39;</span><span class="p">})</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">call_json_api</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">definition</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Definition&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">definition</span> <span class="o">==</span> <span class="sa">u</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;that is not a word&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">definition</span>
+
+<span class="k">def</span> <span class="nf">call_json_api</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+
+<!-- interrupt flow and advocate "return <name>" over "return <expression>"? -->
+</div>
+<div class="section" id="id16">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">call_json_api</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Reusable</div>
+<div class="line">Isolates API knowledge</div>
+<div class="line">Single <tt class="docutils literal">import</tt> <tt class="docutils literal">requests</tt></div>
+</div>
+</div>
+<div class="section" id="isolates-api-knowledge">
+<h1>Isolates API knowledge</h1>
+<div class="line-block">
+<div class="line"><em>True story:</em> that</div>
+<div class="line">code was initially</div>
+</div>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="o">...</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id17">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">call_json_api</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Reusable</div>
+<div class="line">Isolates API knowledge</div>
+<div class="line">Single <tt class="docutils literal">import</tt> <tt class="docutils literal">requests</tt></div>
+</div>
+</div>
+<div class="section" id="the-fatal-mistake">
+<h1>The fatal mistake</h1>
+<div class="line-block">
+<div class="line"><strong>Stopping</strong> once the I/O has</div>
+<div class="line">disappeared into a subroutine</div>
+</div>
+</div>
+<div class="section" id="id18">
+
+<div class="line-block">
+<div class="line">We <strong>privilege</strong> I/O by</div>
+<div class="line">granting it a subroutine,</div>
+<div class="line">leaving our <em>logic</em> stranded</div>
+<div class="line">and tightly coupled</div>
+</div>
+</div>
+<div class="section" id="q">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">We have <em>hidden</em> I/O,</div>
+<div class="line">but have we really</div>
+<div class="line"><strong>decoupled</strong> it?</div>
+</div>
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line"><em>Pace</em> Wheeler,</div>
+<div class="line"><strong>hiding is not enough</strong></div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_definition</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>           <span class="c1"># Listing 2</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="s1">&#39;define &#39;</span> <span class="o">+</span> <span class="n">word</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://api.duckduckgo.com/?&#39;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="n">urlencode</span><span class="p">({</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="n">q</span><span class="p">,</span> <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;json&#39;</span><span class="p">})</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">call_json_api</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">definition</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Definition&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">definition</span> <span class="o">==</span> <span class="sa">u</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;that is not a word&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">definition</span>
+
+<span class="k">def</span> <span class="nf">call_json_api</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+
+</div>
+<div class="section" id="id21">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_definition</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>           <span class="c1"># Listing 3</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">build_url</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">call_json_api</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pluck_definition</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">build_url</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="s1">&#39;define &#39;</span> <span class="o">+</span> <span class="n">word</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://api.duckduckgo.com/?&#39;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="n">urlencode</span><span class="p">({</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="n">q</span><span class="p">,</span> <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;json&#39;</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">url</span>
+
+<span class="k">def</span> <span class="nf">pluck_definition</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">definition</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Definition&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">definition</span> <span class="o">==</span> <span class="sa">u</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;that is not a word&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">definition</span>
+</pre></div>
+
+</div>
+<div class="section" id="claim">
+<h1>Claim</h1>
+<div class="line-block">
+<div class="line">Listing 3 is an <em>architectural success</em></div>
+<div class="line">while the others were <strong>failures</strong></div>
+</div>
+</div>
+<div class="section" id="id22">
+
+<div class="line-block">
+<div class="line">Listing 3 shows in <em>miniature</em> what</div>
+<div class="line">the Clean Architecture does</div>
+<div class="line">for entire applications</div>
+</div>
+</div>
+<div class="section" id="id23">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_definition</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>           <span class="c1"># Listing 3</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">build_url</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">call_json_api</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pluck_definition</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">The <strong>coupling</strong> between</div>
+<div class="line">logic and I/O is isolated</div>
+<div class="line">to a small <em>procedure</em></div>
+</div>
+</div>
+<div class="section" id="id24">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_definition</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>           <span class="c1"># Listing 3</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">build_url</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">call_json_api</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pluck_definition</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><em>Eminently readable</em></div>
+<div class="line">because it remains at a</div>
+<div class="line"><strong>single level of abstraction</strong></div>
+</div>
+</div>
+<div class="section" id="id25">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_definition</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>           <span class="c1"># Listing 3</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">build_url</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">call_json_api</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pluck_definition</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">These names <em>document</em></div>
+<div class="line">what each section</div>
+<div class="line">of code is doing</div>
+</div>
+</div>
+<div class="section" id="xp">
+<h1>XP</h1>
+</div>
+<div class="section" id="id26">
+
+<div class="highlight"><pre><span></span><span class="c1"># Build the URL</span>
+
+<span class="n">q</span> <span class="o">=</span> <span class="s1">&#39;define &#39;</span> <span class="o">+</span> <span class="n">word</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://api.duckduckgo.com/?&#39;</span>
+<span class="n">url</span> <span class="o">+=</span> <span class="n">urlencode</span><span class="p">({</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="n">q</span><span class="p">,</span> <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;json&#39;</span><span class="p">})</span>
+</pre></div>
+
+<p>Replace <em>comments</em> with <strong>names:</strong></p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">build_url</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="s1">&#39;define &#39;</span> <span class="o">+</span> <span class="n">word</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://api.duckduckgo.com/?&#39;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="n">urlencode</span><span class="p">({</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="n">q</span><span class="p">,</span> <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;json&#39;</span><span class="p">})</span>
+</pre></div>
+
+</div>
+<div class="section" id="our-architecture">
+<h1>Our Architecture</h1>
+</div>
+<div class="section" id="listing-1">
+<h1>Listing 1</h1>
+<div class="highlight"><pre><span></span><span class="err">↘</span>
+ <span class="n">procedure</span>
+</pre></div>
+
+</div>
+<div class="section" id="listing-2">
+<h1>Listing 2</h1>
+<div class="highlight"><pre><span></span><span class="err">↘</span>
+ <span class="n">procedure</span>
+          <span class="err">↘</span>
+           <span class="n">i</span><span class="o">/</span><span class="n">o</span> <span class="n">procedure</span>
+</pre></div>
+
+</div>
+<div class="section" id="listing-3">
+<h1>Listing 3</h1>
+<div class="highlight"><pre><span></span><span class="err">↘</span>
+ <span class="n">procedure</span>
+          <span class="err">↘</span>
+           <span class="n">pure</span> <span class="n">function</span>
+          <span class="err">↘</span>
+           <span class="n">i</span><span class="o">/</span><span class="n">o</span> <span class="n">procedure</span>
+          <span class="err">↘</span>
+           <span class="n">pure</span> <span class="n">function</span>
+</pre></div>
+
+</div>
+<div class="section" id="testing">
+<h1>Testing</h1>
+</div>
+<div class="section" id="id27">
+
+<div class="line-block">
+<div class="line">How would we have</div>
+<div class="line">tested <strong>listing 1</strong> or <strong>2</strong>?</div>
+</div>
+</div>
+<div class="section" id="goal">
+<h1>Goal</h1>
+<div class="line-block">
+<div class="line">Test the code <strong>without</strong></div>
+<div class="line">calling Duck Duck Go</div>
+</div>
+</div>
+<div class="section" id="two-techniques">
+<h1>Two techniques</h1>
+<ol class="arabic simple">
+<li>Dependency injection</li>
+<li>With <tt class="docutils literal">mock.patch()</tt></li>
+</ol>
+</div>
+<div class="section" id="dependency-injection">
+<h1>Dependency injection</h1>
+<p><strong>2004</strong> — Martin Fowler</p>
+</div>
+<div class="section" id="id28">
+
+<div class="line-block">
+<div class="line">Make the I/O library</div>
+<div class="line">itself a parameter</div>
+</div>
+</div>
+<div class="section" id="id29">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="k">def</span> <span class="nf">find_definition</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">requests</span><span class="o">=</span><span class="n">requests</span><span class="p">):</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="s1">&#39;define &#39;</span> <span class="o">+</span> <span class="n">word</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://api.duckduckgo.com/?&#39;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="n">urlencode</span><span class="p">({</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="n">q</span><span class="p">,</span> <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;json&#39;</span><span class="p">})</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">definition</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Definition&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">definition</span> <span class="o">==</span> <span class="sa">u</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;that is not a word&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">definition</span>
+</pre></div>
+
+</div>
+<div class="section" id="id30">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FakeRequestsLibrary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="k">return</span> <span class="bp">self</span>
+    <span class="k">def</span> <span class="nf">json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+
+<span class="k">def</span> <span class="nf">test_find_definition</span><span class="p">():</span>
+    <span class="n">fake</span> <span class="o">=</span> <span class="n">FakeRequestsLibrary</span><span class="p">()</span>
+    <span class="n">fake</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;Definition&#39;</span><span class="p">:</span> <span class="s1">&#39;abc&#39;</span><span class="p">}</span>
+    <span class="n">definition</span> <span class="o">=</span> <span class="n">find_definition</span><span class="p">(</span>
+        <span class="s1">&#39;testword&#39;</span><span class="p">,</span> <span class="n">requests</span><span class="o">=</span><span class="n">fake</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">definition</span> <span class="o">==</span> <span class="s1">&#39;abc&#39;</span>
+    <span class="k">assert</span> <span class="n">fake</span><span class="o">.</span><span class="n">url</span> <span class="o">==</span> <span class="p">(</span>
+        <span class="s1">&#39;http://api.duckduckgo.com/&#39;</span>
+        <span class="s1">&#39;?q=define+testword&amp;format=json&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="problems">
+<h1>Problems</h1>
+</div>
+<div class="section" id="id31">
+
+<ol class="arabic simple">
+<li>Your mock is <strong>not the real library</strong></li>
+</ol>
+</div>
+<div class="section" id="id32">
+
+<ol class="arabic simple" start="2">
+<li>This might look simple for <em>one service</em></li>
+</ol>
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line">But a procedure that also</div>
+<div class="line">needs a <strong>database</strong> and <strong>filesystem</strong></div>
+<div class="line">will need <em>lots</em> of injection</div>
+</div>
+</div>
+<div class="section" id="id34">
+
+<div class="line-block">
+<div class="line">A high-level function</div>
+<div class="line">needs <em>every single</em> service</div>
+<div class="line">required by its subroutines</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">↘</span>
+ <span class="n">big_procedure</span><span class="p">(</span><span class="n">web</span><span class="o">=</span><span class="n">web</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+  <span class="err">↘</span>
+   <span class="n">smaller_procedure</span><span class="p">(</span><span class="n">web</span><span class="o">=</span><span class="n">web</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
+    <span class="err">↘</span>
+     <span class="n">little_helper</span><span class="p">(</span><span class="n">web</span><span class="o">=</span><span class="n">web</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id35">
+
+<div class="line-block">
+<div class="line">A <em>dynamic language</em> like</div>
+<div class="line">Python has ways <strong>around</strong></div>
+<div class="line">dependency injection</div>
+</div>
+</div>
+<div class="section" id="id36">
+
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mock</span> <span class="kn">import</span> <span class="n">patch</span>
+</pre></div>
+
+</div>
+<div class="section" id="id37">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_find_definition</span><span class="p">():</span>
+    <span class="n">fake</span> <span class="o">=</span> <span class="n">FakeRequestsLibrary</span><span class="p">()</span>
+    <span class="n">fake</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;Definition&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;abc&#39;</span><span class="p">}</span>
+
+    <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;requests.get&#39;</span><span class="p">,</span> <span class="n">fake</span><span class="o">.</span><span class="n">get</span><span class="p">):</span>
+        <span class="n">definition</span> <span class="o">=</span> <span class="n">find_definition</span><span class="p">(</span><span class="s1">&#39;testword&#39;</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">definition</span> <span class="o">==</span> <span class="s1">&#39;abc&#39;</span>
+    <span class="k">assert</span> <span class="n">fake</span><span class="o">.</span><span class="n">url</span> <span class="o">==</span> <span class="p">(</span>
+        <span class="s1">&#39;http://api.duckduckgo.com/&#39;</span>
+        <span class="s1">&#39;?q=define+testword&amp;format=json&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line"><strong>DI</strong> or <strong>patch()</strong></div>
+</div>
+<div class="line-block">
+<div class="line">Either way,</div>
+<div class="line"><em>awkward</em></div>
+<div class="line"><em>sad</em></div>
+</div>
+</div>
+<div class="section" id="id39">
+
+<div class="line-block">
+<div class="line">How does testing <em>improve</em></div>
+<div class="line">when we <strong>factor out</strong> our</div>
+<div class="line">logic as in Listing 3?</div>
+</div>
+</div>
+<div class="section" id="id40">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_definition</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>           <span class="c1"># Listing 3</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">build_url</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">call_json_api</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pluck_definition</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">build_url</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="s1">&#39;define &#39;</span> <span class="o">+</span> <span class="n">word</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://api.duckduckgo.com/?&#39;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="n">urlencode</span><span class="p">({</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="n">q</span><span class="p">,</span> <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;json&#39;</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">url</span>
+
+<span class="k">def</span> <span class="nf">pluck_definition</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">definition</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Definition&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">definition</span> <span class="o">==</span> <span class="sa">u</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;that is not a word&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">definition</span>
+</pre></div>
+
+</div>
+<div class="section" id="id41">
+
+<div class="line-block">
+<div class="line">By definition, <em>pure functions</em></div>
+<div class="line">can be tested using <strong>only data</strong></div>
+</div>
+</div>
+<div class="section" id="id42">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_build_url</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">build_url</span><span class="p">(</span><span class="s1">&#39;word&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span>
+        <span class="s1">&#39;http://api.duckduckgo.com/&#39;</span>
+        <span class="s1">&#39;?q=define+word&amp;format=json&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_build_url_with_punctuation</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">build_url</span><span class="p">(</span><span class="s1">&#39;what?!&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span>
+        <span class="s1">&#39;http://api.duckduckgo.com/&#39;</span>
+        <span class="s1">&#39;?q=define+what</span><span class="si">%3F</span><span class="s1">%21&amp;format=json&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_build_url_with_hyphen</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">build_url</span><span class="p">(</span><span class="s1">&#39;hyphen-ate&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span>
+        <span class="s1">&#39;http://api.duckduckgo.com/&#39;</span>
+        <span class="s1">&#39;?q=define+hyphen-ate&amp;format=json&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id43">
+
+<ul>
+<li><div class="first line-block">
+<div class="line"><strong>No</strong> special set-up</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line"><strong>No</strong> special preparation</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Test calls are <em>symmetric</em></div>
+<div class="line">with normal calls</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id44">
+
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="k">def</span> <span class="nf">test_pluck_definition</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">pluck_definition</span><span class="p">(</span>
+        <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;Definition&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;something&#39;</span><span class="p">}</span>
+        <span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;something&#39;</span>
+
+<span class="k">def</span> <span class="nf">test_pluck_definition_missing</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+        <span class="n">pluck_definition</span><span class="p">(</span>
+            <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;Definition&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;&#39;</span><span class="p">}</span>
+            <span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="a-symptom-of-coupling">
+<h1>A symptom of coupling</h1>
+</div>
+<div class="section" id="id45">
+
+<div class="highlight"><pre><span></span><span class="n">call_test</span><span class="p">(</span><span class="n">good_url</span><span class="p">,</span> <span class="n">good_data</span><span class="p">)</span>
+
+<span class="n">call_test</span><span class="p">(</span><span class="n">bad_url1</span><span class="p">,</span> <span class="n">whatever</span><span class="p">)</span>
+<span class="n">call_test</span><span class="p">(</span><span class="n">bad_url2</span><span class="p">,</span> <span class="n">whatever</span><span class="p">)</span>
+<span class="n">call_test</span><span class="p">(</span><span class="n">bad_url3</span><span class="p">,</span> <span class="n">whatever</span><span class="p">)</span>
+
+<span class="n">call_test</span><span class="p">(</span><span class="n">good_url</span><span class="p">,</span> <span class="n">bad_data1</span><span class="p">)</span>
+<span class="n">call_test</span><span class="p">(</span><span class="n">good_url</span><span class="p">,</span> <span class="n">bad_data2</span><span class="p">)</span>
+<span class="n">call_test</span><span class="p">(</span><span class="n">good_url</span><span class="p">,</span> <span class="n">bad_data3</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id46">
+
+<p>So let’s talk <strong>architecture</strong></p>
+</div>
+<div class="section" id="id47">
+
+<img alt="../2013-05-djangoconeu/clean-architecture.jpg" src="../2013-05-djangoconeu/clean-architecture.jpg" />
+</div>
+<div class="section" id="id48">
+
+<div class="line-block">
+<div class="line">“In general, the <em>further in</em> you go,</div>
+<div class="line">the <strong>higher level</strong> the software becomes.</div>
+<div class="line">The <em>outer circles</em> are mechanisms.</div>
+<div class="line">The <em>inner circles</em> are policies.”</div>
+</div>
+</div>
+<div class="section" id="id49">
+
+<div class="line-block">
+<div class="line">“The important thing is</div>
+<div class="line">that <em>isolated,</em> <em>simple</em> data structures</div>
+<div class="line">are passed across the boundaries.”</div>
+</div>
+</div>
+<div class="section" id="id50">
+
+<div class="line-block">
+<div class="line">“When any of the <em>external parts</em></div>
+<div class="line">of the system become <strong>obsolete,</strong> like</div>
+<div class="line">the database, or the web framework,</div>
+<div class="line">you can <strong>replace</strong> those obsolete elements</div>
+<div class="line">with a minimum of fuss.</div>
+</div>
+</div>
+<div class="section" id="id51">
+
+<img alt="../2013-05-djangoconeu/clean-architecture.jpg" src="../2013-05-djangoconeu/clean-architecture.jpg" />
+</div>
+<div class="section" id="id52">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_definition</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>           <span class="c1"># Listing 3</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">build_url</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">call_json_api</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pluck_definition</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">build_url</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="s1">&#39;define &#39;</span> <span class="o">+</span> <span class="n">word</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://api.duckduckgo.com/?&#39;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="n">urlencode</span><span class="p">({</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="n">q</span><span class="p">,</span> <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;json&#39;</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">url</span>
+
+<span class="k">def</span> <span class="nf">pluck_definition</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">definition</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Definition&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">definition</span> <span class="o">==</span> <span class="sa">u</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;that is not a word&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">definition</span>
+</pre></div>
+
+</div>
+<div class="section" id="id53">
+
+<div class="line-block">
+<div class="line">How do you test the</div>
+<div class="line">top-level <strong>“procedural glue”?</strong></div>
+</div>
+</div>
+<div class="section" id="gary-bernhardt">
+<h1>Gary Bernhardt</h1>
+<p><strong>PyCon talks:</strong></p>
+<ol class="arabic simple" start="2011">
+<li><em>Units Need Testing Too</em></li>
+<li><em>Fast Test, Slow Test</em></li>
+<li><em>Boundaries</em></li>
+</ol>
+</div>
+<div class="section" id="id54">
+
+<div class="line-block">
+<div class="line"><strong>“Imperative shell”</strong></div>
+<div class="line">that <em>wraps</em> and <em>uses</em> your</div>
+<div class="line"><strong>“functional core”</strong></div>
+</div>
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line"><strong>Functional core</strong> — <em>Many</em> fast unit tests</div>
+<div class="line"><strong>Imperative shell</strong> — <em>Few</em> integration tests</div>
+</div>
+</div>
+<div class="section" id="id56">
+
+<div class="line-block">
+<div class="line">This should only require</div>
+<div class="line"><strong>one or two</strong> integration tests!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_definition</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>           <span class="c1"># Listing 3</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">build_url</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">call_json_api</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pluck_definition</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="functional-programming">
+<h1>Functional programming</h1>
+<p>LISP, Haskell, Clojure, F#</p>
+</div>
+<div class="section" id="id57">
+
+<div class="line-block">
+<div class="line">Functional languages <em>naturally</em></div>
+<div class="line">lead you to process data structures</div>
+<div class="line">while avoiding <strong>side-effect I/O</strong></div>
+</div>
+</div>
+<div class="section" id="id58">
+
+<div class="highlight"><pre><span></span><span class="c1"># I/O as a side effect</span>
+
+<span class="k">def</span> <span class="nf">uppercase_words</span><span class="p">(</span><span class="n">wordlist</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">wordlist</span><span class="p">:</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">print</span> <span class="n">word</span>
+</pre></div>
+
+</div>
+<div class="section" id="id59">
+
+<div class="highlight"><pre><span></span><span class="c1"># Logic with zero side-effects</span>
+
+<span class="k">def</span> <span class="nf">process_words</span><span class="p">(</span><span class="n">wordlist</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">word</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">wordlist</span><span class="p">]</span>
+
+<span class="c1"># I/O goes outside of logic</span>
+
+<span class="k">def</span> <span class="nf">procedural_glue</span><span class="p">(</span><span class="n">wordlist</span><span class="p">):</span>
+    <span class="n">upperlist</span> <span class="o">=</span> <span class="n">process_words</span><span class="p">(</span><span class="n">wordlist</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">upperlist</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">word</span>
+</pre></div>
+
+</div>
+<div class="section" id="id60">
+
+<div class="line-block">
+<div class="line"><strong>Procedural code:</strong></div>
+<div class="line">Output as-you-go</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Functional code:</strong></div>
+<div class="line">Each stage produces a data structure,</div>
+<div class="line">that gets output at the end</div>
+</div>
+</div>
+<div class="section" id="id61">
+
+<div class="line-block">
+<div class="line"><strong>Engineering students</strong></div>
+<div class="line">will tell you that <em>Statics</em> class</div>
+<div class="line">is easier than <em>Dynamics</em> class</div>
+</div>
+</div>
+<div class="section" id="id62">
+
+<div class="line-block">
+<div class="line"><em>Why functional?</em></div>
+<div class="line">Because of <strong>immutability?</strong></div>
+</div>
+</div>
+<div class="section" id="my-guess">
+<h1>My guess</h1>
+<div class="line-block">
+<div class="line">The biggest advantage of data in</div>
+<div class="line">a functional programming style</div>
+<div class="line">is <em>not</em> its immutability</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>It is simply the fact</strong></div>
+<div class="line"><strong>that it is data!</strong></div>
+</div>
+</div>
+<div class="section" id="id63">
+
+<img alt="../2011-09-pyatl/mythical-cover.jpg" src="../2011-09-pyatl/mythical-cover.jpg" style="height: 700px;" />
+</div>
+<div class="section" id="id64">
+
+<div class="line-block">
+<div class="line">Fred Brooks</div>
+<div class="line"><strong>1975</strong></div>
+</div>
+</div>
+<div class="section" id="id65">
+
+<div class="line-block">
+<div class="line">“The bearing of a child</div>
+<div class="line">takes <em>nine months</em>, no matter</div>
+<div class="line"><strong>how many women</strong> are assigned.”</div>
+</div>
+</div>
+<div class="section" id="id66">
+
+<div class="line-block">
+<div class="line">“<em>Show</em> me your flowchart and</div>
+<div class="line"><strong>conceal</strong> your tables, and I shall</div>
+<div class="line">continue to be mystified.</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Show</em> me your tables, and I won’t</div>
+<div class="line">usually <strong>need</strong> your flowchart;</div>
+<div class="line">it’ll be obvious.”</div>
+</div>
+</div>
+<div class="section" id="id67">
+<h1>1986</h1>
+<p>McIlroy <strong>vs.</strong> Knuth</p>
+</div>
+<div class="section" id="id68">
+
+<img alt="../2012-11-pyconca/don.gif" src="../2012-11-pyconca/don.gif" style="height: 700px;" />
+</div>
+<div class="section" id="id69">
+
+<p>Knuth — <strong>Literate programming</strong></p>
+</div>
+<div class="section" id="id70">
+
+<div class="line-block">
+<div class="line">“Given a text file and an integer <em>k,</em></div>
+<div class="line">print the <em>k</em> <strong>most common</strong> words in the file</div>
+<div class="line">(and the number of their occurrences)</div>
+<div class="line">in <strong>decreasing frequency.</strong>”</div>
+</div>
+</div>
+<div class="section" id="id71">
+
+<p>Knuth: <strong>10 pages of Pascal</strong></p>
+</div>
+<div class="section" id="mcilroy">
+<h1>McIlroy:</h1>
+<!-- TODO screenshot of some of his Pascal -->
+<div class="line-block">
+<div class="line">“Knuth’s solution is to tally in an</div>
+<div class="line">associative data structure each word</div>
+<div class="line">as it is read from the file.</div>
+</div>
+</div>
+<div class="section" id="id72">
+
+<div class="line-block">
+<div class="line">“The data structure is a trie, with 26-way</div>
+<div class="line">(for technical reasons actually 27-way)</div>
+<div class="line">fan-out at each letter. To avoid wasting</div>
+<div class="line">space all the (sparse) 26-element arrays</div>
+<div class="line">are cleverly interleaved in one common</div>
+<div class="line">arena, with hashing used to assign homes”</div>
+</div>
+</div>
+<div class="section" id="id73">
+
+</div>
+<div class="section" id="id74">
+
+<p>McIlroy: <strong>6-line shell script</strong></p>
+</div>
+<div class="section" id="id75">
+
+<div class="highlight"><pre><span></span><span class="n">tr</span> <span class="o">-</span><span class="n">cs</span> <span class="n">A</span><span class="o">-</span><span class="n">Za</span><span class="o">-</span><span class="n">z</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">|</span>
+<span class="n">tr</span> <span class="n">A</span><span class="o">-</span><span class="n">Z</span> <span class="n">a</span><span class="o">-</span><span class="n">z</span> <span class="o">|</span>
+<span class="n">sort</span> <span class="o">|</span>
+<span class="n">uniq</span> <span class="o">-</span><span class="n">c</span> <span class="o">|</span>
+<span class="n">sort</span> <span class="o">-</span><span class="n">rn</span> <span class="o">|</span>
+<span class="n">sed</span> <span class="err">$</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="n">q</span>
+</pre></div>
+
+</div>
+<div class="section" id="id76">
+
+<div class="line-block">
+<div class="line">“Every one was written first</div>
+<div class="line">for a <em>particular need,</em> but <strong>untangled</strong></div>
+<div class="line">from the specific application.”</div>
+</div>
+</div>
+<div class="section" id="id77">
+
+<div class="line-block">
+<div class="line"><strong>Traditional lesson:</strong></div>
+<div class="line">Use small simple tools that</div>
+<div class="line">can easily be linked together</div>
+</div>
+</div>
+<div class="section" id="python">
+<h1>Python!</h1>
+<ul class="simple">
+<li>Lists</li>
+<li>Dictionaries</li>
+<li>Comprehensions</li>
+<li>Generator functions</li>
+<li>Generator expressions</li>
+<li>For loops</li>
+</ul>
+</div>
+<div class="section" id="id78">
+
+<div class="line-block">
+<div class="line">But I want to draw</div>
+<div class="line">a <strong>different</strong> lesson:</div>
+</div>
+</div>
+<div class="section" id="id79">
+
+<div class="line-block">
+<div class="line"><em>The shell script is simpler</em></div>
+<div class="line"><em>because it operates through the</em></div>
+<div class="line"><em>stepwise transformation of data</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">tr</span> <span class="o">-</span><span class="n">cs</span> <span class="n">A</span><span class="o">-</span><span class="n">Za</span><span class="o">-</span><span class="n">z</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">|</span>
+<span class="n">tr</span> <span class="n">A</span><span class="o">-</span><span class="n">Z</span> <span class="n">a</span><span class="o">-</span><span class="n">z</span> <span class="o">|</span>
+<span class="n">sort</span> <span class="o">|</span>
+<span class="n">uniq</span> <span class="o">-</span><span class="n">c</span> <span class="o">|</span>
+<span class="n">sort</span> <span class="o">-</span><span class="n">rn</span> <span class="o">|</span>
+<span class="n">sed</span> <span class="err">$</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="n">q</span>
+</pre></div>
+
+</div>
+<div class="section" id="id80">
+
+<div class="line-block">
+<div class="line">This approach continually surfaces</div>
+<div class="line">intermediate results using a <strong>magnificent</strong></div>
+<div class="line">data structure: <em>plain-text lines</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">tr</span> <span class="o">-</span><span class="n">cs</span> <span class="n">A</span><span class="o">-</span><span class="n">Za</span><span class="o">-</span><span class="n">z</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">|</span>
+<span class="n">tr</span> <span class="n">A</span><span class="o">-</span><span class="n">Z</span> <span class="n">a</span><span class="o">-</span><span class="n">z</span> <span class="o">|</span>
+<span class="n">sort</span> <span class="o">|</span>
+<span class="n">uniq</span> <span class="o">-</span><span class="n">c</span> <span class="o">|</span>
+<span class="n">sort</span> <span class="o">-</span><span class="n">rn</span> <span class="o">|</span>
+<span class="n">sed</span> <span class="err">$</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="n">q</span>
+</pre></div>
+
+<!-- http://onesixtythree.com/literate/literate2.pdf -->
+</div>
+<div class="section" id="id81">
+
+<p>So why <em>immutability?</em></p>
+<div class="line-block">
+<div class="line">Gary Bernhardt:</div>
+<div class="line"><strong>distributed computing</strong></div>
+</div>
+</div>
+<div class="section" id="id82">
+
+<div class="line-block">
+<div class="line">See Jonathan Harrington’s</div>
+<div class="line"><strong>“The Data Storm”</strong> talk from</div>
+<div class="line">the previous session here</div>
+<div class="line">at PyCon Ireland</div>
+</div>
+</div>
+<div class="section" id="id83">
+
+<div class="line-block">
+<div class="line"><em>Data</em> and <em>transforms</em> are easier</div>
+<div class="line">to understand and maintain</div>
+<div class="line">than <strong>coupled procedures</strong></div>
+</div>
+</div>
+<div class="section" id="if-that-is-the-case">
+<h1>If that is the case,</h1>
+<div class="line-block">
+<div class="line">then Python has been evolving</div>
+<div class="line">in <em>exactly the right direction</em></div>
+</div>
+</div>
+<div class="section" id="id84">
+
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)):</span>
+   <span class="n">item</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Python 2.0 <strong>(October 2000)</strong></div>
+<div class="line">↓</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">tranform</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id85">
+
+<div class="highlight"><pre><span></span><span class="n">items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">load_items</span><span class="p">())</span>
+<span class="n">items</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Python 2.4 <strong>(November 2004)</strong></div>
+<div class="line">↓</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+    <span class="o">..</span>
+</pre></div>
+
+</div>
+<div class="section" id="id86">
+
+<div class="line-block">
+<div class="line"><strong>Remember:</strong> Python has <em>several</em> kinds</div>
+<div class="line">of callable beyond plain sub-routines!</div>
+</div>
+<ul class="simple">
+<li>generators</li>
+<li>context managers</li>
+</ul>
+<!-- Because an entire generation of programmers has been raised on sample
+Twitter applications with zero testable business rules in the code, they
+do not recognize when they *do* start implementing algorithms that could
+be cleanly decoupled and easily tested. -->
+</div>
+<div class="section" id="generators">
+<h1>generators</h1>
+</div>
+<div class="section" id="id87">
+
+<div class="line-block">
+<div class="line">Imagine a <em>compound</em> iteration that</div>
+<div class="line">occurs <strong>repeatedly</strong> through your code</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">college</span> <span class="ow">in</span> <span class="n">university</span><span class="o">.</span><span class="n">colleges</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">school</span> <span class="ow">in</span> <span class="n">college</span><span class="o">.</span><span class="n">schools</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">department</span> <span class="ow">in</span> <span class="n">school</span><span class="o">.</span><span class="n">departments</span><span class="p">:</span>
+            <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id88">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">all_departments</span><span class="p">(</span><span class="n">college</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">college</span> <span class="ow">in</span> <span class="n">university</span><span class="o">.</span><span class="n">colleges</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">school</span> <span class="ow">in</span> <span class="n">college</span><span class="o">.</span><span class="n">schools</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">department</span> <span class="ow">in</span> <span class="n">school</span><span class="o">.</span><span class="n">departments</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">department</span>
+
+<span class="k">def</span> <span class="nf">process1</span><span class="p">():</span>
+    <span class="o">...</span>
+    <span class="k">for</span> <span class="n">department</span> <span class="ow">in</span> <span class="n">all_departments</span><span class="p">(</span><span class="n">college</span><span class="p">):</span>
+        <span class="o">....</span>
+
+<span class="k">def</span> <span class="nf">process2</span><span class="p">():</span>
+    <span class="o">...</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">department</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">department</span>
+             <span class="ow">in</span> <span class="n">all_departments</span><span class="p">(</span><span class="n">college</span><span class="p">)]</span>
+    <span class="o">....</span>
+</pre></div>
+
+</div>
+<div class="section" id="context-managers">
+<h1>context managers</h1>
+</div>
+<div class="section" id="id89">
+
+<div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">get_resource</span><span class="p">()</span>
+<span class="n">r</span><span class="o">.</span><span class="n">get_ready</span><span class="p">()</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">use</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id90">
+
+<div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">get_resource</span><span class="p">()</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+    <span class="n">use</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="two-real-world-examples">
+<h1>Two real-world examples</h1>
+<ul class="simple">
+<li>Skyfield</li>
+<li>Luca</li>
+</ul>
+</div>
+<div class="section" id="skyfield">
+<h1>Skyfield</h1>
+<div class="line-block">
+<div class="line"><strong>Object-based</strong> API backed by</div>
+<div class="line">dozens of <em>pure functions</em> that</div>
+<div class="line">implement the actual operations</div>
+</div>
+</div>
+<div class="section" id="id91">
+
+<div class="line-block">
+<div class="line">The <strong>miserable</strong> thing about a</div>
+<div class="line">method is that it <em>implicitly</em> depends</div>
+<div class="line">upon the state of the whole object</div>
+</div>
+</div>
+<div class="section" id="id92">
+
+<div class="line-block">
+<div class="line">The <strong>beautiful</strong> thing about a</div>
+<div class="line">function is that it <em>explicitly</em> depends</div>
+<div class="line">upon a specific list of arguments</div>
+</div>
+</div>
+<div class="section" id="id93">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">this</span>
+<span class="n">The</span> <span class="n">Zen</span> <span class="n">of</span> <span class="n">Python</span><span class="p">,</span> <span class="n">by</span> <span class="n">Tim</span> <span class="n">Peters</span>
+
+<span class="n">Beautiful</span> <span class="ow">is</span> <span class="n">better</span> <span class="n">than</span> <span class="n">ugly</span><span class="o">.</span>
+<span class="n">Explicit</span> <span class="ow">is</span> <span class="n">better</span> <span class="n">than</span> <span class="n">implicit</span><span class="o">.</span>
+<span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="luca">
+<h1>Luca</h1>
+<!-- TODO: picture of tax form? -->
+</div>
+<div class="section" id="temptation">
+<h1>Temptation</h1>
+<div class="line-block">
+<div class="line">Compute <em>output</em> fields as</div>
+<div class="line">the form is running, <em>writing</em></div>
+<div class="line">their text into the PDF</div>
+</div>
+</div>
+<div class="section" id="instead-phases">
+<h1>Instead: phases</h1>
+<div class="line-block">
+<div class="line"><strong>First</strong> read the <em>entire</em> tax form</div>
+<div class="line"><strong>Then</strong> do <em>all</em> the computations</div>
+<div class="line"><strong>Finally</strong> write to the PDF</div>
+</div>
+</div>
+<div class="section" id="id94">
+
+<div class="line-block">
+<div class="line">Luca’s approach of processing a</div>
+<div class="line">form in <em>phases</em> made an unexpected</div>
+<div class="line"><strong>improvement</strong> in my tracebacks!</div>
+</div>
+</div>
+<div class="section" id="id95">
+
+<div class="highlight"><pre><span></span><span class="n">A</span> <span class="err">→</span> <span class="n">B</span> <span class="err">→</span> <span class="n">C</span> <span class="err">→</span> <span class="n">D</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><em>Coupled procedures:</em></div>
+</div>
+<div class="line-block">
+<div class="line">Very <strong>deep</strong> tracebacks</div>
+<div class="line">when <tt class="docutils literal">D</tt> raises exceptions</div>
+</div>
+</div>
+<div class="section" id="id96">
+
+<div class="highlight"><pre><span></span>     <span class="n">B</span>
+  <span class="err">↗↙</span>
+<span class="n">A</span> <span class="err">←→</span> <span class="n">C</span>
+  <span class="err">↘↖</span>
+     <span class="n">D</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><em>Decoupled functions:</em></div>
+</div>
+<div class="line-block">
+<div class="line">Get <strong>shallow</strong> tracebacks,</div>
+<div class="line">only a few frames high</div>
+</div>
+</div>
+<div class="section" id="id97">
+<h1>The pith</h1>
+</div>
+<div class="section" id="id98">
+
+<div class="line-block">
+<div class="line"><strong>Old</strong></div>
+</div>
+<div class="line-block">
+<div class="line">To get rid of I/O,</div>
+<div class="line">make it <em>subordinate</em></div>
+</div>
+</div>
+<div class="section" id="id99">
+
+<div class="line-block">
+<div class="line"><strong>New</strong></div>
+</div>
+<div class="line-block">
+<div class="line">To <em>really</em> get rid of someone,</div>
+<div class="line">make them a <em>manager!</em></div>
+</div>
+</div>
+<div class="section" id="id100">
+
+<!-- finalé -->
+<p>Let’s return to Wheeler</p>
+</div>
+<div class="section" id="id101">
+
+<div class="line-block">
+<div class="line">In 1952 he gave us the “sub-routine”</div>
+</div>
+</div>
+<div class="section" id="id102">
+
+<div class="line-block">
+<div class="line"><em>We have yet to realize</em></div>
+<div class="line"><em>its full power and promise!</em></div>
+</div>
+</div>
+<div class="section" id="id103">
+
+<div class="line-block">
+<div class="line">“When a programme has been</div>
+<div class="line">made from a set of <strong>sub-routines</strong> the</div>
+<div class="line">breakdown of the code is <em>more complete</em></div>
+<div class="line">than it otherwise would be.</div>
+</div>
+</div>
+<div class="section" id="id104">
+
+<div class="line-block">
+<div class="line">“This allows the coder</div>
+<div class="line">to concentrate on <em>one section</em></div>
+<div class="line">of the program at a time without</div>
+<div class="line">the overall detailed programme</div>
+<div class="line"><strong>continually intruding.</strong></div>
+</div>
+</div>
+<div class="section" id="id105">
+
+<div class="line-block">
+<div class="line">“Thus the sub-routines</div>
+<div class="line">can be <em>more easily</em> coded and</div>
+<div class="line">be <strong>tested</strong> in isolation from the</div>
+<div class="line">rest of the programme.</div>
+</div>
+</div>
+<div class="section" id="id106">
+
+<div class="line-block">
+<div class="line">“When the <em>entire programme</em></div>
+<div class="line">has to be tested it is with the</div>
+<div class="line">foreknowledge that the <strong>incidence</strong></div>
+<div class="line"><strong>of mistakes</strong> in the subroutine is —</div>
+</div>
+</div>
+<div class="section" id="id107">
+
+<div class="line-block">
+<div class="line">zero</div>
+</div>
+</div>
+<div class="section" id="id108">
+
+<div class="line-block">
+<div class="line">“(or at least <strong>one order</strong></div>
+<div class="line"><strong>of magnitude</strong> below that of the</div>
+<div class="line"><em>untested</em> portions of the programme!)”</div>
+</div>
+</div>
+<div class="section" id="id109">
+
+<p>☘</p>
+<p><strong>&#64;brandon_rhodes</strong></p>
+<!-- single quote: ’
+double quotes: x“”x
+em-dash: —
+vertical ellipsis: ⋮
+arrows: ←, ↑, →, ↓, ↔, ↕, ↖, ↗, ↘, ↙ -->
+<script>
+  window.slide_transition_time = 200;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

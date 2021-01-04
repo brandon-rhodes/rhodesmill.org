@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Semantic Linefeeds</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>Semantic Linefeeds</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>3 April 2012</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">python, computing, document-processing</td>
+</tr>
+</tbody>
+</table>
+<p>I give some advice each year
+in my annual <a class="reference external" href="http://sphinx.pocoo.org/">Sphinx</a> tutorial
+at <a class="reference external" href="https://us.pycon.org/">PyCon</a>.
+A&nbsp;grateful student asked where I myself had learned the tip.
+I&nbsp;have done some archæology and finally have an answer.
+Let me share what I teach them about “semantic linefeeds,”
+then I will reveal its source —
+which turns out to have been written
+when I was only a few months old!</p>
+<p>In the tutorial,
+I ask students whether or not
+the Sphinx text files in their project will be read by end-users.
+If not, then I encourage students to treat the files
+as private “source code” that they are free to format semantically.
+Instead of fussing with the lines of each paragraph
+so that they all end near the right margin,
+they can add linefeeds anywhere
+that there is a break between ideas.</p>
+<p>The result can be spectacular.</p>
+<!--more--><p>By starting a new line at the end of each sentence,
+and splitting sentences themselves at natural breaks between clauses,
+a text file becomes far easier to edit and version control.
+Text editors are very good at manipulating lines —
+so when each sentence is a contiguous block of lines,
+your editor suddenly becomes a very powerful mechanism
+for quickly rearranging clauses and ideas.</p>
+<p>And your version-control system will <em>love</em> semantic linefeeds.
+Have you ever changed a few words at the beginning of a paragraph,
+only to discover that version control
+now thinks the whole text has changed?</p>
+<div class="highlight"><pre> ...
+ the definition in place of it.
+
+<span class="gd">-The beauteous scheme is that now, if you change</span>
+<span class="gd">-your mind about what a paragraph should look</span>
+<span class="gd">-like, you can change the formatted output merely</span>
+<span class="gd">-by changing the definition of ‘‘.PP’’ and</span>
+<span class="gd">-re-running the formatter.</span>
+<span class="gi">+The beauty of this scheme is that now, if you</span>
+<span class="gi">+change your mind about what a paragraph should</span>
+<span class="gi">+look like, you can change the formatted output</span>
+<span class="gi">+merely by changing the definition of ‘‘.PP’’</span>
+<span class="gi">+and re-running the formatter.</span>
+
+ As a rule of thumb, for all but the most
+ ...</pre></div>
+
+<p>With every sentence and clause on its own line,
+you can make exactly the same change to the same paragraph
+without the rest of the paragraph even noticing:</p>
+<div class="highlight"><pre> ...
+ the definition in place of it.
+
+<span class="gd">-The beauteous scheme is that now,</span>
+<span class="gi">+The beauty of this scheme is that now,</span>
+ if you change your mind
+ about what a paragraph should look like,
+ you can change the formatted output
+ merely by changing
+ the definition of ‘‘.PP’’
+ and re-running the formatter.
+
+ As a rule of thumb, for all but the most
+ ...</pre></div>
+
+<p>“Semantic linefeeds,” as I call them,
+have been making my life easier for more than twenty years,
+and have governed how my text files look behind-the-scenes
+whether my markup format is HTML,
+<a class="reference external" href="http://en.wikipedia.org/wiki/TeX">TeX</a>,
+<a class="reference external" href="http://docutils.sourceforge.net/rst.html">RST</a>,
+or the venerable <tt class="docutils literal">troff</tt> macro typesetter.</p>
+<p>So where did I learn the trick?</p>
+<p>For a long time I believed that my source must have been
+the UNIX Documenter's Workbench manual.
+The Workbench was an attempt by AT&amp;T
+to market the operating system
+that had become such a cult hit internally
+among Bell Labs engineers,
+by bundling the system with its most powerful typesetting tools.
+The attempt failed, of course —
+I am told that AT&amp;T was terrible at marketing computers,
+just as Xerox had no idea what to do
+with the ideas that were bubbling at PARC in the 1970s —
+but my father worked at Bell Labs
+and had a copy of the Workbench documentation around the house.
+(I&nbsp;cannot find a copy on the Internet —
+were all public copies destroyed
+during the devastating copyright battle
+that justly brought SCO to its ruin?)</p>
+<p>But after an extensive search,
+I have found an earlier source —
+and I could not be any happier to discover
+that my inspiration is none other than
+<a class="reference external" href="http://www.cs.princeton.edu/~bwk/">Brian W. Kernighan</a>!</p>
+<p>He published “UNIX for Beginners”
+<a class="reference external" href="https://web.archive.org/web/20130108163017if_/http://miffy.tom-yam.or.jp:80/2238/ref/beg.pdf">[PDF]</a>
+as Bell Labs Technical Memorandum 74-1273-18
+on 29 October 1974.
+It describes a far more primitive version of the operating system
+than his more famous and more widely available
+“UNIX for Beginners — Second Edition” from 1978.
+After a long search I have found the lone copy linked above,
+hosted on an obscure Japanese web page about
+<a class="reference external" href="https://web.archive.org/web/20130107033411/http://miffy.tom-yam.or.jp:80/2238/ref/">UNIX 6th Edition</a>
+which has now disappeared
+but can still be viewed on the Internet Archive’s Wayback Machine
+(to which both of the links above point).
+In the section “Hints for Preparing Documents,”
+Kernighan shares this wisdom:</p>
+<blockquote>
+<p><strong>Hints for Preparing Documents</strong></p>
+<p>Most documents go through several versions
+(always more than you expected)
+before they are finally finished.
+Accordingly, you should do whatever possible
+to make the job of changing them easy.</p>
+<p>First, when you do the purely mechanical operations of typing,
+type so subsequent editing will be easy.
+Start each sentence on a new line.
+Make lines short,
+and break lines at natural places,
+such as after commas and semicolons,
+rather than randomly.
+Since most people change documents by rewriting phrases
+and adding, deleting and rearranging sentences,
+these precautions simplify any editing you have to do later.</p>
+<p><em>— Brian W. Kernighan, 1974</em></p>
+</blockquote>
+<p>Note how Pythonic his advice sounds —
+he replaces the fiction of “write-once” documents
+with a realistic focus on making text
+that is easy to edit later!</p>
+<p>I must have read this when I was first learning UNIX
+and somehow carried it with me all of these years.
+It says something very powerful
+about the UNIX plain-text approach
+that advice given in 1974,
+and basically targeted at making text
+easier to edit in the terribly cramped <tt class="docutils literal">ed</tt> text editor,
+applies just as well to our modern world
+of colorful full-screen editors like Emacs and Vim
+and distributed version control systems
+that were not even imagined in the 1970s.</p>
+<p>If you are interested in more early UNIX documentation —
+including the Second Edition of Kernighan's “Beginners” guide —
+check out the
+<a class="reference external" href="https://s3.amazonaws.com/plan9-bell-labs/7thEdMan/index.html">7th Edition manuals</a>
+which Bell Labs has kindly made available online,
+both as
+<a class="reference external" href="https://s3.amazonaws.com/plan9-bell-labs/7thEdMan/bswv7.html">PDF files</a>
+and also as plain-text files marked up for the <tt class="docutils literal">troff</tt> typesetter.
+Note that you can still compile the <tt class="docutils literal">troff</tt> files
+successfully on a modern system —
+try <em>that</em> with any other richly-formatted text from the&nbsp;1970s!</p>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'rhodesmill';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<p class="byline">©2020</p>
+
+</body>
+</html>

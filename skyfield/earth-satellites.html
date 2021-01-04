@@ -1,0 +1,689 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earth Satellites</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="earth-satellites">
+<h1>Earth Satellites<a class="headerlink" href="#earth-satellites" title="Permalink to this headline">¶</a></h1>
+<p>Skyfield is able to predict the positions of Earth satellites
+by loading satellite orbital elements
+from Two-Line Element (TLE) files —
+published by organizations like <a class="reference external" href="https://celestrak.com/">CelesTrak</a> —
+and running them through the SGP4 satellite propagation routine.
+But there several limitations to be aware of
+when using Skyfield to generate positions
+for artificial satellites in Earth orbit:</p>
+<ol class="arabic">
+<li><p class="first">Do not expect perfect agreement between
+any two pieces of software that are trying to predict
+satellite positions from TLE data files.
+As Vallado, Crawford, and Hujsak document
+in their crucial paper <a class="reference external" href="https://celestrak.com/publications/AIAA/2006-6753/">Revisiting Spacetrack Report #3</a>,
+there are many slightly different versions
+of the basic satellite prediction algorithm circulating in the wild.
+(Happily, Skyfield does use
+the corrected and updated version of the algorithm
+that they created as part of writing that report!)</p>
+</li>
+<li><p class="first">The accuracy of the satellite positions is not perfect.
+To quote directly from <a class="reference external" href="https://celestrak.com/publications/AIAA/2006-6753/">Revisiting Spacetrack Report #3</a>
+Appendix&nbsp;B:</p>
+<blockquote>
+<div><p>“The maximum accuracy for a TLE is
+limited by the number of decimal places in each field.
+In general, TLE data is accurate to about a kilometer or so
+at epoch and it quickly degrades.”</p>
+</div></blockquote>
+</li>
+<li><p class="first">Satellite elements go rapidly out of date.
+You will want to pay attention to the “epoch” —
+the date on which an element set is most accurate —
+of every TLE element set you use.
+Elements are only useful for a week or two
+on either side of the epoch date.
+For later dates,
+you will want to download a fresh set of elements.
+For earlier dates,
+you will want to pull an old TLE from the archives.</p>
+</li>
+<li><p class="first">Expect a satellite’s orbit to constantly change
+as the SGP4 propagation routine models effects
+like atmospheric drag and the Moon’s gravity.
+In particular, the true anomaly parameter can swing wildly
+for satellites with nearly circular orbits,
+because the reference point from which true anomaly is measured —
+the satellite’s perigee —
+can be moved by even slight perturbations to the orbit.</p>
+</li>
+<li><p class="first">Given the low accuracy of TLE elements,
+there is no point in calling the usual Skyfield
+<a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">observe()</span></code></a> method
+that repeatedly re-computes an object’s position
+to account for the light-travel time to the observer.
+As we will see below,
+the difference is irrelevant for Earth satellites
+and not worth the added expense of re-computing the position
+several times in a row.</p>
+</li>
+</ol>
+<div class="section" id="loading-a-tle-file">
+<h2>Loading a TLE file<a class="headerlink" href="#loading-a-tle-file" title="Permalink to this headline">¶</a></h2>
+<p>You can find satellite element sets at the
+<a class="reference external" href="http://celestrak.com/NORAD/elements/">NORAD Two-Line Element Sets</a>
+page of the Celestrak web site.</p>
+<p>Beware that the two-line element (TLE) format is very rigid.
+The meaning of each character
+is based on its exact offset from the beginning of the line.
+You must download and use the element set’s text
+without making any change to its whitespace.</p>
+<p>Skyfield loader objects offer a <a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.tle_file" title="skyfield.iokit.Loader.tle_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tle_file()</span></code></a>
+method that can download and cache a file full of satellite elements
+from a site like Celestrak.
+A&nbsp;popular observing target for satellite observers
+is the International Space Station,
+which is listed in Celestrak’s <code class="docutils literal notranslate"><span class="pre">stations.txt</span></code> file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">wgs84</span>
+
+<span class="n">stations_url</span> <span class="o">=</span> <span class="s1">&#39;http://celestrak.com/NORAD/elements/stations.txt&#39;</span>
+<span class="n">satellites</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">tle_file</span><span class="p">(</span><span class="n">stations_url</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loaded&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">satellites</span><span class="p">),</span> <span class="s1">&#39;satellites&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Loaded 60 satellites
+</pre></div>
+</div>
+<p>If you want to operate on every satellite in the list,
+simply loop over the list with a <code class="docutils literal notranslate"><span class="pre">for</span></code> loop.
+If you instead want to be able
+to select individual satellites by name or number,
+try building a lookup dictionary
+using Python’s dictionary comprehension syntax:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">sat</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">sat</span> <span class="k">for</span> <span class="n">sat</span> <span class="ow">in</span> <span class="n">satellites</span><span class="p">}</span>
+<span class="n">satellite</span> <span class="o">=</span> <span class="n">by_name</span><span class="p">[</span><span class="s1">&#39;ISS (ZARYA)&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">satellite</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ISS (ZARYA) catalog #25544 epoch 2014-01-20 22:23:04 UTC
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">by_number</span> <span class="o">=</span> <span class="p">{</span><span class="n">sat</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">satnum</span><span class="p">:</span> <span class="n">sat</span> <span class="k">for</span> <span class="n">sat</span> <span class="ow">in</span> <span class="n">satellites</span><span class="p">}</span>
+<span class="n">satellite</span> <span class="o">=</span> <span class="n">by_number</span><span class="p">[</span><span class="mi">25544</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">satellite</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ISS (ZARYA) catalog #25544 epoch 2014-01-20 22:23:04 UTC
+</pre></div>
+</div>
+</div>
+<div class="section" id="performing-a-tle-query">
+<h2>Performing a TLE query<a class="headerlink" href="#performing-a-tle-query" title="Permalink to this headline">¶</a></h2>
+<p>In addition to offering traditional text files
+like <code class="docutils literal notranslate"><span class="pre">stations.txt</span></code> and <code class="docutils literal notranslate"><span class="pre">active.txt</span></code>,
+Celestrak supports queries that return TLE elements.</p>
+<p>But be careful!</p>
+<p>Because every query to Celestrak requests the same filename <code class="docutils literal notranslate"><span class="pre">tle.php</span></code>
+Skyfield will by default only download the first result.
+Your second, third, and all subsequent attempts to query Celestrak
+will simply return the contents
+of the <code class="docutils literal notranslate"><span class="pre">tle.php</span></code> file that’s already on disk —
+giving you the results of your first query over and over again.</p>
+<p>Here are two easy remedies:</p>
+<ol class="arabic simple">
+<li>Specify the argument <code class="docutils literal notranslate"><span class="pre">reload=True</span></code>,
+which asks Skyfield to always download new results
+even if there is already a file on disk.
+Every query will overwrite the file with new data.</li>
+<li>Or, specify a <code class="docutils literal notranslate"><span class="pre">filename=</span></code> argument
+so that each query’s result
+is saved to a file specific to that query.
+Each query result will be saved to disk with its own filename.</li>
+</ol>
+<p>Here’s an example of the second approach —
+code that requests one specific satellite,
+saving the result to a file specific to the query:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">25544</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://celestrak.com/satcat/tle.php?CATNR=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;tle-CATNR-</span><span class="si">{}</span><span class="s1">.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">satellites</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">tle_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">satellites</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&lt;EarthSatellite ISS (ZARYA) catalog #25544 epoch 2020-11-07 22:23:09 UTC&gt;]
+</pre></div>
+</div>
+<p>The above code will download a new result
+each time it’s asked for a satellite that it hasn’t yet fetched.
+But note that when asked again for the same satellite,
+it will simply reload the existing file from disk
+unless <code class="docutils literal notranslate"><span class="pre">reload=True</span></code> is specified.</p>
+</div>
+<div class="section" id="loading-a-tle-set-from-strings">
+<h2>Loading a TLE set from strings<a class="headerlink" href="#loading-a-tle-set-from-strings" title="Permalink to this headline">¶</a></h2>
+<p>If your program already has the two lines of TLE data for a satellite
+and doesn’t need Skyfield to download and parse a Celestrak file,
+you can instantiate an <a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite" title="skyfield.sgp4lib.EarthSatellite"><code class="xref py py-class docutils literal notranslate"><span class="pre">EarthSatellite</span></code></a> directly.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">EarthSatellite</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">line1</span> <span class="o">=</span> <span class="s1">&#39;1 25544U 98067A   14020.93268519  .00009878  00000-0  18200-3 0  5082&#39;</span>
+<span class="n">line2</span> <span class="o">=</span> <span class="s1">&#39;2 25544  51.6498 109.4756 0003572  55.9686 274.8005 15.49815350868473&#39;</span>
+<span class="n">satellite</span> <span class="o">=</span> <span class="n">EarthSatellite</span><span class="p">(</span><span class="n">line1</span><span class="p">,</span> <span class="n">line2</span><span class="p">,</span> <span class="s1">&#39;ISS (ZARYA)&#39;</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">satellite</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ISS (ZARYA) catalog #25544 epoch 2014-01-20 22:23:04 UTC
+</pre></div>
+</div>
+</div>
+<div class="section" id="checking-a-tles-epoch">
+<h2>Checking a TLE’s epoch<a class="headerlink" href="#checking-a-tles-epoch" title="Permalink to this headline">¶</a></h2>
+<p>The “epoch” date of a satellite element set
+is the all-important date and time
+for which the set of elements is most accurate,
+and before or after which they go rapidly out of date.
+You can access this value as an attribute of the object
+in case your program wants to check how old the elements are:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">satellite</span><span class="o">.</span><span class="n">epoch</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>A.D. 2014-Jan-20 22:23:04.0004 UTC
+</pre></div>
+</div>
+<p>If the epoch is too far in the past,
+you can provide <a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.tle_file" title="skyfield.iokit.Loader.tle_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tle_file()</span></code></a>
+with the <code class="docutils literal notranslate"><span class="pre">reload</span></code> option to force it to download new elements
+even if the file is already on disk.
+(Note, though, that there is no guarantee that the new elements
+will be up-to-date if the source file is not frequently updated
+for the satellite you are interested in —
+so this pattern might make you download a new file on each run
+until the satellite’s elements are finally updated.)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+
+<span class="n">days</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">satellite</span><span class="o">.</span><span class="n">epoch</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.3f}</span><span class="s1"> days away from epoch&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">days</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">days</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">14</span><span class="p">:</span>
+    <span class="n">satellites</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">tle_file</span><span class="p">(</span><span class="n">stations_url</span><span class="p">,</span> <span class="n">reload</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2.538 days away from epoch
+</pre></div>
+</div>
+<p>You can read <a class="reference external" href="https://twitter.com/TSKelso">T.S.&nbsp;Kelso</a> on Twitter
+to follow along with the drama
+as various satellite element sets go out-of-date each month
+and await updates from their respective organizations.</p>
+</div>
+<div class="section" id="historical-satellite-element-sets">
+<span id="satellite-rising-and-setting"></span><h2>Historical satellite element sets<a class="headerlink" href="#historical-satellite-element-sets" title="Permalink to this headline">¶</a></h2>
+<p>To repeat the warning in the previous section:
+any particular satellite TLE set
+is only valid for a couple of weeks to either side of that TLE’s epoch.</p>
+<p>That limitation unfortunately applies to the past as well as to the future.
+Just as today’s TLE for a satellite
+can only help you predict its position for a few weeks into the future,
+it will also be accurate for only a few weeks into the past.
+Whether the satellite has been performing active maneuvers,
+or merely coasting amidst the unpredictable magnetic fields
+and atmospheric drag of the near-Earth environment,
+a current TLE cannot predict the satellite’s position
+on a date in the distant past.</p>
+<p>If you lack access to an archive of old TLE files,
+try searching the Internet Archive’s “Wayback Machine”:</p>
+<p><a class="reference external" href="https://archive.org/web/">https://archive.org/web/</a></p>
+<p>Supply the URL of the current satellite catalog you downloaded
+and click “Browse History”
+and the Archive will display a calendar
+indicating whether any earlier versions of that same satellite catalog
+are in their archive.
+If so, then you should be able to download them to your machine
+and use them when you need historic satellite positions
+close to the old TLE’s epoch date.</p>
+</div>
+<div class="section" id="finding-when-a-satellite-rises-and-sets">
+<h2>Finding when a satellite rises and sets<a class="headerlink" href="#finding-when-a-satellite-rises-and-sets" title="Permalink to this headline">¶</a></h2>
+<p>Skyfield can search between a start time and an end time
+for each occasion on which a satellite’s altitude
+exceeds a specified number of degrees above the horizon.
+For example,
+here is how to determine
+how many times our example satellite rises above 30° of altitude
+over the span of a single day:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bluffton</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="o">+</span><span class="mf">40.8939</span><span class="p">,</span> <span class="o">-</span><span class="mf">83.8917</span><span class="p">)</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">23</span><span class="p">)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">events</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">find_events</span><span class="p">(</span><span class="n">bluffton</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">altitude_degrees</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">events</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;rise above 30°&#39;</span><span class="p">,</span> <span class="s1">&#39;culminate&#39;</span><span class="p">,</span> <span class="s1">&#39;set below 30°&#39;</span><span class="p">)[</span><span class="n">event</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y %b </span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">),</span> <span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2014 Jan 23 06:25:37 rise above 30°
+2014 Jan 23 06:26:58 culminate
+2014 Jan 23 06:28:19 set below 30°
+2014 Jan 23 12:54:56 rise above 30°
+2014 Jan 23 12:56:27 culminate
+2014 Jan 23 12:57:58 set below 30°
+</pre></div>
+</div>
+<p>The satellite’s altitude exceeded 30° twice.
+For each such occasion,
+the method <a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite.find_events" title="skyfield.sgp4lib.EarthSatellite.find_events"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_events()</span></code></a>
+has determined not only the moment of greatest altitude —
+accurate to within a second or so —
+but also the time at which the satellite first crested 30°
+and the moment at which it dipped below it.</p>
+<p>Beware that events might not always be in the order rise-culminate-set.
+Some satellites culminate several times between rising and setting.</p>
+</div>
+<div class="section" id="generating-a-satellite-position">
+<h2>Generating a satellite position<a class="headerlink" href="#generating-a-satellite-position" title="Permalink to this headline">¶</a></h2>
+<p>Once Skyfield has identified the times
+at which a particular satellite is overhead,
+you will probably want to learn more about its position at those times.</p>
+<p>The simplest form in which you can generate a satellite position
+is to call its <code class="docutils literal notranslate"><span class="pre">at()</span></code> method,
+which will return an <em>x,&nbsp;y,&nbsp;z</em> position relative to the Earth’s center
+in the Geocentric Celestial Reference System.
+(GCRS coordinates are based on even more precise axes
+than those of the old J2000 system.)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># You can instead use ts.now() for the current time</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+
+<span class="n">geocentric</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[-3918.87650458 -1887.64838745  5209.08801512]
+</pre></div>
+</div>
+<p>Another approach is to ask which point on the Earth’s globe
+is directly beneath the satellite,
+using the <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.subpoint" title="skyfield.toposlib.Geoid.subpoint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">subpoint()</span></code></a> method
+of a standard geoid.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">subpoint</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">subpoint</span><span class="p">(</span><span class="n">geocentric</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Latitude:&#39;</span><span class="p">,</span> <span class="n">subpoint</span><span class="o">.</span><span class="n">latitude</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Longitude:&#39;</span><span class="p">,</span> <span class="n">subpoint</span><span class="o">.</span><span class="n">longitude</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Elevation (m):&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">subpoint</span><span class="o">.</span><span class="n">elevation</span><span class="o">.</span><span class="n">m</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Latitude: 50deg 14&#39; 37.4&quot;
+Longitude: -86deg 23&#39; 23.3&quot;
+Elevation (m): 420873
+</pre></div>
+</div>
+<p>Finally, you might be most interested
+in whether the satellite is above or below the horizon
+from your own position as an observer.
+If you build an object to represent your latitude and longitude,
+you can use vector subtraction
+to ask “where will the satellite be <em>relative to</em> my location?”</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">difference</span> <span class="o">=</span> <span class="n">satellite</span> <span class="o">-</span> <span class="n">bluffton</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">difference</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Sum of 2 vectors:
+ Reversed Geodetic WGS84 latitude 40deg 53&#39; 38.0&quot; N longitude -83deg 53&#39; 30.1&quot; E -&gt; 399 EARTH
+ EarthSatellite 399 EARTH -&gt; ISS (ZARYA) catalog #25544 epoch 2014-01-20 22:23:04 UTC
+</pre></div>
+</div>
+<p>Every time you call this vector sum’s <code class="docutils literal notranslate"><span class="pre">at()</span></code> method,
+it will first compute the satellite’s position,
+then your own position,
+and finish by subtracting them.
+The result will be the position of the satellite relative
+to you as an observer.
+If you are interested you can access this relative position
+as <em>x,&nbsp;y,&nbsp;z</em> coordinates,
+just as you did for the position measured from the Earth’s center:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">topocentric</span> <span class="o">=</span> <span class="n">difference</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">topocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[ 331.61901192  392.18492744 1049.7597825 ]
+</pre></div>
+</div>
+<p>But the most popular approach is to ask the topocentric position
+for its altitude and azimuth coordinates,
+which tell you whether the satellite is above or below the horizon:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">topocentric</span><span class="o">.</span><span class="n">altaz</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">alt</span><span class="o">.</span><span class="n">degrees</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The ISS is above the horizon&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">km</span><span class="p">),</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>The ISS is above the horizon
+16deg 16&#39; 32.6&quot;
+350deg 15&#39; 20.4&quot;
+1168 km
+</pre></div>
+</div>
+<p>If you are interested
+in where among the stars the satellite will be positioned,
+then — as with any other Skyfield position object —
+you can also ask for a right ascension and declination,
+either relative to the fixed axes of the ICRF
+or else in dynamical coordinates of the date you specify.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">topocentric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>  <span class="c1"># ICRF (&quot;J2000&quot;)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>03h 19m 07.97s
++63deg 55&#39; 47.2&quot;
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">topocentric</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>03h 20m 22.42s
++63deg 58&#39; 45.2&quot;
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="positions.html"><span class="doc">Positions and Coordinates</span></a> to learn more about these possibilities.</p>
+</div>
+<div class="section" id="find-when-a-satellite-is-in-sunlight">
+<span id="satellite-is-sunlit"></span><h2>Find when a satellite is in sunlight<a class="headerlink" href="#find-when-a-satellite-is-in-sunlight" title="Permalink to this headline">¶</a></h2>
+<p>A satellite is generally only visible to a ground observer
+when there is still sunlight up at its altitude.
+The satellite will visually disappear
+when it enters the Earth’s shadow
+and reappear when it comes out of eclipse.
+If you are planning to observe a satellite visually,
+rather than with radar or radio,
+you will want to know which satellite passes are in sunlight.
+Knowing a satellite’s sunlit periods
+is also helpful when modeling satellite power and thermal cycles
+as it goes in and out of eclipse.</p>
+<p>Skyfield provides a simple geometric estimate for this
+through the <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_sunlit" title="skyfield.positionlib.ICRF.is_sunlit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_sunlit()</span></code></a> method.
+Given an ephemeris with which it can compute the Sun’s position,
+it will return <code class="docutils literal notranslate"><span class="pre">True</span></code> when the satellite is in sunlight
+and <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">satellite</span> <span class="o">=</span> <span class="n">by_name</span><span class="p">[</span><span class="s1">&#39;ISS (ZARYA)&#39;</span><span class="p">]</span>
+
+<span class="n">two_hours</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="n">sunlit</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">two_hours</span><span class="p">)</span><span class="o">.</span><span class="n">is_sunlit</span><span class="p">(</span><span class="n">eph</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sunlit</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[ True  True False False  True  True]
+</pre></div>
+</div>
+<p>As usual, you can use Python’s <code class="docutils literal notranslate"><span class="pre">zip()</span></code> builtin
+if you want to loop across the times and corresponding values.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">sunlit_i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">two_hours</span><span class="p">,</span> <span class="n">sunlit</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">  </span><span class="si">{}</span><span class="s1"> is in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">),</span>
+        <span class="n">satellite</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="s1">&#39;sunlight&#39;</span> <span class="k">if</span> <span class="n">sunlit_i</span> <span class="k">else</span> <span class="s1">&#39;shadow&#39;</span><span class="p">,</span>
+    <span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2014-01-20 00:00  ISS (ZARYA) is in sunlight
+2014-01-20 00:20  ISS (ZARYA) is in sunlight
+2014-01-20 00:40  ISS (ZARYA) is in shadow
+2014-01-20 01:00  ISS (ZARYA) is in shadow
+2014-01-20 01:20  ISS (ZARYA) is in sunlight
+2014-01-20 01:40  ISS (ZARYA) is in sunlight
+</pre></div>
+</div>
+</div>
+<div class="section" id="find-whether-the-earth-blocks-a-satellites-view">
+<span id="is-behind-earth"></span><h2>Find whether the Earth blocks a satellite’s view<a class="headerlink" href="#find-whether-the-earth-blocks-a-satellites-view" title="Permalink to this headline">¶</a></h2>
+<p>The Earth looms large in the sky of an Earth-orbiting satellite.
+To plan an observation you may want to know
+when a given celestial object is blocked by the Earth
+and not visible from your satellite.
+Skyfield provides a simple geometric estimate for this
+through the <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_behind_earth" title="skyfield.positionlib.ICRF.is_behind_earth"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_behind_earth()</span></code></a> method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">earth</span><span class="p">,</span> <span class="n">venus</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;venus&#39;</span><span class="p">]</span>
+<span class="n">satellite</span> <span class="o">=</span> <span class="n">by_name</span><span class="p">[</span><span class="s1">&#39;ISS (ZARYA)&#39;</span><span class="p">]</span>
+
+<span class="n">two_hours</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">earth</span> <span class="o">+</span> <span class="n">satellite</span><span class="p">)</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">two_hours</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">venus</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+<span class="n">sunlit</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">is_behind_earth</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sunlit</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[False False  True  True False False]
+</pre></div>
+</div>
+<p>See the previous section for how to associate
+each of these <code class="docutils literal notranslate"><span class="pre">True</span></code> and <code class="docutils literal notranslate"><span class="pre">False</span></code> values
+with their corresponding time.</p>
+</div>
+<div class="section" id="avoid-calling-the-observe-method">
+<h2>Avoid calling the observe method<a class="headerlink" href="#avoid-calling-the-observe-method" title="Permalink to this headline">¶</a></h2>
+<p>When computing positions for the Sun, Moon, planets, and stars,
+Skyfield encourages a far more fussy approach
+than directly subtracting two vectors.
+In those cases, the user is encouraged
+to compute their current location with <code class="docutils literal notranslate"><span class="pre">at()</span></code>
+and then call the <code class="docutils literal notranslate"><span class="pre">observe()</span></code> method on the result
+so that Skyfield can correctly adjust the object’s position
+for the time it takes light to travel.</p>
+<ol class="arabic simple">
+<li>This turns out to be expensive for Earth satellites,
+however, because the routines
+with which Skyfield computes satellite positions
+are not currently very fast.</li>
+<li>And it turns out to be useless,
+because satellites are too close and move far too slowly
+(at least compared to something like a planet)
+for the light travel time to make any difference.</li>
+</ol>
+<p>How far off will your observations be
+if you simply subtract your position vector
+from the satellite’s vector, as encouraged above?
+Let’s try the alternative and measure the difference.</p>
+<p>To use the <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">observe()</span></code></a> method,
+you need a position measured all the way
+from the Solar System Barycenter&nbsp;(SSB).
+To anchor both our observer location
+and that of the satellite to the SSB,
+we can use vector addition with an ephemeris
+that predicts the Solar System position of the Earth:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># OVERLY EXPENSIVE APPROACH - Compute both the satellite</span>
+<span class="c1"># and observer positions relative to the Solar System</span>
+<span class="c1"># barycenter (&quot;ssb&quot;), then call observe() to compensate</span>
+<span class="c1"># for light-travel time.</span>
+
+<span class="n">de421</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">earth</span> <span class="o">=</span> <span class="n">de421</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
+<span class="n">ssb_bluffton</span> <span class="o">=</span> <span class="n">earth</span> <span class="o">+</span> <span class="n">bluffton</span>
+<span class="n">ssb_satellite</span> <span class="o">=</span> <span class="n">earth</span> <span class="o">+</span> <span class="n">satellite</span>
+<span class="n">topocentric2</span> <span class="o">=</span> <span class="n">ssb_bluffton</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">ssb_satellite</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>What difference has all of that work made?
+We can subtract the resulting positions
+to find out the distance between them:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># After all that work, how big is the difference, really?</span>
+
+<span class="n">difference_km</span> <span class="o">=</span> <span class="p">(</span><span class="n">topocentric2</span> <span class="o">-</span> <span class="n">topocentric</span><span class="p">)</span><span class="o">.</span><span class="n">distance</span><span class="p">()</span><span class="o">.</span><span class="n">km</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Difference between the two positions:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> km&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">difference_km</span><span class="p">))</span>
+
+<span class="n">difference_angle</span> <span class="o">=</span> <span class="n">topocentric2</span><span class="o">.</span><span class="n">separation_from</span><span class="p">(</span><span class="n">topocentric</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Angle between the two positions in the sky:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">difference_angle</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Difference between the two positions:
+0.087 km
+Angle between the two positions in the sky:
+00deg 00&#39; 04.6&quot;
+</pre></div>
+</div>
+<p>And there you have it!</p>
+<p>While satellite positions are only accurate to about a kilometer anyway,
+accounting for light travel time only affected the position
+in this case by less than an additional tenth of a kilometer.
+This difference is not meaningful
+when compared to the uncertainty
+that is inherent in satellite positions to begin with,
+so you should neglect it and simply subtract
+GCRS-centered vectors instead as detailed above.</p>
+</div>
+<div class="section" id="detecting-propagation-errors">
+<h2>Detecting Propagation Errors<a class="headerlink" href="#detecting-propagation-errors" title="Permalink to this headline">¶</a></h2>
+<p>After building a satellite object,
+you can examine the <em>epoch</em> date and time
+when the TLE element set’s predictions are most accurate.
+The <code class="docutils literal notranslate"><span class="pre">epoch</span></code> attribute is a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a>,
+so it supports all of the standard Skyfield date methods:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">EarthSatellite</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">GOCE</span>
+<span class="s2">1 34602U 09013A   13314.96046236  .14220718  20669-5  50412-4 0   930</span>
+<span class="s2">2 34602 096.5717 344.5256 0009826 296.2811 064.0942 16.58673376272979</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+
+<span class="n">sat</span> <span class="o">=</span> <span class="n">EarthSatellite</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">lines</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sat</span><span class="o">.</span><span class="n">epoch</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>A.D. 2013-Nov-10 23:03:03.9479 UTC
+</pre></div>
+</div>
+<p>Skyfield is willing to generate positions
+for dates quite far from a satellite’s epoch,
+even if they are not likely to be meaningful.
+But it cannot generate a position
+beyond the point where the elements stop making physical sense.
+At that point, the satellite will return a position and velocity
+<code class="docutils literal notranslate"><span class="pre">(nan,&nbsp;nan,&nbsp;nan)</span></code> where all of the quantities
+are the special floating-point value <code class="docutils literal notranslate"><span class="pre">nan</span></code> which means <em>not-a-number</em>.</p>
+<p>When a propagation error occurs and you get <code class="docutils literal notranslate"><span class="pre">nan</span></code> values,
+you can examine the <code class="docutils literal notranslate"><span class="pre">message</span></code> attribute of the returned position
+to learn the error that the SGP4 propagator encountered.</p>
+<p>We can take as an example the satellite elements above.
+They are the last elements ever issued for GOCE,
+just before the satellite re-entered the atmosphere
+after an extended and successful mission.
+Because of the steep decay of its orbit,
+the elements are valid over an unusually short period —
+from just before noon on Saturday to just past noon on Tuesday:</p>
+<img alt="_images/goce-reentry.png" src="_images/goce-reentry.png" />
+<p>By asking for GOCE’s position just before or after this window,
+we can learn about the propagation errors
+that are limiting this TLE set’s predictions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">geocentric</span> <span class="o">=</span> <span class="n">sat</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Before:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+<span class="n">geocentric</span> <span class="o">=</span> <span class="n">sat</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">After:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Before:
+[nan nan nan]
+mean eccentricity is outside the range 0.0 to 1.0
+
+After:
+[-5021.82658191   742.71506112  3831.57403957]
+mrt is less than 1.0 which indicates the satellite has decayed
+</pre></div>
+</div>
+<p>If you use a <code class="docutils literal notranslate"><span class="pre">Time</span></code> array to ask about an entire range of dates,
+then <code class="docutils literal notranslate"><span class="pre">message</span></code> will be a sequence filled in with <code class="docutils literal notranslate"><span class="pre">None</span></code>
+whenever the SGP4 propagator was successful
+and otherwise recording the propagator error:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="n">geocentric</span> <span class="o">=</span> <span class="n">sat</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">]))</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;mean eccentricity is outside the range 0.0 to 1.0&#39;,
+ None,
+ None,
+ None,
+ &#39;mrt is less than 1.0 which indicates the satellite has decayed&#39;]
+</pre></div>
+</div>
+</div>
+<div class="section" id="build-a-satellite-from-orbital-elements">
+<span id="from-satrec"></span><h2>Build a satellite from orbital elements<a class="headerlink" href="#build-a-satellite-from-orbital-elements" title="Permalink to this headline">¶</a></h2>
+<p>If you are starting with raw satellite orbital parameters
+instead of TLE text,
+you will want to interact directly
+with the <a class="reference external" href="https://github.com/brandon-rhodes/python-sgp4">sgp4</a> library
+that Skyfield uses for its low-level satellite calculations.</p>
+<p>The underlying library provides access to a low-level constructor
+that builds a satellite model directly from numeric orbital parameters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sgp4.api</span> <span class="kn">import</span> <span class="n">Satrec</span><span class="p">,</span> <span class="n">WGS72</span>
+
+<span class="n">satrec</span> <span class="o">=</span> <span class="n">Satrec</span><span class="p">()</span>
+<span class="n">satrec</span><span class="o">.</span><span class="n">sgp4init</span><span class="p">(</span>
+    <span class="n">WGS72</span><span class="p">,</span>           <span class="c1"># gravity model</span>
+    <span class="s1">&#39;i&#39;</span><span class="p">,</span>             <span class="c1"># &#39;a&#39; = old AFSPC mode, &#39;i&#39; = improved mode</span>
+    <span class="mi">5</span><span class="p">,</span>               <span class="c1"># satnum: Satellite number</span>
+    <span class="mf">18441.785</span><span class="p">,</span>       <span class="c1"># epoch: days since 1949 December 31 00:00 UT</span>
+    <span class="mf">2.8098e-05</span><span class="p">,</span>      <span class="c1"># bstar: drag coefficient (/earth radii)</span>
+    <span class="mf">6.969196665e-13</span><span class="p">,</span> <span class="c1"># ndot: ballistic coefficient (revs/day)</span>
+    <span class="mf">0.0</span><span class="p">,</span>             <span class="c1"># nddot: second derivative of mean motion (revs/day^3)</span>
+    <span class="mf">0.1859667</span><span class="p">,</span>       <span class="c1"># ecco: eccentricity</span>
+    <span class="mf">5.7904160274885</span><span class="p">,</span> <span class="c1"># argpo: argument of perigee (radians)</span>
+    <span class="mf">0.5980929187319</span><span class="p">,</span> <span class="c1"># inclo: inclination (radians)</span>
+    <span class="mf">0.3373093125574</span><span class="p">,</span> <span class="c1"># mo: mean anomaly (radians)</span>
+    <span class="mf">0.0472294454407</span><span class="p">,</span> <span class="c1"># no_kozai: mean motion (radians/minute)</span>
+    <span class="mf">6.0863854713832</span><span class="p">,</span> <span class="c1"># nodeo: right ascension of ascending node (radians)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>If you need any more details,
+this <code class="docutils literal notranslate"><span class="pre">sgp4init</span></code> method is documented in the
+<a class="reference external" href="https://pypi.org/project/sgp4/#providing-your-own-elements">Providing your own elements</a>
+section of the sgp4 library’s documentation on the Python Packaging Index.</p>
+<p>To wrap this low-level satellite model in a Skyfield object,
+call this special constructor:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sat</span> <span class="o">=</span> <span class="n">EarthSatellite</span><span class="o">.</span><span class="n">from_satrec</span><span class="p">(</span><span class="n">satrec</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Satellite number:&#39;</span><span class="p">,</span> <span class="n">sat</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">satnum</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Epoch:&#39;</span><span class="p">,</span> <span class="n">sat</span><span class="o">.</span><span class="n">epoch</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Satellite number: 5
+Epoch: A.D. 2000-Jun-27 18:50:24.0000 UTC
+</pre></div>
+</div>
+<p>The result should be a satellite object that behaves
+exactly as though it had been loaded from TLE lines.</p>
+</div>
+</div>
+
+  </body>
+</html>

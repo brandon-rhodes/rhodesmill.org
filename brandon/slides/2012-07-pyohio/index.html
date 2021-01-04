@@ -1,0 +1,1781 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>slides.rst</title>
+<link rel="stylesheet" href="/css/slides.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="python-patterns-1">
+<h1>Python Patterns 1</h1>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line">Brandon Rhodes</div>
+<div class="line"><br /></div>
+<div class="line">PyOhio</div>
+<div class="line"><em>29 July 2012</em></div>
+</div>
+</div>
+<div class="section" id="id1">
+<h1>Python Patterns 1</h1>
+<div class="line-block">
+<div class="line">The <em>“1”</em> indicates my first try</div>
+<div class="line">at tackling a large subject!</div>
+</div>
+<div class="line-block">
+<div class="line">(I might have more</div>
+<div class="line">to say in the future)</div>
+</div>
+</div>
+<div class="section" id="slide">
+
+<div class="line-block">
+<div class="line"><em>Why do Python</em></div>
+<div class="line"><em>programmers rarely talk</em></div>
+<div class="line"><em>about design patterns?</em></div>
+</div>
+</div>
+<div class="section" id="id2">
+
+<div class="line-block">
+<div class="line"><em>Why do Python</em></div>
+<div class="line"><em>programmers rarely talk</em></div>
+<div class="line"><em>about design patterns?</em></div>
+</div>
+<div class="line-block">
+<div class="line">In his 2009 talk at PyCon,</div>
+<div class="line">Joe Gregorio suggested:</div>
+</div>
+<ul class="simple">
+<li>“The patterns are built in” to Python</li>
+<li>Concurrent patterns need more attention</li>
+<li>Missing patterns could be new features</li>
+</ul>
+</div>
+<div class="section" id="the-gist-of-this-talk">
+<h1>The gist of this talk—</h1>
+</div>
+<div class="section" id="id3">
+<h1>The gist of this talk</h1>
+<div class="line-block">
+<div class="line"><em>Why do Python</em></div>
+<div class="line"><em>programmers rarely talk</em></div>
+<div class="line"><em>about design patterns?</em></div>
+</div>
+<ul class="simple">
+<li>Built-in language features</li>
+<li>Are provided by frameworks</li>
+<li>We avoid big applications</li>
+</ul>
+</div>
+<div class="section" id="what-is-a-pattern">
+<h1>What is a pattern?</h1>
+<p>Two books…</p>
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line"><em>A Pattern Language</em></div>
+</div>
+<div class="line-block">
+<div class="line">Christopher Alexander</div>
+<div class="line">(1977)</div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<div class="line-block">
+<div class="line"><em>Design Patterns—</em></div>
+</div>
+<div class="line-block">
+<div class="line"><em>Elements of Reuseable</em></div>
+<div class="line"><em>Object-Oriented Software</em></div>
+</div>
+<div class="line-block">
+<div class="line">Gamma, Helm, Johnson, Vlissides</div>
+<div class="line"><tt class="docutils literal">“The Gang of Four”</tt></div>
+<div class="line">(1995)</div>
+</div>
+</div>
+<div class="section" id="id6">
+
+<div class="line-block">
+<div class="line">Not all patterns are</div>
+<div class="line"><em>object-oriented design</em> patterns</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>OO Design Patterns</strong> &nbsp;⊂&nbsp; <strong>Patterns</strong></div>
+</div>
+</div>
+<div class="section" id="id7">
+
+<div class="line-block">
+<div class="line">Patterns in Python exist</div>
+<div class="line">at many different levels</div>
+</div>
+</div>
+<div class="section" id="small-procedural-pattern">
+<h1>Small procedural pattern</h1>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="s1">&#39;owner&#39;</span> <span class="ow">in</span> <span class="n">roledict</span><span class="p">:</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">roledict</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">admin</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><em>(-1)</em> for looking up <em>'owner'</em> twice</div>
+<div class="line"><em>(-1)</em> requires four lines and an indent</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">owner</span> <span class="o">=</span> <span class="n">roledict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">admin</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="bigger-procedural-pattern">
+<h1>Bigger procedural pattern</h1>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">is_for_sale</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="n">cost</span> <span class="o">=</span> <span class="n">compute_cost</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cost</span> <span class="o">&lt;=</span> <span class="n">wallet</span><span class="o">.</span><span class="n">money</span><span class="p">:</span>
+            <span class="n">buy</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><em>(-1)</em> actual buy() is buried 2 levels deep</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_for_sale</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">continue</span>
+    <span class="n">cost</span> <span class="o">=</span> <span class="n">compute_cost</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cost</span> <span class="o">&gt;</span> <span class="n">wallet</span><span class="o">.</span><span class="n">money</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="n">buy</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id8">
+
+<div class="line-block">
+<div class="line"><em>Object-Oriented</em> design patterns</div>
+<div class="line">are specifically about putting the</div>
+<div class="line"><em>big pieces</em> of an application together</div>
+</div>
+<ul class="simple">
+<li>Classes</li>
+<li>Objects</li>
+<li>References</li>
+</ul>
+</div>
+<div class="section" id="id9">
+
+<div class="line-block">
+<div class="line">How can a language</div>
+<div class="line">feature replace a pattern?</div>
+</div>
+</div>
+<div class="section" id="id10">
+
+<p>1st principle in <em>Design Patterns</em> (p18):</p>
+<div class="line-block">
+<div class="line">“Program to an interface,</div>
+<div class="line">not an implementation.”</div>
+</div>
+</div>
+<div class="section" id="id11">
+
+<div class="line-block">
+<div class="line"><strong>Problem:</strong> static typing locks you in</div>
+<div class="line">(there is only one class named <tt class="docutils literal">File</tt>)</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">public</span> <span class="n">void</span> <span class="n">writeZen</span><span class="p">(</span><span class="n">File</span> <span class="n">out</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Beautiful is better than ugly.&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><strong>Solution:</strong> do not mention actual types</div>
+<div class="line">(any class can implement <tt class="docutils literal">IWritable</tt>)</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">public</span> <span class="n">void</span> <span class="n">writeZen</span><span class="p">(</span><span class="n">IWritable</span> <span class="n">out</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Beautiful is better than ugly.&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="why-would-you-do-this">
+<h1>Why would you do this?</h1>
+<div class="line-block">
+<div class="line">Because someday you might want to write</div>
+<div class="line">to something that is file-<em>like</em></div>
+<div class="line">but not an actual <tt class="docutils literal">File</tt>!</div>
+</div>
+</div>
+<div class="section" id="id12">
+
+<div class="highlight"><pre><span></span><span class="n">public</span> <span class="n">void</span> <span class="n">writeZen</span><span class="p">(</span><span class="n">File</span> <span class="n">out</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Beautiful is better than ugly.&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">↑</div>
+<div class="line">Only usable for <tt class="docutils literal">File</tt> subclasses</div>
+</div>
+<div class="line-block">
+<div class="line">If your new <tt class="docutils literal">WebSocket</tt> class</div>
+<div class="line"><em>also</em> offers <tt class="docutils literal">IWritable</tt> then you</div>
+<div class="line">can re-use this method for the web!</div>
+<div class="line">↓</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">public</span> <span class="n">void</span> <span class="n">writeZen</span><span class="p">(</span><span class="n">IWritable</span> <span class="n">out</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Beautiful is better than ugly.&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id13">
+
+<div class="line-block">
+<div class="line">So, do we worry</div>
+<div class="line">about this in Python?</div>
+</div>
+</div>
+<div class="section" id="no">
+<h1>No</h1>
+</div>
+<div class="section" id="why">
+<h1>Why?</h1>
+</div>
+<div class="section" id="id14">
+
+<div class="line-block">
+<div class="line">Because in Python we</div>
+<div class="line">throw <em>static typing</em> overboard</div>
+<div class="line">and instead use <em>duck typing</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">writeZen</span><span class="p">(</span><span class="n">out</span><span class="p">):</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Beautiful is better than ugly.&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">This function accepts <em>anything</em></div>
+<div class="line">and simply risks an exception</div>
+<div class="line">if the duck refuses to quack</div>
+</div>
+</div>
+<div class="section" id="id15">
+
+<div class="line-block">
+<div class="line"><em>So a language feature—</em></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>“Python is dynamic”</strong></div>
+<div class="line">and does not make you pre-specify</div>
+<div class="line">the types accepted by a function</div>
+</div>
+<div class="line-block">
+<div class="line"><em>—eliminates a whole GoF design principle!</em></div>
+</div>
+</div>
+<div class="section" id="in-other-words">
+<h1>In other words—</h1>
+<div class="line-block">
+<div class="line">All Python code you have ever written</div>
+<div class="line"><em>automatically</em> adheres to the GoF principle</div>
+<div class="line">that functions should not name the</div>
+<div class="line">classes that can be passed in.</div>
+</div>
+<div class="line-block">
+<div class="line"><em>(Unless you add inflexibility</em></div>
+<div class="line"><em>manually with</em> <tt class="docutils literal">isinstance()</tt> <em>tests)</em></div>
+</div>
+</div>
+<div class="section" id="in-general">
+<h1>In general</h1>
+<div class="line-block">
+<div class="line">Java and C++ programmers</div>
+<div class="line">maintain grueling and expensive</div>
+<div class="line">coding disciplines</div>
+</div>
+<div class="line-block">
+<div class="line"><em>to remove a set of handcuffs</em></div>
+<div class="line">that <em>in Python</em> quite simply</div>
+<div class="line"><em>do not exist to begin with</em></div>
+</div>
+</div>
+<div class="section" id="opinion">
+<h1>Opinion</h1>
+<div class="line-block">
+<div class="line">Is it a damning indictment of C++/Java</div>
+<div class="line">that their most fundamental and</div>
+<div class="line">persistent coding practices</div>
+</div>
+<div class="line-block">
+<div class="line">all seem designed to make Java</div>
+<div class="line"><em>more like writing in Python?</em></div>
+</div>
+</div>
+<div class="section" id="so">
+<h1>So,</h1>
+<div class="line-block">
+<div class="line">we have seen how a Gang of Four</div>
+<div class="line"><em>principle</em> disappears in Python.</div>
+</div>
+<div class="line-block">
+<div class="line"><em>What about the patterns themselves?</em></div>
+</div>
+</div>
+<div class="section" id="id16">
+
+<ul class="simple">
+<li>5 Creational Patterns</li>
+<li>7 Structural Patterns</li>
+<li>11 Behavioral Patterns</li>
+</ul>
+</div>
+<div class="section" id="the-5-creational-patterns">
+<h1>The 5 Creational Patterns</h1>
+</div>
+<div class="section" id="python-is-brilliant">
+<h1>Python is brilliant</h1>
+<div class="line-block">
+<div class="line"><em>No separate syntax</em> for</div>
+<div class="line">object instantiation</div>
+</div>
+</div>
+<div class="section" id="id17">
+
+<div class="highlight"><pre><span></span><span class="c1"># C++, Java, JavaScript</span>
+
+<span class="n">v</span> <span class="o">=</span> <span class="n">getvalue</span><span class="p">();</span>   <span class="o">//</span> <span class="n">plain</span> <span class="n">function</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Thing</span><span class="p">();</span>  <span class="o">//</span> <span class="n">instantiation</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Python</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">getthing</span><span class="p">()</span>    <span class="c1"># everything!</span>
+</pre></div>
+
+</div>
+<div class="section" id="id18">
+
+<div class="line-block">
+<div class="line">In other languages the <tt class="docutils literal">new</tt> keyword</div>
+<div class="line"><em>commits</em> you to doing a real instantiation,</div>
+<div class="line">which makes all kinds of things impossible:</div>
+</div>
+<ul class="simple">
+<li><em>Returning another class</em></li>
+<li><em>Always return the same instance</em></li>
+</ul>
+</div>
+<div class="section" id="id19">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_talker</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;xmlrpc://&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">XMLRPC_Talker</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">JSON_Talker</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id20">
+
+<div class="line-block">
+<div class="line">So most “creational patterns”</div>
+<div class="line">are contortions to avoid making</div>
+<div class="line">brittle <tt class="docutils literal">new</tt> calls in your C++/Java code</div>
+</div>
+<ul>
+<li><div class="first line-block">
+<div class="line"><em>Returning another class</em></div>
+<div class="line">(Factory Method, Abstract Factory)</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line"><em>Always return the same instance</em></div>
+<div class="line">(Singleton)</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id21">
+
+<div class="line-block">
+<div class="line">In Python, you <em>cannot tell</em></div>
+<div class="line">what is being called:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">thing</span><span class="p">()</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Is this a bound method?</div>
+<div class="line">A class with a lowercase name?</div>
+<div class="line">Or a plain old function?</div>
+</div>
+<div class="line-block">
+<div class="line"><em>It can be whatever</em></div>
+<div class="line"><em>its author needed!</em></div>
+</div>
+</div>
+<div class="section" id="id22">
+
+<div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">thing</span><span class="p">()</span>
+<span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">thing</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">(You <em>can</em> tell the difference if you</div>
+<div class="line"><tt class="docutils literal">isinstance()</tt> with the constructor —</div>
+<div class="line">but you <em>wouldn't do that</em>, right?)</div>
+</div>
+</div>
+<div class="section" id="notes-about-python-singletons">
+<h1>Notes about Python singletons</h1>
+<ol class="arabic">
+<li><div class="first line-block">
+<div class="line">Using a global variable is bad,</div>
+<div class="line">because you can never switch in</div>
+<div class="line">something dynamic: <tt class="docutils literal">mymodule.foo</tt></div>
+<div class="line">can <em>not</em> be intercepted!</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="id23">
+<h1>Notes about Python singletons</h1>
+<ol class="arabic" start="2">
+<li><div class="first line-block">
+<div class="line">So you should always make callers</div>
+<div class="line">actually invoke a function to get</div>
+<div class="line">your singleton; minimally:</div>
+</div>
+<blockquote>
+<div class="highlight"><pre><span></span><span class="c1"># A kind-of singleton</span>
+
+<span class="n">_singleton</span> <span class="o">=</span> <span class="n">MyClass</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_singleton</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_singleton</span>
+</pre></div>
+
+</blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="id24">
+<h1>Notes about Python singletons</h1>
+<ol class="arabic" start="3">
+<li><div class="first line-block">
+<div class="line">But note that the real Singleton</div>
+<div class="line">pattern is supposed to let the</div>
+<div class="line">caller provide a subclass!</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="id25">
+
+<blockquote>
+<div class="highlight"><pre><span></span><span class="n">_singleton</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="k">def</span> <span class="nf">get_singleton</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="n">MyClass</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">_singleton</span>
+    <span class="k">if</span> <span class="n">_singleton</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">_singleton</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">_singleton</span>
+</pre></div>
+
+</blockquote>
+<div class="line-block">
+<div class="line">You can always make things</div>
+<div class="line">more complicated later:</div>
+</div>
+<ul class="simple">
+<li>Hide <tt class="docutils literal">_singleton</tt> inside a closure</li>
+<li>Hide <tt class="docutils literal">_singleton</tt> inside a class</li>
+</ul>
+</div>
+<div class="section" id="id26">
+
+<div class="line-block">
+<div class="line">What if your users want a constructor</div>
+<div class="line">that is <em>also</em> the singleton's class,</div>
+<div class="line">so they can <tt class="docutils literal">isinstance()</tt> it?</div>
+</div>
+<div class="line-block">
+<div class="line">Then you have to roll up your sleeves</div>
+<div class="line">and give your class a <tt class="docutils literal">__new__()</tt> method,</div>
+<div class="line">see <em>Stack Overflow</em> for examples</div>
+<div class="line">(and arguments against!)</div>
+</div>
+</div>
+<div class="section" id="prototype">
+<h1>Prototype</h1>
+<div class="line-block">
+<div class="line">Another creational pattern is provided</div>
+<div class="line">not by the Python language itself,</div>
+<div class="line">but by the Standard Library:</div>
+</div>
+<div class="line-block">
+<div class="line">The <tt class="docutils literal">copy</tt> module can introspect</div>
+<div class="line">and make a copy of an object</div>
+</div>
+</div>
+<div class="section" id="builder">
+<h1>Builder</h1>
+<div class="line-block">
+<div class="line">The most complex creational</div>
+<div class="line">pattern is actually very useful:</div>
+</div>
+<div class="line-block">
+<div class="line">a <em>Builder</em> receives instructions about</div>
+<div class="line">what to build, and hides the details</div>
+<div class="line">of the instances it links together</div>
+</div>
+</div>
+<div class="section" id="making-xml-without-a-builder">
+<h1>Making XML <em>without</em> a builder</h1>
+<div class="line-block">
+<div class="line">We see the gory details</div>
+<div class="line">as instances are created</div>
+<div class="line">and then linked together</div>
+</div>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lxml</span> <span class="kn">import</span> <span class="n">etree</span>
+
+<span class="n">root</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">)</span>
+<span class="n">h1</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;h1&#39;</span><span class="p">)</span>
+<span class="n">h1</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;The Title&#39;</span>
+<span class="n">root</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;Always write Python&#39;</span>
+<span class="n">root</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="making-xml-with-a-builder">
+<h1>Making XML <em>with</em> a builder</h1>
+<div class="line-block">
+<div class="line">Our code does not become laden</div>
+<div class="line">with <em>any</em> information about the</div>
+<div class="line">classes being instantiated!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lxml.builder</span> <span class="kn">import</span> <span class="n">E</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">(</span><span class="s1">&#39;h1&#39;</span><span class="p">,</span> <span class="s1">&#39;The Title&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;Always write Python&#39;</span><span class="p">))</span>
+</pre></div>
+
+</div>
+<div class="section" id="id27">
+<h1>Builder</h1>
+<div class="line-block">
+<div class="line">This pattern perhaps appears</div>
+<div class="line">in popular <em>frameworks</em> like lxml</div>
+<div class="line">more often than in user code</div>
+</div>
+</div>
+<div class="section" id="creational-patterns-in-python">
+<h1>Creational Patterns in Python</h1>
+<p><em>Designed away by language:</em></p>
+<div class="line-block">
+<div class="line">Abstract Factory</div>
+<div class="line">Factory Method</div>
+</div>
+<p><em>Trivial:</em></p>
+<div class="line-block">
+<div class="line">Singleton</div>
+<div class="line">Prototype</div>
+</div>
+<p><em>Useful:</em></p>
+<div class="line-block">
+<div class="line">Builder</div>
+</div>
+</div>
+<div class="section" id="the-7-structural-patterns">
+<h1>The 7 Structural Patterns</h1>
+</div>
+<div class="section" id="structural-pattern-adapter">
+<h1>Structural Pattern: Adapter</h1>
+</div>
+<div class="section" id="adapter">
+<h1>Adapter</h1>
+<div class="line-block">
+<div class="line">Very important!</div>
+</div>
+<div class="line-block">
+<div class="line">Wraps one class</div>
+<div class="line">so that it behaves</div>
+<div class="line">like another class</div>
+</div>
+</div>
+<div class="section" id="adapter-example">
+<h1>Adapter example</h1>
+<div class="line-block">
+<div class="line">Sockets do <em>not</em> read</div>
+<div class="line">and write like files do</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">socket</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">read</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">AttributeError</span><span class="p">:</span> <span class="s1">&#39;_socketobject&#39;</span> <span class="nb">object</span>
+ <span class="n">has</span> <span class="n">no</span> <span class="n">attribute</span> <span class="s1">&#39;read&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id28">
+
+<div class="line-block">
+<div class="line">Instead, they “send” and “receive”</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">send</span>
+<span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">send</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">recv</span>
+<span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">recv</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id29">
+
+<div class="line-block">
+<div class="line">So the Standard Library provides</div>
+<div class="line">a <tt class="docutils literal">socket._fileobject</tt> adapter that</div>
+<div class="line">translates file-like <tt class="docutils literal">read()</tt> and <tt class="docutils literal">write()</tt></div>
+<div class="line">operations into <tt class="docutils literal">send()</tt> and <tt class="docutils literal">recv()</tt></div>
+<div class="line">calls on the socket</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">f</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">makefile</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">_fileobject</span><span class="o">.</span><span class="n">read</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id30">
+
+<div class="line-block">
+<div class="line">Adapters are a <em>crucial</em> pattern</div>
+<div class="line">letting us re-use code in Python</div>
+</div>
+<div class="line-block">
+<div class="line">Sometimes the day can be saved by</div>
+<div class="line">putting an object behind a file-like or</div>
+<div class="line">sequence-like adapter so it can be</div>
+<div class="line">passed to existing Python code</div>
+</div>
+</div>
+<div class="section" id="structural-pattern-bridge">
+<h1>Structural Pattern: Bridge</h1>
+</div>
+<div class="section" id="bridge">
+<h1>Bridge</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line">Says <em>not</em> to use subclassing for</div>
+<div class="line">two separate purposes in one class</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Then you wind up with</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">MacPlainWindow</span>   <span class="n">MacBorderedWindow</span>
+<span class="n">WinPlainWindow</span>   <span class="n">WinBorderedWindow</span>
+<span class="n">LinuxPlainWindow</span> <span class="n">LinuxBorderedWindow</span>
+</pre></div>
+
+</li>
+<li><div class="first line-block">
+<div class="line">Partly rationalized by limitations</div>
+<div class="line">of C++ (no mixins, much subclassing)</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="solution-another-layer">
+<h1>Solution: another layer!</h1>
+<div class="line-block">
+<div class="line">Have one class that translates</div>
+<div class="line">the <tt class="docutils literal">Plain</tt> and <tt class="docutils literal">Bordered</tt> ideas</div>
+<div class="line">into primitive window operations</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Then</em></div>
+</div>
+<div class="line-block">
+<div class="line">Have <em>another</em> class that can</div>
+<div class="line">perform these operations under</div>
+<div class="line"><tt class="docutils literal">Windows</tt>, <tt class="docutils literal">Mac</tt>, and <tt class="docutils literal">Linux</tt></div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="line-block">
+<div class="line">This principle actually applies</div>
+<div class="line">at <em>many</em> levels in Python!</div>
+</div>
+</div>
+<div class="section" id="gary-bernhardt-at-pycon-2012">
+<h1>Gary Bernhardt at PyCon 2012</h1>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> My models are full of business</div>
+<div class="line">logic — how can I write simple tests</div>
+<div class="line">that don't write to the database?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">Database_Model</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_name</span><span class="p">):</span> <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">direct_deposit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span> <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id32">
+<h1>Gary Bernhardt at PyCon 2012</h1>
+<div class="line-block">
+<div class="line"><strong>A:</strong> Have models that do <em>nothing</em> but</div>
+<div class="line">persist information to storage</div>
+</div>
+<div class="line-block">
+<div class="line"><em>and then</em></div>
+</div>
+<div class="line-block">
+<div class="line">write a <em>business logic</em> layer</div>
+<div class="line">that implements the operations</div>
+<div class="line">that were expressed in methods</div>
+</div>
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line">The <em>Bridge</em> pattern is actually a</div>
+<div class="line">good idea even at the level of modules</div>
+</div>
+<div class="line-block">
+<div class="line">My modules often tackle only</div>
+<div class="line">a single level of impedance</div>
+<div class="line">match, instead of trying</div>
+<div class="line">to take several steps</div>
+</div>
+</div>
+<div class="section" id="id34">
+
+<div class="highlight"><pre><span></span><span class="c1"># foo.py</span>
+<span class="n">CherryPy</span> <span class="n">plugin</span> <span class="err">→</span> <span class="n">thread</span> <span class="err">→</span> <span class="n">library</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># foo.py</span>
+<span class="n">CherryPy</span> <span class="n">plugin</span> <span class="err">→</span> <span class="n">stdlib</span> <span class="n">threading</span>
+
+<span class="c1"># bar.py</span>
+<span class="n">thread</span> <span class="err">→</span> <span class="n">library</span>
+</pre></div>
+
+</div>
+<div class="section" id="id35">
+
+<p><em>This leads to a Brandon rule:</em></p>
+<div class="line-block">
+<div class="line">If a module imports <em>three major libraries</em></div>
+<div class="line">or frameworks, see if you can refactor it</div>
+<div class="line">into <em>two</em> modules, each of which only</div>
+<div class="line">imports <em>two</em> libraries</div>
+</div>
+<div class="line-block">
+<div class="line">Your main program can then</div>
+<div class="line">plug the pieces together in <tt class="docutils literal">main()</tt></div>
+</div>
+</div>
+<div class="section" id="structural-pattern-composite">
+<h1>Structural Pattern: Composite</h1>
+<div class="line-block">
+<div class="line">A class whose instances</div>
+<div class="line">are designed to lock</div>
+<div class="line">together in a tree</div>
+</div>
+</div>
+<div class="section" id="id36">
+
+<p>Composition is a common pattern</p>
+<ul class="simple">
+<li><tt class="docutils literal">email.Message</tt> can have messages inside</li>
+<li><tt class="docutils literal">lxml.etree.Element</tt> lists child elements</li>
+</ul>
+</div>
+<div class="section" id="id37">
+
+<p>Two common mechanisms:</p>
+<div class="highlight"><pre><span></span><span class="c1"># Store children in attributes</span>
+
+<span class="n">obj</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="n">subobject</span>
+
+<span class="c1"># Store a list or dict of children</span>
+
+<span class="n">obj</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">subobject</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="structural-pattern-facade">
+<h1>Structural Pattern: Facade</h1>
+<div class="line-block">
+<div class="line">An object that hides a complex</div>
+<div class="line">tree or network of other objects</div>
+</div>
+<ul>
+<li><div class="first line-block">
+<div class="line">An <tt class="docutils literal">etree</tt> <tt class="docutils literal">Element</tt> lets you <tt class="docutils literal">root.find()</tt></div>
+<div class="line">and <tt class="docutils literal">root.iter()</tt> which traverse the entire</div>
+<div class="line">tree of nodes for you</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="structural-pattern-flyweight">
+<h1>Structural Pattern: Flyweight</h1>
+</div>
+<div class="section" id="flyweight">
+<h1>Flyweight</h1>
+<div class="line-block">
+<div class="line">A flyweight is a small object</div>
+<div class="line">that is immutable and can be</div>
+<div class="line">re-used in many contexts</div>
+</div>
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line">A text box implemented without flyweights</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">textbox</span><span class="o">.</span><span class="n">chars</span> <span class="o">=</span> <span class="p">[</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">c3</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+
+<span class="n">c1</span><span class="o">.</span><span class="n">letter</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">outline</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="o">...</span><span class="p">]</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">14</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+
+<span class="n">c2</span><span class="o">.</span><span class="n">letter</span> <span class="o">=</span> <span class="s1">&#39;h&#39;</span>
+<span class="err">⋮</span>
+<span class="n">c3</span><span class="o">.</span><span class="n">letter</span> <span class="o">=</span> <span class="s1">&#39;e&#39;</span>
+<span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id39">
+
+<div class="line-block">
+<div class="line">You have to create <em>n</em> instances</div>
+<div class="line">of the letter “T” so that each can</div>
+<div class="line">occupy a different <tt class="docutils literal">x</tt> and <tt class="docutils literal">y</tt></div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">c1</span><span class="o">.</span><span class="n">letter</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">outline</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="o">...</span><span class="p">]</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">14</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id40">
+
+<div class="line-block">
+<div class="line">The flyweight pattern moves this</div>
+<div class="line">per-object state <em>out</em> into the</div>
+<div class="line">parent or larger context</div>
+</div>
+</div>
+<div class="section" id="id41">
+
+<div class="highlight"><pre><span></span><span class="n">textbox</span><span class="o">.</span><span class="n">chars</span> <span class="o">=</span> <span class="p">[(</span><span class="n">cT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span>
+                 <span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span>
+                 <span class="p">(</span><span class="n">ce</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span>
+                 <span class="p">(</span><span class="n">c_space</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span>
+                 <span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span>
+                 <span class="p">(</span><span class="n">ce</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span>
+                 <span class="o">...</span><span class="p">]</span>
+
+<span class="n">cT</span><span class="o">.</span><span class="n">letter</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
+<span class="n">cT</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="n">cT</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">cT</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">cT</span><span class="o">.</span><span class="n">outline</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="o">...</span><span class="p">]</span>
+<span class="n">cT</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id42">
+<h1>Flyweight</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line">A small set of objects can each</div>
+<div class="line">appear thousands of times inside</div>
+<div class="line">of parent objects</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">But context like the <tt class="docutils literal">x</tt> and <tt class="docutils literal">y</tt> passed</div>
+<div class="line">to <tt class="docutils literal">Character.draw(x, y)</tt> will now need</div>
+<div class="line">to be passed in to flyweight methods</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Saves memory at the expense of noise</div>
+<div class="line">and higher coupling</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id43">
+<h1>Flyweight</h1>
+<div class="line-block">
+<div class="line">C-Python uses the flyweight pattern</div>
+<div class="line">internally for integer objects</div>
+</div>
+<div class="line-block">
+<div class="line">Since integer objects are immutable,</div>
+<div class="line">it only keeps a single copy of each small</div>
+<div class="line">integer like <tt class="docutils literal">0, 1, 2, ...</tt> and hands them</div>
+<div class="line">to your code over and over again</div>
+</div>
+</div>
+<div class="section" id="structural-pattern-proxy">
+<h1>Structural Pattern: Proxy</h1>
+</div>
+<div class="section" id="proxy">
+<h1>Proxy</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line">A proxy object wraps another object called</div>
+<div class="line">the <tt class="docutils literal">subject</tt> and accepts method calls and</div>
+<div class="line">attribute lookups on its behalf</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Proxying can be performed dynamically</div>
+<div class="line">in Python with <tt class="docutils literal">__getattr__()</tt> instead of</div>
+<div class="line">having to write <em>n</em> proxying methods</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id44">
+<h1>Proxy</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line"><tt class="docutils literal">weakref.proxy(obj)</tt> returns a proxy</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Remote procedure call libraries offer</div>
+<div class="line">proxies for remote APIs, including the</div>
+<div class="line">Standard Library <tt class="docutils literal">xmlrpc.client.ServerProxy</tt></div>
+<div class="line">and also Pyro and rpyc</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">The Zope web framework used proxies</div>
+<div class="line">that enforced security</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="structural-pattern-decorator">
+<h1>Structural Pattern: Decorator</h1>
+</div>
+<div class="section" id="decorator">
+<h1>Decorator</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line">Like the Proxy, a Decorator class</div>
+<div class="line">offers the same attributes and methods</div>
+<div class="line">as the <tt class="docutils literal">subject</tt> that it wraps</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">But instead of being <em>completely</em></div>
+<div class="line">transparent, it varies the behavior</div>
+<div class="line">or edits the data passing in and</div>
+<div class="line">out of the subject</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Decorators tend to appear in “glue”</div>
+<div class="line">code in applications, not inside</div>
+<div class="line">Python libraries themselves</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id45">
+
+<p>So there you have it</p>
+</div>
+<div class="section" id="id46">
+
+<div class="line-block">
+<div class="line">Note that <em>none</em> of the patterns</div>
+<div class="line">disappeared or proved useless simply</div>
+<div class="line">because our language is Python</div>
+</div>
+</div>
+<div class="section" id="structural-patterns">
+<h1>Structural Patterns</h1>
+<ul class="simple">
+<li>Adapter</li>
+<li>Bridge</li>
+<li>Composite</li>
+<li>Decorator</li>
+<li>Facade</li>
+<li>Flyweight</li>
+<li>Proxy</li>
+</ul>
+</div>
+<div class="section" id="the-11-behavioral-patterns">
+<h1>The 11 Behavioral Patterns</h1>
+</div>
+<div class="section" id="behavioral-pattern-chain-of-responsibility">
+<h1>Behavioral Pattern: Chain of responsibility</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line">Pass a request along a chain of objects</div>
+<div class="line">until one of them decides to handle it</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">processClick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buttonPress</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">processClick</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+</li>
+<li><div class="first line-block">
+<div class="line">Used by GUIs and DOMs for mouse events</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Can be used by “help” feature: maybe button</div>
+<div class="line">has no help, but enclosing form does</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="behavioral-pattern-command">
+<h1>Behavioral Pattern: Command</h1>
+<p>Replaces immediate actions like:</p>
+<div class="highlight"><pre><span></span><span class="n">paintLine</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+</pre></div>
+
+<p>Instead, you instantiate a <em>command</em>:</p>
+<div class="highlight"><pre><span></span><span class="n">cmd</span> <span class="o">=</span> <span class="n">PaintLineCommand</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+<span class="n">cmd</span><span class="o">.</span><span class="n">do</span><span class="p">()</span>
+<span class="n">command_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+</pre></div>
+
+<ul class="simple">
+<li>Allows auditing and <tt class="docutils literal">undo()</tt></li>
+<li>Crucial to version control systems</li>
+</ul>
+</div>
+<div class="section" id="behavioral-pattern-interpreter">
+<h1>Behavioral Pattern: Interpreter</h1>
+<div class="line-block">
+<div class="line">Instead of compiling to machine language,</div>
+<div class="line">an <em>interpreted language</em> gets parsed into a</div>
+<div class="line">data structure that an <em>interpreter</em> program</div>
+<div class="line">iterates across, following the instructions</div>
+</div>
+<ul>
+<li><div class="first line-block">
+<div class="line">Data structure can be <em>AST</em> or <em>bytecode</em></div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Python <em>itself</em> is interpreted!</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Small domain-specific languages do sometimes</div>
+<div class="line">get written in Python to ease customization</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="behavioral-pattern-iterator">
+<h1>Behavioral Pattern: Iterator</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line"><em>Built-in</em> because Python is <em>awesome</em></div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Introduced in 2001 — the most important</div>
+<div class="line">Python innovation of decade</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">See Raymond Hettinger's PyCodeConf 2011</div>
+<div class="line">talk <em>“What Makes Python Awesome?”</em></div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Lets you <tt class="docutils literal">for x in obj:</tt> across your own</div>
+<div class="line">user-defined <tt class="docutils literal">obj</tt>, or loop by hand</div>
+<div class="line">with <tt class="docutils literal">i = iter(obj)</tt> and <tt class="docutils literal">i.next()</tt></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id47">
+
+<div class="line-block">
+<div class="line">Two basic ways to implement iterator</div>
+</div>
+</div>
+<div class="section" id="id48">
+
+<div class="line-block">
+<div class="line">First, you can create an actual class</div>
+<div class="line">to be your iterator that remembers:</div>
+</div>
+<ol class="arabic simple">
+<li><em>What</em> it is iterating across</li>
+<li><em>Where</em> it is in the sequence</li>
+</ol>
+</div>
+<div class="section" id="iterator">
+<h1>Iterator</h1>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Box</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">things</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="n">BoxIterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">BoxIterator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="n">box</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">things</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">things</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id49">
+
+<div class="line-block">
+<div class="line">Or, you can simply make</div>
+<div class="line"><tt class="docutils literal">__iter__()</tt> a generator</div>
+</div>
+</div>
+<div class="section" id="id50">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Box</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">things</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">thing</span> <span class="ow">in</span> <span class="n">things</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">thing</span>
+</pre></div>
+
+</div>
+<div class="section" id="id51">
+<h1>Iterator</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line"><em>Very</em> powerful pattern</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Eliminates ugly mechanics of iteration</div>
+<div class="line">so code is more <em>readable</em></div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Enhances re-use because code is</div>
+<div class="line">easy to lock together in new ways;</div>
+<div class="line">again, <em>see Raymond's talk!</em></div>
+</div>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="c1"># JavaScript is littered with:</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">var</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">box</span><span class="o">.</span><span class="n">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="behavioral-pattern-mediator">
+<h1>Behavioral Pattern: Mediator</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line"><em>Parent</em> object responds to child <em>events</em></div>
+<div class="line">and plays out their consequences for</div>
+<div class="line">other child objects</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Child objects like buttons or form fields</div>
+<div class="line">can remain <em>generic</em> instead of having to</div>
+<div class="line">be subclassed to learn specific behavior</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Children have <em>no references</em> to each other</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="behavioral-pattern-memento">
+<h1>Behavioral Pattern: Memento</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line">A <em>memento</em> is a record of an object's</div>
+<div class="line">internal state — might be a string, or</div>
+<div class="line">file, or complex data structure</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Callers ask an object instance for a</div>
+<div class="line">memento, then can hand it back later</div>
+<div class="line">to ask the object to <em>restore itself</em></div>
+<div class="line"><em>to its earlier state</em></div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Similar to <tt class="docutils literal">pickle</tt> but instead of</div>
+<div class="line">creating a <em>new</em> object like un-pickling,</div>
+<div class="line">it changes an <em>existing</em> object</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="behavioral-pattern-observer">
+<h1>Behavioral Pattern: Observer</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line">Very popular pattern in GUIs and DOMs</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Display elements let the framework</div>
+<div class="line">know that they need to redraw when</div>
+<div class="line">specific model attributes <em>change</em></div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Your <em>models stay simple</em> and have</div>
+<div class="line"><em>no knowledge</em> of the big application</div>
+<div class="line">you have build around them, so long</div>
+<div class="line">as they signal a list of listeners</div>
+<div class="line">when an attribute changes</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id52">
+
+<p>Without <em>Observer</em> pub-sub, you get:</p>
+<blockquote>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_total</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">=</span> <span class="n">number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">titlebar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</pre></div>
+
+</blockquote>
+</div>
+<div class="section" id="id53">
+
+<p>With <em>Observer</em> pub-sub, things are simpler:</p>
+<blockquote>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_total</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">=</span> <span class="n">number</span>
+
+<span class="k">class</span> <span class="nc">MyTitlebar</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="n">subscribe</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;total&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">redraw</span><span class="p">)</span>
+
+<span class="err">⋮</span>
+</pre></div>
+
+</blockquote>
+</div>
+<div class="section" id="id54">
+
+<div class="line-block">
+<div class="line"><em>Observer</em> rarely appears in Python</div>
+<div class="line">for reasons we will discuss shortly</div>
+</div>
+</div>
+<div class="section" id="behavioral-pattern-state">
+<h1>Behavioral Pattern: State</h1>
+<div class="highlight"><pre><span></span>        <span class="nb">open</span><span class="p">()</span>    <span class="n">close</span><span class="p">()</span>
+<span class="n">TCPStart</span> <span class="err">→</span> <span class="n">TCPOpen</span> <span class="err">→</span> <span class="n">TCPClosed</span>
+</pre></div>
+
+<p>What we want to avoid:</p>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;start&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;open&#39;</span><span class="p">:</span>
+        <span class="err">⋮</span>
+    <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;close&#39;</span><span class="p">:</span>
+        <span class="err">⋮</span>
+<span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;open&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;open&#39;</span><span class="p">:</span>
+        <span class="err">⋮</span>
+    <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;close&#39;</span><span class="p">:</span>
+        <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id55">
+<h1>Behavioral Pattern: State</h1>
+<div class="highlight"><pre><span></span>        <span class="nb">open</span><span class="p">()</span>    <span class="n">close</span><span class="p">()</span>
+<span class="n">TCPStart</span> <span class="err">→</span> <span class="n">TCPOpen</span> <span class="err">→</span> <span class="n">TCPClosed</span>
+</pre></div>
+
+<ul>
+<li><div class="first line-block">
+<div class="line">Represent each state as a <em>class</em></div>
+<div class="line">like <tt class="docutils literal">TCPOpen</tt> or <tt class="docutils literal">TCPClosed</tt></div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Give each class one method for</div>
+<div class="line"><em>each transition</em> like <tt class="docutils literal">open()</tt></div>
+<div class="line">and <tt class="docutils literal">close()</tt> that <em>returns the</em></div>
+<div class="line"><em>next state</em></div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Avoids huge nested if-then's, but</div>
+<div class="line">simple state machines can be a <tt class="docutils literal">dict</tt></div>
+<div class="line">in Python instead</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="behavioral-pattern-strategy">
+<h1>Behavioral Pattern: Strategy</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line">Parametrize a <em>big process</em> by passing in</div>
+<div class="line">an object that specifies custom behavior</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Python has <em>first-class functions</em> so we</div>
+<div class="line">often just pass callbacks instead</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">A simple example of the <em>Strategy</em> pattern</div>
+<div class="line">is the <tt class="docutils literal">key=</tt> function that we pass to</div>
+<div class="line"><tt class="docutils literal">sorted()</tt> and <tt class="docutils literal">list.sort()</tt></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="behavioral-pattern-template">
+<h1>Behavioral Pattern: Template</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line">Give your classes empty methods like</div>
+<div class="line"><tt class="docutils literal">aboutToStart()</tt> and <tt class="docutils literal">justStarted()</tt></div>
+<div class="line">that a subclass can customize</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">The original author of <tt class="docutils literal">threading</tt> in</div>
+<div class="line">the Standard Library intended callers to</div>
+<div class="line">subclass (!) <tt class="docutils literal">Thread</tt> and provide their</div>
+<div class="line">own, more interesting <tt class="docutils literal">run()</tt> method</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">In Python we often pass a callable instead,</div>
+<div class="line">or — when there are many callbacks — pass</div>
+<div class="line">a <tt class="docutils literal">Strategy</tt> object instead</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="behavioral-pattern-visitor">
+<h1>Behavioral Pattern: Visitor</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line">Replaces <tt class="docutils literal">doThis()</tt> and <tt class="docutils literal">doThat()</tt> methods on</div>
+<div class="line">tree nodes, that act on the current node and</div>
+<div class="line">then call the same method on their children,</div>
+<div class="line">with a <tt class="docutils literal">do(action)</tt> traversal method</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Not frequently encountered in Python</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">We tend to turn this problem inside out:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">lxml_root</span><span class="o">.</span><span class="n">walk</span><span class="p">():</span>  <span class="c1"># or os.walk!</span>
+    <span class="c1"># do something to the node</span>
+</pre></div>
+
+</li>
+</ul>
+</div>
+<div class="section" id="behavioral-patterns">
+<h1>Behavioral Patterns</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line">Are big solutions for <em>big problems</em></div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Most patterns <em>work fine</em> in Python</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Many of them turn up in big and</div>
+<div class="line">popular <em>libraries</em>, or even in the</div>
+<div class="line">Standard Library</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">The <em>Iterator</em> pattern is now a</div>
+<div class="line">foundation of how we write Python</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="conclusions">
+<h1>Conclusions</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line"><em>Creational</em> patterns do tend to partly</div>
+<div class="line">disappear in Python</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">But the <em>Structural</em> patterns are often</div>
+<div class="line">good ways to structure your code</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Most <em>Behavioral</em> patterns remain useful</div>
+<div class="line">but some can be collapsed into callbacks</div>
+<div class="line">or data structures that hold functions</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="bonus-round">
+<h1>Bonus Round</h1>
+</div>
+<div class="section" id="dependency-injection">
+<h1>Dependency Injection</h1>
+</div>
+<div class="section" id="the-problem">
+<h1>The Problem</h1>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">a</span><span class="p">():</span> <span class="o">...</span> <span class="n">b</span><span class="p">()</span> <span class="o">...</span>
+<span class="k">def</span> <span class="nf">b</span><span class="p">():</span> <span class="o">...</span> <span class="n">c</span><span class="p">()</span> <span class="o">...</span>
+<span class="k">def</span> <span class="nf">c</span><span class="p">():</span> <span class="k">pass</span>
+</pre></div>
+
+<ul>
+<li><div class="first line-block">
+<div class="line">Hard to re-use <tt class="docutils literal">a()</tt> in situations</div>
+<div class="line">where you want to do something else</div>
+<div class="line">instead of doing <tt class="docutils literal">b()</tt></div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Hard to test <tt class="docutils literal">a()</tt> in isolation</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Expensive to test <tt class="docutils literal">a()</tt> without</div>
+<div class="line">Foord's <tt class="docutils literal">mock.patch()</tt> if <tt class="docutils literal">b()</tt> or <tt class="docutils literal">c()</tt></div>
+<div class="line">does something expensive like talking</div>
+<div class="line">to a database or writing a file</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id56">
+<h1>The Problem</h1>
+<p>A simple, concrete example:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">google_search</span><span class="p">(</span><span class="n">query_text</span><span class="p">):</span>
+    <span class="err">⋮</span>
+    <span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="err">⋮</span>
+</pre></div>
+
+<ul class="simple">
+<li>Hard to test</li>
+<li>Hard to re-use</li>
+</ul>
+</div>
+<div class="section" id="id57">
+<h1>Dependency Injection</h1>
+<div class="line-block">
+<div class="line">DI says we can <em>pass</em> the callable</div>
+<div class="line">that performs the “next action down”:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">google_search</span><span class="p">(</span><span class="n">query_text</span><span class="p">,</span> <span class="n">urlopen</span><span class="p">):</span>
+    <span class="err">⋮</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="err">⋮</span>
+</pre></div>
+
+<ul class="simple">
+<li>In production, pass <tt class="docutils literal">urllib.urlopen</tt></li>
+<li>In tests, just pass a fake function</li>
+<li>Easy to re-purpose in the future</li>
+</ul>
+</div>
+<div class="section" id="problem">
+<h1>Problem</h1>
+<p>This can get annoying</p>
+<div class="highlight"><pre><span></span><span class="n">big_function</span><span class="p">(</span>
+    <span class="n">query_text</span><span class="p">,</span>
+    <span class="n">urlopen</span><span class="o">=</span><span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">,</span>
+    <span class="n">listdir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">,</span>
+    <span class="n">stat</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">,</span>
+    <span class="n">link</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">link</span><span class="p">,</span>
+        <span class="err">⋮</span>
+    <span class="p">):</span>
+    <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id58">
+
+<div class="line-block">
+<div class="line">Grouping dependent functions into</div>
+<div class="line">objects can make it a bit simpler</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">big_function</span><span class="p">(</span>
+    <span class="n">query_text</span><span class="p">,</span>
+    <span class="n">url_utils</span><span class="p">,</span>
+    <span class="n">os_utils</span><span class="p">,</span>
+    <span class="p">):</span>
+    <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id59">
+
+<div class="line-block">
+<div class="line">But can we avoid passing so</div>
+<div class="line">many pieces to begin with?</div>
+</div>
+</div>
+<div class="section" id="another-approach">
+<h1>Another Approach</h1>
+<div class="line-block">
+<div class="line">“Return of Control”</div>
+<div class="line">But what if you just did this?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">google_search</span><span class="p">(</span><span class="n">query_text</span><span class="p">):</span>
+    <span class="err">⋮</span>
+    <span class="k">return</span> <span class="n">url</span>
+
+<span class="k">def</span> <span class="nf">google_parse</span><span class="p">(</span><span class="n">response</span><span class="p">):</span>
+    <span class="err">⋮</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">google_search</span><span class="p">(</span><span class="n">query_text</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">google_parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id60">
+
+<div class="line-block">
+<div class="line">This can result in simple functions</div>
+<div class="line">and methods that are easy to test</div>
+</div>
+<div class="line-block">
+<div class="line">and simple top-level code</div>
+<div class="line">that simply assembles Lego pieces</div>
+<div class="line">and then sets them running</div>
+</div>
+</div>
+<div class="section" id="guidelines">
+<h1>Guidelines</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line">I do this to application subsystems,</div>
+<div class="line">but I do <em>not</em> make the <em>entire</em></div>
+<div class="line">application a huge function that</div>
+<div class="line">thinks dozens of pieces together!</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">I often pass my <em>own</em> subsystems as</div>
+<div class="line">parameters, but give myself permission</div>
+<div class="line">to use Standard Library calls without</div>
+<div class="line">insisting on DI — Foord <tt class="docutils literal">mock</tt> FTW</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="end-of-bonus-round">
+<h1>End of Bonus Round</h1>
+</div>
+<div class="section" id="so-patterns">
+<h1>So, Patterns</h1>
+</div>
+<div class="section" id="id61">
+
+<div class="line-block">
+<div class="line">Most patterns are still</div>
+<div class="line">a good idea in Python</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Why don't we use them more?</em></div>
+</div>
+</div>
+<div class="section" id="my-claim">
+<h1>My claim:</h1>
+<div class="line-block">
+<div class="line">We rarely meet the bigger patterns</div>
+</div>
+<div class="line-block">
+<div class="line"><em>not</em> because of any feature</div>
+<div class="line">or magic of the Python langauge</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>but</strong></div>
+</div>
+<div class="line-block">
+<div class="line">because of the <em>kind</em> of application</div>
+<div class="line">that Python programmers tend to write</div>
+</div>
+</div>
+<div class="section" id="reason-1">
+<h1>Reason #1</h1>
+</div>
+<div class="section" id="id62">
+
+<div class="line-block">
+<div class="line">Python programs tend to perform</div>
+</div>
+<div class="line-block">
+<div class="line"><em>small</em></div>
+<div class="line"><em>lightweight</em></div>
+<div class="line"><em>one-shot</em></div>
+</div>
+<div class="line-block">
+<div class="line">tasks</div>
+</div>
+</div>
+<div class="section" id="id63">
+
+<ul class="simple">
+<li>Answering a web request</li>
+<li>Transforming a text file</li>
+<li>Searching through log files</li>
+<li>Operate on a database table</li>
+<li>Doing a Hadoop <tt class="docutils literal">reduce()</tt> step</li>
+</ul>
+<div class="line-block">
+<div class="line">At the end of each of these tasks,</div>
+<div class="line">you <em>throw away</em> your objects and <em>start over</em></div>
+</div>
+<div class="line-block">
+<div class="line">This is the Unix philosophy</div>
+<div class="line">of small targeted tools</div>
+</div>
+</div>
+<div class="section" id="reason-2">
+<h1>Reason #2</h1>
+</div>
+<div class="section" id="id64">
+
+<div class="line-block">
+<div class="line">When you <em>do</em> write</div>
+<div class="line">a large complex long-running</div>
+<div class="line">application in Python, your <em>framework</em></div>
+<div class="line">already implements the relevant patterns</div>
+</div>
+</div>
+<div class="section" id="id65">
+
+<ul class="simple">
+<li>Pyglet</li>
+<li>PyGame</li>
+<li>Tkinter</li>
+<li>PySide / PyQt</li>
+<li>Twisted</li>
+</ul>
+</div>
+<div class="section" id="again">
+<h1>Again:</h1>
+<div class="line-block">
+<div class="line">We rarely meet the bigger patterns</div>
+</div>
+<div class="line-block">
+<div class="line"><em>not</em> because of any feature</div>
+<div class="line">or magic of the Python langauge</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>but</strong></div>
+</div>
+<div class="line-block">
+<div class="line">because of the <em>kind</em> of application</div>
+<div class="line">that Python programmers tend to write</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>We tend to write glue</strong></div>
+<div class="line"><strong>because the Open Source community</strong></div>
+<div class="line"><strong>have done the hard parts for us!</strong></div>
+</div>
+<!-- notes
+
+- keyword arguments
+- good names: plurals vs singular; names vs things; and consistent names
+- properties: signal "cheap"; methods signal expense, mutation, or copy
+- show evolution of methods.get_image in SpeciesSectionHandler
+- python is strongly typed
+
+OPEN SOURCE means we share IMPLEMENTATIONS
+where the CLOSED SOURCE Java world has to share STANDARDS
+
+if you need to monkey patch to do tests you might need dependency injection
+today things are document oriented -->
+</div>
+<div class="section" id="thank-you">
+<h1>Thank you!</h1>
+<p>Some earlier work:</p>
+<ul class="simple">
+<li>Vespe Savikko (1997) <em>(academic)</em></li>
+<li>Bruce Eckel (2001) <em>(unfinished)</em></li>
+<li>Greg Sullivan (2002) <em>(not Python)</em></li>
+<li>Alex Martelli (2007)</li>
+</ul>
+<script>
+  window.slide_transition_time = 200;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides.js"></script></div>
+</div>
+</body>
+</html>

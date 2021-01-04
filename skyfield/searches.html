@@ -1,0 +1,459 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Searching for the dates of astronomical events</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="searching-for-the-dates-of-astronomical-events">
+<h1>Searching for the dates of astronomical events<a class="headerlink" href="#searching-for-the-dates-of-astronomical-events" title="Permalink to this headline">¶</a></h1>
+<p>As you plan your own observations or missions,
+you might be interested in searching for the dates and times
+of circumstances for which no ready-made solution
+is already listed on Skyfield’s <a class="reference internal" href="almanac.html"><span class="doc">Almanac Computation</span></a> page.</p>
+<p>There are two kinds of searches you can do.
+One is an “event” search
+that looks for a moment of position or alignment
+that fits some definition that you are looking for.
+The other is an “extremum” search
+where you want to know when a value reaches its maximum or minimum value.</p>
+<div class="section" id="finding-discrete-events">
+<h2>Finding discrete events<a class="headerlink" href="#finding-discrete-events" title="Permalink to this headline">¶</a></h2>
+<p>Perform a discrete event search
+when you want to learn the date on which a continuous measurement,
+like an angle or distance,
+exceeds a particular value.</p>
+<p>For example,
+you might be reading a traditional astronomy text
+and come across the definition of “quadrature” —
+the moment when from the Earth’s point of view
+a planet’s elongation from the Sun is&nbsp;90°.</p>
+<p>How might you compute the date of quadrature?</p>
+<p>Always start by searching for the event yourself.
+This will give you a sense for how the phenomenon behaves
+before you attempt to unleash an automated search.
+In the case of quadrature,
+we might start by choosing Mars
+and trying to compute its elongation today.
+A&nbsp;dictionary, encyclopedia, or online reference
+will clarify for us that a planet’s “elongation”
+is its angular separation from the Sun,
+so let’s compute the positions of Mars and the Sun
+and then the angle between those positions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">api</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">eph</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">earth</span><span class="p">,</span> <span class="n">sun</span><span class="p">,</span> <span class="n">mars</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;sun&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;mars&#39;</span><span class="p">]</span>
+
+<span class="n">e</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">s</span><span class="o">.</span><span class="n">separation_from</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>88.5752
+</pre></div>
+</div>
+<p>Have we computed the elongation correctly?
+We should always double-check our work against other authorities when possible.
+Given that same date,
+the <a class="reference external" href="https://ssd.jpl.nasa.gov/horizons.cgi">NASA JPL HORIZONS</a> site
+can produce a table with a “S-O-T” column,
+which (as it explains in the definitions below the table)
+is the solar elongation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">Date__</span><span class="p">(</span><span class="n">UT</span><span class="p">)</span><span class="n">__HR</span><span class="p">:</span><span class="n">MN</span>   <span class="n">R</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">_____</span><span class="p">(</span><span class="n">ICRF</span><span class="p">)</span><span class="n">_____DEC</span>    <span class="n">S</span><span class="o">-</span><span class="n">O</span><span class="o">-</span><span class="n">T</span> <span class="o">/</span><span class="n">r</span>
+<span class="o">********************************************************</span>
+ <span class="mi">2020</span><span class="o">-</span><span class="n">Jun</span><span class="o">-</span><span class="mi">02</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span>   <span class="mi">23</span> <span class="mi">01</span> <span class="mf">20.93</span> <span class="o">-</span><span class="mi">08</span> <span class="mi">51</span> <span class="mf">51.6</span>  <span class="mf">88.5698</span> <span class="o">/</span><span class="n">L</span>
+</pre></div>
+</div>
+<p>Well, drat.</p>
+<p>The HORIZONS system gives “88.5698” as the elongation at midnight UTC.
+That’s not the same number we computed,
+though it’s close.
+How could Skyfield and HORIZONS have come up with different numbers
+for the elongation?
+Maybe we came up
+with a slightly different right ascension and declination for Mars.
+Let’s check:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>23h 01m 20.93s / -08deg 51&#39; 51.6&quot;
+</pre></div>
+</div>
+<p>Nope, that’s not the difference —
+these Skyfield numbers are an exact match
+for the right ascension and declination in the HORIZONS output shown above.</p>
+<p>It is always worthwhile to study every detail of the HORIZONS output
+when investigating a difference in result.
+Here, for example, is the first paragraph of its definition
+of that <code class="docutils literal notranslate"><span class="pre">S-O-T</span></code> field:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">S</span><span class="o">-</span><span class="n">O</span><span class="o">-</span><span class="n">T</span> <span class="o">/</span><span class="n">r</span> <span class="o">=</span>
+    <span class="n">Sun</span><span class="o">-</span><span class="n">Observer</span><span class="o">-</span><span class="n">Target</span> <span class="n">angle</span><span class="p">;</span> <span class="n">target</span><span class="s1">&#39;s apparent SOLAR ELONGATION seen from</span>
+<span class="n">the</span> <span class="n">observer</span> <span class="n">location</span> <span class="n">at</span> <span class="nb">print</span><span class="o">-</span><span class="n">time</span><span class="o">.</span> <span class="n">Angular</span> <span class="n">units</span><span class="p">:</span> <span class="n">DEGREES</span>
+</pre></div>
+</div>
+<p>So that’s the difference!
+We computed the angle between the <em>astrometric</em> positions of the Sun and Mars,
+whereas the elongation is more properly an angular difference
+between <em>apparent</em> positions.
+(The <a class="reference internal" href="positions.html"><span class="doc">Positions and Coordinates</span></a> page explains the difference.)
+Thus:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">s</span><span class="o">.</span><span class="n">separation_from</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>88.5698
+</pre></div>
+</div>
+<p>Much better!
+We now have a perfect match with HORIZONS
+which gives us high confidence that we are computing the elongation correctly.</p>
+<p>Next let’s search for a moment of quadrature.
+I&nbsp;did not deliberately plan the example this way,
+but it looks like Mars is very close to quadrature as I type this!
+To determine whether quadrature was just reached
+or is a few days in the future,
+let’s compute the value over a few days
+and see whether it’s growing or shrinking:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mars_elongation_degrees</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">separation_from</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">degrees</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">ei</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">mars_elongation_degrees</span><span class="p">(</span><span class="n">t</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%b </span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">ei</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>May 30 87.6881
+May 31 87.9810
+Jun 01 88.2749
+Jun 02 88.5698
+Jun 03 88.8657
+Jun 04 89.1626
+</pre></div>
+</div>
+<p>We see that the elongation of Mars is growing slowly right now,
+at a rate of less than a degree per day,
+but is very nearly at our target value of&nbsp;90°.
+Does is always grow slowly?
+Does it wane at the same rate?
+Are there periods during which its change is quick
+and others during which it is slow?</p>
+<p>I always recommend plotting any value
+on which you are planning to perform a search.
+It can help us develop an intuition
+around how the value changes through time.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">366</span> <span class="o">*</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>  <span class="c1"># Red line at 90°</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">J</span><span class="p">,</span> <span class="n">mars_elongation_degrees</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Elongation of Mars (degrees)&#39;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Year&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;mars-elongation.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/mars-elongation.png" src="_images/mars-elongation.png" />
+<p>The dates of quadrature are where the elongation
+intersects the red 90° line that we have drawn across the figure.
+Mars seems to spend most of its time
+with an elongation of less than&nbsp;90° —
+over on the same side of the sky as the Sun —
+and spends only a few months at a greater elongation.</p>
+<p>Once we have learned to compute the value we are interested in
+and have plotted its behavior,
+there are only three tasks involved
+in launching a search for the dates on which it occurs:</p>
+<ol class="arabic simple">
+<li>Define a function of time returning an integer
+that changes each time the circumstance occurs.
+In a very simple case like this one,
+you can simply use the values <code class="docutils literal notranslate"><span class="pre">False</span></code> and <code class="docutils literal notranslate"><span class="pre">True</span></code>
+because in Python those are the integers zero and one.</li>
+<li>Give the function a <code class="docutils literal notranslate"><span class="pre">step_days</span></code> attribute
+telling the search routine how far apart to space its test dates
+when it first searches for where your function switches values.</li>
+<li>Pass the function
+to the same <a class="reference internal" href="api.html#skyfield.searchlib.find_discrete" title="skyfield.searchlib.find_discrete"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_discrete()</span></code></a> routine
+that you would use for a search with the standard almanac functions.</li>
+</ol>
+<p>The first task is quite easy in this case.
+We simply need to compare the elongation with&nbsp;90°.
+This transforms the continuous angle measurement
+into a discrete function
+that jumps instantly between zero and one.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mars_quadrature</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">separation_from</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">degrees</span> <span class="o">&gt;=</span> <span class="mi">90</span>
+</pre></div>
+</div>
+<p>Since the Python values <code class="docutils literal notranslate"><span class="pre">False</span></code> and <code class="docutils literal notranslate"><span class="pre">True</span></code>
+are really the integers 0 and&nbsp;1,
+a plot of this function shows a square wave
+whose positive excursions
+identify the periods of time during which Mars is more than 90° from the Sun —
+as we can verify by comparing this plot with our earlier plot.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">J</span><span class="p">,</span> <span class="n">mars_quadrature</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;mars-quadrature.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/mars-quadrature.png" src="_images/mars-quadrature.png" />
+<p>The second task is to specify the <code class="docutils literal notranslate"><span class="pre">step_days</span></code> interval
+over which the search routine should sample our function.
+If the samples are too far apart,
+some events could be skipped.
+But generating too many samples will waste time and memory.</p>
+<p>In this example,
+it is clearly not sufficient to sample our quadrature routine once a year,
+because the samples would be so far apart
+that they might skip an entire cycle.
+Here’s our function sampled at the beginning of each calendar year:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t_annual</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">2024</span><span class="p">))</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_annual</span><span class="o">.</span><span class="n">J</span><span class="p">,</span> <span class="n">mars_quadrature</span><span class="p">(</span><span class="n">t_annual</span><span class="p">),</span> <span class="s1">&#39;ro&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;mars-quadrature-undersampled.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/mars-quadrature-undersampled.png" src="_images/mars-quadrature-undersampled.png" />
+<p>If you compare this with the previous plot,
+you will recognize this as our square wave
+sampled on January 1st of each year.</p>
+<p>While a search launched with these data points
+would find the quadratures of 2021 and 2022,
+it would entirely miss the Mars opposition of&nbsp;2018 —
+because the search routine does not dive in
+to search between data points
+that have the same value,
+as the points for 2018 and 2019 do here.
+So <code class="docutils literal notranslate"><span class="pre">step_days</span></code> must always be a smaller time period
+than the briefest of the events you are trying to detect.
+(If you have ever studied signal processing,
+you will recognize that this is the same problem
+as undersampling an audio signal.)</p>
+<p>Mars quadrature events appear to be separated by at least a half-year.
+For safety let’s ask for data points twice as often as that:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mars_quadrature</span><span class="o">.</span><span class="n">step_days</span> <span class="o">=</span> <span class="mi">90</span>  <span class="c1"># Every ninety days</span>
+</pre></div>
+</div>
+<p>Finally,
+we are ready to unleash <a class="reference internal" href="api.html#skyfield.searchlib.find_discrete" title="skyfield.searchlib.find_discrete"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_discrete()</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.searchlib</span> <span class="kn">import</span> <span class="n">find_discrete</span>
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">)</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2023</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">find_discrete</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">mars_quadrature</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;Time tt=[2458202.1729387594 ... 2459818.7282241164] len=5&gt;
+[1 0 1 0 1]
+</pre></div>
+</div>
+<p>The result is a pair of arrays.
+The first provides the dates and times of quadrature,
+and the second provides the value
+that our function switches to on each date.
+The Python built-in function
+<a class="reference external" href="https://docs.python.org/3/library/functions.html#zip">zip()</a>
+can iterate across both arrays at once
+to pair up the dates with the values:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">vi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M &#39;</span><span class="p">),</span> <span class="n">vi</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2018-03-24 16:08  1
+2018-12-03 00:34  0
+2020-06-06 19:11  1
+2021-02-01 10:34  0
+2022-08-27 05:27  1
+</pre></div>
+</div>
+<p>And we are done!
+Those are the UTC dates
+on which Mars reaches western quadrature
+(when our discrete routine has just changed to <code class="docutils literal notranslate"><span class="pre">1</span></code>)
+and eastern quadrature
+(when our routine has changed to <code class="docutils literal notranslate"><span class="pre">0</span></code>),
+as can be confirmed by comparing these dates
+with those in a standard reference.</p>
+</div>
+<div class="section" id="finding-extrema">
+<h2>Finding extrema<a class="headerlink" href="#finding-extrema" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes you are not interested
+in when a continuous function of time passes a threshold like 90°,
+but when it reaches a minimum or maximum value —
+the two possibilities are collectively called a function’s “extrema” —
+whose exact value you might not be able to predict beforehand.</p>
+<p>For example,
+one challenge of observing Venus is that from Earth’s point of view
+Venus’s smaller orbit
+always keeps it within a few dozen degrees of the Sun.
+Even when Venus is not so close to the Sun
+that it’s hidden in the Sun’s glare,
+it will be an evening star that’s already setting by the time we can see it
+or a morning star that is soon followed by sunrise.</p>
+<p>This leads observers to be interested in when Venus is farthest from the Sun —
+when its elongation is greatest.</p>
+<p>The steps are similar to those outlined in the previous section.
+First, we define a function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">venus</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;venus&#39;</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">venus_elongation_degrees</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">venus</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">separation_from</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">degrees</span>
+</pre></div>
+</div>
+<p>Then we compute a rough estimate
+of how often Venus reaches greatest elongation.
+The best approach is to generate a plot,
+which will also give us a sense for how Venus’s elongation behaves.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">366</span> <span class="o">*</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">J</span><span class="p">,</span> <span class="n">venus_elongation_degrees</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Elongation of Venus (degrees)&#39;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Year&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;venus-elongation.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/venus-elongation.png" src="_images/venus-elongation.png" />
+<p>You might be surprised by the asymmetry between alternate minima —
+between, say, the wide gradual minimum reached in mid-2019
+versus the sharp quick minimum that comes next in mid-2020.
+But if you investigate further and plot Venus and the Earth in their orbits,
+the reason will become clear:
+Venus, on its faster orbit,
+spends most of its time out on the other side of the Sun
+gradually catching up with us,
+creating wide minima like that in mid-2019.
+Then Venus finally catches up and —
+like a racecar zooming past on the inside of a curve —
+passes very quickly between our planet and the Sun,
+generating the sharper “v” in our plot.</p>
+<p>As with Mars quadrature,
+an infrequent sample — for example, once a year —
+will not provide the search routine with enough data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">2024</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">J</span><span class="p">,</span> <span class="n">venus_elongation_degrees</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="s1">&#39;ro&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Elongation of Venus (degrees)&#39;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Year&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;venus-elongation-undersampled.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/venus-elongation-undersampled.png" src="_images/venus-elongation-undersampled.png" />
+<p>Given these samples,
+the search routine would entirely miss the two maxima of 2020
+because these samples happen to catch the function at two moments
+that make it look like the entire year of 2020 is spent
+declining from a maximum in 2019 towards a minimum in 2022.
+The search routine only investigates a sample
+that is higher than the samples to either side.</p>
+<p>If you experiment with samples placed more closely together,
+you will find that the overall shape of the function —
+including both its maxima and minima —
+are clear once the samples are about a month apart.
+This step size can then be used to launch a search:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.searchlib</span> <span class="kn">import</span> <span class="n">find_maxima</span>
+
+<span class="n">venus_elongation_degrees</span><span class="o">.</span><span class="n">step_days</span> <span class="o">=</span> <span class="mi">30</span>  <span class="c1"># about a month</span>
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">)</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2023</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">find_maxima</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">venus_elongation_degrees</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="s1">&#39;maxima found&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>6 maxima found
+</pre></div>
+</div>
+<p>By using Python’s built-in
+<a class="reference external" href="https://docs.python.org/3/library/functions.html#zip">zip()</a>
+you can loop across both arrays,
+printing the time and angle of each maximum elongation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">vi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M &#39;</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vi</span><span class="p">,</span>
+          <span class="s1">&#39;degrees elongation&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2018-08-17 17:31  45.93 degrees elongation
+2019-01-06 04:54  46.96 degrees elongation
+2020-03-24 22:14  46.08 degrees elongation
+2020-08-13 00:14  45.79 degrees elongation
+2021-10-29 20:52  47.05 degrees elongation
+2022-03-20 09:25  46.59 degrees elongation
+</pre></div>
+</div>
+<div class="section" id="finding-minima">
+<h3>Finding minima<a class="headerlink" href="#finding-minima" title="Permalink to this headline">¶</a></h3>
+<p>Skyfield provides a <a class="reference internal" href="api.html#skyfield.searchlib.find_minima" title="skyfield.searchlib.find_minima"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_minima()</span></code></a> routine
+which is symmetric with the <a class="reference internal" href="api.html#skyfield.searchlib.find_maxima" title="skyfield.searchlib.find_maxima"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_maxima()</span></code></a>
+function described in the previous section.
+To find when Venus is closest to the sun:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.searchlib</span> <span class="kn">import</span> <span class="n">find_minima</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">find_minima</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">venus_elongation_degrees</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">vi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S &#39;</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vi</span><span class="p">,</span>
+          <span class="s1">&#39;degrees elongation&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2018-01-08 20:15:14  0.76 degrees elongation
+2018-10-27 00:48:08  6.22 degrees elongation
+2019-08-13 23:03:20  1.27 degrees elongation
+2020-06-03 18:48:01  0.48 degrees elongation
+2021-03-26 13:47:02  1.35 degrees elongation
+2022-01-08 15:16:27  4.81 degrees elongation
+2022-10-23 07:32:47  1.05 degrees elongation
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+  </body>
+</html>

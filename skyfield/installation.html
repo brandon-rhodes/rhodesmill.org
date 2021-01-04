@@ -1,0 +1,911 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installing Skyfield</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="installing-skyfield">
+<h1>Installing Skyfield<a class="headerlink" href="#installing-skyfield" title="Permalink to this headline">¶</a></h1>
+<p>Skyfield has only a single binary dependency,
+the <a class="reference external" href="http://www.numpy.org/">NumPy</a> vector library,
+and is designed to install cleanly with a single invocation
+of the standard Python package tool:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">skyfield</span>
+</pre></div>
+</div>
+<p>This should install Skyfield, NumPy,
+and the small collection of pure-Python astronomy libraries
+that Skyfield depends on.
+If you lack <code class="docutils literal notranslate"><span class="pre">pip</span></code> and need to install each dependency by hand,
+consult Skyfield’s <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> file for the full list.</p>
+<p>If trying to install Skyfield gives you errors about NumPy,
+there are several other ways to get NumPy installed:</p>
+<ul>
+<li><p class="first">It is best to simply use
+<a class="reference external" href="http://www.scipy.org/install.html#scientific-python-distributions">a science-ready version of Python</a>
+that comes with NumPy built-in,
+like the <a class="reference external" href="http://continuum.io/downloads">Anaconda</a>
+distribution.</p>
+</li>
+<li><div class="first line-block">
+<div class="line">There are several approaches described in the <a class="reference external" href="http://www.scipy.org/install.html">SciPy install instructions</a>.</div>
+</div>
+</li>
+<li><p class="first">You can download and run an official <a class="reference external" href="https://sourceforge.net/projects/numpy/files/NumPy/">NumPy installer</a>.</p>
+</li>
+<li><p class="first">You can try to get the plain <code class="docutils literal notranslate"><span class="pre">pip</span></code>-powered install working
+by giving your system a functioning C compiler
+that matches the compiler used to build Python.
+On Windows with Python 2.7, try installing the free
+<a class="reference external" href="http://go.microsoft.com/?linkid=7729279">Visual Studio Express 2008</a>.
+Mac users should install the “Xcode Command Line Tools”
+to give <code class="docutils literal notranslate"><span class="pre">pip</span></code> the superpower of being able to build and install
+binary Python dependencies like NumPy.</p>
+</li>
+</ul>
+<p>Read the <a class="reference internal" href="#changelog"><span class="std std-ref">Changelog</span></a> below to learn about recent fixes, changes,
+and improvements to Skyfield.
+You can protect your project from any abrupt API changes
+by pinning a specific version of Skyfield
+in your <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> or <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> or install instructions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">skyfield</span><span class="o">==</span><span class="mf">1.34</span>
+</pre></div>
+</div>
+<p>By preventing Skyfield from getting accidentally upgraded
+until you are ready to advance the version number yourself,
+you can avoid even slight changes in behavior and output coordinates
+that might result from an upgrade.
+If you find any problems or would like to suggest an improvement,
+simply create an issue on the project’s GitHub page:</p>
+<blockquote>
+<div><a class="reference external" href="https://github.com/brandon-rhodes/python-skyfield">https://github.com/brandon-rhodes/python-skyfield</a></div></blockquote>
+<p>Good luck!</p>
+<div class="section" id="citing-skyfield">
+<span id="id1"></span><h2>Citing Skyfield<a class="headerlink" href="#citing-skyfield" title="Permalink to this headline">¶</a></h2>
+<p>If Skyfield has proven useful in your research,
+the project welcomes your citation
+to bring it to the attention of other academics
+who might benefit from it.</p>
+<ul class="simple">
+<li>ASCL: <a class="reference external" href="https://ascl.net/1907.024">ascl:1907.024</a></li>
+<li>Bibcode: <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2019ascl.soft07024R/abstract">2019ascl.soft07024R</a></li>
+<li>Current CITATION.cff file on GitHub: <a class="reference external" href="https://raw.githubusercontent.com/skyfielders/python-skyfield/master/CITATION.cff">CITATION.cff</a></li>
+<li>Permanent URL, used by several papers to uniquely identify Skyfield
+(and which is by now a redirect to <code class="docutils literal notranslate"><span class="pre">https:</span></code> but remains <code class="docutils literal notranslate"><span class="pre">http:</span></code>
+in this URL to match papers already using it as an identifier):
+<a class="reference external" href="http://rhodesmill.org/skyfield/">http://rhodesmill.org/skyfield/</a></li>
+</ul>
+</div>
+<div class="section" id="changelog">
+<span id="id2"></span><h2>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v1-35-2020-december-31">
+<h3>v1.35 — 2020 December 31<a class="headerlink" href="#v1-35-2020-december-31" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Deprecated the old <code class="docutils literal notranslate"><span class="pre">Topos</span></code> class,
+which not only featured a clunky interface
+but hid from users the fact that Skyfield was generating IERS2010 positions
+from latitude and longitude
+when in fact nearly all users want WGS84 positions.
+Users are now encouraged to supply latitude and longitude
+to the <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.latlon" title="skyfield.toposlib.Geoid.latlon"><code class="xref py py-meth docutils literal notranslate"><span class="pre">latlon()</span></code></a> method
+of either the <a class="reference internal" href="api-topos.html#skyfield.toposlib.wgs84" title="skyfield.toposlib.wgs84"><code class="xref py py-data docutils literal notranslate"><span class="pre">wgs84</span></code></a> object
+or the <a class="reference internal" href="api-topos.html#skyfield.toposlib.iers2010" title="skyfield.toposlib.iers2010"><code class="xref py py-data docutils literal notranslate"><span class="pre">iers2010</span></code></a> object.
+Related discussion:
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/372">#372</a></li>
+<li>The two new geoid objects <a class="reference internal" href="api-topos.html#skyfield.toposlib.wgs84" title="skyfield.toposlib.wgs84"><code class="xref py py-data docutils literal notranslate"><span class="pre">wgs84</span></code></a>
+and <a class="reference internal" href="api-topos.html#skyfield.toposlib.iers2010" title="skyfield.toposlib.iers2010"><code class="xref py py-data docutils literal notranslate"><span class="pre">iers2010</span></code></a>
+have also provided a happy new home
+for the <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.subpoint" title="skyfield.toposlib.Geoid.subpoint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">subpoint()</span></code></a> method —
+which was previously stranded
+over on the <a class="reference internal" href="api-position.html#skyfield.positionlib.Geocentric" title="skyfield.positionlib.Geocentric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Geocentric</span></code></a> class,
+where it couldn’t be used with positions of other classes
+that might be centered at the geocenter.
+(The old method will remain in place to support legacy code,
+but is discouraged in new applications.)</li>
+<li>The effects of <a class="reference internal" href="accuracy-efficiency.html#polar-motion"><span class="std std-ref">Polar Motion</span></a> — if configured — are now included
+both when computing the position in space of an Earth latitude and longitude,
+and when determining the latitude and longitude beneath a celestial position.</li>
+<li>Added <a class="reference internal" href="api.html#skyfield.api.load_constellation_names" title="skyfield.api.load_constellation_names"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_constellation_names()</span></code></a>.</li>
+<li>The <a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_jpl" title="skyfield.timelib.Time.utc_jpl"><code class="xref py py-meth docutils literal notranslate"><span class="pre">utc_jpl()</span></code></a> method now correctly
+designates its return value as <code class="docutils literal notranslate"><span class="pre">UTC</span></code> instead of the ambiguious <code class="docutils literal notranslate"><span class="pre">UT</span></code>.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/515">#515</a></li>
+</ul>
+</div>
+<div class="section" id="v1-34-2020-december-10">
+<h3>v1.34 — 2020 December 10<a class="headerlink" href="#v1-34-2020-december-10" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The position classes have gained methods
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz" title="skyfield.positionlib.ICRF.frame_xyz"><code class="xref py py-func docutils literal notranslate"><span class="pre">frame_xyz()</span></code></a>,
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz_and_velocity" title="skyfield.positionlib.ICRF.frame_xyz_and_velocity"><code class="xref py py-func docutils literal notranslate"><span class="pre">frame_xyz_and_velocity()</span></code></a>,
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_latlon" title="skyfield.positionlib.ICRF.frame_latlon"><code class="xref py py-func docutils literal notranslate"><span class="pre">frame_latlon()</span></code></a>, and
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_time_and_frame_vectors" title="skyfield.positionlib.ICRF.from_time_and_frame_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">from_time_and_frame_vectors()</span></code></a>
+that work with a new library <code class="docutils literal notranslate"><span class="pre">skyfield.framelib</span></code>
+to offer a number of familiar reference frames.
+These replace the existing ad-hoc position methods
+for ecliptic and galactic coordinates,
+which are now deprecated (but will continue to be supported).
+See <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/476">#476</a></li>
+<li>Added support for IERS <a class="reference internal" href="accuracy-efficiency.html#polar-motion"><span class="std std-ref">Polar Motion</span></a> 𝑥 and 𝑦.</li>
+<li>Added a method <a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition.lst_hours_at" title="skyfield.toposlib.GeographicPosition.lst_hours_at"><code class="xref py py-meth docutils literal notranslate"><span class="pre">lst_hours_at()</span></code></a>
+that computes Local Sidereal Time.</li>
+<li>A new almanac routine <a class="reference internal" href="api-almanac.html#skyfield.almanac.moon_phase" title="skyfield.almanac.moon_phase"><code class="xref py py-func docutils literal notranslate"><span class="pre">moon_phase()</span></code></a> returns
+the Moon phase as an angle where 0° is New Moon, 90° is First Quarter,
+180° is Full, and 270° is Last Quarter.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/282">#282</a></li>
+<li>Almanac search routines that previously returned a Boolean true/false
+array now return an integer 0/1 array instead, to work around a new
+deprecation warning in NumPy which, for example, would have outlawed
+using the Boolean array from <a class="reference internal" href="api-almanac.html#skyfield.almanac.moon_nodes" title="skyfield.almanac.moon_nodes"><code class="xref py py-func docutils literal notranslate"><span class="pre">moon_nodes()</span></code></a> to
+index into the <code class="docutils literal notranslate"><span class="pre">MOON_NODES</span></code> list that provides a name for each node.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/486">#486</a></li>
+<li>The undocumented columns <code class="docutils literal notranslate"><span class="pre">magnitude_H</span></code> and <code class="docutils literal notranslate"><span class="pre">magnitude_G</span></code> in the
+Minor Planet Center comets dataframe have been renamed <code class="docutils literal notranslate"><span class="pre">magnitude_g</span></code>
+and <code class="docutils literal notranslate"><span class="pre">magnitude_k</span></code> following further research on the file format
+(which does not itself document which magnitude model is intended).
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/416">#416</a></li>
+</ul>
+</div>
+<div class="section" id="v1-33-2020-november-18">
+<h3>v1.33 — 2020 November 18<a class="headerlink" href="#v1-33-2020-november-18" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Fix: running <code class="docutils literal notranslate"><span class="pre">load.timescale(builtin=False)</span></code> was raising an
+exception <code class="docutils literal notranslate"><span class="pre">FileNotFoundError</span></code> if the <code class="docutils literal notranslate"><span class="pre">finals2000A.all</span></code> file was
+not already on disk, instead of downloading the file automatically.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/477">#477</a></li>
+</ul>
+</div>
+<div class="section" id="v1-32-2020-november-16">
+<h3>v1.32 — 2020 November 16<a class="headerlink" href="#v1-32-2020-november-16" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>A new <a class="reference internal" href="api-almanac.html#skyfield.eclipselib.lunar_eclipses" title="skyfield.eclipselib.lunar_eclipses"><code class="xref py py-func docutils literal notranslate"><span class="pre">lunar_eclipses()</span></code></a> routine finds
+lunar eclipses and determines their degree of totality.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/445">#445</a></li>
+<li>The almanac module’s new <a class="reference internal" href="api-almanac.html#skyfield.almanac.meridian_transits" title="skyfield.almanac.meridian_transits"><code class="xref py py-func docutils literal notranslate"><span class="pre">meridian_transits()</span></code></a>
+routine can find the moments at which a body transits the meridian and
+antimeridian.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/460">#460</a></li>
+<li>Fix: the <a class="reference internal" href="api.html#skyfield.searchlib.find_minima" title="skyfield.searchlib.find_minima"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_minima()</span></code></a> function was
+ignoring its <code class="docutils literal notranslate"><span class="pre">epsilon</span></code> and <code class="docutils literal notranslate"><span class="pre">num</span></code> arguments and always using the
+default values instead.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/pull/475">#475</a></li>
+<li>Fix: the <code class="docutils literal notranslate"><span class="pre">.epoch</span></code> attribute of Earth satellite objects that were
+built using <a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite.from_satrec" title="skyfield.sgp4lib.EarthSatellite.from_satrec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_satrec()</span></code></a>
+was, alas, a half-day off.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/466">#466</a></li>
+<li>Fix: the <code class="docutils literal notranslate"><span class="pre">Topos</span></code> constructor arguments <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code>,
+which never worked properly anyway,
+have been deprecated and are now ignored.</li>
+</ul>
+</div>
+<div class="section" id="october-24">
+<h3>1.31 — 2020 October 24<a class="headerlink" href="#october-24" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Skyfield now uses the International Earth Rotation Service (IERS) file
+<code class="docutils literal notranslate"><span class="pre">finals2000A.all</span></code> for updated ∆T and leap seconds.  The USNO is no
+longer updating the files <code class="docutils literal notranslate"><span class="pre">deltat.data</span></code> and <code class="docutils literal notranslate"><span class="pre">deltat.preds</span></code> that
+previous versions of Skyfield used, and the <code class="docutils literal notranslate"><span class="pre">cddis.nasa.gov</span></code> server
+from which they were fetched will discontinue anonymous FTP on 2020
+October&nbsp;31.  See <a class="reference internal" href="time.html#downloading-timescale-files"><span class="std std-ref">UT1 and downloading IERS data</span></a>.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/452">#452</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/464">#464</a></li>
+<li>The comets dataframe built from the MPC file <code class="docutils literal notranslate"><span class="pre">CometEls.txt</span></code> now
+includes the <code class="docutils literal notranslate"><span class="pre">reference</span></code> column, so users can tell which orbit is
+most recent if there are several orbits for a single comet.  (For
+example, the file currently lists two C/2020 F3 (NEOWISE) orbits.)
+The comet examples in the documentation now build a dataframe that
+only includes the most recent orbit for each comet.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/463">#463</a></li>
+<li>Two new methods <a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.days_old" title="skyfield.iokit.Loader.days_old"><code class="xref py py-meth docutils literal notranslate"><span class="pre">days_old()</span></code></a> and
+<a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.download" title="skyfield.iokit.Loader.download"><code class="xref py py-meth docutils literal notranslate"><span class="pre">download()</span></code></a> make it simple to download a
+fresh copy of a file if the copy on disk is older than you would like.</li>
+</ul>
+</div>
+<div class="section" id="october-11">
+<h3>1.30 — 2020 October 11<a class="headerlink" href="#october-11" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The various <code class="docutils literal notranslate"><span class="pre">strftime()</span></code> Skyfield methods now support the <code class="docutils literal notranslate"><span class="pre">%j</span></code>
+day-of-year format code.</li>
+<li>Fix: the new Julian calendar support broke support for out-of-range
+month numbers, wrapping them into the current year instead of letting
+them overflow into subsequent years.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/461">#461</a></li>
+<li>Fix: a stray debugging <code class="docutils literal notranslate"><span class="pre">print()</span></code> statement was stranded in <code class="docutils literal notranslate"><span class="pre">t.dut1</span></code>.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/455">#455</a></li>
+<li>The <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> object, if manually instantiated
+without a Julian date fraction, now provides a fraction array with
+dimensions that match the Julian date argument.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/458">#458</a></li>
+</ul>
+</div>
+<div class="section" id="september-25">
+<h3>1.29 — 2020 September 25<a class="headerlink" href="#september-25" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Fix: the new Julian calendar feature was raising an exception in the
+calendar methods like <a class="reference internal" href="api-time.html#skyfield.timelib.Time.tt_calendar" title="skyfield.timelib.Time.tt_calendar"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tt_calendar()</span></code></a> if
+the time object was in fact an array of times.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/450">#450</a></li>
+<li>Fix: trying to iterate over a time object would raise an exception if
+the time was created through <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.ut1" title="skyfield.timelib.Timescale.ut1"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ut1()</span></code></a>.</li>
+</ul>
+</div>
+<div class="section" id="september-24">
+<h3>1.28 — 2020 September 24<a class="headerlink" href="#september-24" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><strong>Broken URL:</strong> Because the VizieR archive apparently decided to
+uncompress their copy of the <code class="docutils literal notranslate"><span class="pre">hip_main.dat.gz</span></code> Hipparcos catalog
+file, the old URL now returns a 404 error.  As an emergency fix, this
+version of Skyfield switches to their uncompressed <code class="docutils literal notranslate"><span class="pre">hip_main.dat</span></code>.
+Hopefully they don’t compress it again and break the new URL!  A more
+permanent solution is discussed at:
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/454">#454</a></li>
+<li>To unblock this release, removed a few deprecated pre-1.0 experiments
+from April 2015 in <code class="docutils literal notranslate"><span class="pre">skyfield.hipparcos</span></code> and <code class="docutils literal notranslate"><span class="pre">skyfield.named_stars</span></code>
+that broke because the Hipparcos catalog is no longer compressed;
+hopefully no one was using them.</li>
+<li>In a sweeping internal change, the <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale" title="skyfield.timelib.Timescale"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Timescale()</span></code></a>
+and <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Time()</span></code></a> objects now offer support for the
+Julian calendar that’s used by historians for dates preceding the
+adoption of the Gregorian calendar in&nbsp;1582.  See <a class="reference internal" href="time.html#choice-of-calendars"><span class="std std-ref">Ancient and modern dates</span></a>
+if you want to turn on Julian dates in your application.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/450">#450</a></li>
+</ul>
+</div>
+<div class="section" id="september-15">
+<h3>1.27 — 2020 September 15<a class="headerlink" href="#september-15" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The printed appearance of both vectors and of vector functions like
+Earth locations and Earth satellites have been rewritten to be more
+informative and consistent.</li>
+<li>Added <a class="reference internal" href="api-time.html#skyfield.timelib.compute_calendar_date" title="skyfield.timelib.compute_calendar_date"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_calendar_date()</span></code></a> which lets the
+caller choose the Julian calendar for ancient dates instead of always
+using the proleptic Gregorian calendar.  This should be particularly
+useful for historians.</li>
+<li>Added <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.J" title="skyfield.timelib.Timescale.J"><code class="xref py py-meth docutils literal notranslate"><span class="pre">J()</span></code></a> that builds a time array
+from an array of floating point years.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/436">#436</a></li>
+<li>Added four new <code class="docutils literal notranslate"><span class="pre">strftime</span></code> methods for the non-UTC timescales
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/443">(#443).</a>
+All four of them support <code class="docutils literal notranslate"><span class="pre">%f</span></code> for microseconds,
+and provide a reasonable default format string
+for callers who don’t wish to concoct their own:<ul>
+<li><a class="reference internal" href="api-time.html#skyfield.timelib.Time.tai_strftime" title="skyfield.timelib.Time.tai_strftime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tai_strftime()</span></code></a></li>
+<li><a class="reference internal" href="api-time.html#skyfield.timelib.Time.tt_strftime" title="skyfield.timelib.Time.tt_strftime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tt_strftime()</span></code></a></li>
+<li><a class="reference internal" href="api-time.html#skyfield.timelib.Time.tdb_strftime" title="skyfield.timelib.Time.tdb_strftime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tdb_strftime()</span></code></a></li>
+<li><a class="reference internal" href="api-time.html#skyfield.timelib.Time.ut1_strftime" title="skyfield.timelib.Time.ut1_strftime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ut1_strftime()</span></code></a></li>
+</ul>
+</li>
+<li>Thanks to several fixes, comets and asteroids with parabolic and
+hyperbolic orbits should now raise fewer errors.</li>
+<li>The prototype <a class="reference internal" href="api.html#skyfield.magnitudelib.planetary_magnitude" title="skyfield.magnitudelib.planetary_magnitude"><code class="xref py py-func docutils literal notranslate"><span class="pre">planetary_magnitude()</span></code></a> can
+now return magnitudes for Uranus without raising an exception.  The
+routine does not yet take into account whether the observer is facing
+the equator or poles of Uranus, so the magnitude predicted for the
+planet will only be accurate to within about 0.1&nbsp;magnitudes.</li>
+</ul>
+</div>
+<div class="section" id="august-1">
+<h3>1.26 — 2020 August 1<a class="headerlink" href="#august-1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The official ∆T files on NASA’s FTP server have stopped receiving
+updates — they have no new data beyond February, the start of the
+global pandemic.  Unless they are updated by next February, older
+versions of Skyfield will unfortunately download the files all over
+again every time <a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.timescale" title="skyfield.iokit.Loader.timescale"><code class="xref py py-meth docutils literal notranslate"><span class="pre">timescale()</span></code></a> is called
+(unless the <code class="docutils literal notranslate"><span class="pre">builtin=True</span></code> parameter is provided).  To make Skyfield
+less fragile going forward:<ol class="arabic">
+<li>The loader’s <a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.timescale" title="skyfield.iokit.Loader.timescale"><code class="xref py py-meth docutils literal notranslate"><span class="pre">timescale()</span></code></a> method now
+defaults to <code class="docutils literal notranslate"><span class="pre">builtin=True</span></code>, telling it to use the ∆T and leap
+second files that ship with Skyfield internally.  To download new
+∆T files from NASA and the leap second file from the International
+Earth Rotation Service, specify <code class="docutils literal notranslate"><span class="pre">builtin=False</span></code>.</li>
+<li>The concept of an “expired” file has been removed from <code class="docutils literal notranslate"><span class="pre">load()</span></code>.
+Skyfield is now much simpler: if a file with the correct name
+exists, Skyfield uses it.  See <a class="reference internal" href="time.html#downloading-timescale-files"><span class="std std-ref">UT1 and downloading IERS data</span></a>
+if you still want your application to check the age of your
+timescale files and automatically download new ones.</li>
+</ol>
+</li>
+<li>The <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.separation_from" title="skyfield.positionlib.ICRF.separation_from"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ICRF.separation_from()</span></code></a> method now officially supports the
+combination of an array of positions with a single reference position!
+Its previous support for that combination was, alas, accidental, and
+was broken with the 1.23 release.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/414">#414</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/424">#424</a></li>
+<li>A prototype <a class="reference internal" href="api.html#skyfield.magnitudelib.planetary_magnitude" title="skyfield.magnitudelib.planetary_magnitude"><code class="xref py py-func docutils literal notranslate"><span class="pre">planetary_magnitude()</span></code></a>
+routine has been added with support for several planets.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/210">#210</a></li>
+<li>The <code class="docutils literal notranslate"><span class="pre">utc</span></code> timezone that Skyfield returns in Python datetimes is now
+either the Python Standard Library’s own UTC object, if it supplies
+one, or else is defined by Skyfield itself.  Skyfield no longer
+silently tries importing the whole <code class="docutils literal notranslate"><span class="pre">pytz</span></code> package merely to use its
+UTC object — which also means that the timezone returned by Skyfield
+longer offers the non-standard <code class="docutils literal notranslate"><span class="pre">localize()</span></code> method.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/413">#413</a></li>
+</ul>
+</div>
+<div class="section" id="july-24">
+<h3>1.25 — 2020 July 24<a class="headerlink" href="#july-24" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Added <a class="reference internal" href="api.html#skyfield.data.stellarium.parse_constellations" title="skyfield.data.stellarium.parse_constellations"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_constellations()</span></code></a>
+and <a class="reference internal" href="api.html#skyfield.data.stellarium.parse_star_names" title="skyfield.data.stellarium.parse_star_names"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_star_names()</span></code></a>
+to load Stellarium star names and constellation lines.
+Constellation lines are featured in a new example script
+<a class="reference internal" href="example-plots.html#neowise-chart"><span class="std std-ref">Drawing a finder chart for comet NEOWISE</span></a> that produces a finder chart
+for comet C/2020 F3 NEOWISE.</li>
+<li>The Hipparcos star catalog should now load faster, having switched
+behind the scenes to a higher performance Pandas import routine.</li>
+<li>Fixed the ability of <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.utc" title="skyfield.timelib.Timescale.utc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">utc()</span></code></a> to
+accept a Python <code class="docutils literal notranslate"><span class="pre">datetime.date</span></code> object as its argument.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/409">#409</a></li>
+<li>Slightly lowered the precision of two tests when they detect that
+Python is compiled for a 32-bit processor, so the test suite can
+succeed when contributors package Skyfield for 32-bit Linux.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/411">#411</a></li>
+</ul>
+</div>
+<div class="section" id="july-20">
+<h3>1.24 — 2020 July 20<a class="headerlink" href="#july-20" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Added methods <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.from_datetime" title="skyfield.timelib.Timescale.from_datetime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_datetime()</span></code></a> and
+<a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.from_datetimes" title="skyfield.timelib.Timescale.from_datetimes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_datetimes()</span></code></a> to the
+<a class="reference internal" href="api-time.html#skyfield.timelib.Timescale" title="skyfield.timelib.Timescale"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timescale</span></code></a> class, to better advertise the
+ability to build a Skyfield time from a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> — an ability
+that was previously overloaded into the <code class="docutils literal notranslate"><span class="pre">year</span></code> parameter of the
+<a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.utc" title="skyfield.timelib.Timescale.utc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">utc()</span></code></a> method (where it is still
+supported for backwards compatibility, but no longer documented).</li>
+<li>Fix: improved the accuracy with which velocity is converted between
+the Earth-fixed ITRF frame that rotates with the Earth and the
+inertial GCRS frame that does not.  In particular, this should make
+Earth satellite velocities more accurate.</li>
+</ul>
+</div>
+<div class="section" id="july-9">
+<h3>1.23 — 2020 July 9<a class="headerlink" href="#july-9" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Added <a class="reference internal" href="kepler-orbits.html"><span class="doc">Kepler Orbits</span></a> support
+for generating the positions of comets and asteroids
+from Minor Planet Center data files.</li>
+<li>Added <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_behind_earth" title="skyfield.positionlib.ICRF.is_behind_earth"><code class="xref py py-func docutils literal notranslate"><span class="pre">is_behind_earth()</span></code></a> to
+determine whether a celestial object is blocked from an Earth
+satellite’s view by the Earth itself.</li>
+<li>Replaced the awkward and hard-to-explain <code class="docutils literal notranslate"><span class="pre">rough_period</span></code> search
+parameter with the conceptually simpler <code class="docutils literal notranslate"><span class="pre">step_days</span></code> parameter, and
+updated the instructions in <a class="reference internal" href="searches.html"><span class="doc">Searching for the dates of astronomical events</span></a> to match.</li>
+<li>Made the <a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.tle_file" title="skyfield.iokit.Loader.tle_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tle_file()</span></code></a> import method less
+strict about Earth satellite names: any text on the line before two
+lines of TLE data is now saved as the satellite name.  A parameter
+<code class="docutils literal notranslate"><span class="pre">skip_names=True</span></code> turns this off if, for particular TLE files, this
+leads to unwanted text being saved.</li>
+</ul>
+</div>
+<div class="section" id="jun-8">
+<h3>1.22 — 2020 Jun 8<a class="headerlink" href="#jun-8" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Skyfield’s improved time precision (stored internally as two floats)
+is now used in computing ephemeris positions, Earth orientation, and
+light-travel time, producing position angles which change much more
+smoothly over time on a sub-milliarcsecond scale.</li>
+<li><a class="reference internal" href="searches.html"><span class="doc">Searching for the dates of astronomical events</span></a> is now documented for custom events that users define
+themselves, instead of only being documented for the official
+pre-written <a class="reference internal" href="almanac.html"><span class="doc">Almanac Computation</span></a> functions.  Not only discrete events but
+also maxima and minima are now officially supported and documented,
+thanks to a rewrite of the underlying code.</li>
+<li>Time objects no longer cache the nutation and precession matrices,
+since they are never used again after being multiplied together to
+create the equinox-of-date rotation matrix.  This should save 144
+bytes for each time in a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> array.</li>
+<li>It is now possible to <a class="reference internal" href="earth-satellites.html#from-satrec"><span class="std std-ref">Build a satellite from orbital elements</span></a> thanks to a new Earth
+satellite constructor method.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/384">#384</a></li>
+<li>Added <a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.build_url" title="skyfield.iokit.Loader.build_url"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build_url()</span></code></a> that returns the URL
+from which Skyfield will download a file.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/382">#382</a></li>
+<li>Added <a class="reference internal" href="api-ephemeris.html#skyfield.jpllib.SpiceKernel.close" title="skyfield.jpllib.SpiceKernel.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a> to support
+applications that need to do fine-grained resource management or whose
+testing framework check for dangling open files.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/374">#374</a></li>
+<li>Skyfield’s dependency list now asks for “jplephem” version 2.13 or
+later.  Skyfield 1.21, alas, could incur a <code class="docutils literal notranslate"><span class="pre">Module</span> <span class="pre">not</span> <span class="pre">found</span></code> error
+when importing <code class="docutils literal notranslate"><span class="pre">jplephem.exceptions</span></code> if a user had an old “jplephem”
+version already installed.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/386">#386</a></li>
+</ul>
+</div>
+<div class="section" id="may-29">
+<h3>1.21 — 2020 May 29<a class="headerlink" href="#may-29" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Added <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_sunlit" title="skyfield.positionlib.ICRF.is_sunlit"><code class="xref py py-func docutils literal notranslate"><span class="pre">is_sunlit()</span></code></a> to determine
+whether Earth satellites in orbit are in Earth’s shadow or not, thanks
+to a pull request from Jesse Coffey.</li>
+<li>Added <a class="reference internal" href="api-position.html#skyfield.positionlib.position_of_radec" title="skyfield.positionlib.position_of_radec"><code class="xref py py-func docutils literal notranslate"><span class="pre">position_of_radec()</span></code></a>
+to replace the poorly designed <code class="docutils literal notranslate"><span class="pre">position_from_radec()</span></code>.</li>
+<li>Skyfield <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> objects now have microsecond
+internal accuracy, so round trips to and from Python datetimes should
+now preserve all the microsecond digits.</li>
+<li>The <a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_strftime" title="skyfield.timelib.Time.utc_strftime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">utc_strftime()</span></code></a> method now rounds to
+the nearest minute or second if it sees that either minutes or seconds
+are the smallest unit of time in the format string.</li>
+<li>The 6 numbers in the sequence <code class="docutils literal notranslate"><span class="pre">t.utc</span></code> can now be accessed by the
+attribute names <code class="docutils literal notranslate"><span class="pre">year</span></code>, <code class="docutils literal notranslate"><span class="pre">month</span></code>, <code class="docutils literal notranslate"><span class="pre">day</span></code>, <code class="docutils literal notranslate"><span class="pre">hour</span></code>, <code class="docutils literal notranslate"><span class="pre">minute</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">second</span></code>.</li>
+<li>Nutation routines should now be faster and have a smaller memory
+footprint, thanks to a rewrite that uses more optimized NumPy calls.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/373">#373</a></li>
+<li>Thanks to Jérôme Deuchnord, the exception raised when asking for a
+position out-of-range of a JPL ephemeris now shows the calendar dates
+for which the ephemeris is valid and carries several useful attributes.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/pull/356">#356</a></li>
+</ul>
+</div>
+<div class="section" id="april-24">
+<h3>1.20 — 2020 April 24<a class="headerlink" href="#april-24" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Erik Tollerud contributed a fix for a deprecation warning about SSL
+from the most recent versions of Python (“cafile, cpath and cadefault
+are deprecated, use a custom context instead”).  The file download
+routine now auto-detects which mechanism your Python supports.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/pull/363">#363</a></li>
+<li>Added an <code class="docutils literal notranslate"><span class="pre">elevation_m</span></code> argument to
+<a class="reference internal" href="api-planetary.html#skyfield.planetarylib.PlanetaryConstants.build_latlon_degrees" title="skyfield.planetarylib.PlanetaryConstants.build_latlon_degrees"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build_latlon_degrees()</span></code></a>.</li>
+</ul>
+</div>
+<div class="section" id="april-23">
+<h3>1.19 — 2020 April 23<a class="headerlink" href="#april-23" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>To hopefully fix the <code class="docutils literal notranslate"><span class="pre">SSL:</span> <span class="pre">CERTIFICATE_VERIFY_FAILED</span></code> errors that
+some users encounter when downloading timescale files, Skyfield has
+taken the risk of switching away from your system’s SSL certificates
+to the certificate bundle from the <code class="docutils literal notranslate"><span class="pre">certifi</span></code> package.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/317">#317</a></li>
+<li>Added a new almanac routine for finding <a class="reference internal" href="almanac.html#lunar-nodes"><span class="std std-ref">Lunar Nodes</span></a>.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/361">#361</a></li>
+<li>Gave geographic location objects a new <code class="docutils literal notranslate"><span class="pre">itrf_xyz()</span></code>
+method that returns their raw ITRF coordinates.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/354">#354</a></li>
+<li>Fixed the sign of the velocity vector when two vectors are directly
+geometrically subtracted.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/355">#355</a></li>
+</ul>
+</div>
+<div class="section" id="march-26">
+<h3>1.18 — 2020 March 26<a class="headerlink" href="#march-26" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Deprecated the old hybrid-key satellite dictionary returned by
+<code class="docutils literal notranslate"><span class="pre">load.tle()</span></code> in favor of a simple list returned by the new
+<a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.tle_file" title="skyfield.iokit.Loader.tle_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tle_file()</span></code></a> routine.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/345">#345</a></li>
+<li>The almanac <a class="reference internal" href="api.html#skyfield.searchlib.find_discrete" title="skyfield.searchlib.find_discrete"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_discrete()</span></code></a> routine no
+longer returns extraneous values in its second return value if no
+changes of state were found.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/339">#339</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/351">#351</a></li>
+<li>Added documentation and support for computing lunar libration.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/80">#80</a></li>
+</ul>
+</div>
+<div class="section" id="february-2">
+<h3>1.17 — 2020 February 2<a class="headerlink" href="#february-2" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Upgraded to a new version of the <code class="docutils literal notranslate"><span class="pre">sgp4</span></code> Python library that, when
+possible, uses the fast official C++ implementation of SGP4.</li>
+<li>Added a <a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite.find_events" title="skyfield.sgp4lib.EarthSatellite.find_events"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_events()</span></code></a> Earth
+satellite method that finds the times at which a satellite rises,
+culminates, and sets.</li>
+<li>Improved the logic behind the <a class="reference internal" href="almanac.html"><span class="doc">Almanac Computation</span></a> routines to avoid rare
+situations in which a cluster of nearly identical times would be
+produced for what should really be considered a single event.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/333">#333</a></li>
+<li>Fixed the <a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_strftime" title="skyfield.timelib.Time.utc_strftime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">utc_strftime()</span></code></a> method so it
+does not report that every day in all of recorded history is a Monday.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/335">#335</a></li>
+</ul>
+</div>
+<div class="section" id="december-20">
+<h3>1.16 — 2019 December 20<a class="headerlink" href="#december-20" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Added basic <a class="reference internal" href="planetary.html"><span class="doc">Planetary Reference Frames</span></a> support, enough to compute the position
+of a given latitude and longitude on the surface of the Moon.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/79">#79</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/124">#124</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/258">#258</a></li>
+<li>Added <a class="reference internal" href="api-almanac.html#skyfield.almanac.oppositions_conjunctions" title="skyfield.almanac.oppositions_conjunctions"><code class="xref py py-func docutils literal notranslate"><span class="pre">oppositions_conjunctions()</span></code></a> for finding
+the dates when a planet is at opposition and conjunction with the sun.</li>
+<li>Added <a class="reference internal" href="api-trigonometry.html#skyfield.trigonometry.position_angle_of" title="skyfield.trigonometry.position_angle_of"><code class="xref py py-func docutils literal notranslate"><span class="pre">position_angle_of()</span></code></a> for computing
+astronomical position angles.</li>
+</ul>
+</div>
+<div class="section" id="november-20">
+<h3>1.15 — 2019 November 20<a class="headerlink" href="#november-20" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Changed the URL for the Hipparcos catalog, because the VizieR archives
+FTP server is no longer responding.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/301">#301</a></li>
+<li>Added a <a class="reference internal" href="api-almanac.html#skyfield.almanac.dark_twilight_day" title="skyfield.almanac.dark_twilight_day"><code class="xref py py-func docutils literal notranslate"><span class="pre">dark_twilight_day()</span></code></a> function that
+not only handles sunrise and sunset but also all three kinds of
+twilight.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/225">#225</a></li>
+</ul>
+</div>
+<div class="section" id="november-1">
+<h3>1.14 — 2019 November 1<a class="headerlink" href="#november-1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Changed the URL from which leap second files are downloaded; the
+server that previously provided them is no longer responding.
+Thanks to Richard Shaw for the pull request.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/296">#296</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/297">#297</a></li>
+<li>Added a <a class="reference internal" href="api-almanac.html#skyfield.almanac.risings_and_settings" title="skyfield.almanac.risings_and_settings"><code class="xref py py-func docutils literal notranslate"><span class="pre">risings_and_settings()</span></code></a> function for
+computing rising and setting times.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/271">#271</a></li>
+</ul>
+</div>
+<div class="section" id="october-10">
+<h3>1.13 — 2019 October 10<a class="headerlink" href="#october-10" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Provided a constellation lookup routine through
+<a class="reference internal" href="api.html#skyfield.api.load_constellation_map" title="skyfield.api.load_constellation_map"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_constellation_map()</span></code></a>.</li>
+<li>Added a <code class="docutils literal notranslate"><span class="pre">position_from_radec()</span></code> function.</li>
+<li>Fixed the <code class="docutils literal notranslate"><span class="pre">apparent()</span></code> method in the case where a single observer
+position is observing an entire vector of target positions.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/229">#229</a></li>
+</ul>
+</div>
+<div class="section" id="september-2">
+<h3>1.12 — 2019 September 2<a class="headerlink" href="#september-2" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Fix: an exception was being thrown when creating a <code class="docutils literal notranslate"><span class="pre">Loader</span></code> pointed
+at a Windows directory for which Python’s <code class="docutils literal notranslate"><span class="pre">os.makedirs()</span></code> function
+returned a spurious error.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/283">#283</a></li>
+<li>The internal <code class="docutils literal notranslate"><span class="pre">reverse_terra()</span></code> routine can now be given an
+<code class="docutils literal notranslate"><span class="pre">iterations=0</span></code> argument if the caller wants geocentric latitude and
+longitude.</li>
+</ul>
+</div>
+<div class="section" id="july-22">
+<h3>1.11 — 2019 July 22<a class="headerlink" href="#july-22" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>You can now call <code class="docutils literal notranslate"><span class="pre">load.timescale(builtin=True)</span></code> to use time scale
+files that Skyfield carries internally, instead of downloading them.
+Note that the time scale files distributed with any given version of
+Skyfield will gradually fall out of date.</li>
+<li>Fix: indexing a position now returns a position with an actual velocity.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/241">#241</a></li>
+<li>Fix: the <code class="docutils literal notranslate"><span class="pre">Star</span></code> method <code class="docutils literal notranslate"><span class="pre">from_dataframe()</span></code> now correctly pulls
+stellar parallax data from the dataframe if available.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/266">#266</a></li>
+<li>Fix: <a class="reference internal" href="api.html#skyfield.searchlib.find_discrete" title="skyfield.searchlib.find_discrete"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_discrete()</span></code></a> was generating empty
+arrays of search dates, upsetting the astronomy code, if the start and
+end dates were very close together.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/240">#240</a></li>
+</ul>
+</div>
+<div class="section" id="id61">
+<h3>1.10 — 2019 February 2<a class="headerlink" href="#id61" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Fix: teach Skyfield the new format of the Naval Observatory ∆T data
+file <code class="docutils literal notranslate"><span class="pre">deltat.preds</span></code>, whose change in format caused Skyfield to start
+throwing an exception for new users.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/236">#236</a></li>
+</ul>
+</div>
+<div class="section" id="september-23">
+<h3>1.9 — 2018 September 23<a class="headerlink" href="#september-23" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Added <a class="reference internal" href="api-almanac.html#skyfield.almanac.seasons" title="skyfield.almanac.seasons"><code class="xref py py-func docutils literal notranslate"><span class="pre">seasons()</span></code></a> to the <a class="reference internal" href="almanac.html"><span class="doc">Almanac Computation</span></a> module
+that can be used to predict solstices and equinoxes.</li>
+<li>Fix: the ecliptic coordinate routines no longer raise <code class="docutils literal notranslate"><span class="pre">ValueError:</span>
+<span class="pre">too</span> <span class="pre">many</span> <span class="pre">values</span> <span class="pre">to</span> <span class="pre">unpack</span></code> if they are passed a time array.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/207">#207</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/208">#208</a></li>
+</ul>
+</div>
+<div class="section" id="september-12">
+<h3>1.8 — 2018 September 12<a class="headerlink" href="#september-12" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>There is now an <a class="reference internal" href="almanac.html"><span class="doc">Almanac Computation</span></a> module that can compute the times of
+sunrise, sunset, and the phases of the moon, based on the search
+algorithms announced at my recent PyBay talk “An Import Loop and a
+Fiery Reentry.”</li>
+<li>Two new methods <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.cirs_xyz" title="skyfield.positionlib.ICRF.cirs_xyz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cirs_xyz()</span></code></a> and
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.cirs_radec" title="skyfield.positionlib.ICRF.cirs_radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cirs_radec()</span></code></a> have been contributed
+which provide support for rotating a position into the Celestial
+Intermediate Reference System (CIRS).
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/192">#192</a></li>
+</ul>
+</div>
+<div class="section" id="september-3">
+<h3>1.7 — 2018 September 3<a class="headerlink" href="#september-3" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Skyfield now supports loading the Hipparcos star catalog as a Pandas
+dataframe, providing the user with convenient mechanisms for looking
+up a single star by HIP number or filtering the entire catalog by
+magnitude.  See <a class="reference internal" href="stars.html"><span class="doc">Stars and Distant Objects</span></a> for details.</li>
+<li>Ecliptic coordinates can now be produced for epochs other than J2000
+thanks to a new optional parameter specifying the desired epoch for
+the <code class="docutils literal notranslate"><span class="pre">ecliptic_latlon()</span></code> method.</li>
+<li>A position that gives a position, velocity, and time can now be
+converted into full osculating orbital elements through the routine
+<a class="reference internal" href="api-elements.html#skyfield.elementslib.osculating_elements_of" title="skyfield.elementslib.osculating_elements_of"><code class="xref py py-func docutils literal notranslate"><span class="pre">osculating_elements_of()</span></code></a>.</li>
+<li>A couple of bugs in the <code class="docutils literal notranslate"><span class="pre">load()</span></code> routine have been fixed.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/193">#193</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/194">#194</a></li>
+</ul>
+</div>
+<div class="section" id="july-25">
+<h3>1.6 — 2018 July 25<a class="headerlink" href="#july-25" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Both of the loader methods <a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.open" title="skyfield.iokit.Loader.open"><code class="xref py py-meth docutils literal notranslate"><span class="pre">open()</span></code></a> and
+<code class="docutils literal notranslate"><span class="pre">tle()</span></code> now accept not just URLs but also plain local file paths;
+they correctly re-download a remote file if “reload=True” is
+specified; and they allow specifying a different local “filename=”
+than the one at the end of the URL.</li>
+<li>Earth satellite objects no longer try to instantiate a timescale object
+of their own, which often kicked off an unexpected download of the three
+files needed to build a timescale.</li>
+<li>Satellite names are now correctly loaded from Space-Track TLE files.</li>
+<li>The ability to create times using Julian Dates is now better advertised,
+thanks to dedicated timescale methods whose names end in <code class="docutils literal notranslate"><span class="pre">…_jd()</span></code>.</li>
+</ul>
+</div>
+<div class="section" id="july-4">
+<h3>1.5 — 2018 July 4<a class="headerlink" href="#july-4" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <a class="reference internal" href="api-position.html#skyfield.positionlib.Geocentric.subpoint" title="skyfield.positionlib.Geocentric.subpoint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">subpoint()</span></code></a> method
+now normalizes the longitude values it returns
+into the range −180° to&nbsp;180°
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/182">#182</a>
+and returns an actual elevation instead of zero.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/185">#185</a></li>
+<li>Earth satellites now return a real velocity vector instead of zero.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/187">#187</a></li>
+<li>Earth satellites now offer an
+<a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite.ITRF_position_velocity_error" title="skyfield.sgp4lib.EarthSatellite.ITRF_position_velocity_error"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ITRF_position_velocity_error()</span></code></a>
+method that returns raw ITRF coordinates for users interested in them.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/85">#85</a></li>
+</ul>
+</div>
+<div class="section" id="may-20">
+<h3>1.4 — 2018 May 20<a class="headerlink" href="#may-20" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>You can now specify the distance to an object when generating a
+position from altitude and azimuth coordinates.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/158">#158</a></li>
+<li>The dictionary of satellites returned when you read a TLE file
+now supports lookup by integer satellite ID, not just by name,
+and now knows how to parse TLE files from Space-Track.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/163">#163</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/167">#167</a></li>
+<li>Star coordinates can now be offered for any epoch, not just J2000.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/166">#166</a></li>
+<li>You can now create a time object given the UT1 date.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/91">#91</a></li>
+<li>Fractional Julian years are now available on <code class="docutils literal notranslate"><span class="pre">Time</span></code> objects as <code class="docutils literal notranslate"><span class="pre">.J</span></code>.</li>
+<li>The parameter DUT1 is now available on <code class="docutils literal notranslate"><span class="pre">Time</span></code> objects as <code class="docutils literal notranslate"><span class="pre">.dut1</span></code>.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/176">#176</a></li>
+</ul>
+</div>
+<div class="section" id="april-15">
+<h3>1.3 — 2018 April 15<a class="headerlink" href="#april-15" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Geocentric coordinates now have a
+<a class="reference internal" href="api-position.html#skyfield.positionlib.Geocentric.subpoint" title="skyfield.positionlib.Geocentric.subpoint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">subpoint()</span></code></a>
+method that computes the latitude and longitude
+of the point beneath that body.</li>
+<li>All of the <code class="docutils literal notranslate"><span class="pre">Timescale</span></code> time constructor methods now accept arrays.</li>
+<li>Emergency fix to stop Skyfield
+from endlessly downloading new copies of <code class="docutils literal notranslate"><span class="pre">deltat.preds</span></code>,
+since the file has gone out of date at the USNO site.</li>
+<li>Fixed ability of a <a class="reference internal" href="api-stars.html#skyfield.starlib.Star" title="skyfield.starlib.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a>
+to be initialized with a tuple that breaks units into minutes and seconds
+(broke in version&nbsp;1.2).</li>
+<li>Issues fixed:
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/170">#170</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/172">#172</a></li>
+</ul>
+</div>
+<div class="section" id="march-29">
+<h3>1.2 — 2018 March 29<a class="headerlink" href="#march-29" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The documentation now describes
+how to create an excerpt of a large JPL ephemeris
+without downloading the entire file.
+Several Skyfield tests now run much faster
+because they use an ephemeris excerpt instead of waiting for a download.</li>
+<li>For <code class="docutils literal notranslate"><span class="pre">load_file()</span></code> a leading <code class="docutils literal notranslate"><span class="pre">~</span></code> now means “your home directory”.</li>
+<li>You can now initialize a velocity from kilometers per second
+with <code class="docutils literal notranslate"><span class="pre">Velocity(km_per_s=...)</span></code>.</li>
+<li>Empty time and angle objects no longer raise an exception when printed.
+(Thanks, JoshPaterson!)</li>
+<li>Issues fixed:
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/160">#160</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/161">#161</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/162">#162</a></li>
+</ul>
+</div>
+<div class="section" id="january-14">
+<h3>1.1 — 2018 January 14<a class="headerlink" href="#january-14" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Positions can now be converted to AstroPy with
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.to_skycoord" title="skyfield.positionlib.ICRF.to_skycoord"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_skycoord()</span></code></a>.</li>
+<li>You can now provide a timescale of your own to an
+<a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite" title="skyfield.sgp4lib.EarthSatellite"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EarthSatellite()</span></code></a>
+instead of having it trying to load one itself.</li>
+<li>Downloaded files are no longer marked as executable on Windows.</li>
+<li>A friendly error message, rather than an obscure traceback, is now
+returned if you try converting a position to alt/az coordinates but
+the position was not measured from a position on the Earth’s surface.</li>
+</ul>
+</div>
+<div class="section" id="march-15">
+<h3>1.0 — 2017 March 15<a class="headerlink" href="#march-15" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Brought the core API to maturity: replaced the narrow concept of
+building a “body” from several ephemeris segments with the general
+concept of a vector function that is the sum of several simpler vector
+functions.</li>
+<li>Added support for adding and subtracting vector functions.</li>
+<li>Deprecated the Earth <code class="docutils literal notranslate"><span class="pre">topos()</span></code> method in favor of vector addition.</li>
+<li>Deprecated the Earth <code class="docutils literal notranslate"><span class="pre">satellite()</span></code> method in favor of vector addition.</li>
+<li>Deprecated the body <code class="docutils literal notranslate"><span class="pre">geometry_of()</span></code> method in favor of vector subtraction.</li>
+<li>Celestrak satellite files can now be opened with <code class="docutils literal notranslate"><span class="pre">load.tle(url_or_filename)</span></code>.</li>
+</ul>
+</div>
+<div class="section" id="december-10">
+<h3>0.9.1 — 2016 December 10<a class="headerlink" href="#december-10" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Attempted to speed up Earth satellite calculations by caching a single
+time scale object instead of creating a new one each time.</li>
+<li>Fixed a possible divide-by-zero error when applying deflection to an
+apparent position.</li>
+</ul>
+</div>
+<div class="section" id="id83">
+<h3>0.9<a class="headerlink" href="#id83" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <code class="docutils literal notranslate"><span class="pre">observe()</span></code> method of an observer on the Earth’s surface now
+correctly accounts for the way that the Earth’s gravity will deflect
+the apparent position of objects that are not exactly overhead,
+bringing Skyfield’s agreement with the Naval Observatory’s NOVAS
+library to within half a milliarcsecond.</li>
+<li>The time method <code class="docutils literal notranslate"><span class="pre">tt_calendar()</span></code> method no longer raises a
+<code class="docutils literal notranslate"><span class="pre">TypeError</span></code> when its value is an array.</li>
+<li>Running <code class="docutils literal notranslate"><span class="pre">repr()</span></code> on a <code class="docutils literal notranslate"><span class="pre">Time</span></code> array now produces a more compact
+string that only mentions the start and end of the time period.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">api.load()</span></code> call no longer attempts to animate a progress bar
+if the user is running it under IDLE, which would try to accumulate
+the updates as a single long line that eventually hangs the window.</li>
+</ul>
+</div>
+<div class="section" id="id84">
+<h3>0.8<a class="headerlink" href="#id84" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Added an <a class="reference internal" href="api.html"><span class="doc">API Reference</span></a> document to the project, in reverent imitation of the
+<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/api.html">Pandas API Reference</a> that I keep open in a browser tab every time I
+am using the Pandas library.</li>
+<li>New method <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.separation_from" title="skyfield.positionlib.ICRF.separation_from"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ICRF.separation_from()</span></code></a> computes the angular separation
+between two positions.</li>
+<li>Fixed <code class="docutils literal notranslate"><span class="pre">==</span></code> between <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> objects and other unrelated objects so
+that it no longer raises an exception.</li>
+</ul>
+</div>
+<div class="section" id="id85">
+<h3>0.7<a class="headerlink" href="#id85" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Introduced the <code class="docutils literal notranslate"><span class="pre">Timescale</span></code> object with methods <code class="docutils literal notranslate"><span class="pre">utc()</span></code>, <code class="docutils literal notranslate"><span class="pre">tai()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">tt()</span></code>, and <code class="docutils literal notranslate"><span class="pre">tdb()</span></code> for building time objects, along with a
+<code class="docutils literal notranslate"><span class="pre">load.timescale()</span></code> method for building a new <code class="docutils literal notranslate"><span class="pre">Timescale</span></code>.  The
+load method downloads ∆T and leap second data from official data
+sources and makes sure the files are kept up to date.  This replaces
+all former techniques for building and specifying dates and times.</p>
+</li>
+<li><p class="first">Renamed <code class="docutils literal notranslate"><span class="pre">JulianDate</span></code> to <code class="docutils literal notranslate"><span class="pre">Time</span></code> and switched from <code class="docutils literal notranslate"><span class="pre">jd</span></code> to <code class="docutils literal notranslate"><span class="pre">t</span></code>
+as the typical variable used for time in the documentation.</p>
+</li>
+<li><p class="first">Deprecated timescale keyword arguments like <code class="docutils literal notranslate"><span class="pre">utc=(…)</span></code> for both the
+<code class="docutils literal notranslate"><span class="pre">Time</span></code> constructor and also for all methods that take time as
+an argument, including <code class="docutils literal notranslate"><span class="pre">Body.at()</span></code> and <code class="docutils literal notranslate"><span class="pre">Topos.at()</span></code>.</p>
+</li>
+<li><p class="first">Users who want to specify a target directory when downloading a file
+will now create their own loader object, instead of having to specify
+a special keyword argument for every download:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">load</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Loader</span><span class="p">(</span><span class="s1">&#39;~/ephemeris-files&#39;</span><span class="p">)</span>
+<span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id86">
+<h3>0.6.1<a class="headerlink" href="#id86" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Users can now supply a target <code class="docutils literal notranslate"><span class="pre">directory</span></code> when downloading a file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="s1">&#39;~/ephemerides&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Fix: removed inadvertent dependency on the Pandas library.</p>
+</li>
+<li><p class="first">Fix: <code class="docutils literal notranslate"><span class="pre">load()</span></code> was raising a <code class="docutils literal notranslate"><span class="pre">PermissionError</span></code> on Windows after a
+successful download when it tried to rename the new file.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id87">
+<h3>0.6<a class="headerlink" href="#id87" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Skyfield now generates its own estimate for <code class="docutils literal notranslate"><span class="pre">delta_t</span></code> if the user
+does not supply their own <code class="docutils literal notranslate"><span class="pre">delta_t=</span></code> keyword when specifying a date.
+This should make altitude and azimuth angles much more precise.</li>
+<li>The leap-second table has been updated to include 2015&nbsp;July&nbsp;1.</li>
+<li>Both ecliptic and galactic coordinates are now supported.</li>
+</ul>
+</div>
+<div class="section" id="id88">
+<h3>0.5<a class="headerlink" href="#id88" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Skyfield has dropped the 16-megabyte JPL ephemeris DE421 as an install
+dependency, since users might choose another ephemeris, or might not
+need one at all.  You now ask for a SPICE ephemeris to be downloaded
+at runtime with a call like <code class="docutils literal notranslate"><span class="pre">planets</span> <span class="pre">=</span> <span class="pre">load('de421.bsp')</span></code>.</p>
+</li>
+<li><p class="first">Planets are no longer offered as magic attributes, but are looked up
+through the square bracket operator.  So instead of typing
+<code class="docutils literal notranslate"><span class="pre">planets.mars</span></code> you should now type <code class="docutils literal notranslate"><span class="pre">planets['mars']</span></code>.  You can run
+<code class="docutils literal notranslate"><span class="pre">print(planets)</span></code> to learn which bodies an ephemeris supports.</p>
+</li>
+<li><div class="first line-block">
+<div class="line">Ask for planet positions with <code class="docutils literal notranslate"><span class="pre">body.at(t)</span></code> instead of <code class="docutils literal notranslate"><span class="pre">body(t)</span></code>.</div>
+</div>
+</li>
+<li><p class="first">Per IAU 2012 Resolution B2, Skyfield now uses lowercase <em>au</em> for the
+astronomical unit, and defines it as exactly 149 597 870 700 meters.
+While this API change is awkward for existing users, I wanted to make
+the change while Skyfield is still pre-1.0.  If this breaks a program
+that you already have running, please remember that a quick <code class="docutils literal notranslate"><span class="pre">pip</span></code>
+<code class="docutils literal notranslate"><span class="pre">install</span></code> <code class="docutils literal notranslate"><span class="pre">skyfield==0.4</span></code> will get you up and running again until
+you have time to edit your code and turn <code class="docutils literal notranslate"><span class="pre">AU</span></code> into <code class="docutils literal notranslate"><span class="pre">au</span></code>.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id89">
+<h3>0.4<a class="headerlink" href="#id89" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>To prevent confusion, the <a class="reference internal" href="api-time.html#skyfield.timelib.Time.astimezone" title="skyfield.timelib.Time.astimezone"><code class="xref py py-meth docutils literal notranslate"><span class="pre">astimezone()</span></code></a>
+and <a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_datetime" title="skyfield.timelib.Time.utc_datetime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">utc_datetime()</span></code></a> methods
+have been changed to return only a <code class="docutils literal notranslate"><span class="pre">datetime</span></code> object.
+If you also need a leap second flag returned,
+call the new methods
+<a class="reference internal" href="api-time.html#skyfield.timelib.Time.astimezone_and_leap_second" title="skyfield.timelib.Time.astimezone_and_leap_second"><code class="xref py py-meth docutils literal notranslate"><span class="pre">astimezone_and_leap_second()</span></code></a>
+and <a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_datetime_and_leap_second" title="skyfield.timelib.Time.utc_datetime_and_leap_second"><code class="xref py py-meth docutils literal notranslate"><span class="pre">utc_datetime_and_leap_second()</span></code></a>.</li>
+</ul>
+</div>
+<div class="section" id="id90">
+<h3>0.3<a class="headerlink" href="#id90" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The floating-point values of an angle
+<code class="docutils literal notranslate"><span class="pre">a.radians</span></code>, <code class="docutils literal notranslate"><span class="pre">a.degrees</span></code>, and <code class="docutils literal notranslate"><span class="pre">a.hours</span></code>
+are now attributes instead of method calls.</li>
+</ul>
+</div>
+</div>
+</div>
+
+  </body>
+</html>

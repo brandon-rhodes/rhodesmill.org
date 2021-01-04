@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
+<title>Positions and Coordinates</title>
+<style type="text/css">
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+dl.docutils dt {
+  font-weight: bold }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left {
+  clear: left }
+
+img.align-right {
+  clear: right }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;
+  background-color: #eeeeee }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+tt.docutils {
+  background-color: #eeeeee }
+
+ul.auto-toc {
+  list-style-type: none }
+
+:link { color: #6c5e46 }
+:visited { color: #4e4533 }
+
+</style>
+</head>
+<body>
+<div class="document" id="positions-and-coordinates">
+<h1 class="title">Positions and Coordinates</h1>
+<p>(Return to the <a class="reference" href="quick">PyEphem Quick Reference</a>.)</p>
+<p>There are several different ways
+of specifying the position of an object
+against the background of stars and constellations,
+so every PyEphem “body”,
+whether a planet, comet, asteroid, or star,
+returns three sets of coordinates when you ask it to compute its position.
+Briefly, these are:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">a_ra</span></tt>, <tt class="docutils literal"><span class="pre">a_dec</span></tt> — <strong>Astrometric Geocentric Position</strong>
+for the star atlas <tt class="docutils literal"><span class="pre">epoch</span></tt> you've specified</li>
+<li><tt class="docutils literal"><span class="pre">g_ra</span></tt>, <tt class="docutils literal"><span class="pre">g_dec</span></tt> — <strong>Apparent Geocentric Position</strong>
+for the epoch-of-date</li>
+<li><tt class="docutils literal"><span class="pre">ra</span></tt>, <tt class="docutils literal"><span class="pre">dec</span></tt> — <strong>Apparent Topocentric Position</strong>
+for the epoch-of-date</li>
+</ul>
+<p>Actually, the third position,
+the“Apparent Topocentric” position,
+is only computed if you provide PyEphem with an <tt class="docutils literal"><span class="pre">Observer</span></tt> to work with.
+If you provide only a date for <tt class="docutils literal"><span class="pre">compute()</span></tt> instead,
+then <tt class="docutils literal"><span class="pre">ra</span></tt> and <tt class="docutils literal"><span class="pre">dec</span></tt> will have the same values as <tt class="docutils literal"><span class="pre">g_ra</span></tt> and <tt class="docutils literal"><span class="pre">g_dec</span></tt>.
+The Greek prefix <em>topo-</em> means <em>place</em>,
+and a <em>topocentric</em> position reveals where a body will appear in the sky
+when viewed from a particular <em>place</em> on the Earth's surface.</p>
+<p>The names <tt class="docutils literal"><span class="pre">ra</span></tt> and <tt class="docutils literal"><span class="pre">dec</span></tt> are short for <em>right ascension</em>
+and <em>declination</em>,
+which serve as longitude and latitude for the sky,
+telling us where admist the stars and constellations an object appears.
+See any introduction to astronomy
+if you need to learn how they are defined;
+the description below describes how the three versions
+of right ascension and declination returned by PyEphem differ.</p>
+<div class="section">
+<h1><a id="how-the-three-positions-differ" name="how-the-three-positions-differ">How the three positions differ</a></h1>
+<p>The easiest way to define what each kind of coordinate means
+is to trace how PyEphem computes a body's position,
+and show how it generates each of the values in turn.
+PyEphem performs its computations using routines from <tt class="docutils literal"><span class="pre">libastro</span></tt>,
+which contains the high-precision astronomy routines
+used in the <a class="reference" href="http://www.clearskyinstitute.com/xephem/">XEphem</a> graphical astronomy application.</p>
+<ul>
+<li><p class="first">To begin with,
+PyEphem figures out where both the body and the Earth are located
+for the exact date and time you have asked about,
+and then compares the two positions
+to work out both the body's distance from the Earth
+and also the direction in which it lies.</p>
+</li>
+<li><p class="first">For bodies in the Solar System,
+like planets, comets, and asteroids,
+PyEphem converts the distance from the Earth to the body
+into the <em>light travel time</em>
+that light from the body requires to reach us,
+and re-computes the object's position
+for that many minutes earlier than the actual date and time you specified.
+For example, as I write this, Jupiter is about 3,100&nbsp;light-seconds,
+or more than 51&nbsp;light-minutes,
+from the earth:</p>
+<pre class="doctest-block">
+&gt;&gt;&gt; import ephem
+&gt;&gt;&gt; j = ephem.Jupiter('2007/12/6')
+&gt;&gt;&gt; print j.earth_distance * ephem.meters_per_au / ephem.c, &quot;seconds&quot;
+3098.61793563 seconds
+</pre>
+<p>This means that we on Earth are not actually seeing Jupiter
+as it really is at this moment;
+instead, we are seeing an image of where Jupiter was 51 minutes ago.
+So if I ask PyEphem for Jupiter's position,
+it will begin by computing its location at this moment as a “first try”,
+will discover that Jupiter is currently 51&nbsp;light-minutes away,
+and then will re-compute Jupiter's position for 51&nbsp;minutes ago
+since that is the position at which we will actually see Jupiter.</p>
+</li>
+<li><p class="first">Having compensated for light-travel time,
+PyEphem now knows the “star-atlas position” of the body,
+and checks for which star-atlas <tt class="docutils literal"><span class="pre">epoch</span></tt>
+you want coordinates expressed in&nbsp;—
+which is supplied by the <tt class="docutils literal"><span class="pre">epoch</span></tt> attribute
+if you passed an <tt class="docutils literal"><span class="pre">Observer</span></tt> to <tt class="docutils literal"><span class="pre">compute()</span></tt>
+or by the <tt class="docutils literal"><span class="pre">epoch=</span></tt> keyword if you have merely passed a date.
+(Both default to the standard date <tt class="docutils literal"><span class="pre">2000/1/1.5</span></tt>
+if you do not specify your own value).
+PyEphem takes a copy of the body's coordinates,
+performs <em>precession</em> to determine what those coordinates were called
+in the <tt class="docutils literal"><span class="pre">epoch</span></tt> you have chosen,
+and stores the result in:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">a_ra</span></tt> and <tt class="docutils literal"><span class="pre">a_dec</span></tt> — the <strong>Astrometric Geocentric Position</strong></li>
+</ul>
+</li>
+<li><p class="first">Next,
+PyEphem adjusts the body's position for <em>relativistic deflection</em>,
+which is the slight nudge that gravity
+gives to light that passes very close to the Sun.
+This only affects objects within about 10° of the Sun
+and which lie on the far side of it from the Earth.</p>
+</li>
+<li><p class="first">Next, PyEphem adjusts the body's position for <em>nutation</em>,
+which is really not an adjustment to the body's apparent location at all,
+but a correction for the fact that the platform from which we observe&nbsp;—
+the Earth&nbsp;—
+wobbles over the span of months and years.
+If you want to point a very accurate telescope at an object,
+then you have to account for this wobble in the Earth's pole.
+(Star atlas coordinates always ignore this,
+and pretend that the Earth's pole doesn't have this slight wobble,
+which is why the “Astrometric” coordinates above
+don't have to include this correction.)</p>
+</li>
+<li><p class="first">Next, PyEphem adjusts the body's position
+for the <em>aberration of light</em>,
+the fact that the motion of the Earth through space
+causes a slight slant to the light reaching us from other objects,
+in the same way that driving through rain or snow
+will make the precipitation look like it is coming down diagonally,
+from in front of you,
+instead of looking like it is coming straight down from overhead.
+(PyEphem skips this step for the Moon,
+since the Moon travels with the Earth through space.)</p>
+</li>
+<li><p class="first">Having made all of these adjustments,
+PyEphem is now confident that it knows
+the direction in which the object <em>appears</em> to lie from the Earth,
+so it stores the computed position in:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">g_ra</span></tt> and <tt class="docutils literal"><span class="pre">g_dec</span></tt> — the <strong>Apparent Geocentric Position</strong></li>
+</ul>
+</li>
+<li><p class="first">If you provided an <tt class="docutils literal"><span class="pre">Observer</span></tt> to the body's <tt class="docutils literal"><span class="pre">compute()</span></tt> method,
+then PyEphem has a few last steps to perform
+to determine where the objects appears from that specific location.
+Otherwise, if you only provided a date, then the computation stops here
+(and <tt class="docutils literal"><span class="pre">ra</span></tt> and <tt class="docutils literal"><span class="pre">dec</span></tt>
+are given the same values as <tt class="docutils literal"><span class="pre">g_ra</span></tt> and <tt class="docutils literal"><span class="pre">g_dec</span></tt>).</p>
+</li>
+<li><p class="first">The first adjustment that PyEphem makes
+based on the location of the <tt class="docutils literal"><span class="pre">Observer</span></tt>
+is to correct for <em>parallax</em>.
+This is needed because all of the previous steps
+computed where the body lies
+when viewed from the location of the Earth itself in its orbit&nbsp;—
+that is, from the Earth's exact center,
+which is why the previous coordinate sets
+were all named “Geocentric”
+(the Greek prefix <em>geo-</em> means <em>Earth</em>).
+But someone on the Earth's surface
+is more than 6,300 kilometers away from the Earth's center,
+which will shift, very slightly, the position of Solar System bodies
+against the background of stars
+(and will move nearby bodies like the Moon,
+or an artificial Earth satellite, even more).
+The parallax correction adjusts for this.</p>
+</li>
+<li><p class="first">Finally,
+the very atmosphere through which we view the sky
+acts as a lens that displaces the positions of bodies
+when they get close to the horizon.
+PyEphem has to correct for this <em>refraction</em>
+both in order to give you a more accurate idea
+of where to point your telescope,
+and to be able to make correct predictions of rising and setting times.
+But doing this calculation accurately is difficult,
+because the atmosphere's optical properties vary
+depending both on its temperature
+and on the amount of moisture the air is holding!
+PyEphem does its best to estimate the result,
+using the <tt class="docutils literal"><span class="pre">Observer</span></tt> attributes <tt class="docutils literal"><span class="pre">temp</span></tt> and <tt class="docutils literal"><span class="pre">pressure</span></tt>.
+These default to 25°C and 1010&nbsp;millibar
+if you do not specify more specific values;
+set the <tt class="docutils literal"><span class="pre">pressure</span></tt> to zero
+if you want PyEphem to ignore the effects of atmospheric refraction.</p>
+</li>
+<li><p class="first">PyEphem is now done,
+and produces its final set of coordinates:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">ra</span></tt> and <tt class="docutils literal"><span class="pre">dec</span></tt> — the <strong>Apparent Topocentric Position</strong></li>
+<li><tt class="docutils literal"><span class="pre">alt</span></tt> and <tt class="docutils literal"><span class="pre">az</span></tt> — the same position, measured from the horizon</li>
+</ul>
+</li>
+</ul>
+<p>Note that no <em>precession</em> was applied
+to either of the final two sets of coordinates,
+but only to the first.
+This means that only the “Astrometric” position
+will correspond to the lines in your star atlas.
+The other positions are what are called “epoch-of-date” coordinates,
+and are measured
+off of the orientation of the celestial pole and the celestial equator
+for the very day of the observation itself.</p>
+</div>
+</div>
+</body>
+</html>

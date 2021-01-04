@@ -1,0 +1,11 @@
+<html><body>
+  <h1>The Character: <span tal:content="context/name">Name</span></h1>
+  This character fought in several battles.
+  <ul>
+    <li tal:repeat="battle context/battles">
+      <a tal:attributes="href python: view.url(battle)"
+         tal:content="battle/name">Name</a>
+    </li>
+  </ul>
+  <a href="index">Return home</a>
+</body></html>

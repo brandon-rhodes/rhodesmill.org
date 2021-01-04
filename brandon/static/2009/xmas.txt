@@ -1,0 +1,257 @@
+
+
+
+
+
+
+
+		xx	      x
+	       xxxx	     x
+	      xxxxxxxxxxxxxxx
+	     xxmmmmmmmmmmxxx		    xx			     x
+	    xxmxxxxxxxxxxx		   xx			    xx
+	   xxmxx			 xxx			  xxx
+	 xxxmmxxxxxxxxxxxxx		  xx			   xx
+       xxxmmmmmxxxxxxxxxxxxxxx		  xx			   xx
+     xxxmmmmmmmmmmmmmmmmmmmmxxx	      x	  xx			   xx
+   xxxxmmmmmmmmmmmmmmmmmmmmmmxxx     xx	  xx			   xx
+     xxxmmmmmmmmmmmmmmmmmmmmmmxxx   xxx	  xx	    x	x	 xxxxxxx
+      xxxxmmmmmmmmmmmmmmmmmmmmxxxx	  xx	  xxx  x xx xxxx   xx
+       xxxxxxxxxxxxxxxxxmmmmmxxxxx   xx	  xx  xxxx xxx	 xxx  xx   xx
+	   xxxxxxxxxxxxxxxmmxxxx    xxx	  xx  xx    xx	 xx   xx   xx
+		       xxxmxxx	     xx	  xx  xx    xx	 xx   xx   xx
+	   xxxxxxxxxxx	xxxx	     xx	  xx  xx   x	 xx   xx   xx
+	 xxxmmmmmmmmmxxx xx	     xx	  xx  xx xx	 xx   xx   xx
+	xxxmmmmmmmmmmmxxx	     xx	  xx  xxx	 xx   xx   xx
+     xxxxmmmmmmmmmmmmxxx	     xx	  xx  xx     x	 xx   xx   xx
+    xxxxxxxxxxxxxxxxxxx		    xxxx xxxx  xx   x	xxxx xxxx xxxxx
+    xxxx	    xxx		     xxx  xx	 xxx	 xx   xx   xxx
+   xxxx		     x		      x	   x		  x    x    xx
+   xxx		     x						    x
+   xx
+   xx
+    x					mm
+    x				       m  m
+     x		 x		     mm	   mm
+      x		x		   mm	     mm
+       xx      x		 mm	       mm
+	 xxxxxx			m		 m
+			       m		  m
+			      m			   m
+			     m			    m
+			     m			    m
+			     m			    m
+	     xx		     m	       mmmm	    m		   xx
+	   xxxxxx	     m	       mmmm	    m		 xxxxxx
+	 xxxxxxxxxx	     m	       mmmm	    m	       xxxxxxxxxx
+       xxxxxxxxxxxxxx	     m	       mmmm	    m	     xxxxxxxxxxxxxx
+      xxxxxxxxxxxxxxxx	     m	       mmmm	    m	    xxxxxxxxxxxxxxxx
+     xxxxxxxxxxxxxxxxxx	     m	mmmmmmmmmmmmmmmmmm  m	   xxxxxxxxxxxxxxxxxx
+   xxxxxxxxmmmmmmxxxxxxxx    m	mmmmmmmmmmmmmmmmmm  m	 xxxxxxxxmmmmmmxxxxxxxx
+   xxxxxxxxm mm	mxxxxxxxx    m	mmmmmmmmmmmmmmmmmm  m	 xxxxxxxxm mm mxxxxxxxx
+   xxxxxxxxm  m	mxxxxxxxx    m	       mmmm	    m	 xxxxxxxxm  m mxxxxxxxx
+   xxxxxxxxm m	mxxxxxxxx    m	       mmmm	    m	 xxxxxxxxm m  mxxxxxxxx
+   xxxxxxxxm mm	mxxxxxxxx    m	       mmmm	    m	 xxxxxxxxm mm mxxxxxxxx
+   xxxxxxxxmmmmmmxxxxxxxx    m	       mmmm	    m	 xxxxxxxxmmmmmmxxxxxxxx
+   xxxxxxxxm	mxxxxxxxx    m	       mmmm	    m	 xxxxxxxxm    mxxxxxxxx
+   xxxxxxxxm mm	mxxxxxxxx    m	       mmmm	    m	 xxxxxxxxm mm mxxxxxxxx
+   xxxxxxxxm mm	mxxxxxxxx    m	       mmmm	    m	 xxxxxxxxm mm mxxxxxxxx
+   xxxxxxxxm	mxxxxxxxx    m	       mmmm	    m	 xxxxxxxxm    mxxxxxxxx
+   xxxxxxxxmmmmmmxxxxxxxx    m	       mmmm	    m	 xxxxxxxxmmmmmmxxxxxxxx
+   xxxxxxxxm	mxxxxxxxx    m	       mmmm	    m	 xxxxxxxxm    mxxxxxxxx
+   xxxxxxxxm mmmmxxxxxxxx    m	       mmmm	    m	 xxxxxxxxm mmmmxxxxxxxx
+   xxxxxxxxm   mmxxxxxxxx    m	       mmmm	    m	 xxxxxxxxm   mmxxxxxxxx
+   xxxxxxxxm mmmmxxxxxxxx    m			    m	 xxxxxxxxm mmmmxxxxxxxx
+   xxxxxxxxm	mxxxxxxxx    m			    m	 xxxxxxxxm    mxxxxxxxx
+   xxxxxxxxmmmmmmxxxxxxxx    m			    m	 xxxxxxxxmmmmmmxxxxxxxx
+   xxxxxxxxm mmmmxxxxxxxx    m			    m	 xxxxxxxxm mmmmxxxxxxxx
+   xxxxxxxxm mmmmxxxxxxxx    mmmmmmmmmmmmmmmmmmmmmmmm	 xxxxxxxxm mmmmxxxxxxxx
+   xxxxxxxxm mm	mxxxxxxxx				 xxxxxxxxm mm mxxxxxxxx
+   xxxxxxxxm	mxxxxxxxx				 xxxxxxxxm    mxxxxxxxx
+   xxxxxxxxmmmmmmxxxxxxxx				 xxxxxxxxmmmmmmxxxxxxxx
+   xxxxxxxxxxxxxxxxxxxxxx				 xxxxxxxxxxxxxxxxxxxxxx
+   xxxxxxxxxxxxxxxxxxxxxx				 xxxxxxxxxxxxxxxxxxxxxx
+   xxxxxxxxxxxxxxxxxxxxxx				 xxx  ******  xxxxxxxxx
+   xxxxxxxxxxxxxxxxxxxxxx				 xx  ******** xxxxxxxxx
+   xxxxxxxxxxxxxxxxxxxxxx				 xx x	      x	xxxxxxx
+   xxxxxxxxxxxxxxxxxxxxxx		     *****	 xx x	      x	xxxxxxx
+   xxxxxxxxxxxxxxxxxxxxxx		    *******	 x x   o   o   x xxxxxx
+					   x	xx x	   x	 u     x
+		   *****		   x	   x	    x	      x
+		  *******		  x  o	 o  x	    x	 o    x
+		 x	 x		  x    j    x	 /   x	     x
+		 x	 x		   x	   x	//     iiiii
+		x  o   o  x		   x   o   x	/     iiioiii
+		x    o	  x    /	    x	  x    ii xxxx	     xxxxx
+		 x	 x    //	     iiiii     ii		   x
+		 x   o	 x    /		    iiioiii    ii		    x
+      /		  x	x    ii	      xxxxxx	   xxxxii		     x
+     //		   iiiii     ii	    xx			x		     x
+     /		  iiioiii    ii	   x			 xxxxxxxxxxxxxxx     x
+    ii	    xxxxxx	 xxxxii	 x			  xxxxx	xxxxxxxxx    x
+    ii	   x		       xx   xxxxxxxxxxxxxxx	   xxxxx xxxxxxxxx   x
+    ii	  x		      xx     xxxxx xxxxxxxxx	    xxxxx xxxxxxxxx  x
+    ii	 x			x     xxxxx xxxxxxxxx	     xxxxx xxxxxxxxx x
+    ii	 x   xxxxxxxxxxxxxxx	 x     xxxxx xxxxxxxxx		      x
+    ii	 x    xxxxx xxxxxxxxx	 x	xxxxx xxxxxxxxx	     x	    x	     x
+    ii	 x     xxxxx xxxxxxxxx	 x	xx     x	     x	    x	     x
+    ii	 x	xxxxx xxxxxxxxx	  x		       x       x       x
+   mmmm		 xxxxx xxxxxxxxx  x		x	     x	      x	     x
+   ii		 xxx	x	x	      xx	   x	      xx   x
+   ii			 x		  x	    x		x   x
+    xx			  x	  x		   x	     x		 x   x
+    x			     xx	  x		      xx     x		 xxxxx
+    x			      x	  x		      xx     x		  x  x
+     x			      x	  x		       x    x		  x
+     x			      xx  x			xxxxxx		  x
+     x			       x  x			x		xx
+      x			       x  x			xmmmmmmmmmmmmmmmm
+      x			       xxxx			 mmmmmmmmmmmmmmmm
+      x			       xxxxxxxx		       mmmmmmmmmmmmmmmmmm
+      x			       mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+      x			       mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+      xxxx		     xxmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+	mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+	mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+	mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+    mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+    mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+    ** **    **	   **	 **    **    **	   **	 **    **    **	   **	 ** **
+    ** ** ** **	** ** ** ** ** ** ** **	** ** ** ** ** ** ** **	** ** ** ** **
+    ** ** ** **	** ** ** ** ** ** ** **	** ** ** ** ** ** ** **	** ** ** ** **
+    **	  **	**    **    **	  **	**    **    **	  **	**    **    **
+
+
+
+
+
+       xxxxx	  xx		      x
+     xx	xxmmxx	 x  x		      x
+    x	 xxmmxx	x	  xxxxxxx  xxx
+   x	  xxmmmxx	 xxmmmmmxxxx				     x
+    x	   xxmmmxx	xxxxxxxxxx			xx	    xx
+     xxx    xxmmmxx	    xx			       xx	   xx
+	    xxxmmmxx	    xx			     x x	 x x
+	    xxxxmmmxx	    xx			      xx	  xx
+	    xx xxmmmxx	    xx			      xx	  xx
+	    xx	xxmmmxx	    xx		x	      xx	  xx
+	    xx	 xxmmmxx    xx	       xx	      xx	  xx
+	    xx	  xxmmmxx   xx	       xx	  x   xx	  xx
+	    xx	   xxmmmxx  xx			xx    xx	xxxxxxx
+	    xx	    xxmmmxx xx	  x    xx   xxxxxxx   xx xxxx	  xx
+	    xx	     xxmmmxxxx	   x  xxx  xx	 xx   xxx  xxx	  xx
+	    xx	      xxmmmxxx	  x    xx  xx	 xx   xx     xx	  xx
+	    xx	       xxmmmxx	xx     xx  xx	 xx   xx     xx	  xx
+	    xx	   x	xxmmmxxxx      xx  xx	 xx   xx     xx	  xx
+	 xxxxxxx  x	 xxmmmxx       xx  xx	 xx   xx     xx	  xx
+      xxxxmmmmmxxx	  xxmxx	       xx  xx	 xx   xx     xx	  xx
+     xxxxxxxxxxxx	   xxx	      xxxx  xx	  xx xxxx    xxx xxxxx
+     xxx       xx	    xx	       xxx   xxxxxxx  xxx    xx	  xxx
+   xx		x	     x		x	  xxx  x     x	   xx
+   xx	   x		     x			   xx	     x	   x
+    x	  x				     xxxx xx	      x
+     xxxxx				    x	 xx
+
+
+		*
+		*
+		*
+		*
+	    *	*   *
+	     *	*  *
+	       ***
+	 *************
+	       ***
+	     *	*  *
+	    *	*   *
+	   *	*    *
+		*
+		*
+		*
+		*
+		*
+		*
+		*
+		*
+		*
+
+
+
+								 #
+							  #	###
+							####	###
+						     ########	 ###
+						###  ########	####
+					       ####  #	  ###  #####
+				     #	       ###   #	  ### #	####
+				   ####		###   #	 ### #	###
+				########       ####    # ####  #######
+			       #########    ## ####	###############
+				#    ###   #  ######	 ###############
+				#    ###  #	###	 ###############
+				#   ###	 #    #####	   ####	   #####
+				#   ###	#     #####	    ##	   ###
+	    #			#   ####   #########	    ##	     ##
+	    ##	     ###	#   #################	    ##	     ##
+	######	    #####	 #  ##################	    ##	     ##
+      ########	   #####	 ##   ###############	   ##	    ##
+     ##########	     #######		##############	   ##	    ##
+      ##  #####	    #####		#####	 #####
+      #	  ####	    ######		 ###	  ## #
+      #	  ####	 #########		 ##	  ##
+      #	 ####	 #########		 ##	  ##
+      #	 ####	#  #######		 ##	  ##
+      #	#####  #    #####		 ##	  ##
+      #	####  #	    ######		 ##	  ##
+      #	######	  #########		##	 ##
+      #	 ####################
+       # #####################
+	#######################
+	  #####################
+	   ###################
+	   ######      #######
+	    ####       ######
+	    ###		#####
+	    ###		### #
+	    ###		### #
+	    ###		 ## #
+	    ###		 ####
+	   ##		###
+
+
+
+
+
+
+		       *   *  ****  ***	  ***	*   *
+		       ** **  *	    *  *  *  *	 * *
+		       * * *  ***   ***	  ***	  *
+		       *   *  *	    * *	  * *	  *
+		       *   *  ****  *  *  *  *	  *
+
+
+	      ***   *  *  ***	*  ****	 *****	*   *	**   ****
+	     *	 *  *  *  *  *	*  *	   *	** **  *  *  *
+	     *	    ****  ***	*  ****	   *	* * *  ****  ****
+	     *	 *  *  *  * *	*     *	   *	*   *  *  *	*
+	      ***   *  *  *  *	*  ****	   *	*   *  *  *  ****
+
+
+
+
+
+
+
+         Happy Holidays!  Merrimack Valley - Donna Quinn
+
+
+
+
+
+
+
+
+
+
+
+

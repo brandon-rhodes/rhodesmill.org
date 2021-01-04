@@ -1,0 +1,6 @@
+<html><body>
+  <h1>Welcome to an Example!</h1>
+  <p>This app knows about many things. Visit the
+    <a tal:attributes="href context/@@contents/url"
+       >Contents</a> page to see all of its objects!</p>
+</body></html>

@@ -1,0 +1,187 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — Opening Files</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-opening-files">
+<h1>API Reference — Opening Files<a class="headerlink" href="#api-reference-opening-files" title="Permalink to this headline">¶</a></h1>
+<p>See <a class="reference internal" href="files.html"><span class="doc">Downloading and Using Data Files</span></a> for an explanation of how Skyfield programs
+use an instance of the <a class="reference internal" href="#skyfield.iokit.Loader" title="skyfield.iokit.Loader"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Loader</span></code></a> class described below
+to download and open the data files they need in order to operate.</p>
+<div class="section" id="the-loader-class">
+<h2>The loader class<a class="headerlink" href="#the-loader-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="skyfield.iokit.Loader">
+<em class="property">class </em><code class="descclassname">skyfield.iokit.</code><code class="descname">Loader</code><span class="sig-paren">(</span><em>directory</em>, <em>verbose=True</em>, <em>expire=False</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.iokit.Loader" title="Permalink to this definition">¶</a></dt>
+<dd><p>A tool for downloading and opening astronomical data files.</p>
+<p>A default <a class="reference internal" href="#skyfield.iokit.Loader" title="skyfield.iokit.Loader"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Loader</span></code></a> that saves data files to the current working
+directory can be imported directly from the Skyfield API:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+</pre></div>
+</div>
+<p>But users can also create a <a class="reference internal" href="#skyfield.iokit.Loader" title="skyfield.iokit.Loader"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Loader</span></code></a> of their own, if there is
+another directory they want data files saved to, or if they want to
+specify different options.  The directory is created automatically
+if it does not yet exist:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">Loader</span>
+<span class="n">load</span> <span class="o">=</span> <span class="n">Loader</span><span class="p">(</span><span class="s1">&#39;~/skyfield-data&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The options are:</p>
+<dl class="docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">verbose</span></code></dt>
+<dd>If set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, then the loader will not print a progress bar
+to the screen each time it downloads a file.  (If the standard
+output is not a TTY, then no progress bar is printed anyway.)</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">expire</span></code></dt>
+<dd>(This option is no longer supported.)</dd>
+</dl>
+<p>Once a <a class="reference internal" href="#skyfield.iokit.Loader" title="skyfield.iokit.Loader"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Loader</span></code></a> is created, it can be called like a function to
+open, or else to download and open, a file whose name it recognizes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de405.bsp&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Each loader also supports an attribute and a few methods.</p>
+<dl class="attribute">
+<dt id="skyfield.iokit.Loader.directory">
+<code class="descname">directory</code><a class="headerlink" href="#skyfield.iokit.Loader.directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>The directory where this loader looks when trying to open a file,
+and where it downloads files that have not been downloaded yet.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.iokit.Loader.path_to">
+<code class="descname">path_to</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.iokit.Loader.path_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the path to <code class="docutils literal notranslate"><span class="pre">filename</span></code> in this loader’s directory.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.iokit.Loader.days_old">
+<code class="descname">days_old</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.iokit.Loader.days_old" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return how recently <code class="docutils literal notranslate"><span class="pre">filename</span></code> was modified, measured in days.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.iokit.Loader.build_url">
+<code class="descname">build_url</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.iokit.Loader.build_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the URL Skyfield will try downloading for a given filename.</p>
+<p>Raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> if Skyfield doesn’t know where to get the
+file based on its name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.iokit.Loader.tle_file">
+<code class="descname">tle_file</code><span class="sig-paren">(</span><em>url</em>, <em>reload=False</em>, <em>filename=None</em>, <em>ts=None</em>, <em>skip_names=False</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.iokit.Loader.tle_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load and parse a TLE file, returning a list of Earth satellites.</p>
+<p>Given a URL or local path to an ASCII text file, this loads a
+series of TLE “Two-Line Element” sets and returns a list of
+<a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite" title="skyfield.sgp4lib.EarthSatellite"><code class="xref py py-class docutils literal notranslate"><span class="pre">EarthSatellite</span></code></a> objects for them.
+See <a class="reference internal" href="earth-satellites.html"><span class="doc">Earth Satellites</span></a>.</p>
+<p>See the <a class="reference internal" href="#skyfield.iokit.Loader.open" title="skyfield.iokit.Loader.open"><code class="xref py py-meth docutils literal notranslate"><span class="pre">open()</span></code></a> method for the
+meaning of the <code class="docutils literal notranslate"><span class="pre">reload</span></code> and <code class="docutils literal notranslate"><span class="pre">filename</span></code> parameters.</p>
+<p>See the <a class="reference internal" href="#skyfield.iokit.parse_tle_file" title="skyfield.iokit.parse_tle_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">parse_tle_file()</span></code></a> function for the meaning of the
+<code class="docutils literal notranslate"><span class="pre">ts</span></code> and <code class="docutils literal notranslate"><span class="pre">skip_names</span></code> parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.iokit.Loader.download">
+<code class="descname">download</code><span class="sig-paren">(</span><em>url</em>, <em>filename=None</em>, <em>backup=False</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.iokit.Loader.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a file, even if it’s already on disk; return its path.</p>
+<p>You can specify the local <code class="docutils literal notranslate"><span class="pre">filename</span></code> to which the file will be
+saved; the default is to use the final component of <code class="docutils literal notranslate"><span class="pre">url</span></code>.
+Set <code class="docutils literal notranslate"><span class="pre">backup</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> if you want an already-existing file
+moved out of the way instead of overwritten.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.iokit.Loader.open">
+<code class="descname">open</code><span class="sig-paren">(</span><em>url</em>, <em>mode='rb'</em>, <em>reload=False</em>, <em>filename=None</em>, <em>backup=False</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.iokit.Loader.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open a file, downloading it first if it does not yet exist.</p>
+<p>Unlike when you call a loader directly like <code class="docutils literal notranslate"><span class="pre">my_loader()</span></code>,
+this <code class="docutils literal notranslate"><span class="pre">my_loader.open()</span></code> method does not attempt to parse or
+interpret the file; it simply returns an open file object.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">url</span></code> can be either an external URL, or else the path to a
+file on the current filesystem.  A relative path will be assumed
+to be relative to the base directory of this loader object.</p>
+<p>If a URL was provided and the <code class="docutils literal notranslate"><span class="pre">reload</span></code> parameter is true, then
+any existing file will be removed before the download starts.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">filename</span></code> parameter lets you specify an alternative local
+filename instead of having the filename extracted from the final
+component of the URL.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.iokit.Loader.timescale">
+<code class="descname">timescale</code><span class="sig-paren">(</span><em>delta_t=None</em>, <em>builtin=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.iokit.Loader.timescale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="api-time.html#skyfield.timelib.Timescale" title="skyfield.timelib.Timescale"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Timescale</span></code></a> built using official Earth rotation data.</p>
+<p><code class="docutils literal notranslate"><span class="pre">delta_t</span></code> — Lets you override the standard ∆T tables by
+providing your own ∆T offset in seconds.  For details, see
+<a class="reference internal" href="time.html#custom-delta-t"><span class="std std-ref">Setting a Custom Value For ∆T</span></a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">builtin</span></code> — By default, Skyfield uses ∆T and leap second
+tables that it carries internally; to instead load this data
+from files, set this option to <code class="docutils literal notranslate"><span class="pre">False</span></code>.  For compatibility
+with Skyfield ≤&nbsp;1.30, if you have on disk the three files
+<code class="docutils literal notranslate"><span class="pre">deltat.data</span></code>, <code class="docutils literal notranslate"><span class="pre">deltat.preds</span></code>, and <code class="docutils literal notranslate"><span class="pre">Leap_Second.dat</span></code>, then
+Skyfield will load them.  Otherwise, Skyfield will download and
+use <code class="docutils literal notranslate"><span class="pre">finals2000A.all</span></code> from the International Earth Rotation
+Service.  For details, see <a class="reference internal" href="time.html#downloading-timescale-files"><span class="std std-ref">UT1 and downloading IERS data</span></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="standalone-functions">
+<h2>Standalone functions<a class="headerlink" href="#standalone-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="skyfield.iokit.load_file">
+<code class="descclassname">skyfield.iokit.</code><code class="descname">load_file</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.iokit.load_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open a file on your local drive, using its extension to guess its type.</p>
+<p>This routine only works on <code class="docutils literal notranslate"><span class="pre">.bsp</span></code> ephemeris files right now, but
+will gain support for additional file types in the future.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load_file</span>
+<span class="n">planets</span> <span class="o">=</span> <span class="n">load_file</span><span class="p">(</span><span class="s1">&#39;~/Downloads/de421.bsp&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.iokit.parse_tle_file">
+<code class="descclassname">skyfield.iokit.</code><code class="descname">parse_tle_file</code><span class="sig-paren">(</span><em>lines</em>, <em>ts=None</em>, <em>skip_names=False</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.iokit.parse_tle_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse lines of TLE satellite data, yielding a sequence of satellites.</p>
+<p>Given a sequence <code class="docutils literal notranslate"><span class="pre">lines</span></code> of byte strings (which can be an open
+binary file, which acts like a sequence of lines in Python), this
+routine yields an <a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite" title="skyfield.sgp4lib.EarthSatellite"><code class="xref py py-class docutils literal notranslate"><span class="pre">EarthSatellite</span></code></a> for each
+pair of adjacent lines that start with <code class="docutils literal notranslate"><span class="pre">&quot;1</span> <span class="pre">&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;2</span> <span class="pre">&quot;</span></code> and
+have 69 or more characters each.  If the line preceding a TLE is not
+part of another TLE, it is used as the satellite’s <code class="docutils literal notranslate"><span class="pre">.name</span></code>.</p>
+<p>If you pass a <code class="docutils literal notranslate"><span class="pre">ts</span></code> timescale, Skyfield will use it to build the
+<code class="docutils literal notranslate"><span class="pre">.epoch</span></code> date attribute on each satellite; otherwise a timescale
+derived from Skyfield’s built-in leap second files will be used.</p>
+<p>If for a particular file you see random lines of text being
+interpreted as satellite names, set <code class="docutils literal notranslate"><span class="pre">skip_names</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> and
+Skyfield will not try to store satellite names.</p>
+<p>See <a class="reference internal" href="earth-satellites.html"><span class="doc">Earth Satellites</span></a> for details.  An exception is raised if
+the attempt to parse a pair of candidate lines as TLE lines fails.</p>
+</dd></dl>
+
+</div>
+</div>
+
+  </body>
+</html>

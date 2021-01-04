@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Moving home directory version control out of your way</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>Moving home directory version control out of your way</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>7 May 2012</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">computing</td>
+</tr>
+</tbody>
+</table>
+<p>If you keep your home directory under version control,
+then you may know the sinking feeling
+that comes from sitting down at work after a late night,
+looking for that brilliant fix you made right before bed,
+and finding that your commit is nowhere to be found.
+What happened?</p>
+<p>Upon arriving home,
+you discover that your final conscious act the previous night
+was an accidental commit of your home directory —
+you committed, say, a tiny experimental change to your <tt class="docutils literal"><span class="pre">~/.profile</span></tt>
+from last week
+when you really meant to be committing a patch to <tt class="docutils literal">~/big/project</tt>
+to resolve the latest show-stopping bug.
+You were too tired to notice
+that the version control system listed the wrong files
+as you typed the commit message into your editor.</p>
+<p>This can, of course, happen if you run <tt class="docutils literal">git</tt> or <tt class="docutils literal">hg</tt>
+while you are sitting in the wrong directory.
+But, more subtly, this can happen
+if you are sitting in the <em>correct</em> directory
+but call the wrong <em>command</em>.
+If <tt class="docutils literal">~/big/project</tt> was, for example,
+checked out using Mercurial or Subversion,
+then a <tt class="docutils literal">git</tt> <tt class="docutils literal">commit</tt> in that directory
+will patiently search up the directory tree,
+find your <tt class="docutils literal"><span class="pre">~/.git</span></tt> directory,
+and look for changed dotfiles or commands to commit instead.</p>
+<p>For those of us with several version control systems going at once,
+in fact, it is a bad idea to have <em>any</em> two projects be “concentric” —
+where a directory under the control of one version control system
+wraps another project under different control.
+I really prefer for each directory in the file system
+to have exactly one version-control directory
+in its tree of ancestors.</p>
+<p>So how can you safely version control your dotfiles?
+The solution is to keep your <tt class="docutils literal"><span class="pre">~/.git</span></tt> or <tt class="docutils literal"><span class="pre">~/.hg</span></tt> directory
+out of the way during normal operation —
+for example, by appending <tt class="docutils literal">.off</tt> to its name —
+then moving it back into place
+when you explicitly want to perform a version control operation
+on your dotfiles.
+One approach would be to create a shell script like this:</p>
+<div class="highlight"><pre><span class="c"># ~/bin/homedir-git</span>
+<span class="c"># Like git, but turns your homedir &quot;on&quot; first</span>
+
+mv ~/.git.off ~/.git
+git <span class="s2">&quot;$@&quot;</span>
+mv ~/.git ~/.git.off</pre></div>
+
+<p>However, I found this approach unwieldy.
+For one thing, the name of the command was always difficult to type
+because I am so strongly conditioned to type the plain, unadorned
+version control command instead.
+Another problem is that my shell's command-line completion
+suddenly did not know to offer the usual version-control subcommands
+because <tt class="docutils literal"><span class="pre">homedir-git</span></tt> or <tt class="docutils literal"><span class="pre">homedir-hg</span></tt>
+is not a command it recognized.</p>
+<p>So my actual solution has been to create a command
+to <em>toggle</em> home directory version control on and off.
+That way, I can turn it on;
+let my normal muscle memory take over
+as I craft and execute version-control operations;
+and then turn it off again:</p>
+<div class="highlight"><pre><span class="c"># ~/bin/home-toggle</span>
+
+<span class="k">if</span> <span class="o">[</span> -d .git.off <span class="o">]</span> ;<span class="k">then</span>
+<span class="k">    </span>mv ~/.git.off ~/.git <span class="o">||</span> <span class="nb">exit </span>1
+    <span class="nb">echo </span>Home directory version control activated
+<span class="k">else</span>
+<span class="k">    </span>mv ~/.git ~/.git.off <span class="o">||</span> <span class="nb">exit </span>1
+    <span class="nb">echo </span>Home directory version control deactivated
+<span class="k">fi</span></pre></div>
+
+<p>Actually, I named my own copy of this shell script <tt class="docutils literal">,home</tt>
+because — as you might remember — I
+<a class="reference external" href="http://rhodesmill.org/brandon/2009/commands-with-comma/">name my shell scripts starting with a comma</a>.
+But you get the idea.
+And, of course, I check this shell script into version control
+along with the rest of the suite of customizations
+that I need on every system where I type.</p>
+<p>This whole idea is trivial, obvious,
+and so simply implemented as to be hardly worth mentioning.
+But those of us who have been using a Unix environment for decades
+know that these kinds of tiny micro-customizations
+for making our lives easier,
+while they are each so simple,
+accumulate together into a really amazing result:
+an environment that offers very little friction
+because, each time your dotfiles are checked out
+to your account on a new machine,
+it instantly becomes an environment
+where every annoyance —
+every stone that has ever made you stumble —
+has already been accounted for and worked around.</p>
+<p>The lack of friction at a well-customized command line
+can be really astounding if you have been putting up
+with the defaults your entire life.
+I&nbsp;hope that this simple example
+encourages you to stop in your tracks
+the next time something gets in your way for the third,
+fourth, or hundredth time, and that you will ask:
+“Could I solve this with a simple shell script?”</p>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'rhodesmill';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<p class="byline">©2020</p>
+
+</body>
+</html>

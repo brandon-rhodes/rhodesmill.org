@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — Vector Functions</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-vector-functions">
+<h1>API Reference — Vector Functions<a class="headerlink" href="#api-reference-vector-functions" title="Permalink to this headline">¶</a></h1>
+<p>The Skyfield API is build atop <em>vector functions</em>
+that take time as input and produce a position vector.
+You can create vector functions for the Earth, Moon, Sun, planets,
+and Earth satellites,
+and can combine them using addition and subtraction.</p>
+<dl class="class">
+<dt id="skyfield.vectorlib.VectorFunction">
+<em class="property">class </em><code class="descclassname">skyfield.vectorlib.</code><code class="descname">VectorFunction</code><a class="headerlink" href="#skyfield.vectorlib.VectorFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a time, computes a corresponding position.</p>
+<dl class="attribute">
+<dt id="skyfield.vectorlib.VectorFunction.center">
+<code class="descname">center</code><a class="headerlink" href="#skyfield.vectorlib.VectorFunction.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Solar System object from which this vector is measured.
+Often this is an integer code like <code class="docutils literal notranslate"><span class="pre">399</span></code> for the Earth,
+<code class="docutils literal notranslate"><span class="pre">3</span></code> for the center of gravity of the Earth-Moon system,
+or <code class="docutils literal notranslate"><span class="pre">0</span></code> for the very center of the Solar System itself,
+though it might also be a specific object
+like a <a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a>
+on the Earth’s surface
+or an <a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite" title="skyfield.sgp4lib.EarthSatellite"><code class="xref py py-class docutils literal notranslate"><span class="pre">EarthSatellite</span></code></a>
+in orbit around it.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.vectorlib.VectorFunction.target">
+<code class="descname">target</code><a class="headerlink" href="#skyfield.vectorlib.VectorFunction.target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Using the same set of possible values as the <code class="docutils literal notranslate"><span class="pre">center</span></code>,
+this attribute names the target to which the vector is pointing.
+The vector, then, is the three-dimensional difference
+between the position of the center and that of the target.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">vf1 + vf2</code></dt>
+<dd><p>Return a new vector function whose <code class="docutils literal notranslate"><span class="pre">at(t)</span></code>, when called,
+computes the sum of the original vectors <code class="docutils literal notranslate"><span class="pre">vf1</span></code> and <code class="docutils literal notranslate"><span class="pre">vf2</span></code>.
+This will raise an error
+unless the <code class="docutils literal notranslate"><span class="pre">target</span></code> where one of the two vectors ends
+is the same as the <code class="docutils literal notranslate"><span class="pre">center</span></code> from which the other vector starts.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">vf1 - vf2</code></dt>
+<dd><p>Return a new vector function whose <code class="docutils literal notranslate"><span class="pre">at(t)</span></code>, when called,
+computes where the <code class="docutils literal notranslate"><span class="pre">target</span></code> of <code class="docutils literal notranslate"><span class="pre">vf1</span></code> will be positioned
+relative to the <code class="docutils literal notranslate"><span class="pre">target</span></code> of the subtracted <code class="docutils literal notranslate"><span class="pre">vf2</span></code>.
+Note that this will be an instantaneous vector,
+uncorrected for the amount of time light takes
+to travel from one target to the other.
+This raises an error
+unless the two vectors share the same <code class="docutils literal notranslate"><span class="pre">center</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.vectorlib.VectorFunction.at">
+<code class="descname">at</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.vectorlib.VectorFunction.at" title="Permalink to this definition">¶</a></dt>
+<dd><p>At time <code class="docutils literal notranslate"><span class="pre">t</span></code>, compute the target’s position relative to the center.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">t</span></code> is an array of times, then the returned position object
+will specify as many positions as there were times.  The kind of
+position returned depends on the value of the <code class="docutils literal notranslate"><span class="pre">center</span></code>
+attribute:</p>
+<ul class="simple">
+<li>Solar System Barycenter: <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric" title="skyfield.positionlib.Barycentric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Barycentric</span></code></a></li>
+<li>Center of the Earth: <a class="reference internal" href="api-position.html#skyfield.positionlib.Geocentric" title="skyfield.positionlib.Geocentric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Geocentric</span></code></a></li>
+<li>Difference: <a class="reference internal" href="api-position.html#skyfield.positionlib.Geometric" title="skyfield.positionlib.Geometric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Geometric</span></code></a></li>
+<li>Anything else: <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+  </body>
+</html>

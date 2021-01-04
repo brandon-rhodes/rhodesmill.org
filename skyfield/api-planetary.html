@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — Planetary reference frames</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-planetary-reference-frames">
+<h1>API Reference — Planetary reference frames<a class="headerlink" href="#api-reference-planetary-reference-frames" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="skyfield.planetarylib.PlanetaryConstants">
+<em class="property">class </em><code class="descclassname">skyfield.planetarylib.</code><code class="descname">PlanetaryConstants</code><a class="headerlink" href="#skyfield.planetarylib.PlanetaryConstants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Planetary constants manager.</p>
+<p>You can use this class to build working models of Solar System
+bodies by loading text planetary constant files and binary
+orientation kernels.  For a full description of how to use this, see
+<a class="reference internal" href="planetary.html"><span class="doc">Planetary Reference Frames</span></a>.</p>
+<dl class="method">
+<dt id="skyfield.planetarylib.PlanetaryConstants.read_text">
+<code class="descname">read_text</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.planetarylib.PlanetaryConstants.read_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read frame assignments from a KPL/FK file.</p>
+<p>Appropriate files will typically have the extension <code class="docutils literal notranslate"><span class="pre">.tf</span></code> or
+<code class="docutils literal notranslate"><span class="pre">.tpc</span></code> and will define a series of names and values that will
+be loaded into this object’s <code class="docutils literal notranslate"><span class="pre">.assignments</span></code> dictionary.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pc</span> <span class="o">=</span> <span class="n">PlanetaryConstants</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pc</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;moon_080317.tf&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pc</span><span class="o">.</span><span class="n">assignments</span><span class="p">[</span><span class="s1">&#39;FRAME_31006_NAME&#39;</span><span class="p">]</span>
+<span class="go">&#39;MOON_PA_DE421&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.planetarylib.PlanetaryConstants.read_binary">
+<code class="descname">read_binary</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.planetarylib.PlanetaryConstants.read_binary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read binary segments descriptions from a DAF/PCK file.</p>
+<p>Binary segments live in <code class="docutils literal notranslate"><span class="pre">.bpc</span></code> files and predict how a body
+like a planet or moon will be oriented on a given date.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.planetarylib.PlanetaryConstants.build_frame_named">
+<code class="descname">build_frame_named</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.planetarylib.PlanetaryConstants.build_frame_named" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a frame name, return a <a class="reference internal" href="#skyfield.planetarylib.Frame" title="skyfield.planetarylib.Frame"><code class="xref py py-class docutils literal notranslate"><span class="pre">Frame</span></code></a> object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.planetarylib.PlanetaryConstants.build_frame">
+<code class="descname">build_frame</code><span class="sig-paren">(</span><em>integer</em>, <em>_segment=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.planetarylib.PlanetaryConstants.build_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a frame integer code, return a <a class="reference internal" href="#skyfield.planetarylib.Frame" title="skyfield.planetarylib.Frame"><code class="xref py py-class docutils literal notranslate"><span class="pre">Frame</span></code></a> object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.planetarylib.PlanetaryConstants.build_latlon_degrees">
+<code class="descname">build_latlon_degrees</code><span class="sig-paren">(</span><em>frame</em>, <em>latitude_degrees</em>, <em>longitude_degrees</em>, <em>elevation_m=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.planetarylib.PlanetaryConstants.build_latlon_degrees" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build an object representing a location on a body’s surface.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="skyfield.planetarylib.Frame">
+<em class="property">class </em><code class="descclassname">skyfield.planetarylib.</code><code class="descname">Frame</code><span class="sig-paren">(</span><em>center</em>, <em>segment</em>, <em>matrix</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.planetarylib.Frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Planetary constants frame, for building rotation matrices.</p>
+<dl class="method">
+<dt id="skyfield.planetarylib.Frame.rotation_at">
+<code class="descname">rotation_at</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.planetarylib.Frame.rotation_at" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the rotation matrix for this frame at time <code class="docutils literal notranslate"><span class="pre">t</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.planetarylib.Frame.rotation_and_rate_at">
+<code class="descname">rotation_and_rate_at</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.planetarylib.Frame.rotation_and_rate_at" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return rotation and rate matrices for this frame at time <code class="docutils literal notranslate"><span class="pre">t</span></code>.</p>
+<p>The rate matrix returned is in units of angular motion per day.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+  </body>
+</html>

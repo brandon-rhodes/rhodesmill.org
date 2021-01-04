@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PyCon Trivia Night, Third Edition</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>PyCon Trivia Night, Third Edition</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>9 June 2016</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">computing, python</td>
+</tr>
+</tbody>
+</table>
+<p>At PyCon&nbsp;2016 it was my honor,
+for a third year in a row,
+to host a Trivia Dinner on the first evening of the conference!
+This year’s venue was the storied
+<a class="reference external" href="http://www.mcmenamins.com/CrystalBallroom">Crystal Ballroom</a>,
+a music venue in Downtown Portland’s west end.
+To make sure that our event took full advantage of the big stage,
+I booked the <a class="reference external" href="http://adcap.biz/">Adventure Capitalists</a>,
+who followed up the trivia dinner
+with a rousing set of punk startup tunes:</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Have a conference pass? Come by the Crystal Ballroom and see the Adventure Capitalists! <a href="https://t.co/sg0GxqiDpF">pic.twitter.com/sg0GxqiDpF</a></p>&mdash; PyCon (@pycon) <a href="https://twitter.com/pycon/status/737502417797799936">May 31, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script><p>Last year’s trivia night questions
+focused on such exciting topics as PEP-8 and Python&nbsp;3,
+but it turns out that these were fraught topics
+about which most of the audience were not very familiar.
+So I made a promise:
+the PyCon&nbsp;2016 trivia night would be all Python&nbsp;2, all the time!
+The questions below dive into and celebrate
+the retro roots of the legacy Python language.</p>
+<p>With the dinner complete,
+I can now reveal the questions and answers!
+I will list the questions first,
+in case any readers want to tackle them themselves
+without the danger of the answers scrolling too quickly into view.
+Next, I will list the teams and their scores.
+Finally, I will finish with the answers.</p>
+<hr class="docutils" />
+<div class="section" id="first-round-questions">
+<h2>First Round Questions</h2>
+<ol class="arabic" start="0">
+<li><p class="first">How do you tell the <tt class="docutils literal">print</tt> statement not to follow your output
+with a newline?</p>
+</li>
+<li><p class="first">What is the result of running this statement?</p>
+<div class="highlight"><pre><span class="n">print</span> <span class="o">&gt;&gt;</span><span class="n">None</span><span class="p">,</span> <span class="s">&quot;Hello&quot;</span></pre></div>
+
+</li>
+<li><p class="first">How many bytes long is the string that results from typing this into
+Python&nbsp;2?  <tt class="docutils literal"><span class="pre">&quot;\`\'\&quot;&quot;</span></tt></p>
+</li>
+<li><p class="first">Which of the following Python 2 classes does <em>not</em> live in a module
+of exactly the same name? <tt class="docutils literal">Fraction</tt> <tt class="docutils literal">StringIO</tt> <tt class="docutils literal">UserDict</tt></p>
+</li>
+<li><p class="first">A tab character in a line's leading whitespace (in its “indentation”)
+can represent how many individual space characters (specify a range)?</p>
+</li>
+<li><p class="first">What are the two choices of ASCII character that, when appended to a
+numeric constant, turn it into a complex number?</p>
+</li>
+<li><p class="first">Which of these three C implementations was added to Python 2 last?
+<tt class="docutils literal">cPickle</tt> <tt class="docutils literal">cProfile</tt> <tt class="docutils literal">cStringIO</tt></p>
+</li>
+<li><p class="first">What was Python’s first string interpolation mechanism?</p>
+</li>
+<li><p class="first">“Flat is better than” what?</p>
+</li>
+</ol>
+</div>
+<div class="section" id="second-round-questions">
+<h2>Second Round Questions</h2>
+<ol class="arabic" start="0">
+<li><p class="first">Name at least two languages that inspired the <tt class="docutils literal">&gt;&gt;</tt> syntax for
+<tt class="docutils literal">print</tt>:</p>
+<div class="highlight"><pre><span class="n">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="p">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Hello&quot;</span></pre></div>
+
+</li>
+<li><p class="first">How many bytes long is the string that results from typing this into
+Python&nbsp;2? <tt class="docutils literal">'\12345'</tt></p>
+</li>
+<li><p class="first">What is the name of the keyword argument accepted by the <tt class="docutils literal">list()</tt>
+built-in?</p>
+</li>
+<li><p class="first">Python 2.1 added magic methods for testing equality and inequality.
+What are the names of all six methods?</p>
+</li>
+<li><p class="first">…Their names were borrowed from which other language?</p>
+</li>
+<li><p class="first">What is the result of this Python 2 expression?</p>
+<div class="highlight"><pre><span class="mi">2</span> <span class="o">*</span> <span class="err">`</span><span class="mi">3</span> <span class="o">*</span> <span class="mi">4</span><span class="err">`</span></pre></div>
+
+</li>
+<li><p class="first">What is the result of this Python 2 expression?</p>
+<div class="highlight"><pre><span class="mi">2</span> <span class="o">*</span> <span class="err">`</span><span class="mi">3</span> <span class="o">*</span> <span class="err">`</span><span class="mi">4</span> <span class="o">*</span> <span class="mi">5</span><span class="err">``</span></pre></div>
+
+</li>
+<li><p class="first">Python 2.4 added a new string interpolation mechanism — what is it
+called, and what special character introduces each interpolation?</p>
+</li>
+<li><p class="first">“Although practicality beats” what?</p>
+</li>
+</ol>
+</div>
+<div class="section" id="final-round-questions">
+<h2>Final Round Questions</h2>
+<ol class="arabic" start="0">
+<li><div class="first line-block">
+<div class="line">What writable attribute should your file-like object offer if it</div>
+<div class="line">wants to fully support Python’s <tt class="docutils literal">print</tt> statement?</div>
+</div>
+</li>
+<li><p class="first">How many bytes long is the string that results from typing this into
+Python&nbsp;2? <tt class="docutils literal">'\a\b\c'</tt></p>
+</li>
+<li><p class="first">The built-in <tt class="docutils literal">int()</tt> can take which keyword arguments?</p>
+</li>
+<li><p class="first">Which of the following Python 2 classes does NOT live in a module of
+exactly the same name? <tt class="docutils literal">ConfigParser</tt> <tt class="docutils literal">Queue</tt> <tt class="docutils literal">Telnet</tt></p>
+</li>
+<li><p class="first">The Python&nbsp;2 Reference Manual uses ‘singleton’ once to refer to the
+<tt class="docutils literal">NotImplemented</tt> object, and every other time to refer to what
+concept?</p>
+</li>
+<li><p class="first">In Python&nbsp;2.7, <tt class="docutils literal">sys.version_info</tt> changed from returning what
+original type to what new type?</p>
+</li>
+<li><p class="first">What was the first-ever <tt class="docutils literal">__future__</tt> directive?</p>
+</li>
+<li><p class="first">The Python&nbsp;2.4 release notes describe what new feature as making
+possible, “all sorts of new and shiny evil”?</p>
+</li>
+<li><p class="first">“In the face of ambiguity, refuse the temptation to” what?</p>
+</li>
+</ol>
+</div>
+<hr class="docutils" />
+<div class="section" id="the-winning-teams">
+<h2>The Winning Teams</h2>
+<p>So how did the assembled teams do at tackling these questions?</p>
+<p>I am startled to announce a first-ever 3-way tie
+between the trivia night winning teams!
+Out of a total of 9&nbsp;×&nbsp;3&nbsp;=&nbsp;27 possible points,
+each of the three winning teams scored 17½ total.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="64%" />
+<col width="9%" />
+<col width="9%" />
+<col width="9%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Trivia Team</th>
+<th class="head">1</th>
+<th class="head">2</th>
+<th class="head">3</th>
+<th class="head">Total</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Palm Dakota Dessert Testers</td>
+<td>7</td>
+<td>7</td>
+<td>3½</td>
+<td>17½</td>
+</tr>
+<tr><td>Site Packages</td>
+<td>6</td>
+<td>6</td>
+<td>5½</td>
+<td>17½</td>
+</tr>
+<tr><td>The Government</td>
+<td>6</td>
+<td>5</td>
+<td>6½</td>
+<td>17½</td>
+</tr>
+<tr><td>Bikeshed</td>
+<td>8</td>
+<td>5</td>
+<td>4</td>
+<td>17</td>
+</tr>
+<tr><td>Team Ukraine</td>
+<td>6</td>
+<td>6</td>
+<td>4½</td>
+<td>16½</td>
+</tr>
+<tr><td>team from down__</td>
+<td>5</td>
+<td>6½</td>
+<td>5</td>
+<td>16½</td>
+</tr>
+<tr><td>wtfj</td>
+<td>6</td>
+<td>6</td>
+<td>4</td>
+<td>16</td>
+</tr>
+<tr><td>Hey Siri, Call Mom</td>
+<td>5</td>
+<td>7</td>
+<td>4</td>
+<td>16</td>
+</tr>
+<tr><td>Jessica</td>
+<td>6</td>
+<td>5</td>
+<td>4</td>
+<td>15</td>
+</tr>
+<tr><td>Team Python 4000</td>
+<td>5½</td>
+<td>6</td>
+<td>3½</td>
+<td>15</td>
+</tr>
+<tr><td>Portland Satellites</td>
+<td>5</td>
+<td>4½</td>
+<td>5½</td>
+<td>15</td>
+</tr>
+<tr><td>AI</td>
+<td>7</td>
+<td>5</td>
+<td>2½</td>
+<td>14½</td>
+</tr>
+<tr><td>__del__</td>
+<td>5</td>
+<td>4</td>
+<td>4</td>
+<td>13</td>
+</tr>
+<tr><td>Star-args</td>
+<td>7</td>
+<td>4</td>
+<td>1</td>
+<td>12</td>
+</tr>
+<tr><td>Stripper.py</td>
+<td>6</td>
+<td>3½</td>
+<td>2½</td>
+<td>12</td>
+</tr>
+<tr><td>Meowmeow</td>
+<td>—</td>
+<td>7</td>
+<td>5</td>
+<td>12</td>
+</tr>
+<tr><td>Python 3½</td>
+<td>5</td>
+<td>5</td>
+<td>1½</td>
+<td>11½</td>
+</tr>
+<tr><td>The Python 3 Developers</td>
+<td>3</td>
+<td>6</td>
+<td>2½</td>
+<td>11½</td>
+</tr>
+<tr><td>Just A Flesh Wound</td>
+<td>6</td>
+<td>2½</td>
+<td>2½</td>
+<td>11</td>
+</tr>
+<tr><td>team 5/8</td>
+<td>3</td>
+<td>3</td>
+<td>4½</td>
+<td>10½</td>
+</tr>
+<tr><td>The Dissociative Arrays</td>
+<td>6</td>
+<td>3</td>
+<td>1</td>
+<td>10</td>
+</tr>
+<tr><td>import this</td>
+<td>4</td>
+<td>4</td>
+<td>1½</td>
+<td>9½</td>
+</tr>
+<tr><td>import antigravity</td>
+<td>4</td>
+<td>4</td>
+<td>1</td>
+<td>9</td>
+</tr>
+<tr><td>Nevada</td>
+<td>5</td>
+<td>3½</td>
+<td>0</td>
+<td>8½</td>
+</tr>
+<tr><td>Serpent Trainer</td>
+<td>4</td>
+<td>—</td>
+<td>2</td>
+<td>6</td>
+</tr>
+<tr><td>j.j.w.e.</td>
+<td>5</td>
+<td>—</td>
+<td>—</td>
+<td>5</td>
+</tr>
+<tr><td>PyNoobs</td>
+<td>3</td>
+<td>2</td>
+<td>—</td>
+<td>5</td>
+</tr>
+<tr><td>blue viper</td>
+<td>2</td>
+<td>1</td>
+<td>0</td>
+<td>3</td>
+</tr>
+<tr><td>Pink Panthers</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>A dash in the table above indicates a missing answer sheet,
+that was either never written
+or that did not make it from the team’s table
+to my own table up at the front of the venue.</p>
+<p>One team,
+when they realized that they were not going to be able to answer
+a single one of the difficult final-round questions,
+decided to offer art instead as their contribution:</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">One team at PyCon trivia night, finding themselves without a single final-round answer, decided to offer art instead <a href="https://t.co/9oMf3m0RUt">pic.twitter.com/9oMf3m0RUt</a></p>&mdash; Brandon Rhodes (@brandon_rhodes) <a href="https://twitter.com/brandon_rhodes/status/740961349740560385">June 9, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script><p>As I could not, of course,
+award any points for unsolicited artwork,
+I recognized the team’s effort through the above tweet instead.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="first-round-answers">
+<h2>First Round Answers</h2>
+<ol class="arabic" start="0">
+<li><p class="first">A trailing comma suppresses Python’s usual habit of adding a newline
+at the end of the material that it prints.</p>
+</li>
+<li><p class="first">Printing <tt class="docutils literal">&gt;&gt;None</tt> prints to <tt class="docutils literal">sys.stdout</tt> without the
+inconvenience of making you import <tt class="docutils literal">sys</tt> and name <tt class="docutils literal">stdout</tt>
+directly in your code. This will strike the modern Python programmer
+as needlessly obscure, and a poor trade-off: if a programmer decides
+to use the feature, then almost every other programmer reading the
+code will have to go consult the rules to remember the effect.</p>
+</li>
+<li><p class="first">This question tested knowledge of Python’s string quoting and
+escaping, which it shares with many other languages. Three basic
+rules need to be grasped to answer this question. First: many
+dangerous or unusual characters can be safely typed in a Python
+string constant by preceding them with a backslash — so that the
+single quote in the middle of <tt class="docutils literal"><span class="pre">'what\'s</span> up'</tt> is understood by
+Python to be a simple literal single quote, and not your attempt to
+end the string yet. Second: these rules remain the same whether or
+not the current string’s quoting needs them. There is nothing special
+about a single quote in a double-quoted string, so <tt class="docutils literal">&quot;what's up&quot;</tt> is
+perfectly safe, but Python likes keeping rules symmetric and so
+<tt class="docutils literal"><span class="pre">&quot;what\'s</span> up&quot;</tt> is allowed too. Third, and most dismayingly: if you
+put a backslash in front of a character that does <em>not</em> create a
+recognized backslash code, then instead of giving you an error,
+Python simply assumes you want a backslash in the middle of your
+string. This is C’s behavior, but an example of poor design: most
+users would benefit from an exception of they type an unknown escape
+code, since they can always double up the backslash to make their
+intention clear and be explicit rather than implicit.</p>
+<p>Taking the three elements in <tt class="docutils literal"><span class="pre">&quot;\`\'\&quot;&quot;</span></tt> from right to left:</p>
+<ul class="simple">
+<li><tt class="docutils literal">\&quot;</tt> is the simplest case: you want a double-quote in a
+doubly-quoted string, so you escape it, adding a single double
+quote character to your string.</li>
+<li><tt class="docutils literal">\'</tt> is a bit more of a stretch, because the <tt class="docutils literal">\</tt> is optional:
+you don’t really need it, so what will Python do? As explained
+above, backslash codes work whether the current string needs them
+or not, so this also adds only a single quote character to our
+string.</li>
+<li><tt class="docutils literal">\`</tt> is the outlier. Because a backtick is never special or
+dangerous inside a Python string, no matter how it is quoted, the
+language does not bother to define <tt class="docutils literal">\`</tt> as meaning anything. Since
+it is not a recognized escape code, the language assumes you really
+wanted a backslash and backtick: two characters.</li>
+</ul>
+<p>So the resulting string (when written without quotes or escaping,
+since that would confuse things again!) is <tt class="docutils literal"><span class="pre">\`'&quot;</span></tt> which is 4
+characters long.</p>
+</li>
+<li><p class="first">A bad habit of Python&nbsp;2 was taking unlike things and giving them
+names with exactly the same spelling — and a particular habit was
+giving modules the name of their most useful class. Both <tt class="docutils literal">StringIO</tt>
+and <tt class="docutils literal">UserDict</tt> were the names of both a module and also of the
+class that you usually wanted inside. But <tt class="docutils literal">Fraction</tt> came from the
+<tt class="docutils literal">fractions</tt> module, differentiating the module name with both case
+and pluralization.</p>
+</li>
+<li><p class="first">According to the Python Reference, a tab character always represents
+at least one space, and adds enough spaces to the line to bring the
+cursor to a position that is a multiple of&nbsp;8.  It therefore can range
+from meaning 1&nbsp;space to meaning 8&nbsp;spaces.</p>
+</li>
+<li><p class="first">I had always thought that <tt class="docutils literal">j</tt> was the single letter that could turn
+a number like <tt class="docutils literal">4</tt> into the imaginary number <tt class="docutils literal">4j</tt>, but it turns
+out that the language standard also permits <tt class="docutils literal">4J</tt>.</p>
+</li>
+<li><p class="first">The Python community learned early on that we needed pickling and
+string I/O to happen quickly, but profiling technology matured late
+in the history of Python&nbsp;2, so <tt class="docutils literal">cProfile</tt> was the last of the three
+modules added.</p>
+</li>
+<li><p class="first">Famously, Python took the percent-formatting conventions that the
+C&nbsp;language had locked up inside the <tt class="docutils literal">printf()</tt> and <tt class="docutils literal">sprintf()</tt>
+families of library functions and elevated it to an operator: the
+first Python string interpolation mechanism was <tt class="docutils literal">%</tt> interpolation.</p>
+</li>
+<li><p class="first">From the Zen of Python, that a Python programmer reads each morning
+before we begin to code: &quot;Flat is better than nested.”</p>
+</li>
+</ol>
+</div>
+<div class="section" id="second-round-answers">
+<h2>Second Round Answers</h2>
+<ol class="arabic" start="0">
+<li><p class="first">There are many languages that use <tt class="docutils literal">&gt;&gt;</tt> to direct output to a
+specific file. But according to the BDFL quote in PEP-214, only four
+were known to him as predecessors, and therefore qualify as true
+influences on Python and not simply coincidences: “sh, awk, Perl, and
+C++.”</p>
+<p><a class="reference external" href="https://www.python.org/dev/peps/pep-0214/">https://www.python.org/dev/peps/pep-0214/</a></p>
+</li>
+<li><p class="first">Bell Laboratories programmers in the early 1970s seem to have found
+it easier to think in octal than in hexadecimal, which makes sense:
+we already come to programming familiar with the numbers 0 through&nbsp;7,
+while numbers like “B” and “C” can take a long time to get used
+to. (Without stopping to count, can you state their values?) So octal
+was chosen as the base in which difficult-to-type character codes
+could be written, and three octal digits are all that you need to
+specify an 8-bit character: once the language is done reading up to
+three digits following a backslash, it stops and assumes the rest of
+the string is normal. So <tt class="docutils literal">'\12345'</tt> is a single character <tt class="docutils literal">\123</tt>
+(also known as capital&nbsp;S) followed by the digit <tt class="docutils literal">4</tt> and the digit
+<tt class="docutils literal">5</tt>. The string <tt class="docutils literal">S45</tt> has the length&nbsp;3.</p>
+</li>
+<li><p class="first">This question is all sorts of fun, because the documentation has been
+leading you wrong all of these years. You have probably never used a
+keyword to name the first argument to <tt class="docutils literal">list()</tt>. After all, the
+convention that we can pass an initial value to all built-in types —
+think of calls like <tt class="docutils literal"><span class="pre">int('12')</span></tt> and <tt class="docutils literal"><span class="pre">tuple([3,</span> 4, 5])</tt> — is so
+pervasive that we never feel the need to be more explicit about the
+purpose of those arguments. But we may have seen a dozen times, when
+running <tt class="docutils literal">pydoc list</tt> to remember a method name, the keyword
+argument <tt class="docutils literal">iterable</tt> advertized for the constructor:</p>
+<div class="highlight"><pre><span class="n">Help</span> <span class="n">on</span> <span class="n">class</span> <span class="n">list</span> <span class="n">in</span> <span class="n">module</span> <span class="n">__builtin__</span><span class="o">:</span>
+
+<span class="n">class</span> <span class="n">list</span><span class="p">(</span><span class="n">object</span><span class="p">)</span>
+ <span class="o">|</span>  <span class="n">list</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">new</span> <span class="n">empty</span> <span class="n">list</span>
+ <span class="o">|</span>  <span class="n">list</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">new</span> <span class="n">list</span> <span class="n">initialized</span> <span class="n">from</span> <span class="n">iterable</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">items</span>
+ <span class="o">|</span>  <span class="p">...</span></pre></div>
+
+<p>But the documentation is wrong! In the C code of the <tt class="docutils literal">list()</tt>
+initializer, the keyword argument is called <tt class="docutils literal">sequence</tt>, and you can
+verify this by calling it with this keyword argument yourself.</p>
+</li>
+<li><p class="first">The six “rich comparison” method names are:</p>
+<div class="highlight"><pre><span class="n">__eq__</span><span class="p">()</span> <span class="n">__ne__</span><span class="p">()</span> <span class="n">__gt__</span><span class="p">()</span> <span class="n">__lt__</span><span class="p">()</span> <span class="n">__ge__</span><span class="p">()</span> <span class="n">__le__</span><span class="p">()</span></pre></div>
+
+<p>I gave ½ point if a team knew most of them but got one or two wrong,
+and also ½ point if a team knew them all but forgot to put dunders
+around them.</p>
+</li>
+<li><p class="first">While several other languages might also use these abbreviations for
+“greater than,” “less than,” and so on, they all go back to a common
+ancestor: the naming convention comes from Fortran. As PEP-207 says,
+“You gotta love the Fortran heritage.”</p>
+</li>
+<li><p class="first">Okay, this is fun: Python&nbsp;2 has a special syntax for evaluating an
+expression and turning it into a string!  This is probably the most
+Perl-like feature of Python&nbsp;2’s syntax, the place where it most
+severely goes off of the rails and uses obscure characters for
+something that could more easily (and readably!) spelled out. Since
+<tt class="docutils literal">`3 * 4`</tt> will evaluate to the string <tt class="docutils literal">'12'</tt>, multiplying the result
+by two results in the string <tt class="docutils literal">'1212'</tt>.</p>
+</li>
+<li><p class="first">And this question is even more fun: to answer it, you need to know
+that the <em>kind</em> of string generated by putting backticks around an
+expression is not a <tt class="docutils literal">str()</tt> string, but a <tt class="docutils literal">repr()</tt> string! So
+after the multiplication by 3 has produced the characters <tt class="docutils literal">202020</tt>,
+the outer pair of backticks go to work by running <tt class="docutils literal">repr()</tt> which
+slaps a pair of single quotes around those characters. Multiplying
+this by 2 gives the final string (if we write it out without quotes,
+to keep things simple):</p>
+<div class="highlight"><pre><span class="err">&#39;</span><span class="mi">202020</span><span class="err">&#39;&#39;</span><span class="mi">202020</span><span class="err">&#39;</span></pre></div>
+
+<p>Oh, and, yes: legacy Python thought its backtick mechanism was so
+important that people would be using backticks <em>inside</em> of backticks,
+so the parser is carefully crafted to correctly handle concentric
+backticks. This expression is not, as many of you had fondly hoped, a
+syntax error!</p>
+</li>
+<li><p class="first">Python&nbsp;2.4, believe it or not, went to the trouble of adding a whole
+new string interpolation mechanism that no one ever uses: the
+<tt class="docutils literal">string.Template</tt> class! It accepts strings like <tt class="docutils literal">'Hello,
+$name!'</tt> that use a <tt class="docutils literal">$</tt> to mark each place that a value should be
+interpolated. Python&nbsp;2 had a habit of introducing more string
+interpolation mechanisms than the community would actually decide to
+use, and there are hints that Python&nbsp;3 is making plans to continue
+that tradition.</p>
+</li>
+<li><p class="first">From the copy of the Zen of Python that you keep by your morning
+breakfast cereal: “Although practicality beats purity.”</p>
+</li>
+</ol>
+</div>
+<div class="section" id="final-round-answers">
+<h2>Final Round Answers</h2>
+<ol class="arabic" start="0">
+<li><p class="first">Your file-like object needs a writable <tt class="docutils literal">softspace</tt> attribute if a
+<tt class="docutils literal">print</tt> statement that ends with a comma is going to be able to
+signal to the following <tt class="docutils literal">print</tt> statement that it needs to precede
+its own material with a space to separate it from the material that
+was already printed.</p>
+</li>
+<li><p class="first">Like the same question in the first round, this tests whether you
+know the backslash escape codes common to the entire family of
+languages that derive their string syntax from the C&nbsp;language. The
+code <tt class="docutils literal">\a</tt> means the ASCII BEL character (which rang the bell attached
+to old teletypes) and <tt class="docutils literal">\b</tt> is backspace, so each of those
+two-character escape sequences in the written string represent one
+real character apiece. But <tt class="docutils literal">\c</tt> does not mean anything special, so it
+remains the two characters backslash and <em>c</em>. So the resulting string
+is 4 bytes long.</p>
+</li>
+<li><p class="first">In this case, the docstring shown to you by <tt class="docutils literal">pydoc</tt> will not have led
+you astray, if you happened to remember it. The second argument has
+the obvious name <tt class="docutils literal">base</tt> since it lets you specify whether a string
+you have supplied is expected to be in base&nbsp;8, or base&nbsp;10, or base&nbsp;16
+or whatever. The first argument is more obscurely named: the
+initializer specifying the integer’s value is named <tt class="docutils literal">x</tt>. I gave ½
+point if a team knew one but not the other.</p>
+</li>
+<li><p class="first">The <tt class="docutils literal">Telnet</tt> class lives inside of the <tt class="docutils literal">telnetlib</tt> module instead of
+simply living inside of a module of the same name as itself.</p>
+</li>
+<li><p class="first">Believe it or not, the Reference Manual for Python&nbsp;2 consistently
+uses ‘singleton’ as the technical term for a tuple of length one.</p>
+</li>
+<li><p class="first">In Python 2.7, <tt class="docutils literal">sys.version_info()</tt> stopped returning a plain tuple
+that supported only item access, and started returning a named tuple
+whose elements could also be fetched through attributes like <tt class="docutils literal">.major</tt>
+and <tt class="docutils literal">.minor</tt>. I also gave credit if a team’s answer sheet named the
+specific named-tuple type that gets returned — which just happens to
+be the type <tt class="docutils literal">sys.version_info</tt>!</p>
+</li>
+<li><p class="first">The first-ever <tt class="docutils literal">__future__</tt> directive was:</p>
+<div class="highlight"><pre><span class="n">from</span> <span class="n">__future__</span> <span class="n">import</span> <span class="n">nested_scopes</span></pre></div>
+
+<p>Nested scopes were considered dangerous enough that they needed to be
+an opt-in feature for an entire Python version before they became
+official.</p>
+</li>
+<li><p class="first">The powerful language feature introduced in Python&nbsp;2.4 that was going
+to make possible “all sorts of new and shiny evil” is, startlingly
+enough, the fact that “<tt class="docutils literal">eval()</tt> now accepts any form of object that
+acts as a mapping as its argument for locals.”  Once again, a new
+feature that was apparently expected to open up whole new ways of
+using Python wound up going almost entirely unused — I cannot
+remember once, in even the most magic-ridden Python code, ever having
+seen this superpower taken advantage of.</p>
+</li>
+<li><p class="first">From the copy of the Zen of Python that you re-read on your beach
+vacation as the surf crashes in the background: “In the face of
+ambiguity, refuse the temptation to <em>guess</em>.”</p>
+</li>
+</ol>
+</div>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'rhodesmill';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<p class="byline">©2020</p>
+
+</body>
+</html>

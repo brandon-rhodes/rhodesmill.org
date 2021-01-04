@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Development Notes</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="development-notes">
+<h1>Development Notes<a class="headerlink" href="#development-notes" title="Permalink to this headline">¶</a></h1>
+<p>These short topics introduce new developers to some of the core concepts
+of the Skyfield library, to help them be productive and to make good use
+of the conventions laid down in the existing code base.</p>
+<p>(Wondering how to do fundamental_arguments() without reshape:)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">cross</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">float64</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">4.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">,</span><span class="mf">6.0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arg1</span> <span class="o">=</span> <span class="n">float64</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">argn</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arg1</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,)</span>
+<span class="go">array([ 8., 10., 12.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">argn</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">array([[ 8., 12.],</span>
+<span class="go">       [10., 15.],</span>
+<span class="go">       [12., 18.]])</span>
+</pre></div>
+</div>
+<div class="section" id="importing-numpy">
+<h2>Importing NumPy<a class="headerlink" href="#importing-numpy" title="Permalink to this headline">¶</a></h2>
+<p>Code examples in the Skyfield documentation that need NumPy
+will always import it as <code class="docutils literal notranslate"><span class="pre">np</span></code>
+as that is the standard practice in the wider SciPy community.
+Examples will then use NumPy features
+through fully qualified names like <code class="docutils literal notranslate"><span class="pre">np.array</span></code>
+since that is how users —
+especially users new to the scientific Python ecosystem —
+should be advised to structure their own code.</p>
+<p>However, because Skyfield code itself
+is presumed to always use NumPy
+in preference to built-in Python numerics,
+the hundreds of <code class="docutils literal notranslate"><span class="pre">np.</span></code> prefixes would add only noise.
+As a consequence, Skyfield’s modules themselves simply do a
+<code class="docutils literal notranslate"><span class="pre">from</span></code> <code class="docutils literal notranslate"><span class="pre">numpy</span></code> <code class="docutils literal notranslate"><span class="pre">import</span></code> of any names that they need.</p>
+</div>
+<div class="section" id="scalar-theory">
+<h2>Scalar Theory<a class="headerlink" href="#scalar-theory" title="Permalink to this headline">¶</a></h2>
+<p>The Skyfield library is designed both for the use of naive users who
+understand only the concept of a single date and resulting position, as
+well as for users who confidently submit entire NumPy arrays of dates
+for which they expect entire arrays of output.</p>
+<p>How can a single API support both?</p>
+<p>To begin with, all lower-level functions use pure vectors.  So when
+implementing a fundamental algorithm, go ahead and assume that dates and
+positions are all going to be vectors holding zero or more quantities.</p>
+<p>It is only the top-level friendly API classes that need to support
+scalars.  They each do this through two maneuvers: <em>wrapping</em> each
+incoming scalar value as a length-one array, and <em>unwrapping</em> the
+resulting outputs before the user sees them.</p>
+<p>The maneuver is only slightly complicated by the fact that, when working
+in a NumPy universe, there are two slightly different kinds of scalars
+that the user might submit.</p>
+<ol class="arabic">
+<li><p class="first">A normal Python <code class="docutils literal notranslate"><span class="pre">float</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code> is a scalar, and lacks all of
+the special attributes that NumPy arrays enjoy.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="mf">3.4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+<span class="go">&#39;float&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">But NumPy also offers its own form of scalar: objects that have the
+same attributes and methods as arrays, but that have the empty tuple
+<code class="docutils literal notranslate"><span class="pre">()</span></code> as their <code class="docutils literal notranslate"><span class="pre">.shape</span></code> instead of specifying one or more
+dimensions.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mf">3.4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">()</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Our official approach to testing scalar-hood, therefore, is to attempt
+to access the shape to determine whether it is the empty tuple, with the
+empty tuple provided as the fallback if the object lacks a shape
+entirely:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="p">())</span> <span class="o">==</span> <span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="p">())</span> <span class="o">==</span> <span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">7</span><span class="p">]),</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="p">())</span> <span class="o">!=</span> <span class="p">()</span>
+</pre></div>
+</div>
+<p>Note that, in addition, an empty array does <em>not</em> qualify as a scalar:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]),</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="p">())</span> <span class="o">!=</span> <span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="cross-products">
+<h2>Cross products<a class="headerlink" href="#cross-products" title="Permalink to this headline">¶</a></h2>
+<p>How can we compute a cross product while remaining agnostic about
+whether the two vectors we have been handed have a second dimension?</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The simple cross product between our 3-vectors:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cross</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="go">array([-6, 12, -6])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cross</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="go">array([ 8, -7, -4])</span>
+</pre></div>
+</div>
+<p>Now we combine our vectors into stacks of values across the final
+dimension of a matrix:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ab</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ab</span>
+<span class="go">array([[1, 6],</span>
+<span class="go">       [2, 4],</span>
+<span class="go">       [3, 5]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pq</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pq</span>
+<span class="go">array([[7, 1],</span>
+<span class="go">       [8, 0],</span>
+<span class="go">       [9, 2]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cross</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">pq</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="go">array([[-6,  8],</span>
+<span class="go">       [12, -7],</span>
+<span class="go">       [-6, -4]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>&lt;stdin&gt;</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="slide">
+
+<!-- xrandr - -output HDMI2 - -same-as eDP1 - -mode 1024x768 -->
+<style>
+  .big {font-size: 3em; font-style: italic;}
+  .section {position: relative;}
+  .reading-mode .note {font-style: italic;}
+  .reading-mode .admonition-title {display: none;}
+  .presentation-mode .note {position: absolute; left: 101%; top: 0;}
+  .presentation-mode .note {color: white; top: 250px; font-size: 0.5em;
+    width: 300px}
+  .small {font-size: 0.75em;}
+  .strike {text-decoration: line-through;}
+
+  body {font-family: "Gentium Basic"}
+  body.presentation-mode pre {
+    /* font-size: 36px; */
+  }
+  em {font-size: 1.04em;}
+</style><div class="line-block">
+<div class="line"><em>Using Python to Power</em></div>
+<div class="line"><em>Selenium at Scale</em></div>
+</div>
+<div class="line-block">
+<div class="line">PyCon Canada 2016</div>
+<div class="line"><strong>&#64;brandon_rhodes</strong></div>
+</div>
+</div>
+<div class="section" id="q">
+<h1>Q:</h1>
+<p>What is <em>Selenium?</em></p>
+</div>
+<div class="section" id="id1">
+
+<p>Java | Python | Perl | PHP | …</p>
+<p>↓↑</p>
+<p><strong>Selenium API</strong></p>
+<p>↓↑</p>
+<p>Browser</p>
+</div>
+<div class="section" id="id2">
+
+<div class="highlight"><pre><span></span><span class="c1"># Underlying mechanism:</span>
+<span class="c1"># run arbitrary JavaScript</span>
+<span class="c1"># in main browser UI thread</span>
+
+<span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;…&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id3">
+
+<div class="highlight"><pre><span></span><span class="c1"># Send and receive strings, numbers,</span>
+<span class="c1"># lists, dicts, DOM elements.</span>
+
+<span class="n">value1</span><span class="p">,</span> <span class="n">value2</span><span class="p">,</span> <span class="n">value3</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span>
+    <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id4">
+
+<div class="highlight"><pre><span></span><span class="c1"># Python API</span>
+
+<span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://2016.pycon.ca/en/&#39;</span><span class="p">)</span>
+
+<span class="c1"># (Selenium method names are too long!)</span>
+<span class="n">find</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_css_selector</span>
+
+<span class="n">h2</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="s1">&#39;h2&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="s1">&#39;Toronto&#39;</span> <span class="ow">in</span> <span class="n">h2</span><span class="o">.</span><span class="n">text</span>
+<span class="n">nav</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="s1">&#39;.navigation__link&#39;</span><span class="p">)</span>
+<span class="n">nav</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+</pre></div>
+
+<!-- slide
+- - - - -
+
+**Q:**
+
+| Are your Selenium tests
+| *integration tests*
+
+or
+
+| will you *run against mocks*?
+
+Accuracy *vs* simplicity & speed
+
+slide
+- - - - -
+
+| ✓ Integration Suite
+|
+
+slide
+- - - - -
+
+| ✓ Integration Suite, *but*
+| ✓ we use a few mock services! -->
+</div>
+<div class="section" id="id5">
+
+<p><em>Selenium</em> tests are <strong>expensive</strong></p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id6">
+
+<p><em>Selenium</em> tests are <strong>expensive</strong></p>
+<div class="line-block">
+<div class="line">Avoid letting unit</div>
+<div class="line">tests creep in—</div>
+</div>
+</div>
+<div class="section" id="id7">
+
+<video loop="loop" height="750px">
+<source src="file-history.mp4" type="video/mp4" />
+</video></div>
+<div class="section" id="id8">
+
+<div class="line-block">
+<div class="line"><em>Do not</em> use your</div>
+<div class="line">Selenium tests to iterate</div>
+<div class="line">across <strong>edge cases!</strong></div>
+</div>
+<div class="line-block">
+<div class="line">Use unit tests <em>instead</em></div>
+</div>
+</div>
+<div class="section" id="two-big-problems">
+<h1>Two big problems</h1>
+</div>
+<div class="section" id="id9">
+
+<p>Selenium tests are:</p>
+<ol class="arabic simple">
+<li><em>flaky</em></li>
+<li><strong>expensive</strong></li>
+</ol>
+</div>
+<div class="section" id="flaky">
+<h1>Flaky</h1>
+<div class="line-block">
+<div class="line">Selenium makes it <em>easy</em></div>
+<div class="line">to write <strong>broken tests</strong></div>
+</div>
+</div>
+<div class="section" id="id10">
+
+<div class="highlight"><pre><span></span><span class="n">find</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements_by_css_selector</span>
+
+<span class="n">find</span><span class="p">(</span><span class="s1">&#39;.navigation__link&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">driver</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;h1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s1">&#39;Schedule&#39;</span>
+
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+</pre></div>
+
+</div>
+<div class="section" id="id11">
+
+<div class="highlight"><pre><span></span><span class="n">find</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements_by_css_selector</span>
+
+<span class="n">find</span><span class="p">(</span><span class="s1">&#39;.navigation__link&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">driver</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;h1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s1">&#39;Schedule&#39;</span>
+
+<span class="c1"># Broken!</span>
+<span class="c1">#  Might grab &lt;h1&gt; on current page</span>
+<span class="c1">#  Might select before &lt;h1&gt; arrives</span>
+</pre></div>
+
+<!-- Q:
+- -
+
+Where do flakes come from?
+
+1. Bugs in the app
+- - - - - - - - - - - - - - - - - -
+
+| Example: button appears
+| before it can be clicked
+
+2. Bugs in the test
+- - - - - - - - - - - - - - - - - - -
+
+| Failing to wait
+| Edge cases in browser— -->
+</div>
+<div class="section" id="id12">
+
+<div class="line-block">
+<div class="line">Sometimes <em>browser</em> behavior</div>
+<div class="line">is flaky in Selenium</div>
+</div>
+</div>
+<div class="section" id="id13">
+
+<video loop="loop" height="750px">
+<source src="comment-anywhere.mp4" type="video/mp4" />
+</video></div>
+<div class="section" id="selenium-tests-are-flaky">
+<h1>“Selenium tests are flaky”</h1>
+</div>
+<div class="section" id="id14">
+
+<div class="line-block">
+<div class="line">Makes engineers <strong>sad</strong></div>
+<div class="line">to fix them</div>
+</div>
+<p>“But the test <em>passes</em> on my laptop!”</p>
+</div>
+<div class="section" id="id15">
+
+<div class="line-block">
+<div class="line">Engineers start to</div>
+<div class="line"><strong>ignore</strong> red builds</div>
+</div>
+<p>“It’s probably just a flake.”</p>
+</div>
+<div class="section" id="id16">
+
+<img alt="changes.png" src="changes.png" style="width: 1020px;" />
+</div>
+<div class="section" id="quest-for-green">
+<h1>Quest for Green</h1>
+<div class="line-block">
+<div class="line">We added <strong>armor</strong></div>
+<div class="line">to our Selenium suite</div>
+<div class="line">and to our <em>continuous integration</em></div>
+</div>
+</div>
+<div class="section" id="commit-queue">
+<h1>Commit Queue</h1>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="n">your</span> <span class="n">branch</span><span class="p">)</span>
+<span class="err">──</span><span class="n">diff</span><span class="err">──</span> <span class="err">×</span> <span class="err">──</span><span class="n">diff</span><span class="err">──</span> <span class="err">✓</span> <span class="err">──</span><span class="n">land</span>
+                          <span class="err">│</span>
+                          <span class="err">│</span>
+                          <span class="err">│</span>
+<span class="p">(</span><span class="n">master</span><span class="p">)</span> <span class="err">─</span> <span class="err">✓</span> <span class="err">──</span> <span class="err">✓</span> <span class="err">──</span> <span class="err">✓</span> <span class="err">──</span> <span class="err">?</span> <span class="err">──</span>   <span class="err">──</span>   <span class="err">──</span>   <span class="err">──</span>   <span class="err">──</span>
+</pre></div>
+
+</div>
+<div class="section" id="id17">
+<h1>Commit Queue</h1>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="n">your</span> <span class="n">branch</span><span class="p">)</span>
+<span class="err">──</span><span class="n">diff</span><span class="err">──</span> <span class="err">×</span> <span class="err">──</span><span class="n">diff</span><span class="err">──</span> <span class="err">✓</span> <span class="err">──</span><span class="n">land</span>
+                            <span class="err">╲</span>
+                             <span class="err">✓</span> <span class="n">rebase</span> <span class="o">+</span> <span class="n">retest</span>
+                              <span class="err">╲</span>
+<span class="p">(</span><span class="n">master</span><span class="p">)</span> <span class="err">─</span> <span class="err">✓</span> <span class="err">──</span> <span class="err">✓</span> <span class="err">──</span> <span class="err">✓</span> <span class="err">──</span> <span class="err">✓</span> <span class="err">──</span> <span class="err">?</span> <span class="err">──</span>   <span class="err">──</span>   <span class="err">──</span>   <span class="err">──</span>
+</pre></div>
+
+</div>
+<div class="section" id="id18">
+<h1>Commit Queue</h1>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="n">your</span> <span class="n">branch</span><span class="p">)</span>
+<span class="err">──</span><span class="n">diff</span><span class="err">──</span> <span class="err">×</span> <span class="err">──</span><span class="n">diff</span><span class="err">──</span> <span class="err">✓</span> <span class="err">──</span><span class="n">land</span>
+                            <span class="err">╲</span>
+                             <span class="err">✓</span> <span class="n">rebase</span> <span class="o">+</span> <span class="n">retest</span>
+                              <span class="err">╲</span>
+<span class="p">(</span><span class="n">master</span><span class="p">)</span> <span class="err">─</span> <span class="err">✓</span> <span class="err">──</span> <span class="err">✓</span> <span class="err">──</span> <span class="err">✓</span> <span class="err">──</span> <span class="err">✓</span> <span class="err">──</span> <span class="err">✓</span> <span class="err">──</span> <span class="err">✓</span> <span class="err">──</span> <span class="err">✓</span> <span class="err">──</span> <span class="err">✓</span> <span class="err">──</span>
+</pre></div>
+
+<!-- slide
+- - - - -
+
+| *Expense:* diff is tested
+| at least **3 times**
+
+| *Win:* very difficult for a
+| commit to break master -->
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line">But: could the Selenium</div>
+<div class="line">build <em>ever</em> qualify?</div>
+</div>
+</div>
+<div class="section" id="quarantine">
+<h1>Quarantine</h1>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>pass-fail-pass</p>
+</div>
+<div class="section" id="id21">
+
+<p>A test in Quarantine:</p>
+<ul class="simple">
+<li>Has a task filed</li>
+<li>Keeps running</li>
+<li>Generates <em>history</em></li>
+<li><strong>Doesn’t</strong> make build red</li>
+</ul>
+</div>
+<div class="section" id="oncall">
+<h1>Oncall</h1>
+</div>
+<div class="section" id="id22">
+
+<ul class="simple">
+<li>Studies <strong>which change</strong> broke build</li>
+<li>Correlation ≠ causation</li>
+<li>Decide whether to <em>revert</em> or <em>fix</em></li>
+</ul>
+</div>
+<div class="section" id="auto-retry">
+<h1>Auto-retry</h1>
+</div>
+<div class="section" id="id23">
+
+<div class="line-block">
+<div class="line">“But,” I hear you cry, “a <em>retry</em></div>
+<div class="line">can mask a <strong>real failure!”</strong></div>
+</div>
+</div>
+<div class="section" id="id24">
+
+<p>Damage of false <strong>red</strong></p>
+<p>≫</p>
+<p>damage false <em>green</em></p>
+</div>
+<div class="section" id="armor">
+<h1>Armor</h1>
+<ul class="simple">
+<li>Commit queue</li>
+<li>Quarantine</li>
+<li>Build oncall</li>
+<li>Auto-retry</li>
+<li><em>Et cetera:</em> Block outbound HTTP</li>
+</ul>
+</div>
+<div class="section" id="id25">
+
+<p><em>January 2016</em></p>
+<div class="line-block">
+<div class="line">Dropbox’s Selenium test</div>
+<div class="line">suite was approved as a Commit</div>
+<div class="line">Queue <strong>blocking build</strong></div>
+</div>
+<img alt="green-check.png" src="green-check.png" style="height: 90px;" />
+<img alt="green-check.png" src="green-check.png" style="height: 90px;" />
+<img alt="green-check.png" src="green-check.png" style="height: 90px;" />
+</div>
+<div class="section" id="scale">
+<h1>Scale</h1>
+</div>
+<div class="section" id="shard">
+<h1>shard</h1>
+</div>
+<div class="section" id="id26">
+
+<div class="line-block">
+<div class="line"><strong>But remember,</strong></div>
+<div class="line">with <em>n</em> shards:</div>
+</div>
+<p>(test_time ÷ <em>n</em>) + (setup_time × <em>n</em>)</p>
+</div>
+<div class="section" id="expense">
+<h1>Expense</h1>
+<div class="line-block">
+<div class="line"><em>t</em> minute suite</div>
+<div class="line">×</div>
+<div class="line"><em>n</em> developers</div>
+<div class="line">×</div>
+<div class="line"><em>m</em> diffs per day</div>
+<div class="line">×</div>
+<div class="line"><em>≥3</em> builds per diff</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id27">
+<h1>Expense</h1>
+<div class="line-block">
+<div class="line">120 minute suite</div>
+<div class="line">×</div>
+<div class="line">100 developers</div>
+<div class="line">×</div>
+<div class="line">2 diffs per day</div>
+<div class="line">×</div>
+<div class="line">5 builds per diff</div>
+</div>
+<div class="line-block">
+<div class="line">= 2,000 hours / day</div>
+</div>
+</div>
+<div class="section" id="id28">
+
+<div class="line-block">
+<div class="line">2,000 hours / day</div>
+<div class="line">× 20¢ EC2 instance</div>
+</div>
+<div class="line-block">
+<div class="line">= <strong>$400</strong> / working day</div>
+</div>
+<div class="line-block">
+<div class="line">= <strong>$104k</strong> / year</div>
+</div>
+</div>
+<div class="section" id="runway">
+<h1>Runway</h1>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id29">
+<h1>Runway</h1>
+<div class="line-block">
+<div class="line">“Dropbox is cash flow positive”</div>
+<div class="line"><em>— Drew Houston, June 2016</em></div>
+</div>
+</div>
+<div class="section" id="cost-control">
+<h1>Cost control</h1>
+</div>
+<div class="section" id="narrow-triggers">
+<h1>Narrow triggers</h1>
+<div class="line-block">
+<div class="line">Whitelist or blacklist per build</div>
+<div class="line">to avoid running all <strong>suites</strong></div>
+<div class="line">on all <em>commits</em></div>
+</div>
+</div>
+<div class="section" id="at-scale">
+<h1>At scale</h1>
+<div class="line-block">
+<div class="line"><strong>Don’t be a purist —</strong></div>
+<div class="line">poke holes for <em>fixtures</em></div>
+</div>
+</div>
+<div class="section" id="id30">
+
+<div class="line-block">
+<div class="line">“Create a <em>user</em> with both</div>
+<div class="line">a <em>work</em> and <em>personal</em> Dropbox account</div>
+<div class="line">who is a member of <em>2 shared folders</em>”</div>
+</div>
+</div>
+<div class="section" id="id31">
+<h1>At scale</h1>
+<ul class="simple">
+<li><strong>Never clean up</strong> database after a test</li>
+<li>Just have each test create a <em>new user</em></li>
+</ul>
+</div>
+<div class="section" id="id32">
+<h1>At scale</h1>
+<ul class="simple">
+<li>Browser is <strong>slow</strong> to restart</li>
+<li>So <em>reuse</em> when possible!</li>
+</ul>
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line">Isolation does get <strong>more difficult</strong></div>
+<div class="line">if you save time by re-using the browser</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">window_handles</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">switch_to_window</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="teardown">
+<h1>Teardown</h1>
+<ul class="simple">
+<li>Close extra windows</li>
+<li>Dismiss alert boxes</li>
+<li>Delete cookies</li>
+</ul>
+</div>
+<div class="section" id="id34">
+
+<div class="line-block">
+<div class="line"><em>Warning:</em> The Selenium method</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">driver.delete_all_cookies()</tt></div>
+</div>
+<div class="line-block">
+<div class="line">only deletes cookies for</div>
+<div class="line">the <em>current domain</em></div>
+</div>
+</div>
+<div class="section" id="id35">
+
+<div class="line-block">
+<div class="line"><em>Retry</em> with <strong>greater isolation</strong></div>
+</div>
+<div class="line-block">
+<div class="line">Every test that fails</div>
+<div class="line">is immediately re-run</div>
+<div class="line">with a fresh browser</div>
+</div>
+</div>
+<div class="section" id="id36">
+<h1>At scale</h1>
+<p>Dispose of the VM</p>
+</div>
+<div class="section" id="id37">
+
+<div class="line-block">
+<div class="line">What data should be rescued</div>
+<div class="line">before the VM is deleted?</div>
+</div>
+</div>
+<div class="section" id="id38">
+
+<ul class="simple">
+<li><strong>Traceback</strong> of test failure</li>
+<li>Both <em>stdout</em> and <em>stderr</em> output</li>
+<li><strong>Screenshot</strong> of each window</li>
+<li>Full <tt class="docutils literal">py.test</tt> <tt class="docutils literal"><span class="pre">-v</span></tt> output</li>
+<li><em>Log file</em> excerpts</li>
+</ul>
+</div>
+<div class="section" id="id39">
+
+<div class="line-block">
+<div class="line">We used to deliver logfile</div>
+<div class="line">snippets that started</div>
+<div class="line">when the test did</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">===</span> <span class="n">TEST</span> <span class="n">START</span> <span class="o">===</span>
+<span class="o">...</span>
+<span class="o">====</span> <span class="n">TEST</span> <span class="n">END</span> <span class="o">====</span>
+</pre></div>
+
+</div>
+<div class="section" id="id40">
+
+<div class="line-block">
+<div class="line"><strong>Problem:</strong> You can’t see</div>
+<div class="line">what happened right <em>before</em></div>
+<div class="line">your test started.</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">===</span> <span class="n">TEST</span> <span class="n">START</span> <span class="o">===</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="o">...</span>
+<span class="ne">Exception</span><span class="p">:</span> <span class="o">...</span>
+<span class="o">====</span> <span class="n">TEST</span> <span class="n">END</span> <span class="o">====</span>
+</pre></div>
+
+</div>
+<div class="section" id="id41">
+
+<div class="highlight"><pre><span></span><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="o">...</span>
+<span class="ne">Exception</span><span class="p">:</span> <span class="o">...</span>
+<span class="n">Service</span> <span class="n">halted</span><span class="p">;</span> <span class="n">restarting</span>
+<span class="n">Service</span> <span class="n">halted</span><span class="p">;</span> <span class="n">restarting</span>
+<span class="o">===</span> <span class="n">TEST</span> <span class="n">START</span> <span class="o">===</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="o">...</span>
+<span class="ne">Exception</span><span class="p">:</span> <span class="o">...</span>
+<span class="o">====</span> <span class="n">TEST</span> <span class="n">END</span> <span class="o">====</span>
+</pre></div>
+
+</div>
+<div class="section" id="id42">
+<h1>Scale</h1>
+<p>Use only one browser</p>
+</div>
+<div class="section" id="id43">
+<h1>Scale</h1>
+<ul class="simple">
+<li>Narrow triggers</li>
+<li>Fixtures</li>
+<li>Never reset database</li>
+<li>Reuse the running browser</li>
+<li>Throw away container</li>
+<li>Use only one browser</li>
+</ul>
+</div>
+<div class="section" id="writing-tests">
+<h1>Writing Tests</h1>
+</div>
+<div class="section" id="id44">
+
+<p><em>Avoid raw Selenium</em></p>
+</div>
+<div class="section" id="id45">
+
+<p>Test API</p>
+<ul>
+<li><p class="first">Wait for elements</p>
+</li>
+<li><p class="first">Timeouts everywhere</p>
+</li>
+<li><div class="first line-block">
+<div class="line">Festoon <em>everything</em></div>
+<div class="line"><tt class="docutils literal">sample.txt</tt> → <tt class="docutils literal"><span class="pre">sample&#64;#$%^.txt</span></tt></div>
+</div>
+</li>
+<li><p class="first">Use your site like a human—</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id46">
+
+<img alt="two-buttons.jpg" src="two-buttons.jpg" style="width: 1000px;" />
+</div>
+<div class="section" id="id47">
+
+<div class="highlight"><pre><span></span><span class="c1"># No</span>
+
+<span class="n">find</span><span class="p">(</span><span class="s1">&#39;.navigation__link&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+<span class="n">find</span><span class="p">(</span><span class="s1">&#39;._sd_login_button&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Yes</span>
+
+<span class="n">find_link</span><span class="p">(</span><span class="s1">&#39;Schedule&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+<span class="n">find_button</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="using-the-web-like-a-human">
+<h1>Using the web like a human</h1>
+<ul class="simple">
+<li>Insist that element is visible</li>
+<li>Insist that element is accessible</li>
+<li>Avoid multiple js round-trips—</li>
+</ul>
+</div>
+<div class="section" id="id48">
+
+<div class="highlight"><pre><span></span><span class="c1"># Turns out? This is N round-trips!</span>
+
+<span class="p">[</span><span class="n">button</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s1">&#39;Login&#39;</span>
+ <span class="k">for</span> <span class="n">button</span> <span class="ow">in</span> <span class="n">find</span><span class="p">(</span><span class="s1">&#39;button&#39;</span><span class="p">)]</span>
+</pre></div>
+
+</div>
+<div class="section" id="problem-custom-solution">
+<h1>Problem: custom solution</h1>
+<div class="line-block">
+<div class="line">Haphazard in-house routines,</div>
+<div class="line">some used everywhere, some used</div>
+<div class="line">only in particular suites</div>
+</div>
+</div>
+<div class="section" id="solution">
+<h1>Solution</h1>
+<p><a class="reference external" href="https://github.com/elliterate/capybara.py">https://github.com/elliterate/capybara.py</a></p>
+<div class="highlight"><pre><span></span><span class="n">page</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+<span class="n">page</span><span class="o">.</span><span class="n">click_link</span><span class="p">(</span><span class="s2">&quot;Sign in&quot;</span><span class="p">)</span>
+
+<span class="n">page</span><span class="o">.</span><span class="n">fill_in</span><span class="p">(</span><span class="s2">&quot;Username&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;user@example.com&quot;</span><span class="p">)</span>
+<span class="n">page</span><span class="o">.</span><span class="n">fill_in</span><span class="p">(</span><span class="s2">&quot;Password&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;password&quot;</span><span class="p">)</span>
+<span class="n">page</span><span class="o">.</span><span class="n">click_button</span><span class="p">(</span><span class="s2">&quot;Sign in&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="gating">
+<h1>Gating</h1>
+<div class="line-block">
+<div class="line">Configuration flags</div>
+<div class="line">1. Gate an <strong>experiment</strong></div>
+<div class="line">2. Gate an <em>A/B</em> test</div>
+</div>
+</div>
+<div class="section" id="id49">
+<h1>Gating</h1>
+<div class="line-block">
+<div class="line">Problem: You can’t run</div>
+<div class="line">the <strong>whole suite</strong> under all</div>
+</div>
+<div class="line-block">
+<div class="line">2<sup>n</sup></div>
+</div>
+<p>combinations of <em>n</em> gates</p>
+</div>
+<div class="section" id="id50">
+<h1>Gating</h1>
+<ul class="simple">
+<li>Do <strong>not</strong> use prod settings</li>
+<li>Instead, file full of <em>test defaults</em></li>
+<li>Dev should move test setting, <strong>then</strong> prod</li>
+<li>Email developers when they drift</li>
+</ul>
+</div>
+<div class="section" id="id51">
+
+<p>Provide:</p>
+<ul class="simple">
+<li>A decorator <strong>&#64;gates(…)</strong></li>
+<li>A context manager <strong>with gates(…)</strong></li>
+</ul>
+<p>for setting gates</p>
+</div>
+<div class="section" id="id52">
+
+<div class="line-block">
+<div class="line">Choose a testing framework</div>
+<div class="line">that lets you re-run a slate of tests</div>
+<div class="line">with different gate settings</div>
+</div>
+</div>
+<div class="section" id="id53">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">NormalTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="o">...</span>
+    <span class="k">def</span> <span class="o">...</span>
+    <span class="k">def</span> <span class="o">...</span>
+    <span class="k">def</span> <span class="o">...</span>
+
+<span class="k">class</span> <span class="nc">ExperimentTests</span><span class="p">(</span><span class="n">NormalTests</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">gate</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;use_new_hash&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+<!-- slide
+- - - - -
+
+| **Q:** How can the test process
+| set a gate over in the server?
+
+|
+|
+
+slide
+- - - - -
+
+| **Q:** How can the test process
+| set a gate over in the server?
+
+| **A:** *Poke a hole* just like
+| you did for the “setup” fixtures -->
+</div>
+<div class="section" id="id54">
+
+<div class="line-block">
+<div class="line">Periodically <em>audit</em> the</div>
+<div class="line"><strong>&#64;gates(…)</strong> and <strong>with gates(…)</strong> calls</div>
+<div class="line">for obsolete settings</div>
+</div>
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line"><em>Larger point:</em> The test suite</div>
+<div class="line">is <strong>itself a product</strong> that needs</div>
+<div class="line">maintenance and refactoring</div>
+</div>
+<!-- Why Python?
+- - - - - - - - - - -
+
+* All the usual reasons
+* Low impedance with JS data
+* The ``with`` statement -->
+</div>
+<div class="section" id="id56">
+
+<p>Capybara + Armor + Scale</p>
+<p>=</p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id57">
+
+<p>Capybara + Armor + Scale</p>
+<p>=</p>
+<img alt="green-check.png" src="green-check.png" style="height: 90px;" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id58">
+
+<p>Capybara + Armor + Scale</p>
+<p>=</p>
+<img alt="green-check.png" src="green-check.png" style="height: 90px;" />
+<p><em>Thank you! —</em> &#64;brandon_rhodes</p>
+<!-- They can get stale, though.
+Hint: try to share code between dev VM and test VM
+user might take a moment to click button and see it work
+but what about Sel which clicks immediately, before js arrives?
+show some example code?
+  not waiting for page reload
+  not waiting for element to appear
+  stale element
+  bad pages that show element before it can be interacted with
+Sel tests pass locally but fail in Changes
+selenium.common.exceptions.StaleElementReferenceException: Message: u'stale element reference: element is not attached to the page document\n  (Session info: chrome=53.0.2785.143)\n  (Driver info: chromedriver=2.22,platform=Linux 4.4.0-43-generic x86_64)' -->
+<!-- References
+
+2017 November — PyCon Canada — “Selenium at Scale”
+  https://2016.pycon.ca/en/schedule/100-brandon-rhodes/
+Django magic removal: http://www.b-list.org/weblog/2009/jul/23/magic/
+Choose Boring Tech: http://mcfunley.com/choose-boring-technology -->
+<!-- single quote: ’
+double quotes: x“”x
+prime: ′ ″
+em-dash: —
+vertical ellipsis: ⋮
+arrows: ←, ↑, →, ↓, ↔, ↕, ↖, ↗, ↘, ↙ -->
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script>
+  window.slide_transition_time = 2000;
+  $('video').map(function(i, el) {el.play()});
+</script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

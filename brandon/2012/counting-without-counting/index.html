@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Counting, without counting, in Python</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>Counting, without counting, in Python</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>30 March 2012</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">python, computing</td>
+</tr>
+</tbody>
+</table>
+<p>It often irks me
+that the normal Python pattern for running the body of a loop <em>n</em> times
+results in the allocation and destruction of <em>n</em> integer objects,
+even if the body of the loop does not need them.</p>
+<div class="highlight"><pre><span class="c"># Creates one million integers</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000000</span><span class="p">):</span>
+    <span class="k">print</span>
+
+<span class="c"># Creates them one at a time</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">1000000</span><span class="p">):</span>
+    <span class="k">print</span></pre></div>
+
+<p>Yes, I know, you will rightly complain that I am too easily irked.
+The <tt class="docutils literal">range()</tt> pattern is standard.
+The pattern is simple.
+The pattern is easy to read.
+The implementation is really quite fast
+compared to any real work that I might do in the loop.
+And, in the bright future when we all use PyPy,
+the extra million integer objects will be optimized away anyway.</p>
+<!--more--><p>But the thought always remained with me that,
+whatever the convenience of using a <tt class="docutils literal">range()</tt> in a <tt class="docutils literal">for</tt> loop,
+it still <em>meant</em> something a little heavyhanded:
+“create these million integers” for me to loop across.
+So while in real life, of course,
+I will keep writing my <tt class="docutils literal">for</tt> loops with <tt class="docutils literal">range()</tt>,
+I wondered if there were an alternative with — shall we say —
+less <em>semantic</em> overhead.</p>
+<p>A first alternative, that still creates a list of length <em>n</em>
+but without creating a million actual objects to loop across,
+uses list multiplication to create a million-item list
+that is simply a million references to the <em>same</em> item
+(in this example, the innocuous value <tt class="docutils literal">None</tt>):</p>
+<div class="highlight"><pre><span class="c"># Creates only the list object</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1000000</span><span class="p">:</span>
+    <span class="k">print</span></pre></div>
+
+<p>Not only does this have the conceptual clarity
+of creating only a single extra object for the sake of the iteration,
+but some quick experiments with <tt class="docutils literal">timeit</tt>
+suggests that this is noticeably faster than using <tt class="docutils literal">range()</tt>
+though not quite as fast as using <tt class="docutils literal">xrange()</tt>.
+But it still allocates a useless region of memory
+whose size must be proportional to the number of iterations we need.</p>
+<p>What if we want a solution that is better than O(n)
+in the memory it allocates across its lifespan?
+Well, had I written this blog post ten years ago,
+I could have had a field day building a series
+of increasingly complex options
+that each used even fewer objects than the last.
+One such possibility, just to give you a taste of what might have been,
+is to start creating concentric loops:</p>
+<div class="highlight"><pre><span class="n">thousand_things</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1000</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">thousand_things</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">thousand_things</span><span class="p">:</span>
+        <span class="k">print</span></pre></div>
+
+<p>Here the memory footprint drops to O(√n)
+since we have only two lists of a thousand pointers.
+Yes, I know, a thousand extra iterator objects will also be created —
+one to keep up with each journey across the <tt class="docutils literal">thousand_things</tt> list
+in the inner loop —
+but that is still a vast improvement over a million-item list
+sitting in memory.</p>
+<p>Think of all the fun I would have had
+bringing the problem down to O(log&nbsp;n)
+by using a list of binary digits
+that I decremented using simple list operations.</p>
+<p>But it was not to be — because,
+when I finally sat down this evening to play,
+I discovered within a few minutes that the modern <tt class="docutils literal">itertools</tt> module
+contains a solution that involves not even O(log&nbsp;n)
+but actual O(1) memory usage!
+Behold, the <tt class="docutils literal">repeat()</tt> iterator:</p>
+<div class="highlight"><pre><span class="c"># Gives us `None` a million times</span>
+<span class="c"># without creating Python integers!</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">repeat</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">repeat</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">):</span>
+    <span class="k">print</span></pre></div>
+
+<p>For C&nbsp;Python, this method is the fastest
+of the alternatives we have discussed,
+as you can quickly verify if you do some <tt class="docutils literal">timeit</tt> experiments.
+For those of you who are new to <tt class="docutils literal">timeit</tt>,
+here is a simple command line to get you started:</p>
+<div class="highlight"><pre><span class="nv">$ </span>python -m timeit <span class="se">\</span>
+&gt;  -s <span class="s1">&#39;from itertools import repeat&#39;</span> <span class="se">\</span>
+&gt;  <span class="s1">&#39;for x in repeat(None, 1000000): pass&#39;</span>
+
+100 loops, best of 3: 16.8 msec per loop</pre></div>
+
+<p>So while pursuing an impractical goal,
+I did get to learn a useful new <tt class="docutils literal">itertools</tt> trick
+that will probably come in handy someday.
+And I can always use <tt class="docutils literal">repeat()</tt> for iteration, too,
+in case I wind up on an embedded device where every byte is precious!</p>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'rhodesmill';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<p class="byline">©2020</p>
+
+</body>
+</html>

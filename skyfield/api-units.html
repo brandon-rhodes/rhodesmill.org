@@ -1,0 +1,208 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — Units</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-units">
+<h1>API Reference — Units<a class="headerlink" href="#api-reference-units" title="Permalink to this headline">¶</a></h1>
+<p>When you ask positions to return distances, velocities, or angles,
+they return instances of the following classes.</p>
+<dl class="class">
+<dt id="skyfield.units.Distance">
+<em class="property">class </em><code class="descclassname">skyfield.units.</code><code class="descname">Distance</code><span class="sig-paren">(</span><em>au=None</em>, <em>km=None</em>, <em>m=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>A distance, stored internally as au and available in other units.</p>
+<p>You can initialize a <code class="docutils literal notranslate"><span class="pre">Distance</span></code> by providing a single float or a
+float array as either an <code class="docutils literal notranslate"><span class="pre">au=</span></code>, <code class="docutils literal notranslate"><span class="pre">km=</span></code>, or <code class="docutils literal notranslate"><span class="pre">m=</span></code> parameter.</p>
+<p>You can access the magnitude of the distance with its three
+attributes <code class="docutils literal notranslate"><span class="pre">.au</span></code>, <code class="docutils literal notranslate"><span class="pre">.km</span></code>, and <code class="docutils literal notranslate"><span class="pre">.m</span></code>.  By default a distance
+prints itself in astronomical units (au), but you can take control
+of the formatting and choice of units yourself using standard Python
+numeric formatting:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">Distance</span><span class="p">(</span><span class="n">au</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="go">1.0 au</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.2f}</span><span class="s1"> km&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">km</span><span class="p">))</span>
+<span class="go">149597870.70 km</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="skyfield.units.Distance.au">
+<code class="descname">au</code><a class="headerlink" href="#skyfield.units.Distance.au" title="Permalink to this definition">¶</a></dt>
+<dd><p>The distance in astronomical units.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.units.Distance.km">
+<code class="descname">km</code><a class="headerlink" href="#skyfield.units.Distance.km" title="Permalink to this definition">¶</a></dt>
+<dd><p>The distance in kilometers.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.units.Distance.m">
+<code class="descname">m</code><a class="headerlink" href="#skyfield.units.Distance.m" title="Permalink to this definition">¶</a></dt>
+<dd><p>The distance in meters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Distance.length">
+<code class="descname">length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Distance.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the length when this is an x,y,z vector.</p>
+<p>The Euclidean vector length of this vector is returned as a new
+<a class="reference internal" href="#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> object.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">Distance</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">Distance</span><span class="p">(</span><span class="n">au</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+<span class="go">&lt;Distance 1.41421 au&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Distance.light_seconds">
+<code class="descname">light_seconds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Distance.light_seconds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the length of this vector in light seconds.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Distance.to">
+<code class="descname">to</code><span class="sig-paren">(</span><em>unit</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Distance.to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert this distance to the given AstroPy unit.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="skyfield.units.Velocity">
+<em class="property">class </em><code class="descclassname">skyfield.units.</code><code class="descname">Velocity</code><span class="sig-paren">(</span><em>au_per_d=None</em>, <em>km_per_s=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>A velocity, stored internally as au/day and available in other units.</p>
+<p>You can initialize a <code class="docutils literal notranslate"><span class="pre">Velocity</span></code> by providing a float or float
+array to its <code class="docutils literal notranslate"><span class="pre">au_per_d=</span></code> parameter.</p>
+<dl class="attribute">
+<dt id="skyfield.units.Velocity.au_per_d">
+<code class="descname">au_per_d</code><a class="headerlink" href="#skyfield.units.Velocity.au_per_d" title="Permalink to this definition">¶</a></dt>
+<dd><p>The velocity in astronomical units per day.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.units.Velocity.km_per_s">
+<code class="descname">km_per_s</code><a class="headerlink" href="#skyfield.units.Velocity.km_per_s" title="Permalink to this definition">¶</a></dt>
+<dd><p>The velocity in kilometers per second.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Velocity.to">
+<code class="descname">to</code><span class="sig-paren">(</span><em>unit</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Velocity.to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert this velocity to the given AstroPy unit.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="skyfield.units.Angle">
+<em class="property">class </em><code class="descclassname">skyfield.units.</code><code class="descname">Angle</code><span class="sig-paren">(</span><em>angle=None</em>, <em>radians=None</em>, <em>degrees=None</em>, <em>hours=None</em>, <em>preference=None</em>, <em>signed=False</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="skyfield.units.Angle.degrees">
+<code class="descname">degrees</code><a class="headerlink" href="#skyfield.units.Angle.degrees" title="Permalink to this definition">¶</a></dt>
+<dd><p>The angle in degrees (360° in a circle).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.units.Angle.hours">
+<code class="descname">hours</code><a class="headerlink" href="#skyfield.units.Angle.hours" title="Permalink to this definition">¶</a></dt>
+<dd><p>The angle in hours (24 hours in a circle).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.units.Angle.radians">
+<code class="descname">radians</code><a class="headerlink" href="#skyfield.units.Angle.radians" title="Permalink to this definition">¶</a></dt>
+<dd><p>The angle in radians (𝜏&nbsp;=&nbsp;2𝜋 in a circle)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.arcminutes">
+<code class="descname">arcminutes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.arcminutes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the angle in arcminutes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.arcseconds">
+<code class="descname">arcseconds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.arcseconds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the angle in arcseconds.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.mas">
+<code class="descname">mas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.mas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the angle in milliarcseconds.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.hms">
+<code class="descname">hms</code><span class="sig-paren">(</span><em>warn=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.hms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a tuple (hours, minutes, seconds).</p>
+<p>All three quantities will have the same sign as the angle itself.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.signed_hms">
+<code class="descname">signed_hms</code><span class="sig-paren">(</span><em>warn=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.signed_hms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a tuple (sign, hours, minutes, seconds).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">sign</span></code> will be either +1 or -1, and the other quantities
+will all be positive.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.hstr">
+<code class="descname">hstr</code><span class="sig-paren">(</span><em>places=2</em>, <em>warn=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.hstr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a string like <code class="docutils literal notranslate"><span class="pre">12h</span> <span class="pre">07m</span> <span class="pre">30.00s</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.dms">
+<code class="descname">dms</code><span class="sig-paren">(</span><em>warn=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.dms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a tuple (degrees, minutes, seconds).</p>
+<p>All three quantities will have the same sign as the angle itself.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.signed_dms">
+<code class="descname">signed_dms</code><span class="sig-paren">(</span><em>warn=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.signed_dms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a tuple (sign, degrees, minutes, seconds).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">sign</span></code> will be either +1 or -1, and the other quantities
+will all be positive.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.dstr">
+<code class="descname">dstr</code><span class="sig-paren">(</span><em>places=1</em>, <em>warn=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.dstr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert to a string like <code class="docutils literal notranslate"><span class="pre">181deg</span> <span class="pre">52'</span> <span class="pre">30.0&quot;</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.units.Angle.to">
+<code class="descname">to</code><span class="sig-paren">(</span><em>unit</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert this angle to the given AstroPy unit.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,1314 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>slides.rst</title>
+<link rel="stylesheet" href="../css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="../css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="sine-qua-nons">
+<h1><em>Sine Qua Nons</em></h1>
+<div class="line-block">
+<div class="line">Brandon Rhodes</div>
+<div class="line">PyOhio 2013</div>
+</div>
+</div>
+<div class="section" id="tooling">
+<h1>Tooling</h1>
+<ul class="simple">
+<li>Jedi</li>
+<li>PyFlakes</li>
+<li>virtualenv</li>
+</ul>
+</div>
+<div class="section" id="virtualenv">
+<h1>virtualenv</h1>
+<div class="highlight"><pre><span></span><span class="n">New_Project</span><span class="o">/</span><span class="err">┌─────</span><span class="n">virtualenv</span><span class="err">──────────┐</span>
+            <span class="err">│</span> <span class="o">/</span><span class="nb">bin</span><span class="p">:</span> <span class="n">python2</span><span class="p">,</span> <span class="n">pip</span>      <span class="err">│</span>
+            <span class="err">│</span> <span class="o">/</span><span class="n">include</span>                <span class="err">│</span>
+            <span class="err">│</span> <span class="o">/</span><span class="n">lib</span><span class="p">:</span> <span class="n">Django</span> <span class="mf">1.5</span><span class="p">,</span> <span class="n">lxml</span>  <span class="err">│</span>
+            <span class="err">└─────────────────────────┘</span>
+
+<span class="n">Old_Project</span><span class="o">/</span><span class="err">┌─────</span><span class="n">virtualenv</span><span class="err">──────────────────┐</span>
+            <span class="err">│</span> <span class="o">/</span><span class="nb">bin</span><span class="p">:</span> <span class="n">python2</span><span class="p">,</span> <span class="n">pip</span>              <span class="err">│</span>
+            <span class="err">│</span> <span class="o">/</span><span class="n">include</span>                        <span class="err">│</span>
+            <span class="err">│</span> <span class="o">/</span><span class="n">lib</span><span class="p">:</span> <span class="n">Django</span> <span class="mf">1.4</span><span class="p">,</span> <span class="n">BeautifulSoup</span> <span class="err">│</span>
+            <span class="err">└─────────────────────────────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="slide">
+
+<div class="line-block">
+<div class="line">Keep a <tt class="docutils literal">requirements.txt</tt> in</div>
+<div class="line">each project that records</div>
+<div class="line">its dependency versions</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">de421</span><span class="o">==</span><span class="mi">2008</span>
+<span class="n">jplephem</span><span class="o">==</span><span class="mf">1.1</span>
+<span class="n">numpy</span><span class="o">==</span><span class="mf">1.7</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">sgp4</span><span class="o">==</span><span class="mf">1.1</span>
+</pre></div>
+
+</div>
+<div class="section" id="id1">
+
+<div class="line-block">
+<div class="line">Resuscitating a project</div>
+<div class="line">can then be as easy as:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">cd</span> <span class="o">~/</span><span class="n">project</span>
+<span class="err">$</span> <span class="n">virtualenv</span> <span class="n">venv</span>
+<span class="err">$</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+
+</div>
+<div class="section" id="sine-qua-non">
+<h1>SINE QUA NON</h1>
+<p><strong>Project sandboxes</strong></p>
+</div>
+<div class="section" id="id2">
+
+</div>
+<div class="section" id="q">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">What <strong>features</strong> does a language</div>
+<div class="line">need to keep me <em>productive</em>?</div>
+</div>
+</div>
+<div class="section" id="container-types">
+<h1>Container types</h1>
+<div class="line-block">
+<div class="line">list</div>
+<div class="line"><tt class="docutils literal">[10, 20, 30]</tt></div>
+</div>
+<div class="line-block">
+<div class="line">dict</div>
+<div class="line"><tt class="docutils literal">{'one': 1, 'two': 2}</tt></div>
+</div>
+</div>
+<div class="section" id="composable-iteration">
+<h1>Composable iteration</h1>
+<div class="highlight"><pre><span></span><span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span>
+    <span class="n">student</span><span class="o">.</span><span class="n">surname</span> <span class="k">for</span> <span class="n">student</span> <span class="ow">in</span> <span class="n">students</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">student</span><span class="o">.</span><span class="n">graduated</span>
+    <span class="p">))</span>
+</pre></div>
+
+</div>
+<div class="section" id="id3">
+
+<div class="line-block">
+<div class="line">How is a <tt class="docutils literal">dict</tt></div>
+<div class="line"><em>really</em> used in practice?</div>
+</div>
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line">Most fundamental</div>
+<div class="line"><tt class="docutils literal">dict</tt> maneuver:</div>
+</div>
+<div class="line-block">
+<div class="line"><em>The Join</em></div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<div class="highlight"><pre><span></span> <span class="n">semester</span><span class="o">.</span><span class="n">txt</span>         <span class="n">students</span><span class="o">.</span><span class="n">txt</span>
+
+  <span class="n">N</span>        <span class="n">N</span>           <span class="mi">1</span>        <span class="n">N</span>
+      <span class="err">⋮</span>                    <span class="err">⋮</span>
+<span class="n">Smith</span>    <span class="n">CS101</span>      <span class="n">Williams</span> <span class="n">Sophmore</span>
+<span class="n">Johnson</span>  <span class="n">EE201</span>      <span class="n">Johnson</span>  <span class="n">Junior</span>
+<span class="n">Williams</span> <span class="n">PH131</span>      <span class="n">Smith</span>    <span class="n">Freshman</span>
+<span class="n">Smith</span>    <span class="n">PH132</span>      <span class="n">Jones</span>    <span class="n">Sophmore</span>
+<span class="n">Jones</span>    <span class="n">PH131</span>      <span class="n">Brown</span>    <span class="n">Freshman</span>
+<span class="n">Brown</span>    <span class="n">EE201</span>             <span class="err">⋮</span>
+<span class="n">Williams</span> <span class="n">CS101</span>
+      <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="what-we-are-avoiding">
+<h1>what we are avoiding</h1>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;semester.txt&#39;</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">,</span> <span class="n">course</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;students.txt&#39;</span><span class="p">):</span>
+        <span class="n">name2</span><span class="p">,</span> <span class="n">year</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">name2</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id6">
+
+<p><em>O(nm)</em></p>
+<div class="line-block">
+<div class="line"><em>n</em> — lines in semester file</div>
+<div class="line"><em>m</em> — lines in student file</div>
+</div>
+</div>
+<div class="section" id="this-will-run-faster">
+<h1>this will run faster</h1>
+<div class="highlight"><pre><span></span><span class="n">students</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span>
+            <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;students.txt&#39;</span><span class="p">)]</span>
+
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;semester.txt&#39;</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">,</span> <span class="n">course</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">name2</span><span class="p">,</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">students</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">name2</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="but-has-the-same-complexity">
+<h1>but has the same complexity</h1>
+<p><em>O(nm)</em></p>
+</div>
+<div class="section" id="id7">
+
+<div class="line-block">
+<div class="line">To avoid this <strong>disastrous</strong></div>
+<div class="line">performance, we can use</div>
+<div class="line">the <em>mighty dictionary</em></div>
+</div>
+</div>
+<div class="section" id="building-a-dict">
+<h1>building a dict</h1>
+<div class="highlight"><pre><span></span><span class="n">years</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;students.txt&#39;</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">,</span> <span class="n">year</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">years</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">year</span>
+
+
+         <span class="n">students</span><span class="o">.</span><span class="n">txt</span>
+              <span class="err">⋮</span>
+       <span class="n">Williams</span> <span class="n">Sophmore</span>
+       <span class="n">Johnson</span>  <span class="n">Junior</span>
+       <span class="n">Smith</span>    <span class="n">Freshman</span>
+              <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id8">
+
+<p>Given our dictionary—</p>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;Williams&#39;</span><span class="p">:</span> <span class="s1">&#39;Sophmore&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;Johnson&#39;</span><span class="p">:</span> <span class="s1">&#39;Junior&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;Smith&#39;</span><span class="p">:</span> <span class="s1">&#39;Freshman&#39;</span><span class="p">,</span>
+           <span class="err">⋮</span>
+</pre></div>
+
+<p>—asking for a student takes <em>constant time</em>—</p>
+<div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">years</span><span class="p">[</span><span class="s1">&#39;Johnson&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">y</span>
+<span class="c1"># =&gt; &#39;Junior&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="using-a-dict-to-join">
+<h1>using a dict to join</h1>
+<div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;semester.txt&#39;</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">,</span> <span class="n">course</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="n">years</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>  <span class="c1"># the join!</span>
+    <span class="o">...</span>
+
+           <span class="n">semester</span><span class="o">.</span><span class="n">txt</span>
+                <span class="err">⋮</span>
+          <span class="n">Smith</span>    <span class="n">CS101</span>
+          <span class="n">Johnson</span>  <span class="n">EE201</span>
+          <span class="n">Williams</span> <span class="n">PH131</span>
+          <span class="n">Smith</span>    <span class="n">PH132</span>
+                <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id9">
+
+<div class="line-block">
+<div class="line"><em>O(n + m)</em></div>
+<div class="line">complexity</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">years</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;students.txt&#39;</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">,</span> <span class="n">year</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">years</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">year</span>
+
+<span class="o">...</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;semester.txt&#39;</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">,</span> <span class="n">course</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="n">years</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>  <span class="c1"># the join!</span>
+    <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id10">
+
+<div class="line-block">
+<div class="line">This <tt class="docutils literal">dict</tt> technique is also</div>
+<div class="line">used in the world’s most</div>
+<div class="line">powerful databases</div>
+</div>
+</div>
+<div class="section" id="id11">
+
+<div class="line-block">
+<div class="line">PostgreSQL’s <strong>EXPLAIN</strong> output:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">Hash</span> <span class="n">Join</span>
+  <span class="o">-&gt;</span> <span class="n">Seq</span> <span class="n">scan</span> <span class="n">on</span> <span class="n">semester</span>
+  <span class="o">-&gt;</span> <span class="n">Hash</span>
+       <span class="o">-&gt;</span> <span class="n">Seq</span> <span class="n">Scan</span> <span class="n">on</span> <span class="n">student</span>
+</pre></div>
+
+</div>
+<div class="section" id="the-whole-solution">
+<h1>The whole solution</h1>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">defaultdict</span>
+
+<span class="n">years</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;students.txt&#39;</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">,</span> <span class="n">year</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">years</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">year</span>
+
+<span class="n">enrollment</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">Counter</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;semester.txt&#39;</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">,</span> <span class="n">course</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="n">years</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>  <span class="c1"># the join!</span>
+    <span class="n">enrollment</span><span class="p">[</span><span class="n">course</span><span class="p">][</span><span class="n">year</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+
+</div>
+<div class="section" id="the-result">
+<h1>The result</h1>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;EE220&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Sophmore&#39;</span><span class="p">:</span> <span class="mi">89</span><span class="p">,</span> <span class="s1">&#39;Junior&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">},</span>
+ <span class="s1">&#39;CS125&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Freshman&#39;</span><span class="p">:</span> <span class="mi">198</span><span class="p">,</span> <span class="s1">&#39;Sophmore&#39;</span><span class="p">:</span> <span class="mi">22</span><span class="p">},</span>
+ <span class="s1">&#39;PH441&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Junior&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;Senior&#39;</span><span class="p">:</span> <span class="mi">22</span><span class="p">},</span>
+                     <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="caveat">
+<h1>Caveat</h1>
+<div class="line-block">
+<div class="line">Powerful data types</div>
+<div class="line"><em>do</em> add complexity to a</div>
+<div class="line">programming language</div>
+</div>
+</div>
+<div class="section" id="rival-approaches">
+<h1>Rival approaches</h1>
+</div>
+<div class="section" id="id12">
+
+<div class="highlight"><pre><span></span><span class="n">points</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">8</span><span class="p">)]</span>
+
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># vs</span>
+
+<span class="k">class</span> <span class="nc">Point</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+
+<span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">Point</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">8</span><span class="p">)]</span>
+
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id13">
+
+<p><em>Two variants</em></p>
+</div>
+<div class="section" id="id14">
+
+<div class="line-block">
+<div class="line"><em>Constants</em> can make indexing</div>
+<div class="line">more explicit, less error-prone</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">points</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">8</span><span class="p">)]</span>
+
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">X</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="n">Y</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id15">
+
+<div class="line-block">
+<div class="line"><em>Named tuples</em> have <strong>real attributes</strong>,</div>
+<div class="line">which can eliminate indexing entirely</div>
+</div>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="n">Point</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Point&#39;</span><span class="p">,</span> <span class="s1">&#39;x y&#39;</span><span class="p">)</span>
+
+<span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)]</span>
+
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id16">
+
+<div class="line-block">
+<div class="line">But the choice must still be faced:</div>
+</div>
+<div class="line-block">
+<div class="line">Use bare <em>generic</em> data types?</div>
+<div class="line">Or, define real <em>classes</em>?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>  <span class="c1"># =&gt; list? or PointSequence?</span>
+<span class="nb">type</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>   <span class="c1"># =&gt; tuple? or Point?</span>
+</pre></div>
+
+</div>
+<div class="section" id="id17">
+
+<div class="line-block">
+<div class="line">Plain <strong>tuples</strong> and <strong>lists</strong> and <strong>dicts</strong></div>
+<div class="line">are <em>easy</em> to get started with</div>
+<div class="line">and require no <strong>boilerplate</strong></div>
+</div>
+<p>but</p>
+<div class="line-block">
+<div class="line">they carry no record of your</div>
+<div class="line"><em>intent</em> so the <strong>names</strong> you give them</div>
+<div class="line">become your only documentation!</div>
+</div>
+</div>
+<div class="section" id="id18">
+
+<div class="line-block">
+<div class="line">Error messages from generic data</div>
+<div class="line">structures tend to be <strong>less</strong> helpful</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># =&gt; IndexError: list index out of range</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># =&gt; AttributeError: no attribute &#39;z&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line"><strong>Java</strong> programmers almost</div>
+<div class="line">always seem to write classes:</div>
+<div class="line"><em>there is one way to do it</em></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Python</strong> programmers have to</div>
+<div class="line">watch for the cusp where a problem</div>
+<div class="line">becomes <em>too complex</em> for generic types</div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="line-block">
+<div class="line">Whether you use a plain <tt class="docutils literal">list</tt></div>
+<div class="line">or hide it behind a <tt class="docutils literal">PointSeq</tt> class,</div>
+<div class="line">the powerful generic Python data types</div>
+<div class="line">will usually be behind <em>everything</em> you do!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="nb">tuple</span>  <span class="nb">list</span>  <span class="nb">dict</span>  <span class="nb">set</span>
+</pre></div>
+
+</div>
+<div class="section" id="id21">
+<h1>SINE QUA NON</h1>
+<p><strong>Powerful built-in data types</strong></p>
+</div>
+<div class="section" id="id22">
+
+<div class="highlight"><pre><span></span><span class="n">point</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">point</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><em>Both</em> of our examples</div>
+<div class="line">assumed that <tt class="docutils literal">x</tt> and <tt class="docutils literal">y</tt></div>
+<div class="line">always belong <em>together</em></div>
+</div>
+</div>
+<div class="section" id="numpy">
+<h1>NumPy</h1>
+<div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Alterative to:</span>
+
+<span class="sd">points = [(3,4), (5,12), (15,8)]</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">sqrt</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+
+<span class="k">print</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
+<span class="c1">#  =&gt; [  5.  13.  17.]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id23">
+<h1>NumPy</h1>
+<div class="highlight"><pre><span></span><span class="k">print</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
+<span class="c1">#  =&gt; [  5.  13.  17.]</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Lets you build <em>huge</em></div>
+<div class="line">result arrays with expressions</div>
+<div class="line">that <strong>look</strong> both <em>simple</em> and <em>scalar</em></div>
+</div>
+</div>
+<div class="section" id="id24">
+
+<img alt="notebook.png" src="notebook.png" style="height: 700px;" />
+</div>
+<div class="section" id="id25">
+<h1>SINE QUA NON</h1>
+<p><strong>Vector math</strong></p>
+</div>
+<div class="section" id="id26">
+
+</div>
+<div class="section" id="id27">
+
+<div class="line-block">
+<div class="line">What about when</div>
+<div class="line">things go <strong>wrong?</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><em>or</em></div>
+</div>
+<div class="line-block">
+<div class="line">“Exceptions in a Flask app”</div>
+</div>
+</div>
+<div class="section" id="id28">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">exit()</tt></div>
+</div>
+</div>
+<div class="section" id="id29">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>    <span class="k">def</span> <span class="nf">g</span><span class="p">():</span>    <span class="k">def</span> <span class="nf">h</span><span class="p">():</span>
+  <span class="o">...</span>         <span class="o">...</span>         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+  <span class="n">g</span><span class="p">()</span>         <span class="n">h</span><span class="p">()</span>
+  <span class="o">...</span>         <span class="o">...</span>
+     <span class="err">↖</span>           <span class="err">↖</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">The code that <em>would have</em> run</div>
+<div class="line">had <tt class="docutils literal">h()</tt> returned <strong>never</strong> runs</div>
+</div>
+</div>
+<div class="section" id="id30">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>    <span class="k">def</span> <span class="nf">g</span><span class="p">():</span>    <span class="k">def</span> <span class="nf">h</span><span class="p">():</span>
+  <span class="o">...</span>         <span class="o">...</span>         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
+  <span class="n">g</span><span class="p">()</span>         <span class="n">h</span><span class="p">()</span>
+  <span class="o">...</span>         <span class="o">...</span>
+     <span class="err">↖</span>           <span class="err">↖</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">An exception <em>also</em> exits its function</div>
+<div class="line">and <strong>terminates</strong> all enclosing calls</div>
+</div>
+</div>
+<div class="section" id="but">
+<h1><em>But</em></h1>
+<div class="line-block">
+<div class="line">You can <strong>catch</strong> an exception</div>
+<div class="line">and stop its propagation</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>    <span class="k">def</span> <span class="nf">g</span><span class="p">():</span>    <span class="k">def</span> <span class="nf">h</span><span class="p">():</span>
+  <span class="o">...</span>         <span class="o">...</span>         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
+  <span class="o">...</span>         <span class="n">h</span><span class="p">()</span>
+  <span class="k">try</span><span class="p">:</span>        <span class="o">...</span> <span class="c1"># skipped</span>
+    <span class="n">g</span><span class="p">()</span>
+  <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+    <span class="n">log</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">)</span>
+  <span class="o">...</span> <span class="c1"># not skipped!</span>
+</pre></div>
+
+</div>
+<div class="section" id="the-problem">
+<h1>The problem:</h1>
+<div class="line-block">
+<div class="line">How can a <strong>Flask app</strong></div>
+<div class="line">return custom JSON errors?</div>
+</div>
+<div class="line-block">
+<div class="line"><em>not</em></div>
+<div class="line"><tt class="docutils literal">IndexError: index out of range</tt></div>
+</div>
+<div class="line-block">
+<div class="line"><em>but</em></div>
+<div class="line"><tt class="docutils literal">{'error': 'Enter a password'}</tt></div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="highlight"><pre><span></span><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/&lt;user_name&gt;/&lt;project_name&gt;/&#39;</span><span class="p">)</span>
+<span class="nd">@json_response</span>
+<span class="k">def</span> <span class="nf">project_page</span><span class="p">(</span><span class="n">user_name</span><span class="p">,</span> <span class="n">project_name</span><span class="p">):</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">db_load</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">user_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;does_not_exist&#39;</span><span class="p">},</span> <span class="mi">404</span>
+
+    <span class="n">project</span> <span class="o">=</span> <span class="n">db_load</span><span class="p">(</span><span class="n">Project</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">project_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;does_not_exist&#39;</span><span class="p">},</span> <span class="mi">404</span>
+
+    <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="i-recommended">
+<h1>I recommended</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line"><em>Define</em> a set of</div>
+<div class="line"><strong>custom exceptions</strong></div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line"><em>Raise</em> them in all</div>
+<div class="line">his <strong>business logic</strong></div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line"><em>Wrap</em> every view in</div>
+<div class="line">an <strong>exception handler</strong></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="define-custom-exceptions">
+<h1>1. Define custom exceptions</h1>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AppError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span> <span class="o">...</span>
+<span class="k">class</span> <span class="nc">NotFoundError</span><span class="p">(</span><span class="n">AppError</span><span class="p">):</span> <span class="o">...</span>
+<span class="k">class</span> <span class="nc">PermissionError</span><span class="p">(</span><span class="n">AppError</span><span class="p">):</span> <span class="o">...</span>
+<span class="k">class</span> <span class="nc">DatabaseError</span><span class="p">(</span><span class="n">AppError</span><span class="p">):</span> <span class="o">...</span>
+<span class="k">class</span> <span class="nc">AuthError</span><span class="p">(</span><span class="n">AppError</span><span class="p">):</span> <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="raise-them-in-business-logic">
+<h1>2. Raise them in business logic</h1>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">db_load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">()</span>
+    <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="build-json-for-each-exception">
+<h1>3. Build JSON for each exception</h1>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">exception_to_response</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">NotFoundError</span><span class="p">):</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;not_found&#39;</span><span class="p">,</span> <span class="mi">404</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">PermissionError</span><span class="p">):</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;forbidden&#39;</span><span class="p">,</span> <span class="mi">403</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">DatabaseError</span><span class="p">):</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;unavailable&#39;</span><span class="p">,</span> <span class="mi">503</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">AuthError</span><span class="p">):</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;bad_auth&#39;</span><span class="p">,</span> <span class="mi">401</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;internal&#39;</span><span class="p">,</span> <span class="mi">500</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">},</span> <span class="n">code</span>
+</pre></div>
+
+</div>
+<div class="section" id="id32">
+
+<div class="line-block">
+<div class="line">So, assume that we are now</div>
+<div class="line">raising all the right exceptions</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>How</strong> do we catch them and</div>
+<div class="line">call <tt class="docutils literal">exception_to_response()</tt></div>
+<div class="line">in every one of our views?</div>
+</div>
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line">I suggested <em>decorating</em></div>
+<div class="line"><strong>every single</strong> view</div>
+</div>
+</div>
+<div class="section" id="id34">
+
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+
+<span class="k">def</span> <span class="nf">catch_errors</span><span class="p">(</span><span class="n">view</span><span class="p">):</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">AppError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">exception_to_response</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;...&#39;</span><span class="p">)</span>
+<span class="nd">@json_response</span>
+<span class="nd">@catch_errors</span>
+<span class="k">def</span> <span class="nf">view</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id35">
+
+<div class="line-block">
+<div class="line">Thus <strong>error-checking code</strong> disappears</div>
+<div class="line"><em>entirely</em> from the view functions!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;...&#39;</span><span class="p">)</span>
+<span class="nd">@json_response</span>
+<span class="nd">@catch_errors</span>
+<span class="k">def</span> <span class="nf">view</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">get_row</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="c1"># =&gt; NotFoundError, DatabaseError</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">cloud_open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="c1"># =&gt; PermissionError</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">},</span> <span class="mi">200</span>
+</pre></div>
+
+</div>
+<div class="section" id="id36">
+
+<div class="line-block">
+<div class="line">I illustrated this</div>
+<div class="line">approach for the student</div>
+</div>
+</div>
+<div class="section" id="id37">
+
+<div class="line-block">
+<div class="line">Then, I <em>suddenly</em> sensed that I should</div>
+<div class="line">go read <strong>more</strong> Flask documentation</div>
+</div>
+</div>
+<div class="section" id="id38">
+
+<img alt="armin.jpg" src="armin.jpg" style="height: 600px;" />
+</div>
+<div class="section" id="id39">
+
+<p><strong>flask.pocoo.org/docs/patterns/apierrors/</strong></p>
+</div>
+<div class="section" id="id40">
+
+<div class="line-block">
+<div class="line">“to implement RESTful APIs…</div>
+<div class="line">implement your <strong>own</strong> exception type</div>
+<div class="line">and install an <em>error handler</em> for</div>
+<div class="line">it that produces the errors”</div>
+</div>
+</div>
+<div class="section" id="id41">
+
+<div class="highlight"><pre><span></span><span class="nd">@app.errorhandler</span><span class="p">(</span><span class="n">DatabaseError</span><span class="p">)</span>
+<span class="nd">@json_response</span>
+<span class="k">def</span> <span class="nf">handle_database_error</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;unavailable&#39;</span><span class="p">},</span> <span class="mi">503</span>
+</pre></div>
+
+</div>
+<div class="section" id="id42">
+
+<div class="line-block">
+<div class="line">That big <tt class="docutils literal">elif</tt> block?</div>
+<div class="line"><strong>Goes away</strong></div>
+</div>
+<div class="line-block">
+<div class="line">That repeated <tt class="docutils literal">&#64;catch_errors</tt>?</div>
+<div class="line"><strong>Goes away</strong></div>
+</div>
+<div class="line-block">
+<div class="line">Because <em>Flask handles this case already!</em></div>
+</div>
+</div>
+<div class="section" id="id43">
+<h1>SINE QUA NON</h1>
+<div class="line-block">
+<div class="line"><strong>Pervasive exceptions</strong></div>
+<div class="line">(a <em>design pattern</em>)</div>
+</div>
+</div>
+<div class="section" id="id44">
+
+<p><em>caveat</em></p>
+</div>
+<div class="section" id="id45">
+
+<div class="line-block">
+<div class="line">We have made it <em>easier</em></div>
+<div class="line">to write code that <strong>wants</strong></div>
+<div class="line">to bail out on an error</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">user</span> <span class="o">=</span> <span class="n">get_row</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">cloud_open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="k">return</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">},</span> <span class="mi">200</span>
+</pre></div>
+
+</div>
+<div class="section" id="id46">
+
+<div class="line-block">
+<div class="line">But <strong>what about</strong> code that</div>
+<div class="line"><em>wants</em> to keep going?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">get_row</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">NotFoundError</span><span class="p">:</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">cloud_open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">PermissionError</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id47">
+
+<p>There's a <em>pattern</em> for that</p>
+</div>
+<div class="section" id="id48">
+
+<div class="highlight"><pre><span></span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>        <span class="c1"># =&gt; AttributeError</span>
+<span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>  <span class="c1"># =&gt; None</span>
+
+<span class="n">mydict</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>              <span class="c1"># =&gt; KeyError</span>
+<span class="n">mydict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>    <span class="c1"># =&gt; None</span>
+</pre></div>
+
+<p>So your own calls can:</p>
+<div class="highlight"><pre><span></span><span class="n">user</span> <span class="o">=</span> <span class="n">get_row</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id49">
+
+</div>
+<div class="section" id="id50">
+
+<div class="line-block">
+<div class="line"><em>The Story of loading SSL</em></div>
+<div class="line"><em>certificates from strings</em></div>
+</div>
+</div>
+<div class="section" id="id51">
+<h1>The problem</h1>
+</div>
+<div class="section" id="id52">
+
+<div class="highlight"><pre><span></span><span class="n">conn</span> <span class="o">=</span> <span class="n">HTTPSConnection</span><span class="p">(</span>
+    <span class="n">host</span><span class="o">=</span><span class="s1">&#39;www.google.com&#39;</span><span class="p">,</span>
+    <span class="n">key_file</span><span class="o">=</span><span class="s1">&#39;/u/brandon/client.key&#39;</span><span class="p">,</span>
+    <span class="n">cert_file</span><span class="o">=</span><span class="s1">&#39;/u/brandon/client.crt&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Requires client certificates</div>
+<div class="line">to be written to disk</div>
+</div>
+</div>
+<div class="section" id="id53">
+
+<div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cert_pem</span> <span class="o">+</span> <span class="n">key_pem</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">HTTPSConnection</span><span class="p">(</span>
+        <span class="n">host</span><span class="o">=</span><span class="s1">&#39;www.google.com&#39;</span><span class="p">,</span>
+        <span class="n">key_file</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">cert_file</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><em>Awkward, expensive</em></div>
+</div>
+</div>
+<div class="section" id="id54">
+
+<div class="line-block">
+<div class="line">My customer demanded</div>
+<div class="line">an alternative</div>
+</div>
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line">So, of course, I <strong>Googled</strong></div>
+</div>
+<div class="line-block">
+<div class="line">“python ssl memory”</div>
+</div>
+</div>
+<div class="section" id="id56">
+<h1>SINE QUA NON</h1>
+<p><strong>Public Bug Tracker</strong></p>
+</div>
+<div class="section" id="id57">
+
+<p><a class="reference external" href="http://bugs.python.org/issue16487">http://bugs.python.org/issue16487</a></p>
+<div class="line-block">
+<div class="line">“Allow <strong>ssl certificates</strong> to be specified</div>
+<div class="line">from <em>memory</em> rather than <em>files</em>.”</div>
+</div>
+</div>
+<div class="section" id="o">
+<h1>\o/</h1>
+</div>
+<div class="section" id="id58">
+
+<p>“Python 3.4”</p>
+</div>
+<div class="section" id="id59">
+<h1>&#64;#$%&amp;!</h1>
+</div>
+<div class="section" id="id60">
+
+<div class="line-block">
+<div class="line">Can I backport the feature?</div>
+</div>
+</div>
+<div class="section" id="id61">
+
+<ol class="arabic simple">
+<li>How does <tt class="docutils literal">HTTPSConnection</tt> use <tt class="docutils literal">ssl</tt>?</li>
+<li>How does <tt class="docutils literal">ssl</tt> relate to C code?</li>
+<li>How can C code use in-RAM certs?</li>
+</ol>
+</div>
+<div class="section" id="httplib-py">
+<h1><tt class="docutils literal">httplib.py</tt></h1>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HTTPSConnection</span><span class="p">(</span><span class="n">HTTPConnection</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">...</span>
+          <span class="n">key_file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">cert_file</span><span class="o">=</span><span class="bp">None</span><span class="o">...</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key_file</span> <span class="o">=</span> <span class="n">key_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cert_file</span> <span class="o">=</span> <span class="n">cert_file</span>
+
+    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sock</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">wrap_socket</span><span class="p">(</span>
+          <span class="n">sock</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cert_file</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="ssl-py">
+<h1><tt class="docutils literal">ssl.py</tt></h1>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">wrap_socket</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">keyfile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">certfile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">...</span>
+                <span class="n">do_handshake_on_connect</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                <span class="o">...</span><span class="p">):</span>
+
+    <span class="k">return</span> <span class="n">SSLSocket</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">keyfile</span><span class="o">=</span><span class="n">keyfile</span><span class="p">,</span>
+                     <span class="n">certfile</span><span class="o">=</span><span class="n">certfile</span><span class="p">,</span> <span class="o">...</span>
+                     <span class="n">do_handshake_on_connect</span><span class="o">=...</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id62">
+<h1><tt class="docutils literal">ssl.py</tt></h1>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SSLSocket</span><span class="p">(</span><span class="n">socket</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+          <span class="bp">self</span><span class="p">,</span> <span class="n">sock</span><span class="p">,</span> <span class="n">keyfile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">certfile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+          <span class="o">...</span> <span class="n">do_handshake_on_connect</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sslobj</span> <span class="o">=</span> <span class="n">_ssl</span><span class="o">.</span><span class="n">sslwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sock</span><span class="p">,</span>
+          <span class="n">server_side</span><span class="p">,</span> <span class="n">keyfile</span><span class="p">,</span> <span class="n">certfile</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">do_handshake_on_connect</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_handshake</span><span class="p">()</span>
+        <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="ssl-c">
+<h1><tt class="docutils literal">_ssl.c</tt></h1>
+<div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">PyObject</span> <span class="o">*</span>
+<span class="n">PySSL_sslwrap</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="bp">self</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="o">...</span>
+   <span class="k">return</span> <span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="p">)</span> <span class="n">newPySSLObject</span><span class="p">(</span>
+       <span class="n">Sock</span><span class="p">,</span> <span class="n">key_file</span><span class="p">,</span> <span class="n">cert_file</span><span class="p">,</span> <span class="o">...</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">static</span> <span class="n">PyMethodDef</span> <span class="n">PySSL_methods</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">{</span><span class="s2">&quot;sslwrap&quot;</span><span class="p">,</span> <span class="n">PySSL_sslwrap</span><span class="p">,</span>
+     <span class="n">METH_VARARGS</span><span class="p">,</span> <span class="n">ssl_doc</span><span class="p">},</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id63">
+<h1><tt class="docutils literal">_ssl.c</tt></h1>
+<div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">PySSLObject</span> <span class="o">*</span><span class="n">newPySSLObject</span>
+    <span class="p">(</span><span class="o">...</span> <span class="n">char</span> <span class="o">*</span><span class="n">key_file</span><span class="p">,</span> <span class="n">char</span> <span class="o">*</span><span class="n">cert_file</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="o">...</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">key_file</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">...</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">SSL_CTX_use_PrivateKey_file</span><span class="p">(</span>
+          <span class="bp">self</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="p">,</span> <span class="n">key_file</span><span class="p">,</span> <span class="n">SSL_FILETYPE_PEM</span><span class="p">);</span>
+        <span class="o">...</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">SSL_CTX_use_certificate_chain_file</span><span class="p">(</span>
+          <span class="bp">self</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="p">,</span> <span class="n">cert_file</span><span class="p">);</span>
+        <span class="o">...</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="p">;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id64">
+
+<p><em>An aside</em></p>
+<div class="line-block">
+<div class="line">Bad name: <tt class="docutils literal">key_file</tt></div>
+<div class="line">Better: <tt class="docutils literal">key_path</tt></div>
+</div>
+</div>
+<div class="section" id="id65">
+
+<div class="line-block">
+<div class="line">So, what does the</div>
+<div class="line">new patch call?</div>
+</div>
+</div>
+<div class="section" id="id66">
+
+<div class="highlight"><pre><span></span><span class="ow">in</span> <span class="o">=</span> <span class="n">BIO_new_mem_buf</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">len</span><span class="p">);</span>
+<span class="n">pkey</span> <span class="o">=</span> <span class="n">PEM_read_bio_PrivateKey</span><span class="p">(</span><span class="ow">in</span><span class="p">,</span> <span class="o">...</span><span class="p">);</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">SSL_CTX_use_PrivateKey</span><span class="p">(</span><span class="o">...</span><span class="p">);</span>
+
+<span class="ow">in</span> <span class="o">=</span> <span class="n">BIO_new_mem_buf</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">len</span><span class="p">);</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">PEM_read_bio_X509</span><span class="p">(</span><span class="ow">in</span><span class="p">,</span> <span class="o">...</span><span class="p">);</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">SSL_CTX_use_certificate</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">x</span><span class="p">);</span>
+</pre></div>
+
+</div>
+<div class="section" id="the-way-was-open">
+<h1>The way was open!</h1>
+</div>
+<div class="section" id="id67">
+
+<ul class="simple">
+<li>Subclass <tt class="docutils literal">HTTPSConnection</tt></li>
+<li>Override <tt class="docutils literal">connect()</tt> to wrap with <tt class="docutils literal">do_handshake_on_connect=False</tt></li>
+<li>Pass <tt class="docutils literal">None</tt> for the <em>certificate</em> and <em>key</em></li>
+<li>Grab <tt class="docutils literal">conn.sock._sslobj</tt></li>
+<li>Call OpenSSL C functions on it manually</li>
+</ul>
+</div>
+<div class="section" id="id68">
+<h1>SINE QUA NON</h1>
+<p><strong>Complete Object Introspection</strong></p>
+</div>
+<div class="section" id="polite-convention">
+<h1>Polite convention</h1>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">object._name</tt></div>
+</div>
+</div>
+<div class="section" id="id69">
+
+<div class="line-block">
+<div class="line"><em>Leading underscore</em></div>
+</div>
+<div class="line-block">
+<div class="line">warns other developers:</div>
+<div class="line">“this particular attribute is an</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>implementation detail</strong>”</div>
+</div>
+</div>
+<div class="section" id="freedom">
+<h1>Freedom!</h1>
+<div class="line-block">
+<div class="line">The API <em>caller</em> in Python decides</div>
+<div class="line">whether to assume the <strong>cost</strong></div>
+<div class="line">of using an internal detail</div>
+</div>
+</div>
+<div class="section" id="costs">
+<h1>Costs:</h1>
+<ol class="arabic simple">
+<li>Trick might <strong>not work</strong></li>
+<li>There is usually <em>no documentation</em></li>
+<li>Might <strong>break</strong> with the next version</li>
+</ol>
+</div>
+<div class="section" id="benefit">
+<h1>Benefit:</h1>
+<p><strong>Code re-use!</strong></p>
+<div class="line-block">
+<div class="line"><em>Alternatives:</em></div>
+<div class="line">rewrite</div>
+<div class="line">fork</div>
+</div>
+</div>
+<div class="section" id="so-how-can-i-talk-to-c">
+<h1>So, how can I talk to C?</h1>
+</div>
+<div class="section" id="id70">
+
+<div class="highlight"><pre><span></span><span class="err">┌</span><span class="n">module</span><span class="o">.</span><span class="n">py</span><span class="err">──────────────────┐</span>
+<span class="err">│</span>           <span class="n">Python</span>          <span class="err">│</span>
+<span class="err">│</span>                           <span class="err">│</span>
+<span class="err">└─</span><span class="n">ctypes</span><span class="err">──</span><span class="n">cffi</span><span class="err">──────────────┘</span>
+                      <span class="err">↕</span>
+                <span class="err">┌</span><span class="n">module</span><span class="o">.</span><span class="n">so</span><span class="err">──┐</span>
+    <span class="err">↓</span>       <span class="err">↓</span>   <span class="err">│</span> <span class="n">Python</span>    <span class="err">│</span> <span class="err">←</span> <span class="n">raw</span> <span class="n">C</span>
+                <span class="err">│</span> <span class="n">Extension</span> <span class="err">│</span> <span class="err">←</span> <span class="n">Cython</span>
+                <span class="o">|</span> <span class="n">Module</span>    <span class="err">│</span> <span class="err">←</span> <span class="n">SWIG</span>
+                <span class="err">└───────────┘</span>
+                      <span class="err">↕</span>
+<span class="err">┌</span><span class="n">library</span><span class="o">.</span><span class="n">so</span><span class="err">─────────────────┐</span>
+<span class="err">│</span>         <span class="n">C</span> <span class="n">library</span>         <span class="err">│</span>
+<span class="err">└───────────────────────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id71">
+<h1>SINE QUA NON</h1>
+<p><strong>Extensibility</strong></p>
+</div>
+<div class="section" id="so-how-did-it-work">
+<h1>So, how did it work?</h1>
+</div>
+<div class="section" id="id72">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">PySSLObject</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
+    <span class="n">_fields_</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;ob_refcnt&#39;</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;ob_type&#39;</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Socket&#39;</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;ctx&#39;</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;ssl&#39;</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">),</span>
+        <span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">_bio</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="n">bio</span> <span class="o">=</span> <span class="n">libeay</span><span class="o">.</span><span class="n">BIO_new_mem_buf</span><span class="p">(</span>
+        <span class="n">string</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">bio</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ss</span><span class="o">.</span><span class="n">SSLError</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">bio</span>
+</pre></div>
+
+</div>
+<div class="section" id="id73">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">install_text_cert</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">cert_text</span><span class="p">,</span> <span class="n">key_text</span><span class="p">):</span>
+
+    <span class="n">addr</span> <span class="o">=</span> <span class="nb">id</span><span class="p">(</span><span class="n">conn</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">_sslobj</span><span class="p">)</span>
+    <span class="n">ptype</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">PySSLObject</span><span class="p">)</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">ptype</span><span class="p">)</span><span class="o">.</span><span class="n">contents</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">libeay</span><span class="o">.</span><span class="n">PEM_read_bio_X509</span><span class="p">(</span>
+          <span class="n">_bio</span><span class="p">(</span><span class="n">cert_text</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">libeay</span><span class="o">.</span><span class="n">PEM_read_bio_PrivateKey</span><span class="p">(</span>
+          <span class="n">_bio</span><span class="p">(</span><span class="n">key_text</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">libssl</span><span class="o">.</span><span class="n">SSL_CTX_use_certificate</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">ctx</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+    <span class="n">libssl</span><span class="o">.</span><span class="n">SSL_CTX_use_PrivateKey</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">ctx</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id74">
+
+<div class="line-block">
+<div class="line"><em>Freedom</em> to access all attributes</div>
+<div class="line">means never being <strong>limited</strong> by what</div>
+<div class="line">the original author <em>imagined</em></div>
+<div class="line">you might want to do</div>
+</div>
+</div>
+<div class="section" id="id75">
+
+</div>
+<div class="section" id="id76">
+
+<p><em>One last story</em></p>
+</div>
+<div class="section" id="id77">
+
+<div class="line-block">
+<div class="line">At the Hacker School</div>
+<div class="line">in New York this week:</div>
+</div>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">timeit</span>
+
+<span class="n">SETUP</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">import re</span>
+<span class="s2">search = re.compile(r&quot;([a-z])(</span><span class="se">\1</span><span class="s2">)&quot;).search</span>
+<span class="s2">b1 = &#39;bubble&#39;</span>
+<span class="s2">bk = &#39;bubble&#39; * 1000</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="k">print</span> <span class="n">timeit</span><span class="p">(</span><span class="s1">&#39;search(b1)&#39;</span><span class="p">,</span> <span class="n">SETUP</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">timeit</span><span class="p">(</span><span class="s1">&#39;search(bk)&#39;</span><span class="p">,</span> <span class="n">SETUP</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id78">
+
+<div class="highlight"><pre><span></span><span class="mf">0.0149960517883</span>
+<span class="mf">5.89959216118</span>
+</pre></div>
+
+</div>
+<div class="section" id="id79">
+
+<p><tt class="docutils literal">/usr/lib/python2.7/timeit.py</tt></p>
+<p>→ <tt class="docutils literal">./timeit.py</tt></p>
+</div>
+<div class="section" id="id80">
+
+<p>—and added a <tt class="docutils literal">print</tt> statement—</p>
+</div>
+<div class="section" id="id81">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="n">_it</span><span class="p">,</span> <span class="n">_timer</span><span class="p">):</span>
+
+    <span class="kn">import</span> <span class="nn">re</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([a-z])(␁)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">search</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="s1">&#39;bubble&#39;</span>
+    <span class="n">bk</span> <span class="o">=</span> <span class="s1">&#39;bubble&#39;</span> <span class="o">*</span> <span class="mi">1000</span>
+
+    <span class="n">_t0</span> <span class="o">=</span> <span class="n">_timer</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">_it</span><span class="p">:</span>
+        <span class="n">search</span><span class="p">(</span><span class="n">bk</span><span class="p">)</span>
+    <span class="n">_t1</span> <span class="o">=</span> <span class="n">_timer</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">_t1</span> <span class="o">-</span> <span class="n">_t0</span>
+</pre></div>
+
+</div>
+<div class="section" id="id82">
+
+<div class="line-block">
+<div class="line">Whoops.</div>
+</div>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">timeit</span>
+
+<span class="n">SETUP</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">import re</span>
+<span class="s2">search = re.compile(r&quot;([a-z])(</span><span class="se">\1</span><span class="s2">)&quot;).search</span>
+<span class="s2">b1 = &#39;bubble&#39;</span>
+<span class="s2">bk = &#39;bubble&#39; * 1000</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="k">print</span> <span class="n">timeit</span><span class="p">(</span><span class="s1">&#39;search(b1)&#39;</span><span class="p">,</span> <span class="n">SETUP</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">timeit</span><span class="p">(</span><span class="s1">&#39;search(bk)&#39;</span><span class="p">,</span> <span class="n">SETUP</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id83">
+
+</div>
+<div class="section" id="id84">
+<h1>Sine qua nons</h1>
+<div class="line-block">
+<div class="line">While several programming</div>
+<div class="line">languages have these <strong>features</strong>,</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Python</strong> puts them together</div>
+<div class="line">in a way that is <em>powerful</em></div>
+<div class="line">yet <em>simple</em> and elegant</div>
+</div>
+</div>
+<div class="section" id="id85">
+
+<p><em>Thank you very much!</em></p>
+</div>
+<div class="section" id="id86">
+
+<div class="line-block">
+<div class="line">(Photo of Armin Ronacher by</div>
+<div class="line"><strong>Nils Pascal Illenseer</strong> from 500px.com)</div>
+</div>
+</div>
+<div class="section" id="id87">
+
+<!-- ideas
+
+code should not be data, because then actual code is invisible
+ data being invisible is hard enough
+ I use print statements for debugging
+
+hard-code everything the first time through an algorithm
+ but use actual names for all those things, not constants!
+ and do I/O at the outer level of your program
+
+ssl story
+ helping out with the issue
+  windows? why the exception?
+
+want example of why you should not stop with first approach
+ example: how to group things in my invoice writer
+  state machine way
+  iter() way
+  odd-even way - yay!
+  itertools way
+
+ Allison scrabble example?
+
+ like chess: only after practice can you see dead end coming
+ so, play short games so it's okay if you reach a few dead ends
+ short functions as recommended in Linux kernel coding? -->
+</div>
+<div class="section" id="id88">
+
+<!-- single quote: ’
+double quotes: x“”x
+em-dash: —
+vertical ellipsis: ⋮
+arrows: ←, ↑, →, ↓, ↔, ↕, ↖, ↗, ↘, ↙ -->
+<script>
+  window.slide_transition_time = 200;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script>
+<style type="text/css">
+  pre { background: none; box-shadow: none; font-size: 22px; }
+</style></div>
+</div>
+</body>
+</html>

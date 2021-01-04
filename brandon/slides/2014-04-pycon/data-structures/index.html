@@ -1,0 +1,1728 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>slides.rst</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="slide">
+
+<div class="line-block">
+<div class="line"><strong>All Your Ducks In A Row</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><em>Data Structures in the</em></div>
+<div class="line"><em>Standard Library and Beyond</em></div>
+</div>
+<div class="line-block">
+<div class="line">&#64;brandon_rhodes</div>
+<div class="line">PyCon 2014</div>
+<div class="line">Montréal</div>
+</div>
+</div>
+<div class="section" id="this-talk">
+<h1>This talk</h1>
+</div>
+<div class="section" id="id1">
+<h1>This talk</h1>
+<div class="line-block">
+<div class="line"><em>How</em> data structures work</div>
+</div>
+</div>
+<div class="section" id="id2">
+<h1>This talk</h1>
+<div class="line-block">
+<div class="line"><em>How</em> data structures work</div>
+</div>
+<div class="line-block">
+<div class="line"><em>What</em> they can do efficiently</div>
+</div>
+</div>
+<div class="section" id="id3">
+<h1>This talk</h1>
+<div class="line-block">
+<div class="line"><em>How</em> data structures work</div>
+</div>
+<div class="line-block">
+<div class="line"><em>What</em> they can do efficiently</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Which</em> data structure is Python’s</div>
+<div class="line"><strong>most dangerous</strong></div>
+</div>
+</div>
+<div class="section" id="id4">
+
+<p><tt class="docutils literal">list</tt></p>
+</div>
+<div class="section" id="id5">
+
+</div>
+<div class="section" id="id6">
+
+<div class="line-block">
+<div class="line">Computer memory</div>
+<div class="line">is a <strong>byte array</strong></div>
+</div>
+</div>
+<div class="section" id="id7">
+
+<div class="line-block">
+<div class="line">Bytes are named</div>
+<div class="line">by sequential integers</div>
+<div class="line">called <em>addresses</em></div>
+</div>
+<div class="highlight"><pre><span></span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="o">...</span>
+<span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┬─</span>
+<span class="err">│</span> <span class="err">│</span> <span class="err">│</span> <span class="err">│</span> <span class="err">│</span> <span class="err">│</span> <span class="err">│</span> <span class="err">│</span> <span class="err">│</span>  <span class="o">...</span>
+<span class="err">└─┴─┴─┴─┴─┴─┴─┴─┴─</span>
+</pre></div>
+
+</div>
+<div class="section" id="id8">
+
+<div class="line-block">
+<div class="line">To save space, I will</div>
+<div class="line">write them in rows of 8</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span>               <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>               <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>               <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>      <span class="o">...</span>      <span class="err">│</span>
+</pre></div>
+
+</div>
+<div class="section" id="id9">
+
+<div class="line-block">
+<div class="line">RAM chips are <em>massively parallel</em></div>
+<div class="line">devices that provide <strong>random access</strong></div>
+</div>
+</div>
+<div class="section" id="this-talk-ignores">
+<h1>This talk ignores</h1>
+<ul>
+<li><div class="first line-block">
+<div class="line">Data structure <strong>compression</strong></div>
+</div>
+</li>
+<li><p class="first"><strong>Memory hierarchy</strong> (but see Gustavo Duarte’s
+<a class="reference external" href="http://duartes.org/gustavo/blog/post/what-your-computer-does-while-you-wait/">What Your Computer Does While You Wait</a>
+and Dan Luu’s
+<a class="reference external" href="http://danluu.com/3c-conflict/">How Misaligning Data Can Increase Performance 12×</a>)</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id10">
+
+<p>Why do I <strong>ignore</strong> those issues?</p>
+</div>
+<div class="section" id="id11">
+
+<p>Why do I <strong>ignore</strong> those issues?</p>
+<p><em>The Standard Library does</em></p>
+</div>
+<div class="section" id="addresses">
+<h1>Addresses</h1>
+</div>
+<div class="section" id="id12">
+
+<div class="line-block">
+<div class="line">You can <strong>add</strong> and <strong>subtract</strong></div>
+<div class="line">from one address to visit</div>
+<div class="line"><em>other</em> addresses near it</div>
+</div>
+</div>
+<div class="section" id="id13">
+
+<div class="line-block">
+<div class="line">Address arithmetic supports:</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Records</em></div>
+<div class="line"><em>Arrays</em></div>
+</div>
+</div>
+<div class="section" id="id14">
+
+<p><em>Record</em></p>
+<div class="line-block">
+<div class="line">Sequence of fields</div>
+<div class="line">in an agreed order</div>
+</div>
+</div>
+<div class="section" id="id15">
+
+<div class="highlight"><pre><span></span><span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span><span class="n">reference</span> <span class="n">count</span><span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span><span class="n">address</span> <span class="n">of</span> <span class="nb">type</span><span class="err">│</span> <span class="err">→</span> <span class="o">...</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+       <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id16">
+
+<div class="highlight"><pre><span></span><span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span><span class="n">reference</span> <span class="n">count</span><span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span><span class="n">address</span> <span class="n">of</span> <span class="nb">type</span><span class="err">│</span> <span class="err">→</span> <span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;int&#39;</span><span class="o">&gt;</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>      <span class="mi">123</span>      <span class="err">│</span>
+<span class="err">└─┴─┴─┴─┴─┴─┴─┴─┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id17">
+
+<div class="highlight"><pre><span></span><span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span><span class="n">reference</span> <span class="n">count</span><span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span><span class="n">address</span> <span class="n">of</span> <span class="nb">type</span><span class="err">│</span> <span class="err">→</span> <span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;float&#39;</span><span class="o">&gt;</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span><span class="mf">2.997924580e+08</span><span class="err">│</span>
+<span class="err">└─┴─┴─┴─┴─┴─┴─┴─┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id18">
+
+<div class="highlight"><pre><span></span><span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span><span class="n">reference</span> <span class="n">count</span><span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span><span class="n">address</span> <span class="n">of</span> <span class="nb">type</span><span class="err">│</span> <span class="err">→</span> <span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;str&#39;</span><span class="o">&gt;</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>   <span class="n">length</span> <span class="o">=</span> <span class="mi">6</span>  <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>     <span class="nb">hash</span>      <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>     <span class="n">flags</span>     <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>  <span class="n">address</span> <span class="o">=</span> <span class="mi">0</span>  <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┴─┘</span>
+<span class="err">│</span><span class="n">H</span> <span class="n">e</span> <span class="n">l</span> <span class="n">l</span> <span class="n">o</span> <span class="err">!│</span>
+<span class="err">└─┴─┴─┴─┴─┴─┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line">You retrieve a field</div>
+<div class="line">from a <em>record</em> by adding:</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>record’s start address</strong></div>
+<div class="line">+</div>
+<div class="line"><strong>field’s offset</strong></div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="highlight"><pre><span></span>       <span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="n">a</span> <span class="o">+</span> <span class="mi">0</span>  <span class="err">│</span><span class="n">reference</span> <span class="n">count</span><span class="err">│</span>
+       <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="n">a</span> <span class="o">+</span> <span class="mi">8</span>  <span class="err">│</span><span class="n">address</span> <span class="n">of</span> <span class="nb">type</span><span class="err">│</span> <span class="err">→</span> <span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;int&#39;</span><span class="o">&gt;</span>
+       <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="n">a</span> <span class="o">+</span> <span class="mi">16</span> <span class="err">│</span>      <span class="mi">123</span>      <span class="err">│</span>
+       <span class="err">└─┴─┴─┴─┴─┴─┴─┴─┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id21">
+
+<p><tt class="docutils literal">struct</tt></p>
+</div>
+<div class="section" id="id22">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">struct</span> <span class="kn">import</span> <span class="n">pack</span><span class="p">,</span> <span class="n">unpack</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">data</span> <span class="o">=</span> <span class="n">pack</span><span class="p">(</span><span class="s1">&#39;IIf&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="mi">12</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;hex&#39;</span><span class="p">)</span>
+<span class="s1">&#39;02000000090000000000a041&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;IIf&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id23">
+
+<div class="line-block">
+<div class="line">A <tt class="docutils literal">struct</tt> can be useful</div>
+<div class="line">for <em>binary conversations</em></div>
+<div class="line">with C libraries or I/O</div>
+</div>
+</div>
+<div class="section" id="id24">
+
+<p><em>Array</em></p>
+</div>
+<div class="section" id="id25">
+
+<div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">+</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span>
+   <span class="err">┌─┬─┬─┬─┬─┬─┐</span>
+   <span class="err">│</span><span class="n">H</span> <span class="n">e</span> <span class="n">l</span> <span class="n">l</span> <span class="n">o</span> <span class="err">!│</span>
+   <span class="err">└─┴─┴─┴─┴─┴─┘</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Character <em>i</em></div>
+<div class="line">lives at (<em>a</em> + <em>i</em>)</div>
+</div>
+</div>
+<div class="section" id="id26">
+
+<div class="highlight"><pre><span></span>           <span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="n">a</span><span class="o">+</span><span class="mi">0</span>  <span class="n">a</span><span class="o">+</span><span class="mi">4</span>   <span class="err">│</span><span class="n">h</span>      <span class="o">|</span><span class="n">e</span>      <span class="o">|</span>
+           <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="n">a</span><span class="o">+</span><span class="mi">8</span>  <span class="n">a</span><span class="o">+</span><span class="mi">12</span>  <span class="err">│</span><span class="n">l</span>      <span class="o">|</span><span class="n">l</span>      <span class="err">│</span>
+           <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="n">a</span><span class="o">+</span><span class="mi">16</span> <span class="n">a</span><span class="o">+</span><span class="mi">20</span>  <span class="err">│</span><span class="n">o</span>      <span class="o">|</span><span class="err">!</span>      <span class="err">│</span>
+           <span class="err">└─┴─┴─┴─┴─┴─┴─┴─┘</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Character <em>i</em></div>
+<div class="line">lives at (<em>a</em> + 4<em>i</em>)</div>
+</div>
+</div>
+<div class="section" id="id27">
+
+<div class="line-block">
+<div class="line">Given <strong>array</strong> items <em>b</em> bytes long,</div>
+<div class="line">item <em>i</em> lives at (<em>a</em> + <em>bi</em>)</div>
+</div>
+</div>
+<div class="section" id="id28">
+
+<div class="line-block">
+<div class="line"><em>Record</em> — addition, heterogeneous</div>
+<div class="line"><em>Array</em> — multiplication, homogenous</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Both</strong> give you <strong>immediate</strong></div>
+<div class="line">access to the data you want</div>
+</div>
+</div>
+<div class="section" id="id29">
+
+<p><tt class="docutils literal">array</tt></p>
+</div>
+<div class="section" id="id30">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">array</span> <span class="kn">import</span> <span class="n">array</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+<span class="mf">4.0</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">44.0</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span>
+<span class="n">array</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">44.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">itemsize</span>
+<span class="mi">8</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">a</span><span class="o">.</span><span class="n">itemsize</span>
+<span class="mi">40</span>
+</pre></div>
+
+</div>
+<div class="section" id="id31">
+
+<div class="line-block">
+<div class="line">An <tt class="docutils literal">array</tt> is useful</div>
+<div class="line">for <em>binary conversations</em></div>
+<div class="line">with C libraries or I/O</div>
+</div>
+</div>
+<div class="section" id="id32">
+
+<div class="line-block">
+<div class="line">It also packs data</div>
+<div class="line">very <em>tightly</em> in <strong>RAM</strong></div>
+</div>
+</div>
+<div class="section" id="specialized-arrays">
+<h1>Specialized arrays</h1>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">str</tt></div>
+<div class="line"><tt class="docutils literal">unicode</tt></div>
+<div class="line"><tt class="docutils literal">StringIO</tt></div>
+<div class="line"><tt class="docutils literal">memoryview</tt></div>
+<div class="line"><tt class="docutils literal">bytearray</tt></div>
+<div class="line"><tt class="docutils literal">bytes</tt></div>
+</div>
+</div>
+<div class="section" id="but">
+<h1>But</h1>
+<div class="line-block">
+<div class="line">Accessing its items</div>
+<div class="line">from Python <strong>requires</strong></div>
+<div class="line"><em>repeated</em> object building</div>
+</div>
+</div>
+<div class="section" id="id33">
+
+<div class="highlight"><pre><span></span><span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span><span class="n">reference</span> <span class="n">count</span><span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span><span class="n">address</span> <span class="n">of</span> <span class="nb">type</span><span class="err">│</span> <span class="err">→</span> <span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;float&#39;</span><span class="o">&gt;</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>   <span class="mf">1.234</span> <span class="n">e</span><span class="o">+</span><span class="mo">00</span>  <span class="err">│</span>
+<span class="err">└─┴─┴─┴─┴─┴─┴─┴─┘</span>
+</pre></div>
+
+<p>↑ ↓</p>
+<div class="highlight"><pre><span></span><span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span> <span class="mf">1.234</span> <span class="err">│</span> <span class="mf">5.678</span> <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+</pre></div>
+
+</div>
+<div class="section" id="id34">
+
+<div class="line-block">
+<div class="line">For example,</div>
+<div class="line">to <tt class="docutils literal">sum()</tt> an <tt class="docutils literal">array</tt> of 100 floats,</div>
+<div class="line">Python builds &gt;100 <tt class="docutils literal">float</tt> objects</div>
+</div>
+</div>
+<div class="section" id="numpy">
+<h1>NumPy</h1>
+</div>
+<div class="section" id="id35">
+
+<div class="line-block">
+<div class="line">Python <tt class="docutils literal">array</tt> — for C or I/O</div>
+<div class="line">NumPy <tt class="docutils literal">array</tt> — for <em>math</em>!</div>
+</div>
+</div>
+<div class="section" id="id36">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">+ - * / // % divmod() ** pow()</tt></div>
+<div class="line"><tt class="docutils literal">&lt;&lt; &gt;&gt; &amp; | ^ &lt; &lt;= &gt; &gt;= == |=</tt></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>NumPy</strong> arrays support</div>
+<div class="line">math operations <em>directly</em></div>
+<div class="line">without building Python</div>
+<div class="line">number objects!</div>
+</div>
+</div>
+<div class="section" id="id37">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="mi">10</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span>
+<span class="p">[</span> <span class="mi">0</span>  <span class="mi">1</span>  <span class="mi">4</span>  <span class="mi">9</span> <span class="mi">16</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="mi">10</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">10</span> <span class="mi">11</span> <span class="mi">12</span> <span class="mi">13</span> <span class="mi">14</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line">Use <strong>NumPy</strong> or <strong>Pandas</strong> to do</div>
+<div class="line">math on millions of numbers</div>
+</div>
+<div class="line-block">
+<div class="line"><em>without</em> needing millions</div>
+<div class="line">of Python objects</div>
+</div>
+<div class="line-block">
+<div class="line">(<em>see also</em> Blaze)</div>
+</div>
+</div>
+<div class="section" id="id39">
+
+<div class="line-block">
+<div class="line">Note that PyPy can auto-detects</div>
+<div class="line">a list with only <tt class="docutils literal">int</tt> or <tt class="docutils literal">float</tt> items</div>
+<div class="line">and can substitute a fast array</div>
+</div>
+</div>
+<div class="section" id="id40">
+
+<div class="line-block">
+<div class="line">Python <em>itself</em> is</div>
+</div>
+<div class="line-block">
+<div class="line">“<strong>Dynamic</strong> language”</div>
+<div class="line">“Everything is an <strong>object</strong>”</div>
+</div>
+</div>
+<div class="section" id="id41">
+
+<div class="line-block">
+<div class="line">So Python’s main data</div>
+<div class="line">structures are going to be <em>general</em> —</div>
+<div class="line">capable of holding <strong>any</strong> objects</div>
+</div>
+</div>
+<div class="section" id="id42">
+
+<p><tt class="docutils literal">tuple</tt></p>
+</div>
+<div class="section" id="id43">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">tup</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s1">&#39;Hello!&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id44">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">tup</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s1">&#39;Hello!&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><strong>Wait!</strong></div>
+</div>
+<div class="line-block">
+<div class="line">Those three objects</div>
+<div class="line">are going to be of</div>
+<div class="line"><em>different</em> sizes!</div>
+</div>
+</div>
+<div class="section" id="id45">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">tup</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s1">&#39;Hello!&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Array address math <em>a</em> + <em>bi</em></div>
+<div class="line">depends upon every element</div>
+<div class="line">being <em>b</em> bytes long</div>
+</div>
+</div>
+<div class="section" id="id46">
+
+<div class="line-block">
+<div class="line">“<em>All problems</em> in computer</div>
+<div class="line">science can be <strong>solved</strong></div>
+<div class="line">by another level</div>
+<div class="line">of indirection”</div>
+</div>
+<div class="line-block">
+<div class="line">— David Wheeler</div>
+</div>
+</div>
+<div class="section" id="id47">
+
+<div class="highlight"><pre><span></span><span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span><span class="n">reference</span> <span class="n">count</span><span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span><span class="n">address</span> <span class="n">of</span> <span class="nb">type</span><span class="err">│</span> <span class="err">→</span> <span class="o">&lt;</span><span class="nb">type</span> <span class="nb">tuple</span><span class="o">&gt;</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>       <span class="mi">3</span>       <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>    <span class="n">address</span>    <span class="err">│</span> <span class="err">→</span> <span class="o">&lt;</span><span class="nb">int</span> <span class="mi">1</span><span class="o">&gt;</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>    <span class="n">address</span>    <span class="err">│</span> <span class="err">→</span> <span class="o">&lt;</span><span class="nb">float</span> <span class="mf">2.0</span><span class="o">&gt;</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>    <span class="n">address</span>    <span class="err">│</span> <span class="err">→</span> <span class="o">&lt;</span><span class="nb">str</span> <span class="s1">&#39;Hello!&#39;</span><span class="o">&gt;</span>
+<span class="err">└─┴─┴─┴─┴─┴─┴─┴─┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="indirection">
+<h1>indirection</h1>
+<div class="line-block">
+<div class="line">“Python: the language</div>
+<div class="line">that gives you data structures,</div>
+<div class="line">without any of the actual data”</div>
+</div>
+</div>
+<div class="section" id="id48">
+<h1>indirection</h1>
+<div class="line-block">
+<div class="line">Moving an <strong>item</strong> in a general</div>
+<div class="line">purpose Python data structure means</div>
+<div class="line">merely copying an <em>address</em></div>
+</div>
+</div>
+<div class="section" id="id49">
+<h1>indirection</h1>
+<div class="line-block">
+<div class="line">There is only <em>one copy</em> of an object</div>
+<div class="line">regardless of how many times it appears</div>
+<div class="line">in a <tt class="docutils literal">tuple</tt> <tt class="docutils literal">list</tt> or <tt class="docutils literal">dict</tt></div>
+</div>
+</div>
+<div class="section" id="id50">
+
+<div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">tup</span><span class="p">)</span>
+<span class="n">tup</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Both <strong>length</strong> and <strong>get-item</strong> require</div>
+<div class="line">only a <em>single fetch</em> of 8 bytes</div>
+</div>
+</div>
+<div class="section" id="id51">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">City</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;City&#39;</span><span class="p">,</span> <span class="s1">&#39;name province&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="n">City</span><span class="p">(</span><span class="s1">&#39;Montréal&#39;</span><span class="p">,</span> <span class="s1">&#39;Québec&#39;</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">m</span><span class="o">.</span><span class="n">name</span>
+<span class="s1">&#39;Montréal&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">m</span><span class="o">.</span><span class="n">province</span>
+<span class="s1">&#39;Québec&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id52">
+
+<p><tt class="docutils literal">tuple</tt></p>
+<ul class="simple">
+<li>Read-only</li>
+<li>sequence</li>
+<li>of objects</li>
+<li><tt class="docutils literal">0</tt>-based</li>
+</ul>
+</div>
+<div class="section" id="id53">
+
+<div class="line-block">
+<div class="line">Note that a <tt class="docutils literal">tuple</tt></div>
+<div class="line">knows its <em>length</em></div>
+</div>
+<div class="line-block">
+<div class="line">This supports bounds checking!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="mi">3</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">t</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="o">...</span>
+<span class="ne">IndexError</span><span class="p">:</span> <span class="nb">tuple</span> <span class="n">index</span> <span class="n">out</span> <span class="n">of</span> <span class="nb">range</span>
+</pre></div>
+
+</div>
+<div class="section" id="id54">
+
+<p><tt class="docutils literal">list</tt></p>
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line">Lists are <em>interesting</em></div>
+<div class="line">because they can <strong>grow</strong></div>
+</div>
+</div>
+<div class="section" id="problem">
+<h1>Problem:</h1>
+<div class="line-block">
+<div class="line">To <strong>grow</strong>, the list</div>
+<div class="line">might need to <em>move</em></div>
+<div class="line">if it’s hemmed in</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─</span>
+<span class="c1">#######│     list      │#######</span>
+<span class="err">─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─</span>
+</pre></div>
+
+</div>
+<div class="section" id="id56">
+<h1>But</h1>
+<div class="line-block">
+<div class="line">Python objects can <em>never</em></div>
+<div class="line">change address!</div>
+</div>
+<div class="highlight"><pre><span></span>      <span class="n">names</span>
+    <span class="n">references</span>
+        <span class="err">↓</span>
+<span class="err">─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─</span>
+<span class="c1">#######│     list      │#######</span>
+<span class="err">─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─</span>
+</pre></div>
+
+</div>
+<div class="section" id="id57">
+
+<div class="line-block">
+<div class="line">“<em>All problems</em> in computer</div>
+<div class="line">science can be <strong>solved</strong></div>
+<div class="line">by another level</div>
+<div class="line">of indirection”</div>
+</div>
+<div class="line-block">
+<div class="line">— David Wheeler</div>
+</div>
+</div>
+<div class="section" id="id58">
+
+<div class="highlight"><pre><span></span><span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span><span class="n">reference</span> <span class="n">count</span><span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span><span class="n">address</span> <span class="n">of</span> <span class="nb">type</span><span class="err">│</span> <span class="err">→</span> <span class="o">&lt;</span><span class="nb">type</span> <span class="nb">list</span><span class="o">&gt;</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>       <span class="mi">3</span>       <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>   <span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span> <span class="n">array</span> <span class="n">address</span> <span class="err">│</span> <span class="err">→</span> <span class="err">│</span>    <span class="n">address</span>    <span class="err">│</span> <span class="err">→</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>   <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>       <span class="mi">4</span>       <span class="err">│</span>   <span class="err">│</span>    <span class="n">address</span>    <span class="err">│</span> <span class="err">→</span>
+<span class="err">└─┴─┴─┴─┴─┴─┴─┴─┘</span>   <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+                    <span class="err">│</span>    <span class="n">address</span>    <span class="err">│</span> <span class="err">→</span>
+                    <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+                    <span class="err">│</span>       <span class="o">-</span>       <span class="err">│</span>
+                    <span class="err">└─┴─┴─┴─┴─┴─┴─┴─┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="q">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">Why does the list have</div>
+<div class="line">an <strong>extra</strong> fourth slot?</div>
+</div>
+</div>
+<div class="section" id="id59">
+
+<div class="highlight"><pre><span></span><span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span><span class="n">reference</span> <span class="n">count</span><span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span><span class="n">address</span> <span class="n">of</span> <span class="nb">type</span><span class="err">│</span> <span class="err">→</span> <span class="o">&lt;</span><span class="nb">type</span> <span class="nb">list</span><span class="o">&gt;</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>       <span class="mi">3</span>       <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>   <span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span> <span class="n">array</span> <span class="n">address</span> <span class="err">│</span> <span class="err">→</span> <span class="err">│</span>    <span class="n">address</span>    <span class="err">│</span> <span class="err">→</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>   <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>       <span class="mi">4</span>       <span class="err">│</span>   <span class="err">│</span>    <span class="n">address</span>    <span class="err">│</span> <span class="err">→</span>
+<span class="err">└─┴─┴─┴─┴─┴─┴─┴─┘</span>   <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+                    <span class="err">│</span>    <span class="n">address</span>    <span class="err">│</span> <span class="err">→</span>
+                    <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+                    <span class="err">│</span>       <span class="o">-</span>       <span class="err">│</span>
+                    <span class="err">└─┴─┴─┴─┴─┴─┴─┴─┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="a">
+<h1>A:</h1>
+<div class="line-block">
+<div class="line">If a Python list reserved</div>
+<div class="line"><em>no extra room</em> then <strong>every append</strong></div>
+<div class="line">would require reallocation!</div>
+</div>
+</div>
+<div class="section" id="id60">
+
+<div class="line-block">
+<div class="line">Reallocation is <em>expensive</em>:</div>
+<div class="line">each <strong>item address</strong> to be</div>
+<div class="line">copied to its new home</div>
+</div>
+</div>
+<div class="section" id="id61">
+
+<div class="line-block">
+<div class="line">So a reallocation on <em>every</em></div>
+<div class="line"><tt class="docutils literal">append()</tt> would quickly add up</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="mi">45</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">))</span>
+<span class="mi">499500</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1000000</span><span class="p">))</span>
+<span class="mi">499999500000</span>
+</pre></div>
+
+</div>
+<div class="section" id="id62">
+
+<div class="line-block">
+<div class="line">This is my standard</div>
+<div class="line"><strong>thousand</strong><em>-and-</em><strong>million</strong></div>
+<div class="line">thought experiment!</div>
+</div>
+</div>
+<div class="section" id="id63">
+
+<div class="line-block">
+<div class="line">“What is the cost of doing this</div>
+<div class="line">operation a <em>thousand times</em>?</div>
+<div class="line">And a <strong>million times</strong>?”</div>
+</div>
+</div>
+<div class="section" id="id64">
+
+<div class="line-block">
+<div class="line">If the <em>answer</em> grows zeros at twice</div>
+<div class="line">the rate of the <em>question</em>, <strong>I lose</strong></div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="mi">45</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">))</span>
+<span class="mi">499500</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1000000</span><span class="p">))</span>
+<span class="mi">499999500000</span>
+</pre></div>
+
+</div>
+<div class="section" id="id65">
+
+<div class="line-block">
+<div class="line"><em>thousand</em> → <strong>million</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><em>O</em>(<em>n</em>) — 3 zeros</div>
+<div class="line"><em>O</em>(<em>n</em> lg <em>n</em>) — 4 zeros</div>
+<div class="line"><em>O</em>(<em>n</em>²) — 6 zeros</div>
+</div>
+</div>
+<div class="section" id="million-seconds">
+<h1>Million seconds</h1>
+<div class="line-block">
+<div class="line"><em>12 days</em></div>
+</div>
+</div>
+<div class="section" id="billion-seconds">
+<h1>Billion seconds</h1>
+<div class="line-block">
+<div class="line"><em>31 years</em></div>
+</div>
+</div>
+<div class="section" id="trillion-seconds">
+<h1>Trillion seconds</h1>
+<div class="line-block">
+<div class="line"><em>31,688 years</em></div>
+</div>
+</div>
+<div class="section" id="id66">
+
+<div class="line-block">
+<div class="line">So <tt class="docutils literal">append()</tt> on a full <tt class="docutils literal">list</tt></div>
+<div class="line">asks for <em>extra</em> item slots</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Sizes:</em> 4, 8, 16, 25, 35, 46, 58, 72, 88, ...</div>
+</div>
+</div>
+<div class="section" id="id67">
+
+<div class="line-block">
+<div class="line">Designing a data structure</div>
+<div class="line">this way is called <strong>amortization</strong></div>
+</div>
+<div class="line-block">
+<div class="line">because it spreads a <em>cost</em> over <em>time</em>,</div>
+<div class="line">just like a mortgage does for a loan</div>
+</div>
+</div>
+<div class="section" id="id68">
+
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="34%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head"><em>Appends</em></th>
+<th class="head"><em>Reallocations</em></th>
+<th class="head"><em>Address copies</em></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>1,000</td>
+<td>27</td>
+<td>8,603</td>
+</tr>
+<tr><td>1,000,000</td>
+<td>85</td>
+<td>9,692,995</td>
+</tr>
+<tr><td>1,000,000,000</td>
+<td>143</td>
+<td>9,058,551,346</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id69">
+
+<div class="line-block">
+<div class="line">Amortized costs tend to be <strong>bumpy</strong></div>
+</div>
+</div>
+<div class="section" id="id70">
+
+<div class="line-block">
+<div class="line">You add the <strong>991</strong>st item,</div>
+<div class="line">the list grows to <strong>1,120</strong> slots,</div>
+<div class="line"><strong>990</strong> item addresses get copied</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Painful</em></div>
+</div>
+</div>
+<div class="section" id="id71">
+
+<div class="line-block">
+<div class="line">But, in return, the next 130 items</div>
+<div class="line">append at <strong>no additional cost</strong></div>
+</div>
+</div>
+<div class="section" id="id72">
+
+<p><em>amortization</em></p>
+</div>
+<div class="section" id="id73">
+
+<div class="line-block">
+<div class="line">The Python list illustrates a trade-off:</div>
+<div class="line">to <em>save time</em> we must <strong>waste space</strong></div>
+<div class="line">with all of those unused list slots</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">┌───────────────────────┬───────────┐</span>
+<span class="err">│</span>   <span class="mi">991</span> <span class="n">item</span> <span class="n">addresses</span>  <span class="err">│</span> <span class="mi">129</span> <span class="n">slots</span> <span class="err">│</span>
+<span class="err">└───────────────────────┴───────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id74">
+
+<p><strong>Speed</strong> vs <strong>space</strong></p>
+</div>
+<div class="section" id="id75">
+
+<div class="line-block">
+<div class="line">Python lists, on average, use</div>
+<div class="line"><strong>94%</strong> of their slots — consuming</div>
+<div class="line"><strong>6%</strong> more space than they use</div>
+</div>
+<div class="line-block">
+<div class="line">In return, they are <em>fast</em>!</div>
+</div>
+</div>
+<div class="section" id="id76">
+
+<p><tt class="docutils literal">list</tt></p>
+<div class="line-block">
+<div class="line">Python’s</div>
+<div class="line">most <em>dangerous</em></div>
+<div class="line">data structure!</div>
+</div>
+</div>
+<div class="section" id="id77">
+
+<div class="highlight"><pre><span></span><span class="c1"># Single-item:</span>
+
+<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+<span class="k">del</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="n">v</span> <span class="ow">in</span> <span class="n">s</span>
+</pre></div>
+
+</div>
+<div class="section" id="id78">
+
+<div class="highlight"><pre><span></span><span class="c1"># Several-item:</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="o">-</span><span class="mi">7</span><span class="p">]</span>
+<span class="n">s</span> <span class="o">==</span> <span class="n">t</span>
+<span class="n">s</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;Montréal&#39;</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;Montréal&#39;</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;Montréal&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span> <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id79">
+
+<p><em>problem</em></p>
+</div>
+<div class="section" id="id80">
+
+<div class="highlight"><pre><span></span><span class="c1"># Single-item operations that touch:</span>
+<span class="c1"># 1 item              # n items</span>
+
+<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+<span class="k">del</span> <span class="n">s</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>         <span class="k">del</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span>   <span class="n">s</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>               <span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                      <span class="n">v</span> <span class="ow">in</span> <span class="n">s</span>
+</pre></div>
+
+</div>
+<div class="section" id="id81">
+
+<div class="highlight"><pre><span></span><span class="c1"># Reverse order</span>
+
+<span class="k">while</span> <span class="n">mylist</span><span class="p">:</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="nb">list</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">item</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line"><em>Million</em> items?</div>
+<div class="line"><strong>Half trillion</strong> operations!</div>
+</div>
+</div>
+<div class="section" id="id82">
+
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">mylist</span><span class="p">):</span>
+    <span class="k">print</span> <span class="n">item</span>
+</pre></div>
+
+</div>
+<div class="section" id="id83">
+
+<p><tt class="docutils literal">list</tt></p>
+<div class="line-block">
+<div class="line">Python’s</div>
+<div class="line">most <em>dangerous</em></div>
+<div class="line">data structure!</div>
+</div>
+</div>
+<div class="section" id="slicing">
+<h1>slicing</h1>
+<p><em>copy</em> vs <em>view</em></p>
+</div>
+<div class="section" id="id84">
+
+<div class="line-block">
+<div class="line">Making a <strong>slice</strong> of size <em>n</em></div>
+<div class="line">costs <em>n</em> address copies</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">400</span><span class="p">:</span><span class="mi">500</span><span class="p">]</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err">┌─────────────────────────┐</span>
+<span class="err">│</span>      <span class="mi">1</span><span class="p">,</span><span class="mo">000</span> <span class="n">item</span> <span class="nb">list</span>    <span class="err">│</span>
+<span class="err">└─────────────────────────┘</span>
+ <span class="mi">8</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">=</span> <span class="mi">800</span> <span class="nb">bytes</span> <span class="n">copied</span>
+             <span class="err">↓</span>
+     <span class="err">┌───────────────┐</span>
+     <span class="err">│</span> <span class="mi">100</span> <span class="n">item</span> <span class="nb">list</span> <span class="err">│</span>
+     <span class="err">└───────────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id85">
+
+<div class="line-block">
+<div class="line"><strong>Expensive</strong> slicing annoys both</div>
+<div class="line"><em>scientists with data</em> and <em>data scientists</em></div>
+</div>
+</div>
+<div class="section" id="id86">
+
+<div class="line-block">
+<div class="line">So <strong>NumPy</strong> and <strong>Pandas</strong> slices</div>
+<div class="line">are simple views that copy <em>no data</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">400</span><span class="p">:</span><span class="mi">500</span><span class="p">]</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err">┌────────────────────────┐</span>
+<span class="err">│</span>      <span class="mi">1</span><span class="p">,</span><span class="mo">000</span> <span class="n">floats</span>      <span class="err">│</span>
+<span class="err">└────────────────────────┘</span>
+             <span class="err">↑</span>
+        <span class="err">┌─────────┐</span>
+        <span class="err">│</span>  <span class="nb">slice</span>  <span class="err">│</span>
+        <span class="err">│</span><span class="o">+</span><span class="mi">400</span> <span class="o">&lt;</span><span class="mi">500</span><span class="err">│</span>
+        <span class="err">└─────────┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id87">
+
+<!-- TODO: deque -->
+<!-- Gads!  It is not a circular array, it is a linked list! -->
+</div>
+<div class="section" id="dict">
+<h1>dict</h1>
+</div>
+<div class="section" id="id88">
+
+<div class="line-block">
+<div class="line">A <tt class="docutils literal">list</tt> does not let you name slots</div>
+<div class="line">but imposes an integer <strong>index</strong></div>
+</div>
+<div class="highlight"><pre><span></span>      <span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="err">│</span>    <span class="n">address</span>    <span class="err">│</span> <span class="err">→</span> <span class="n">item</span>
+      <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="err">│</span>    <span class="n">address</span>    <span class="err">│</span> <span class="err">→</span> <span class="n">item</span>
+      <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>  <span class="err">│</span>    <span class="n">address</span>    <span class="err">│</span> <span class="err">→</span> <span class="n">item</span>
+      <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="n">s</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>  <span class="err">│</span>    <span class="n">address</span>    <span class="err">│</span> <span class="err">→</span> <span class="n">item</span>
+      <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+              <span class="err">⋮</span>
+</pre></div>
+
+</div>
+<div class="section" id="id89">
+
+<div class="line-block">
+<div class="line">But a <tt class="docutils literal">dict</tt> lets</div>
+<div class="line"><em>you</em> choose keys</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;un&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="p">[</span><span class="mf">2.0</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;deux&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;three&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;trois&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id90">
+
+<div class="line-block">
+<div class="line">Behind each <tt class="docutils literal">dict</tt> is an array</div>
+<div class="line">in which <em>keys</em> are stored at <em>indexes</em></div>
+<div class="line">according to their <em>hash value</em></div>
+</div>
+</div>
+<div class="section" id="id91">
+
+<div class="line-block">
+<div class="line">The means that each slot</div>
+<div class="line">must store <strong>both</strong> key and value</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span>      <span class="nb">hash</span>     <span class="err">│</span>  <span class="n">key</span> <span class="n">address</span>  <span class="err">│</span> <span class="n">value</span> <span class="n">address</span> <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>      <span class="nb">hash</span>     <span class="err">│</span>  <span class="n">key</span> <span class="n">address</span>  <span class="err">│</span> <span class="n">value</span> <span class="n">address</span> <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>      <span class="nb">hash</span>     <span class="err">│</span>  <span class="n">key</span> <span class="n">address</span>  <span class="err">│</span> <span class="n">value</span> <span class="n">address</span> <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>      <span class="o">...</span>      <span class="err">│</span>      <span class="o">...</span>      <span class="err">│</span>      <span class="o">...</span>      <span class="err">│</span>
+</pre></div>
+
+</div>
+<div class="section" id="id92">
+
+<p><em>see</em></p>
+<div class="line-block">
+<div class="line"><strong>“The Mighty Dictionary”</strong></div>
+<div class="line">PyCon 2010</div>
+</div>
+</div>
+<div class="section" id="id93">
+
+<div class="line-block">
+<div class="line">A <tt class="docutils literal">dict</tt> grows by doubling</div>
+<div class="line">or quadrupling its size,</div>
+</div>
+<div class="line-block">
+<div class="line">so resize cost is <em>amortized</em></div>
+</div>
+</div>
+<div class="section" id="id94">
+
+<div class="line-block">
+<div class="line">A <tt class="docutils literal">dict</tt> resizes at ⅔rds full</div>
+<div class="line">to avoid too many collisions</div>
+</div>
+</div>
+<div class="section" id="id95">
+
+<div class="line-block">
+<div class="line">Only ever ⅓–⅔ full</div>
+</div>
+<p><strong>Speed</strong> vs <strong>space</strong></p>
+</div>
+<div class="section" id="id96">
+
+<div class="line-block">
+<div class="line">Given a key, a <tt class="docutils literal">dict</tt></div>
+<div class="line">hashes it and can usually</div>
+<div class="line">jump right to its slot</div>
+</div>
+</div>
+<div class="section" id="id97">
+
+<div class="line-block">
+<div class="line">All dictionary operations</div>
+<div class="line">are <strong>fast</strong> and therefore <em>safe</em></div>
+<div class="line">for beginning programmers</div>
+</div>
+<div class="highlight"><pre><span></span><span class="c1"># Single item   # Several item</span>
+
+<span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>          <span class="n">d</span> <span class="o">==</span> <span class="n">d2</span>
+<span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>      <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span>
+<span class="n">key</span> <span class="ow">in</span> <span class="n">d</span>        <span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>      <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span> <span class="o">...</span>
+<span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>      <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">():</span> <span class="o">...</span>
+<span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>      <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span> <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id98">
+
+<div class="line-block">
+<div class="line">Common</div>
+<div class="line"><tt class="docutils literal">dict</tt>-powered</div>
+<div class="line">tasks</div>
+</div>
+<ul class="simple">
+<li>Joining</li>
+<li>Counting</li>
+<li>Grouping</li>
+</ul>
+</div>
+<div class="section" id="id99">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">animals</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">animals</span><span class="p">[</span><span class="s1">&#39;Mammal&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;dog&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">animals</span><span class="p">[</span><span class="s1">&#39;Reptile&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;lizard&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">animals</span><span class="p">[</span><span class="s1">&#39;Mammal&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;Mammal&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">],</span>
+ <span class="s1">&#39;Reptile&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;lizard&#39;</span><span class="p">]}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id100">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="c1"># Most common 2 letters in a phrase</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;château frontenac, quebec&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="p">[(</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id101">
+
+<div class="line-block">
+<div class="line">Remember: you can build</div>
+<div class="line">compound <tt class="docutils literal">dict</tt> keys with a <tt class="docutils literal">tuple</tt></div>
+</div>
+<div class="highlight"><pre><span></span><span class="p">{(</span><span class="s1">&#39;google.com&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">):</span> <span class="mi">7125773</span><span class="p">,</span>
+ <span class="p">(</span><span class="s1">&#39;google.com&#39;</span><span class="p">,</span> <span class="mi">443</span><span class="p">):</span> <span class="mi">1520951</span><span class="p">,</span>
+ <span class="p">(</span><span class="s1">&#39;heroku.com&#39;</span><span class="p">,</span> <span class="mi">22</span><span class="p">):</span> <span class="mi">245080</span><span class="p">,</span>
+ <span class="p">(</span><span class="s1">&#39;linkedin.com&#39;</span><span class="p">,</span> <span class="mi">443</span><span class="p">):</span> <span class="mi">5724124</span><span class="p">,</span>
+ <span class="p">(</span><span class="s1">&#39;rackspace.com&#39;</span><span class="p">,</span> <span class="mi">443</span><span class="p">):</span> <span class="mi">5002620</span><span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id102">
+
+<div class="line-block">
+<div class="line">Use the <tt class="docutils literal">frozenset</tt> if the</div>
+<div class="line">data in your keys is unordered</div>
+</div>
+<div class="highlight"><pre><span></span><span class="n">project_languages</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nb">frozenset</span><span class="p">([</span><span class="s1">&#39;python&#39;</span><span class="p">]):</span> <span class="mi">328</span><span class="p">,</span>
+    <span class="nb">frozenset</span><span class="p">([</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="s1">&#39;js&#39;</span><span class="p">]):</span> <span class="mi">217</span><span class="p">,</span>
+    <span class="nb">frozenset</span><span class="p">([</span><span class="s1">&#39;ruby&#39;</span><span class="p">]):</span> <span class="mi">274</span><span class="p">,</span>
+    <span class="nb">frozenset</span><span class="p">([</span><span class="s1">&#39;ruby&#39;</span><span class="p">,</span> <span class="s1">&#39;js&#39;</span><span class="p">]):</span> <span class="mi">261</span><span class="p">,</span>
+    <span class="nb">frozenset</span><span class="p">([</span><span class="s1">&#39;js&#39;</span><span class="p">]):</span> <span class="mi">79</span><span class="p">,</span>
+    <span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id103">
+
+<div class="line-block">
+<div class="line">Because the <tt class="docutils literal">dict</tt> assigns</div>
+<div class="line">key to array indexes by <strong>hash</strong>,</div>
+<div class="line">it iterates in <em>arbitrary</em> order</div>
+</div>
+</div>
+<div class="section" id="id104">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">list</tt> — maintains order</div>
+<div class="line"><tt class="docutils literal">dict</tt> — maintains association</div>
+</div>
+<div class="line-block">
+<div class="line">Two data structures, two superpowers</div>
+</div>
+</div>
+<div class="section" id="id105">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">list</tt> — maintains order</div>
+<div class="line"><tt class="docutils literal">dict</tt> — maintains association</div>
+</div>
+<div class="line-block">
+<div class="line">But what if we want <em>both</em>?</div>
+</div>
+</div>
+<div class="section" id="id106">
+
+<p><tt class="docutils literal">OrderedDict</tt></p>
+</div>
+<div class="section" id="id107">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="s1">&#39;Montréal&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;é&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="s1">&#39;Montréal&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="p">[</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;é&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="ordereddict">
+<h1>OrderedDict</h1>
+<div class="line-block">
+<div class="line">Email headers</div>
+<div class="line">HTTP headers</div>
+<div class="line">JSON fields</div>
+</div>
+</div>
+<div class="section" id="set">
+<h1>set</h1>
+</div>
+<div class="section" id="id108">
+<h1>set</h1>
+<div class="line-block">
+<div class="line">A <tt class="docutils literal">dict</tt> with only</div>
+<div class="line"><em>keys</em> but no <em>values</em></div>
+</div>
+</div>
+<div class="section" id="id109">
+
+<div class="highlight"><pre><span></span><span class="c1"># Fast 1-member ops</span>
+
+<span class="n">member</span> <span class="ow">in</span> <span class="n">t</span>
+<span class="n">t</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+<span class="n">t</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+
+<span class="c1"># Fast n-member ops</span>
+
+<span class="n">t</span> <span class="o">|</span> <span class="n">u</span>
+<span class="n">t</span> <span class="o">&amp;</span> <span class="n">u</span>
+<span class="n">t</span> <span class="o">-</span> <span class="n">u</span>
+</pre></div>
+
+</div>
+<div class="section" id="classes">
+<h1>classes</h1>
+<div class="line-block">
+<div class="line">By default, each attribute</div>
+<div class="line">is a key in <tt class="docutils literal">obj.__dict__</tt></div>
+</div>
+<div class="line-block">
+<div class="line">But classes that pre-specify</div>
+<div class="line"><tt class="docutils literal">__slots__</tt> are implemented</div>
+<div class="line">as a <tt class="docutils literal">struct</tt> (record) instead</div>
+</div>
+</div>
+<div class="section" id="whats-left">
+<h1>What’s left?</h1>
+<ul class="simple">
+<li>Fetching a range</li>
+<li>Double-ended <tt class="docutils literal">list</tt></li>
+<li>Live popularity contest</li>
+</ul>
+</div>
+<div class="section" id="fetching-a-range">
+<h1>Fetching a range</h1>
+<div class="line-block">
+<div class="line">Use <tt class="docutils literal">bisect</tt> if your data is already</div>
+<div class="line"><em>sorted</em> in a <tt class="docutils literal">list</tt> or <tt class="docutils literal">array</tt></div>
+</div>
+</div>
+<div class="section" id="id110">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">bisect</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">left</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">right</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="n">left</span><span class="p">:</span><span class="n">right</span><span class="p">]</span>
+<span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="double-ended-list">
+<h1>Double-ended list</h1>
+<p>Use the <tt class="docutils literal">deque</tt></p>
+</div>
+<div class="section" id="id111">
+
+<div class="line-block">
+<div class="line">The <tt class="docutils literal">list</tt> supports</div>
+<div class="line">efficient modification</div>
+<div class="line">at its <em>right end</em></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">append()</tt></div>
+<div class="line"><tt class="docutils literal">pop()</tt></div>
+</div>
+</div>
+<div class="section" id="id112">
+
+<div class="line-block">
+<div class="line">These <tt class="docutils literal">list</tt> operations</div>
+<div class="line">provide Python with its</div>
+<div class="line">native <em>stack</em></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">append()</tt></div>
+<div class="line"><tt class="docutils literal">pop()</tt></div>
+</div>
+</div>
+<div class="section" id="id113">
+
+<div class="line-block">
+<div class="line">“We all have ‘stacks’ in our minds</div>
+<div class="line">when we are solving problems”</div>
+<div class="line"><em>— Donald Knuth</em></div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">append()</tt></div>
+<div class="line"><tt class="docutils literal">pop()</tt></div>
+</div>
+</div>
+<div class="section" id="id114">
+
+<div class="line-block">
+<div class="line">But the <tt class="docutils literal">deque</tt> provides quick</div>
+<div class="line">operations at <em>both</em> ends</div>
+</div>
+</div>
+<div class="section" id="id115">
+
+<div class="highlight"><pre><span></span><span class="c1"># Efficient operations:</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">appendleft</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+<span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+<span class="mi">4</span>
+</pre></div>
+
+<!-- implementation: linked list? -->
+</div>
+<div class="section" id="id116">
+
+<div class="line-block">
+<div class="line">item → <tt class="docutils literal">deque</tt> → item</div>
+<div class="line">item ← <tt class="docutils literal">deque</tt> ← item</div>
+</div>
+</div>
+<div class="section" id="id117">
+
+<div class="highlight"><pre><span></span><span class="c1"># Great for threading</span>
+<span class="c1"># Great for multiprocessing</span>
+<span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">Queue</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">item → <tt class="docutils literal">Queue</tt> → item</div>
+</div>
+</div>
+<div class="section" id="popularity-contest">
+<h1>Popularity contest</h1>
+</div>
+<div class="section" id="id118">
+
+<div class="line-block">
+<div class="line">The <tt class="docutils literal">heapq</tt> lets you</div>
+<div class="line">fetch top <em>t</em> of <em>n</em> items</div>
+<div class="line">in O(<em>t</em> + <em>n</em>) time!</div>
+</div>
+</div>
+<div class="section" id="id119">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">heapq</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heapify</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="s1">&#39;     {}</span><span class="se">\n</span><span class="s1">   {}</span><span class="se">\n</span><span class="s1">{}&#39;</span>
+<span class="o">...</span>       <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">7</span><span class="p">]))</span>
+     <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+   <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id120">
+
+<div class="line-block">
+<div class="line"><em>Push</em> and <em>pop</em> in any order —</div>
+<div class="line">the smallest is always returned!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="mi">2</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="mi">0</span>
+</pre></div>
+
+</div>
+<div class="section" id="id121">
+
+<div class="line-block">
+<div class="line">Also <tt class="docutils literal">nlargest()</tt> and <tt class="docutils literal">nsmallest()</tt></div>
+<div class="line">which avoid sorting entire sequence</div>
+</div>
+</div>
+<div class="section" id="id122">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">PriorityQueue</tt></div>
+</div>
+<div class="line-block">
+<div class="line">A <tt class="docutils literal">heapq</tt> with locks,</div>
+<div class="line">so threads can <em>cooperate</em></div>
+<div class="line">on a prioritized work pile</div>
+</div>
+</div>
+<div class="section" id="id123">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">sched.scheduler</tt></div>
+</div>
+<div class="line-block">
+<div class="line">A <tt class="docutils literal">heapq</tt> that tells you when</div>
+<div class="line">the next task is due to run</div>
+</div>
+</div>
+<div class="section" id="so">
+<h1>So</h1>
+</div>
+<div class="section" id="id124">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">Where are the <strong>old-fashioned</strong></div>
+<div class="line">data structures based upon</div>
+<div class="line"><em>chains of addresses</em>?</div>
+</div>
+<ul class="simple">
+<li>Linked list</li>
+<li>Doubly-linked list</li>
+<li>Trees of all kinds</li>
+</ul>
+</div>
+<div class="section" id="id125">
+<h1>A:</h1>
+<div class="line-block">
+<div class="line">They make little sense</div>
+<div class="line">when our data structures</div>
+<div class="line">no longer contain <strong>data</strong></div>
+<div class="line">but only <em>addresses</em></div>
+</div>
+</div>
+<div class="section" id="id126">
+
+<div class="highlight"><pre><span></span><span class="c1"># Linked list in the old days</span>
+
+<span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>   <span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span>  <span class="nb">next</span> <span class="n">address</span> <span class="err">│</span> <span class="err">→</span> <span class="err">│</span>  <span class="nb">next</span> <span class="n">address</span> <span class="err">│</span> <span class="err">→</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>   <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>      <span class="n">data</span>     <span class="err">│</span>   <span class="err">│</span>      <span class="n">data</span>     <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>   <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>      <span class="o">...</span>      <span class="err">│</span>   <span class="err">│</span>      <span class="o">...</span>      <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>   <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>      <span class="o">...</span>      <span class="err">│</span>   <span class="err">│</span>      <span class="o">...</span>      <span class="err">│</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>   <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span>      <span class="o">...</span>      <span class="err">│</span>   <span class="err">│</span>      <span class="o">...</span>      <span class="err">│</span>
+<span class="err">└─┴─┴─┴─┴─┴─┴─┴─┘</span>   <span class="err">└─┴─┴─┴─┴─┴─┴─┴─┘</span>
+</pre></div>
+
+</div>
+<div class="section" id="id127">
+
+<div class="highlight"><pre><span></span><span class="c1"># Linked list when &quot;everything is an object&quot;</span>
+
+<span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>   <span class="err">┌─┬─┬─┬─┬─┬─┬─┬─┐</span>
+<span class="err">│</span>  <span class="nb">next</span> <span class="n">address</span> <span class="err">│</span> <span class="err">→</span> <span class="err">│</span>  <span class="nb">next</span> <span class="n">address</span> <span class="err">│</span> <span class="err">→</span>
+<span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>   <span class="err">├─┼─┼─┼─┼─┼─┼─┼─┤</span>
+<span class="err">│</span><span class="nb">object</span> <span class="n">address</span> <span class="err">│</span>   <span class="err">│</span><span class="nb">object</span> <span class="n">address</span> <span class="err">│</span>
+<span class="err">└─┴─┴─┴─┴─┴─┴─┴─┘</span>   <span class="err">└─┴─┴─┴─┴─┴─┴─┴─┘</span>
+        <span class="err">↓</span>                   <span class="err">↓</span>
+    <span class="o">&lt;</span><span class="nb">object</span><span class="o">&gt;</span>            <span class="o">&lt;</span><span class="nb">object</span><span class="o">&gt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id128">
+
+<div class="line-block">
+<div class="line">Both <tt class="docutils literal">deque</tt> and <tt class="docutils literal">OrderedDict</tt></div>
+<div class="line">have doubly-linked lists inside</div>
+</div>
+</div>
+<div class="section" id="id129">
+
+<div class="line-block">
+<div class="line">But most other linked</div>
+<div class="line">lists in Python are <strong>hidden</strong></div>
+<div class="line">in the <em>memory allocation</em> layer</div>
+</div>
+<div class="line-block">
+<div class="line">CPython → C <tt class="docutils literal">malloc()</tt></div>
+<div class="line">IronPython → CLR</div>
+<div class="line">Jython → JVM</div>
+</div>
+</div>
+<div class="section" id="id130">
+
+<div class="line-block">
+<div class="line">Since your Python</div>
+<div class="line">objects are <em>already</em> inside of</div>
+<div class="line"><tt class="docutils literal">malloc()</tt>-style linked lists,</div>
+</div>
+<div class="line-block">
+<div class="line">adding a <em>further</em> level of</div>
+<div class="line">linking is usually redundant</div>
+</div>
+</div>
+<div class="section" id="trees">
+<h1>Trees</h1>
+</div>
+<div class="section" id="id131">
+<h1>Trees</h1>
+<div class="line-block">
+<div class="line">Used extensively for data</div>
+<div class="line"><em>that is actually a tree</em>!</div>
+</div>
+<div class="line-block">
+<div class="line"><tt class="docutils literal">email.message.MIMEPart</tt></div>
+<div class="line"><tt class="docutils literal">xml.etree.ElementTree</tt></div>
+<div class="line"><tt class="docutils literal">logging.handlers</tt></div>
+</div>
+</div>
+<div class="section" id="id132">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">But what about the</div>
+<div class="line"><em>traditional</em> uses of trees?</div>
+</div>
+<ul class="simple">
+<li>Keep data <strong>ordered</strong> as it changes</li>
+<li>Return all values within a <em>range</em></li>
+</ul>
+</div>
+<div class="section" id="id133">
+<h1>A:</h1>
+<div class="line-block">
+<div class="line">We have <em>outsourced</em> those</div>
+<div class="line">tasks to our <strong>persistence</strong> layers!</div>
+</div>
+<div class="line-block">
+<div class="line">PostgreSQL index? <strong>B-tree!</strong></div>
+<div class="line">MongoDB index? <strong>B-tree!</strong></div>
+<div class="line">CouchDB index? <strong>B-tree!</strong></div>
+<div class="line">SQLite index? <strong>B-tree!</strong></div>
+</div>
+</div>
+<div class="section" id="id134">
+
+<div class="line-block">
+<div class="line">The data systems of yore</div>
+<div class="line">were <strong>long-running</strong> and might</div>
+<div class="line">keep a data structure around for <em>weeks</em></div>
+</div>
+</div>
+<div class="section" id="id135">
+
+<div class="line-block">
+<div class="line">Our programs today</div>
+<div class="line">instead tend to be <em>episodic</em> and</div>
+<div class="line">concerned with individual events</div>
+</div>
+<ul class="simple">
+<li>view</li>
+<li>update</li>
+<li>report</li>
+</ul>
+</div>
+<div class="section" id="id136">
+
+<div class="line-block">
+<div class="line">This turns us towards</div>
+<div class="line">a <em>functional</em> programming style</div>
+<div class="line">that involves quick <strong>write-once</strong></div>
+<div class="line">throw-away data structures</div>
+</div>
+<ul class="simple">
+<li>List comprehensions</li>
+<li>Dict comprehensions</li>
+<li>Set comprehensions</li>
+</ul>
+</div>
+<div class="section" id="id137">
+
+<div class="line-block">
+<div class="line">If <em>simple</em> data-centric code is the future,</div>
+<div class="line">per Uncle Bob Martin, Gary Bernhardt —</div>
+</div>
+</div>
+<div class="section" id="id138">
+
+<p><em>see</em></p>
+<div class="line-block">
+<div class="line"><strong>“The Clean Architecture in Python”</strong></div>
+<div class="line">PyCon Ireland 2013</div>
+</div>
+</div>
+<div class="section" id="id139">
+
+<div class="line-block">
+<div class="line">— then simple, elegant <tt class="docutils literal">list</tt> and <tt class="docutils literal">dict</tt></div>
+<div class="line">are <strong>exactly</strong> the data structures</div>
+<div class="line">that will be taking us there</div>
+</div>
+</div>
+<div class="section" id="thank-you-very-much">
+<h1>Thank you very much!</h1>
+<p>&#64;brandon_rhodes</p>
+<!-- Potential References
+Hitting the memory wall: implications of the obvious
+    Wm. A. Wulf, Sally A. McKee
+It's the memory, stupid! CodeJam 2014 - Francesc Alted - Jan 29, 2014 -->
+<!-- single quote: ’
+double quotes: x“”x
+em-dash: —
+vertical ellipsis: ⋮
+arrows: ←, ↑, →, ↓, ↔, ↕, ↖, ↗, ↘, ↙ -->
+<script>
+  window.slide_transition_time = 200;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

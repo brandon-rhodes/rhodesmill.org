@@ -1,0 +1,47 @@
+main ()
+{
+	int direction,distance,dist1,dist2;
+	while (1)
+	{
+		drive(0,0);
+		while (distance = 0)
+		{
+			direction = direction + 10;
+			distance = scan(direction,10);
+		}
+		while (distance > 0)
+		{
+			dist1 = scan(direction -5,6);
+			dist2 = scan(direction -5,6);
+			if (dist1 > 0 && dist2 > 0)
+			{
+				cannon(direction, dist1);
+				move(dist1,direction, 49);
+			}
+			else
+			{
+				if (dist1 > 0)
+				{
+					direction = direction - 1;
+					move(dist1,direction,25);
+				}
+				else
+				{
+					direction = direction + 1;
+					move(dist2,direction, 25);
+				}
+			}
+			distance = scan(direction,10);
+		}
+	}
+}
+
+
+move (range,dir,speed)
+int range,dir,speed;
+{
+	if (range > 100)
+	drive(dir,speed);
+	else
+	drive(0,0);
+}

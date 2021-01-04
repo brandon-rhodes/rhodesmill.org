@@ -1,0 +1,869 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>&lt;stdin&gt;</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<div class="section" id="slide">
+
+<style>
+  .section {position: relative;}
+  .reading-mode .note {font-style: italic;}
+  .reading-mode .admonition-title {display: none;}
+  .presentation-mode .note {position: absolute; left: 101%; top: 0;}
+  .presentation-mode .note {color: white; top: 250px; font-size: 0.5em;
+    width: 300px}
+  .small {font-size: 0.75em;}
+  .strike {text-decoration: line-through;}
+</style>
+
+<style>
+  em {font-size: 1.04em;}
+</style><div class="line-block">
+<div class="line"><strong>When Languages Meet</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">&#64;brandon_rhodes</div>
+</div>
+<div class="line-block">
+<div class="line"><em>2016 February 20</em></div>
+<div class="line"><em>PyCaribbean — Santo Domingo</em></div>
+</div>
+</div>
+<div class="section" id="id1">
+
+<div class="line-block">
+<div class="line"><strong>1915</strong></div>
+<div class="line"><em>Grundgedanken der allgemeinen</em></div>
+<div class="line"><em>Relativitätstheorie und Anwendung</em></div>
+<div class="line"><em>dieser Theorie in der Astronomie</em></div>
+</div>
+<p>— Albert Einstein</p>
+<!-- Fundamental Ideas of the General Theory of Relativity and the Application of this Theory in Astronomy -->
+</div>
+<div class="section" id="id2">
+
+<img alt="LIGO2.jpg" src="LIGO2.jpg" style="height: 760px;" />
+<!-- http://www.nature.com/polopoly_fs/7.34034.1455623144!/image/LIGO2.jpg_gen/derivatives/fullsize/LIGO2.jpg -->
+</div>
+<div class="section" id="id3">
+
+<img alt="GW%20Data%203-panel.jpeg" src="GW%20Data%203-panel.jpeg" style="height: 760px;" />
+<!-- http://www.nature.com/polopoly_fs/7.34029.1455209954!/image/GW%20Data%203-panel.jpeg_gen/derivatives/fullsize/GW%20Data%203-panel.jpeg -->
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line"><strong>2016 February 11</strong></div>
+<div class="line"><em>Observation of Gravitational Waves</em></div>
+<div class="line"><em>from a Binary Black Hole Merger</em></div>
+</div>
+</div>
+<div class="section" id="id5">
+
+<div class="line-block">
+<div class="line">“On September 14, 2015 at 09:50:45 UTC</div>
+<div class="line">the two detectors … simultaneously</div>
+<div class="line">observed a transient gravitational-</div>
+<div class="line">wave signal.”</div>
+</div>
+</div>
+<div class="section" id="id6">
+
+</div>
+<div class="section" id="id7">
+
+<div class="line-block">
+<div class="line">“I was responsible for producing</div>
+<div class="line"><em>all of the plots</em> in one of the … papers,</div>
+<div class="line">and we used <strong>Python</strong> and <strong>Matplotlib</strong></div>
+<div class="line">for all of those.”</div>
+</div>
+</div>
+<div class="section" id="id8">
+
+<div class="line-block">
+<div class="line">“I try to use it <strong>wherever possible”</strong></div>
+</div>
+</div>
+<div class="section" id="id9">
+
+<p><a class="reference external" href="https://losc.ligo.org/software/">https://losc.ligo.org/software/</a></p>
+<div class="line-block">
+<div class="line">“This page provides</div>
+<div class="line">a number of <strong>example scripts</strong></div>
+<div class="line">for working with LIGO</div>
+<div class="line">data <em>using Python”</em></div>
+</div>
+</div>
+<div class="section" id="id10">
+
+<p>wow</p>
+</div>
+<div class="section" id="id11">
+
+<p>How old is Python?</p>
+</div>
+<div class="section" id="id12">
+
+<div class="line-block">
+<div class="line">“On February 20, 1991, I</div>
+<div class="line">first released Python to the world</div>
+<div class="line">in the <strong>alt.sources</strong> newsgroup”</div>
+</div>
+<p><a class="reference external" href="http://python-history.blogspot.com/2009/01/personal-history-part-1-cwi.html">Guido’s “Personal History - part 1, CWI”</a></p>
+</div>
+<div class="section" id="python-0-9-0">
+<h1>Python 0.9.0</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;{} years ago&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">2016</span> <span class="o">-</span> <span class="mi">1991</span><span class="p">)</span>
+<span class="s1">&#39;25 years ago&#39;</span>
+</pre></div>
+
+</div>
+<div class="section" id="today">
+<h1>Today</h1>
+<ul class="simple">
+<li>Apple</li>
+<li>Google</li>
+<li>Facebook</li>
+<li>Dropbox</li>
+<li>Mozilla</li>
+</ul>
+<!--  -->
+<ul class="simple">
+<li>Science</li>
+<li>Education</li>
+<li>Journalism</li>
+<li>Data science</li>
+<li>Finance</li>
+</ul>
+</div>
+<div class="section" id="id13">
+
+<p>How did Python get here?</p>
+</div>
+<div class="section" id="id14">
+
+<img alt="santo-domingo.png" src="santo-domingo.png" style="width: 1000px;" />
+</div>
+<div class="section" id="north-america">
+<h1>North America</h1>
+<p>Spanish arrived first</p>
+</div>
+<div class="section" id="id15">
+
+<div class="line-block">
+<div class="line">Harvard</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id16">
+
+<div class="line-block">
+<div class="line">Harvard, 1636</div>
+<div class="line">Calculus, 1687</div>
+</div>
+</div>
+<div class="section" id="id17">
+
+<img alt="1024px-Woolly_mammoth.jpg" src="1024px-Woolly_mammoth.jpg" style="height: 640px;" />
+</div>
+<div class="section" id="id18">
+
+<div class="line-block">
+<div class="line">Pyramids, 2700 BC</div>
+<div class="line">Woolly mammoths, extinct ~2000 BC</div>
+</div>
+</div>
+<div class="section" id="id19">
+
+<div class="line-block">
+<div class="line">1620, Plymouth Colony</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id20">
+
+<div class="line-block">
+<div class="line">1620, Plymouth Colony</div>
+<div class="line">1610, Santa Fe</div>
+</div>
+<!-- "When pilgrims were landing on Plymouth Rock, you could already visit what is now Santa Fe, New Mexico to stay at a hotel, eat at a restaurant and buy Native American silver." -->
+</div>
+<div class="section" id="id21">
+
+<p>Spanish → ← English</p>
+</div>
+<div class="section" id="id22">
+
+<div class="line-block">
+<div class="line">El Camino Road</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id23">
+
+<div class="line-block">
+<div class="line">El Camino Road</div>
+<div class="line">Rio Grande River</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id24">
+
+<div class="line-block">
+<div class="line">El Camino Road</div>
+<div class="line">Rio Grande River</div>
+<div class="line">Laguna Lake</div>
+</div>
+</div>
+<div class="section" id="id25">
+
+<p><em>Bruhella</em> → Bree-Hill</p>
+<img alt="1187821063_1187540580_bree1.jpg" src="1187821063_1187540580_bree1.jpg" style="width: 1000px;" />
+</div>
+<div class="section" id="id26">
+
+<img alt="santo.png" src="santo.png" style="width: 800px;" />
+</div>
+<div class="section" id="id27">
+
+<img alt="santa.png" src="santa.png" style="width: 800px;" />
+</div>
+<div class="section" id="id28">
+
+<div class="line-block">
+<div class="line">Santa Barbara = Saint Barbara</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id29">
+
+<div class="line-block">
+<div class="line">Santa Barbara = Saint Barbara</div>
+<div class="line">Santa Clara = Saint Claire</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id30">
+
+<div class="line-block">
+<div class="line">Santa Barbara = Saint Barbara</div>
+<div class="line">Santa Clara = Saint Claire</div>
+<div class="line">Santa Cruz = Saint Cruise</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="line-block">
+<div class="line">Santa Barbara = Saint Barbara</div>
+<div class="line">Santa Clara = Saint Claire</div>
+<div class="line">Santa Cruz = Saint Cruise</div>
+<div class="line">Santa Fe = Saint Faye</div>
+</div>
+</div>
+<div class="section" id="id32">
+
+<div class="line-block">
+<div class="line">Santa Barbara = Saint Barbara</div>
+<div class="line">Santa Clara = Saint Claire</div>
+<div class="line">Santa Cruz <strong>≠</strong> Saint Cruise</div>
+<div class="line">Santa Fe <strong>≠</strong> Saint Faye</div>
+</div>
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line"><em>La Villa Real</em></div>
+<div class="line"><em>de la Santa Fe</em></div>
+<div class="line"><em>de San Francisco</em></div>
+<div class="line"><em>de Asís</em></div>
+</div>
+</div>
+<div class="section" id="id34">
+
+<p>Latin → ← Old Saxon</p>
+</div>
+<div class="section" id="id35">
+
+<p>god, yule, holy</p>
+</div>
+<div class="section" id="id36">
+
+<div class="line-block">
+<div class="line"><em>Santo Domingo</em> → Saint Dominic</div>
+<div class="line"><em>libro santo</em> → holy book</div>
+</div>
+</div>
+<div class="section" id="id37">
+
+<p>Lexical</p>
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line"><em>The Grand Cañon of the Colorado</em></div>
+<div class="line">— John Muir (1902)</div>
+</div>
+<div class="line-block">
+<div class="line"><em>I have come here to see</em></div>
+<div class="line"><em>the Grand Cañon of Arizona</em></div>
+<div class="line">— Theodore Roosevelt (1903)</div>
+</div>
+</div>
+<div class="section" id="id39">
+
+<div class="line-block">
+<div class="line">There is reserved and</div>
+<div class="line">withdrawn from settlement, occupancy,</div>
+<div class="line">or disposal … under the name of the</div>
+<div class="line">“Grand <em>Canyon</em> National Park”</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>(Feb. 26, 1919, ch. 44, §1, 40 Stat. 1175.)</strong></div>
+</div>
+</div>
+<div class="section" id="id40">
+
+<div class="line-block">
+<div class="line">þat is enouȝ</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id41">
+
+<div class="line-block">
+<div class="line">þat is enouȝ</div>
+</div>
+<div class="line-block">
+<div class="line"><em>that is enough</em></div>
+</div>
+</div>
+<div class="section" id="ascii">
+<h1>ASCII</h1>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+<span class="o">...</span>     <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">32</span><span class="p">))</span>
+<span class="o">...</span>     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+<span class="o">...</span>     <span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">b</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span> <span class="err">!</span><span class="s2">&quot;#$%&amp;&#39;()*+,-./0123456789:;&lt;=&gt;?</span>
+<span class="nd">@ABCDEFGHIJKLMNOPQRSTUVWXYZ</span><span class="p">[</span>\<span class="p">]</span><span class="o">^</span><span class="n">_</span>
+<span class="err">`</span><span class="n">abcdefghijklmnopqrstuvwxyz</span><span class="p">{</span><span class="o">|</span><span class="p">}</span><span class="o">~</span>
+</pre></div>
+
+</div>
+<div class="section" id="id42">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">bytes_32_to_255</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+<span class="o">...</span>     <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">32</span><span class="p">))</span>
+<span class="o">...</span>     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+<span class="o">...</span>     <span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id43">
+
+<div class="highlight"><pre><span></span><span class="n">bytes_32_to_255</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin1&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span> <span class="err">!</span><span class="s2">&quot;#$%&amp;&#39;()*+,-./0123456789:;&lt;=&gt;?</span>
+<span class="nd">@ABCDEFGHIJKLMNOPQRSTUVWXYZ</span><span class="p">[</span>\<span class="p">]</span><span class="o">^</span><span class="n">_</span>
+<span class="err">`</span><span class="n">abcdefghijklmnopqrstuvwxyz</span><span class="p">{</span><span class="o">|</span><span class="p">}</span><span class="o">~</span><span class="err"></span>
+
+<span class="err"> ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿</span>
+<span class="err">ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß</span>
+<span class="err">àáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ</span>
+</pre></div>
+
+</div>
+<div class="section" id="id44">
+
+<div class="highlight"><pre><span></span><span class="n">bytes_32_to_255</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;greek8&#39;</span><span class="p">,</span> <span class="s1">&#39;replace&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span> <span class="err">!</span><span class="s2">&quot;#$%&amp;&#39;()*+,-./0123456789:;&lt;=&gt;?</span>
+<span class="nd">@ABCDEFGHIJKLMNOPQRSTUVWXYZ</span><span class="p">[</span>\<span class="p">]</span><span class="o">^</span><span class="n">_</span>
+<span class="err">`</span><span class="n">abcdefghijklmnopqrstuvwxyz</span><span class="p">{</span><span class="o">|</span><span class="p">}</span><span class="o">~</span><span class="err"></span>
+
+<span class="err"> ‘’£€₯¦§¨©ͺ«¬­�―°±²³΄΅Ά·ΈΉΊ»Ό½ΎΏ</span>
+<span class="err">ΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ�ΣΤΥΦΧΨΩΪΫάέήί</span>
+<span class="err">ΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώ�</span>
+</pre></div>
+
+</div>
+<div class="section" id="id45">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">email</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;cañon&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;latin1&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">email</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;greek8&#39;</span><span class="p">)</span>
+<span class="n">ca</span><span class="err">Γ±</span><span class="n">on</span>
+</pre></div>
+
+</div>
+<div class="section" id="id46">
+
+<p>symbol → number → bytes</p>
+</div>
+<div class="section" id="old-days">
+<h1>Old days</h1>
+<div class="line-block">
+<div class="line">We <strong>disagreed</strong> on how to turn symbols</div>
+<div class="line">into numbers (Latin-1? Greek-8?)</div>
+</div>
+<div class="line-block">
+<div class="line">but <em>agreed</em> on how to turn</div>
+<div class="line">numbers into bytes (8-bit bytes)</div>
+</div>
+</div>
+<div class="section" id="unicode">
+<h1>Unicode</h1>
+<div class="line-block">
+<div class="line">We now <em>agree</em> on how to</div>
+<div class="line">turn symbols into numbers</div>
+</div>
+<div class="line-block">
+<div class="line">but <strong>disagree</strong> on how to turn</div>
+<div class="line">those numbers into bytes</div>
+<div class="line">(UTF-32? UTF-16? UTF-8?)</div>
+</div>
+</div>
+<div class="section" id="id47">
+<h1>?</h1>
+<div class="highlight"><pre><span></span><span class="n">ca</span><span class="err">ñ</span><span class="n">on</span> <span class="err">→</span> <span class="n">canyon</span>
+</pre></div>
+
+</div>
+<div class="section" id="id48">
+
+<div class="highlight"><pre><span></span>      <span class="n">C</span>
+      <span class="err">↘</span>
+ <span class="n">sh</span> <span class="err">↘</span>
+       <span class="n">Python</span> <span class="mf">1.0</span>
+<span class="n">ABC</span> <span class="err">↗</span>
+      <span class="err">↗</span>
+ <span class="n">Modula</span><span class="o">-</span><span class="mi">3</span>
+</pre></div>
+
+</div>
+<div class="section" id="id49">
+
+<div class="line-block">
+<div class="line">The world is</div>
+<div class="line">adopting Python</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id50">
+
+<div class="line-block">
+<div class="line">The world is</div>
+<div class="line">adopting Python</div>
+</div>
+<div class="line-block">
+<div class="line"><em>“Finally!”</em></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id51">
+
+<div class="line-block">
+<div class="line">The world is</div>
+<div class="line">adopting Python</div>
+</div>
+<div class="line-block">
+<div class="line"><em>“Finally!”</em></div>
+</div>
+<div class="line-block">
+<div class="line">?</div>
+</div>
+</div>
+<div class="section" id="id52">
+
+<div class="highlight"><pre><span></span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">surname</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">))</span>
+</pre></div>
+
+</div>
+<div class="section" id="id53">
+
+<div class="highlight"><pre><span></span>      <span class="n">C</span>
+      <span class="err">↘</span>
+ <span class="n">sh</span> <span class="err">↘</span>
+       <span class="n">Python</span> <span class="mf">1.0</span>
+<span class="n">ABC</span> <span class="err">↗</span>
+      <span class="err">↗</span>
+ <span class="n">Modula</span><span class="o">-</span><span class="mi">3</span>
+</pre></div>
+
+</div>
+<div class="section" id="id54">
+
+<div class="highlight"><pre><span></span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">))</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="n">names</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+    <span class="n">names</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">surname</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="n">names</span> <span class="o">=</span> <span class="n">names</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="n">names</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id55">
+
+<div class="highlight"><pre><span></span>      <span class="n">Haskell</span>       <span class="n">Dylan</span>
+   <span class="n">comprehensions</span>    <span class="n">MRO</span>          <span class="k">with</span><span class="err">!</span>
+          <span class="err">↘</span>           <span class="err">↘</span>             <span class="err">↓</span>
+<span class="n">Python</span>     <span class="mf">2.0</span>   <span class="mf">2.2</span>   <span class="mf">2.3</span>   <span class="mf">2.4</span>   <span class="mf">2.5</span> <span class="err">…</span>
+                 <span class="err">↗</span>           <span class="err">↗</span>
+         <span class="n">generators</span>    <span class="n">annotations</span>
+            <span class="n">Icon</span>          <span class="n">Java</span>
+</pre></div>
+
+</div>
+<div class="section" id="id56">
+
+<div class="highlight"><pre><span></span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">))</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="n">cut</span> <span class="o">-</span><span class="n">d</span><span class="s2">&quot; &quot;</span> <span class="o">-</span><span class="n">f1</span> <span class="n">users</span><span class="o">.</span><span class="n">txt</span> <span class="o">|</span> <span class="n">uniq</span> <span class="o">|</span> <span class="n">sort</span>
+</pre></div>
+
+</div>
+<div class="section" id="the-truth">
+<h1>The truth</h1>
+<div class="line-block">
+<div class="line">I chose a good-enough language</div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id57">
+<h1>The truth</h1>
+<div class="line-block">
+<div class="line">I chose a good-enough language</div>
+<div class="line">that <em>became</em> world-class</div>
+</div>
+</div>
+<div class="section" id="when-languages-meet">
+<h1>when languages meet</h1>
+</div>
+<div class="section" id="id58">
+
+<div class="highlight"><pre><span></span><span class="s1">&#39;Hi, </span><span class="si">%s</span><span class="s1">, you have </span><span class="si">%d</span><span class="s1"> messages.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="s1">&#39;Hi, {}, you have {} messages.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="s1">&#39;The time is {:%H:%M}.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+</pre></div>
+
+</div>
+<div class="section" id="id59">
+
+</div>
+<div class="section" id="id60">
+
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">users</span> <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">age</span> <span class="o">&gt;</span> <span class="mi">21</span><span class="p">]</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">u</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">age</span> <span class="o">&gt;</span> <span class="mi">21</span><span class="p">,</span> <span class="n">users</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id61">
+
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">upper</span><span class="p">,</span> <span class="n">names</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id62">
+
+<div class="highlight"><pre><span></span><span class="s1">&#39;Without music, life would be a mistake&#39;</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="s2">&quot;Without music, life would be a mistake&quot;</span>
+</pre></div>
+
+</div>
+<div class="section" id="trailing-comma">
+<h1>Trailing comma!</h1>
+</div>
+<div class="section" id="id63">
+
+<div class="highlight"><pre><span></span><span class="n">rivers</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Yaque del Norte&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Yaque del Sur&#39;</span>
+    <span class="p">]</span>
+</pre></div>
+
+<p>↓</p>
+<div class="highlight"><pre><span></span><span class="n">rivers</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Yaque del Norte&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Yaque del Sur&#39;</span>
+    <span class="s1">&#39;Yuna River&#39;</span>
+    <span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id64">
+
+<div class="highlight"><pre><span></span><span class="n">rivers</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Yaque del Norte&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Yaque del Sur&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+</pre></div>
+
+<p>↓</p>
+<div class="highlight"><pre><span></span><span class="n">rivers</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Yaque del Norte&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Yaque del Sur&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Yuna River&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+</pre></div>
+
+</div>
+<div class="section" id="indentation">
+<h1>Indentation</h1>
+<div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;data.csv&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="k">return</span>
+
+<span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="superpowers">
+<h1>3 superpowers</h1>
+<ul class="simple">
+<li>Callables</li>
+<li>Exceptions</li>
+<li>Type system</li>
+</ul>
+</div>
+<div class="section" id="callables">
+<h1>Callables</h1>
+<div class="highlight"><pre><span></span><span class="n">new</span> <span class="n">Integer</span><span class="p">(</span><span class="mf">3.0</span><span class="p">);</span>   <span class="nb">int</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span>
+<span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="n">height</span><span class="p">;</span>       <span class="nb">int</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
+<span class="n">method</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>        <span class="n">method</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="exceptions">
+<h1>Exceptions</h1>
+<div class="line-block">
+<div class="line">In the days <strong>before</strong></div>
+<div class="line">exceptions, you had to check</div>
+<div class="line">the return code of <em>every</em> operation</div>
+</div>
+<div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">r</span> <span class="o">=</span> <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Hello, world!&quot;</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id65">
+
+<div class="line-block">
+<div class="line">With <em>exceptions</em> you can write</div>
+<div class="line">code without constant <tt class="docutils literal">if</tt> checks,</div>
+<div class="line">and let outer code handle errors</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s2">&quot;Hello, world!&quot;</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">f</span><span class="p">()</span>
+<span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+    <span class="err">…</span>
+</pre></div>
+
+</div>
+<div class="section" id="id66">
+
+<div class="line-block">
+<div class="line"><em>Dynamic</em> language</div>
+</div>
+<div class="line-block">
+<div class="line">coupled to a</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Strong</strong> type system</div>
+</div>
+</div>
+<div class="section" id="id67">
+
+<div class="line-block">
+<div class="line">Traditional scripting languages</div>
+<div class="line">had <strong>loose</strong> type systems</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">awk</span> <span class="s1">&#39;END {print 30 + &quot;40&quot;}&#39;</span>
+<span class="mi">70</span>
+
+<span class="err">$</span> <span class="n">perl</span> <span class="o">-</span><span class="n">e</span> <span class="s1">&#39;print 30 + &quot;40&quot;&#39;</span>
+<span class="mi">70</span>
+
+<span class="n">js</span><span class="o">&gt;</span> <span class="s1">&#39;30&#39;</span> <span class="o">+</span> <span class="mi">40</span>
+<span class="s1">&#39;3040&#39;</span>
+<span class="n">js</span><span class="o">&gt;</span> <span class="s1">&#39;30&#39;</span> <span class="o">-</span> <span class="mi">40</span>
+<span class="o">-</span><span class="mi">10</span>
+</pre></div>
+
+</div>
+<div class="section" id="id68">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;30&#39;</span> <span class="o">+</span> <span class="mi">40</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="o">...</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="n">cannot</span> <span class="n">concatenate</span> <span class="s1">&#39;str&#39;</span>
+ <span class="ow">and</span> <span class="s1">&#39;int&#39;</span> <span class="n">objects</span>
+</pre></div>
+
+</div>
+<div class="section" id="finally">
+<h1>Finally</h1>
+<div class="line-block">
+<div class="line">Python always aims</div>
+<div class="line">for <strong>readability</strong></div>
+</div>
+</div>
+<div class="section" id="id69">
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">this</span>
+</pre></div>
+
+</div>
+<div class="section" id="q">
+<h1>Q:</h1>
+<div class="line-block">
+<div class="line">Why Python?</div>
+<div class="line">Why <em>today?</em></div>
+</div>
+</div>
+<div class="section" id="a">
+<h1>A:</h1>
+<div class="line-block">
+<div class="line">If you program <em>all the time,</em></div>
+<div class="line">you will eventually become productive</div>
+<div class="line">even in a poorly designed language</div>
+</div>
+</div>
+<div class="section" id="id70">
+
+<div class="line-block">
+<div class="line">For <strong>professional</strong> programmers,</div>
+<div class="line">a simple language is a <em>luxury</em></div>
+</div>
+</div>
+<div class="section" id="id71">
+
+<div class="line-block">
+<div class="line">But today the programming world</div>
+<div class="line">is welcoming the scientist, the</div>
+<div class="line">educator, the student</div>
+</div>
+</div>
+<div class="section" id="id72">
+
+<div class="line-block">
+<div class="line">People who have <em>other things</em></div>
+<div class="line"><em>to do</em> with their time than</div>
+<div class="line">learn <strong>complicated syntax</strong></div>
+</div>
+</div>
+<div class="section" id="id73">
+
+<div class="line-block">
+<div class="line">For the occasional programmer</div>
+<div class="line">who has other things to get done,</div>
+<div class="line">simplicity is <strong>not optional</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id74">
+
+<div class="line-block">
+<div class="line">For the occasional programmer</div>
+<div class="line">who has other things to get done,</div>
+<div class="line">simplicity is <strong>not optional</strong></div>
+</div>
+<div class="line-block">
+<div class="line">It’s <em>survival</em></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id75">
+
+<div class="line-block">
+<div class="line">For the occasional programmer</div>
+<div class="line">who has other things to get done,</div>
+<div class="line">simplicity is <strong>not optional</strong></div>
+</div>
+<div class="line-block">
+<div class="line">It’s <em>survival</em></div>
+</div>
+<div class="line-block">
+<div class="line">They need a language like Python</div>
+</div>
+</div>
+<div class="section" id="id76">
+
+<div class="line-block">
+<div class="line">Thank you!</div>
+</div>
+<div class="line-block">
+<div class="line">&#64;brandon_rhodes</div>
+</div>
+<!-- notes and ideas
+https://books.google.com/books?id=3RQX3XFeNuIC&pg=PA551#v=onepage&q&f=false -->
+<!-- single quote: ’
+double quotes: x“”x
+prime: ′ ″
+em-dash: —
+vertical ellipsis: ⋮
+arrows: ←, ↑, →, ↓, ↔, ↕, ↖, ↗, ↘, ↙ -->
+<script>
+  window.slide_transition_time = 0;
+</script>
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides2.js"></script></div>
+</div>
+</body>
+</html>

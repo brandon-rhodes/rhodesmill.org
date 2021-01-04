@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using Skyfield with AstroPy</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="using-skyfield-with-astropy">
+<h1>Using Skyfield with AstroPy<a class="headerlink" href="#using-skyfield-with-astropy" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference external" href="http://docs.astropy.org/en/stable/">AstroPy Project</a> is a sprawling community effort
+to bring together a complete toolkit
+for working astronomers and astrophysicists.
+It can convert between dozens of different units,
+wrap numeric vectors in its own array and table data types,
+translate between a number of timescales and coordinate frames,
+run image processing algorithms on astronomical images,
+and query online sky catalogs.</p>
+<p>Skyfield does not depend upon AstroPy,
+but can represent its results using AstroPy units.
+Here are the points of connection that Skyfield provides
+between the two libraries:</p>
+<ol class="arabic">
+<li><p class="first">You can provide an AstroPy <code class="docutils literal notranslate"><span class="pre">Time</span></code> value
+and Skyfield will translate it into its own representation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+
+<span class="n">atime</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s1">&#39;2010-01-01T00:00:00&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;utc&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_astropy</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2010-01-01T00:00:00.000
+A.D. 2010-Jan-01 00:00:00.0000 UTC
+</pre></div>
+</div>
+</li>
+<li><p class="first">A skyfield
+<a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric" title="skyfield.positionlib.Barycentric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Barycentric</span></code></a>,
+<a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric" title="skyfield.positionlib.Astrometric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Astrometric</span></code></a>, or
+<a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent" title="skyfield.positionlib.Apparent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Apparent</span></code></a>
+position and velocity
+can convert themselves into an AstroPy quantity
+using any linear and velocity units you specify.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+
+<span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">earth</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">1980</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">barycentric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">barycentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">au</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">barycentric</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">au</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">day</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[-0.16287311  0.88787399  0.38473904] AU
+[-0.01721258 -0.00279426 -0.0012121 ] AU / d
+</pre></div>
+</div>
+</li>
+<li><p class="first">A Skyfield position can also return a complete AstroPy <code class="docutils literal notranslate"><span class="pre">SkyCoord</span></code>
+object that couples the position vector with its reference frame.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">ICRS</span>
+<span class="n">sc</span> <span class="o">=</span> <span class="n">barycentric</span><span class="o">.</span><span class="n">to_skycoord</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;SkyCoord (ICRS): (x, y, z) in AU
+    (-0.16287311, 0.88787399, 0.38473904)&gt;
+</pre></div>
+</div>
+</li>
+<li><p class="first">A Skyfield angle can express itself as an AstroPy quantity
+in any requested unit of angular measure.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">barycentric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
+<span class="n">declination</span> <span class="o">=</span> <span class="n">dec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:0.03f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">declination</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>23.084 deg
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+
+  </body>
+</html>

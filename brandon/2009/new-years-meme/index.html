@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New Year’s meme: What are the oldest files in your home directory?</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>New Year’s meme: What are the oldest files in your home directory?</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Date:</th>
+<td>1 January 2009</td></tr>
+<tr class="field"><th class="docinfo-name">Tags:</th><td class="field-body">computing, python, web notes</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Celebrate the new year with a blog post
+discussing the oldest files
+that are still sitting somewhere beneath your home directory!
+The procedure is simple:
+</p>
+<ol>
+<li>Run the following script in your home directory.
+(You might want to use <i>less</i> to read the output.)</li>
+<li>Ignore files whose date does not reflect your own activity.</li>
+<li>List the oldest files in a blog post and discuss!</li>
+</ol>
+<div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
+<span class="sd">&quot;&quot;&quot;Print last-modified times of files beneath &#39;.&#39;, oldest first.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">os.path</span><span class="o">,</span> <span class="nn">time</span>
+<span class="n">paths</span> <span class="o">=</span> <span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">ds</span><span class="p">,</span><span class="n">fs</span><span class="p">)</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fs</span> <span class="p">)</span>
+<span class="k">for</span> <span class="n">mtime</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">lstat</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paths</span> <span class="p">):</span>
+    <span class="k">print</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">mtime</span><span class="p">)),</span> <span class="n">path</span></pre></div>
+
+<p>
+Only include files whose last-modified time
+is a date on which you really touched the file.
+The file's time should neither result from an error
+(a few files beneath my own home directory
+have an incorrect date of 1970-01-01),
+nor from unpacking someone else's archive
+that has old files inside of it.
+For example,
+I myself have excluded
+the following pair of nearly 17-year-old files
+because their dates reflect their age
+inside of the Python 3.0 source archive,
+instead of the actual moment last month
+when they became part of my home directory:
+</p>
+<div class="highlight"><pre><span class="mi">1992</span><span class="o">-</span><span class="mo">03</span><span class="o">-</span><span class="mo">02</span> <span class="p">.</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">Python</span><span class="o">-</span><span class="mf">3.0</span><span class="o">/</span><span class="n">Demo</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">wh</span><span class="p">.</span><span class="n">py</span>
+<span class="mi">1992</span><span class="o">-</span><span class="mo">03</span><span class="o">-</span><span class="mo">02</span> <span class="p">.</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">Python</span><span class="o">-</span><span class="mf">3.0</span><span class="o">/</span><span class="n">Tools</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">dutree</span><span class="p">.</span><span class="n">doc</span></pre></div>
+
+<p>
+But there is no requirement that the actual <i>content</i>
+of each file you list be your own.
+Whether you wrote the file yourself long ago,
+or downloaded it from some ancient and forgotten FTP site,
+you have a story to share!
+</p>
+<p>
+Within the rules given above,
+here are the oldest files beneath my own home directory:
+</p>
+<!--more-->
+<pre># My oldest five files!
+# (The links return their content.)
+
+1989-05-17 ./archive/unixpc/cee/crobots/<a href="http://rhodesmill.org/brandon/static/2009/BCRMAD.R.txt">BCRMAD.R</a>
+1989-05-17 ./archive/unixpc/cee/crobots/<a href="http://rhodesmill.org/brandon/static/2009/BCRONE.R.txt">BCRONE.R</a>
+1990-01-18 ./archive/unixpc/ref/<a href="http://rhodesmill.org/brandon/static/2009/train">train.gz</a>
+1990-01-18 ./archive/unixpc/ref/<a href="http://rhodesmill.org/brandon/static/2009/xmas">xmas.gz</a>
+1990-05-18 ./archive/unixpc/save/Rhodes/<a href="http://rhodesmill.org/brandon/static/2009/treasure">treasure</a></pre>
+<p>
+You can see that these files were moved, long ago,
+into an archive directory for files
+that are no longer part of an active project.
+These files all date from the era
+when my home directory was hosted
+on the <span class="sc">Unix</span> PC which my father,
+a Bell Laboratories engineer,
+brought home in the 1980s as our personal computer.
+</p>
+<p>
+We should start with the zipped files from January 1990,
+since they actually contain even older content,
+from December 1987 —more than twenty years ago!
+My father received them as Christmas greetings
+from fellow engineers at the Labs.
+You can view
+<tt><a href="http://rhodesmill.org/brandon/static/2009/xmas">xmas</a></tt>
+right in your browser,
+since it is a simple ASCII-art holiday greeting
+(the name “Merrimack Valley” at the bottom
+refers to the particular Bell Labs location
+at which my father worked).
+Viewing
+<tt><a href="http://rhodesmill.org/brandon/static/2009/train">train</a></tt>
+is more difficult, since it contains a VT-100 animation
+that will display much too quickly
+if you dump the file to a modern terminal.
+Instead, download the file and use this Python program
+to display it at a more traditional speed;
+you might want to light a candle and play some Christmas music
+while the animation is displaying:
+</p>
+<div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
+<span class="sd">&quot;&quot;&quot;Display the &#39;train&#39; file, slowly.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">time</span>
+<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;train&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">():</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">9600.0</span><span class="p">)</span> <span class="c"># (drat, really sleeps 0.01s)</span></pre></div>
+
+<p>
+Though Dad probably retained the files only through the Christmas season,
+I was fascinated by watching them
+scroll silently across the black screen
+in glowing, green, phosphoric characters
+that seemed to leave trails behind them like shooting stars,
+and so I kept the files
+long after many subsequent Christmases had come and gone.
+</p>
+<p>
+The other three files are all plain-text files,
+and are all of my own making.
+The <tt><a href="http://rhodesmill.org/brandon/static/2009/BCRMAD.R.txt">BCRMAD.R</a></tt>
+and <tt><a href="http://rhodesmill.org/brandon/static/2009/BCRONE.R.txt">BCRONE.R</a></tt>
+programs were experiments in
+<a href="http://en.wikipedia.org/wiki/Crobots">the old
+<span class="sc">crobots</span> game</a>,
+where you wrote small C-language programs
+to control robots that drove around on the screen
+and shot at each other.
+The names seem to refer to the fact
+that the first file simulates a “mad bull”
+that drives straight at targets
+shooting as fast as it can,
+while the second program always takes “one shot” at a target
+then flees to another location on the screen.
+This would have been one of my very first forays into C programming —
+perhaps my very first —
+and so the algorithms are, I must admit,
+not exactly pinnacles of sophistication.
+</p>
+<p>
+The last file is named
+<tt><a href="http://rhodesmill.org/brandon/static/2009/treasure">treasure</a></tt>,
+and it is, indeed, a real treasure of a file
+to have discovered this New Year's morning!
+It is my long-lost account,
+carefully annotated with the venerable <tt>mm</tt> macro package
+(as you can see from the <i>troff</i> include directive
+on the first line),
+of the day in early 1990
+when I discovered buried treasure
+that my father had hidden as a child on my grandparent's property!
+I actually saw the “treasure” last week
+(an ancient coffee can with old toys inside)
+sitting on a shelf when I visited my grandmother on Christmas Day.
+I will have to pull it down from the shelf
+and put some pictures on Flickr, along with excerpts
+from this long-lost story of its discovery!
+</p>
+<p>
+In the meantime: what are the oldest files under <i>your</i>
+home directory?
+</p>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'rhodesmill';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<p class="byline">©2020</p>
+
+</body>
+</html>
