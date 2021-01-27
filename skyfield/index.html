@@ -35,9 +35,9 @@ whose vector operations make Skyfield efficient.</li>
 <span class="n">astrometric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>10h 47m 56.24s
@@ -55,8 +55,8 @@ on the Earth’s surface:</p>
 <span class="n">astrometric</span> <span class="o">=</span> <span class="n">boston</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
 <span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">altaz</span><span class="p">()</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>25deg 27&#39; 54.0&quot;
@@ -71,8 +71,8 @@ and can return results in native AstroPy units:</p>
 <span class="n">xyz</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
 <span class="n">altitude</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:0.03f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">altitude</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;{0:0.03f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">altitude</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[-2.19049548  0.71236701  0.36712443] AU

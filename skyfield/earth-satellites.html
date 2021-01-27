@@ -102,7 +102,7 @@ which is listed in Celestrak’s <code class="docutils literal notranslate"><spa
 
 <span class="n">stations_url</span> <span class="o">=</span> <span class="s1">&#39;http://celestrak.com/NORAD/elements/stations.txt&#39;</span>
 <span class="n">satellites</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">tle_file</span><span class="p">(</span><span class="n">stations_url</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loaded&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">satellites</span><span class="p">),</span> <span class="s1">&#39;satellites&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Loaded&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">satellites</span><span class="p">),</span> <span class="s1">&#39;satellites&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Loaded 60 satellites
@@ -116,7 +116,7 @@ try building a lookup dictionary
 using Python’s dictionary comprehension syntax:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">sat</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">sat</span> <span class="k">for</span> <span class="n">sat</span> <span class="ow">in</span> <span class="n">satellites</span><span class="p">}</span>
 <span class="n">satellite</span> <span class="o">=</span> <span class="n">by_name</span><span class="p">[</span><span class="s1">&#39;ISS (ZARYA)&#39;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">satellite</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">satellite</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ISS (ZARYA) catalog #25544 epoch 2014-01-20 22:23:04 UTC
@@ -124,7 +124,7 @@ using Python’s dictionary comprehension syntax:</p>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">by_number</span> <span class="o">=</span> <span class="p">{</span><span class="n">sat</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">satnum</span><span class="p">:</span> <span class="n">sat</span> <span class="k">for</span> <span class="n">sat</span> <span class="ow">in</span> <span class="n">satellites</span><span class="p">}</span>
 <span class="n">satellite</span> <span class="o">=</span> <span class="n">by_number</span><span class="p">[</span><span class="mi">25544</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">satellite</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">satellite</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ISS (ZARYA) catalog #25544 epoch 2014-01-20 22:23:04 UTC
@@ -158,10 +158,10 @@ Each query result will be saved to disk with its own filename.</li>
 code that requests one specific satellite,
 saving the result to a file specific to the query:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">25544</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://celestrak.com/satcat/tle.php?CATNR=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;tle-CATNR-</span><span class="si">{}</span><span class="s1">.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://celestrak.com/satcat/tle.php?CATNR={}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;tle-CATNR-{}.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="n">satellites</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">tle_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">satellites</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">satellites</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&lt;EarthSatellite ISS (ZARYA) catalog #25544 epoch 2020-11-07 22:23:09 UTC&gt;]
@@ -184,7 +184,7 @@ you can instantiate an <a class="reference internal" href="api-satellites.html#s
 <span class="n">line1</span> <span class="o">=</span> <span class="s1">&#39;1 25544U 98067A   14020.93268519  .00009878  00000-0  18200-3 0  5082&#39;</span>
 <span class="n">line2</span> <span class="o">=</span> <span class="s1">&#39;2 25544  51.6498 109.4756 0003572  55.9686 274.8005 15.49815350868473&#39;</span>
 <span class="n">satellite</span> <span class="o">=</span> <span class="n">EarthSatellite</span><span class="p">(</span><span class="n">line1</span><span class="p">,</span> <span class="n">line2</span><span class="p">,</span> <span class="s1">&#39;ISS (ZARYA)&#39;</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">satellite</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">satellite</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ISS (ZARYA) catalog #25544 epoch 2014-01-20 22:23:04 UTC
@@ -199,7 +199,7 @@ for which the set of elements is most accurate,
 and before or after which they go rapidly out of date.
 You can access this value as an attribute of the object
 in case your program wants to check how old the elements are:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">satellite</span><span class="o">.</span><span class="n">epoch</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">satellite</span><span class="o">.</span><span class="n">epoch</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>A.D. 2014-Jan-20 22:23:04.0004 UTC
@@ -217,10 +217,10 @@ until the satellite’s elements are finally updated.)</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
 
 <span class="n">days</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">satellite</span><span class="o">.</span><span class="n">epoch</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.3f}</span><span class="s1"> days away from epoch&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">days</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;{:.3f} days away from epoch&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">days</span><span class="p">))</span>
 
 <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">days</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">14</span><span class="p">:</span>
-    <span class="n">satellites</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">tle_file</span><span class="p">(</span><span class="n">stations_url</span><span class="p">,</span> <span class="n">reload</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">satellites</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">tle_file</span><span class="p">(</span><span class="n">stations_url</span><span class="p">,</span> <span class="nb">reload</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2.538 days away from epoch
@@ -272,7 +272,7 @@ over the span of a single day:</p>
 <span class="n">t</span><span class="p">,</span> <span class="n">events</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">find_events</span><span class="p">(</span><span class="n">bluffton</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">altitude_degrees</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">events</span><span class="p">):</span>
     <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;rise above 30°&#39;</span><span class="p">,</span> <span class="s1">&#39;culminate&#39;</span><span class="p">,</span> <span class="s1">&#39;set below 30°&#39;</span><span class="p">)[</span><span class="n">event</span><span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y %b </span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">),</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y %b </span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">),</span> <span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2014 Jan 23 06:25:37 rise above 30°
@@ -308,7 +308,7 @@ than those of the old J2000 system.)</p>
 <span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
 
 <span class="n">geocentric</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[-3918.87650458 -1887.64838745  5209.08801512]
@@ -319,9 +319,9 @@ is directly beneath the satellite,
 using the <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.subpoint" title="skyfield.toposlib.Geoid.subpoint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">subpoint()</span></code></a> method
 of a standard geoid.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">subpoint</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">subpoint</span><span class="p">(</span><span class="n">geocentric</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Latitude:&#39;</span><span class="p">,</span> <span class="n">subpoint</span><span class="o">.</span><span class="n">latitude</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Longitude:&#39;</span><span class="p">,</span> <span class="n">subpoint</span><span class="o">.</span><span class="n">longitude</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Elevation (m):&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">subpoint</span><span class="o">.</span><span class="n">elevation</span><span class="o">.</span><span class="n">m</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Latitude:&#39;</span><span class="p">,</span> <span class="n">subpoint</span><span class="o">.</span><span class="n">latitude</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Longitude:&#39;</span><span class="p">,</span> <span class="n">subpoint</span><span class="o">.</span><span class="n">longitude</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Elevation (m):&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">subpoint</span><span class="o">.</span><span class="n">elevation</span><span class="o">.</span><span class="n">m</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Latitude: 50deg 14&#39; 37.4&quot;
@@ -336,11 +336,11 @@ If you build an object to represent your latitude and longitude,
 you can use vector subtraction
 to ask “where will the satellite be <em>relative to</em> my location?”</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">difference</span> <span class="o">=</span> <span class="n">satellite</span> <span class="o">-</span> <span class="n">bluffton</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">difference</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">difference</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Sum of 2 vectors:
- Reversed Geodetic WGS84 latitude 40deg 53&#39; 38.0&quot; N longitude -83deg 53&#39; 30.1&quot; E -&gt; 399 EARTH
+ Reversed Geodetic WGS84 latitude +40.8939 N longitude -83.8917 E elevation 0.0 m -&gt; 399 EARTH
  EarthSatellite 399 EARTH -&gt; ISS (ZARYA) catalog #25544 epoch 2014-01-20 22:23:04 UTC
 </pre></div>
 </div>
@@ -354,7 +354,7 @@ If you are interested you can access this relative position
 as <em>x,&nbsp;y,&nbsp;z</em> coordinates,
 just as you did for the position measured from the Earth’s center:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">topocentric</span> <span class="o">=</span> <span class="n">difference</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">topocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">topocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[ 331.61901192  392.18492744 1049.7597825 ]
@@ -366,11 +366,11 @@ which tell you whether the satellite is above or below the horizon:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">topocentric</span><span class="o">.</span><span class="n">altaz</span><span class="p">()</span>
 
 <span class="k">if</span> <span class="n">alt</span><span class="o">.</span><span class="n">degrees</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The ISS is above the horizon&#39;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;The ISS is above the horizon&#39;</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">km</span><span class="p">),</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">km</span><span class="p">),</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>The ISS is above the horizon
@@ -387,8 +387,8 @@ either relative to the fixed axes of the ICRF
 or else in dynamical coordinates of the date you specify.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">topocentric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>  <span class="c1"># ICRF (&quot;J2000&quot;)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>03h 19m 07.97s
@@ -397,8 +397,8 @@ or else in dynamical coordinates of the date you specify.</p>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">topocentric</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>03h 20m 22.42s
@@ -430,7 +430,7 @@ and <code class="docutils literal notranslate"><span class="pre">False</span></c
 
 <span class="n">two_hours</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
 <span class="n">sunlit</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">two_hours</span><span class="p">)</span><span class="o">.</span><span class="n">is_sunlit</span><span class="p">(</span><span class="n">eph</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sunlit</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sunlit</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[ True  True False False  True  True]
@@ -439,7 +439,7 @@ and <code class="docutils literal notranslate"><span class="pre">False</span></c
 <p>As usual, you can use Python’s <code class="docutils literal notranslate"><span class="pre">zip()</span></code> builtin
 if you want to loop across the times and corresponding values.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">sunlit_i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">two_hours</span><span class="p">,</span> <span class="n">sunlit</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">  </span><span class="si">{}</span><span class="s1"> is in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;{}  {} is in {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
         <span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">),</span>
         <span class="n">satellite</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
         <span class="s1">&#39;sunlight&#39;</span> <span class="k">if</span> <span class="n">sunlit_i</span> <span class="k">else</span> <span class="s1">&#39;shadow&#39;</span><span class="p">,</span>
@@ -470,7 +470,7 @@ through the <a class="reference internal" href="api-position.html#skyfield.posit
 <span class="n">two_hours</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
 <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">earth</span> <span class="o">+</span> <span class="n">satellite</span><span class="p">)</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">two_hours</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">venus</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
 <span class="n">sunlit</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">is_behind_earth</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sunlit</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sunlit</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[False False  True  True False False]
@@ -529,12 +529,12 @@ to find out the distance between them:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># After all that work, how big is the difference, really?</span>
 
 <span class="n">difference_km</span> <span class="o">=</span> <span class="p">(</span><span class="n">topocentric2</span> <span class="o">-</span> <span class="n">topocentric</span><span class="p">)</span><span class="o">.</span><span class="n">distance</span><span class="p">()</span><span class="o">.</span><span class="n">km</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Difference between the two positions:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:.3f}</span><span class="s1"> km&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">difference_km</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Difference between the two positions:&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;{0:.3f} km&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">difference_km</span><span class="p">))</span>
 
 <span class="n">difference_angle</span> <span class="o">=</span> <span class="n">topocentric2</span><span class="o">.</span><span class="n">separation_from</span><span class="p">(</span><span class="n">topocentric</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Angle between the two positions in the sky:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">difference_angle</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Angle between the two positions in the sky:&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">difference_angle</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Difference between the two positions:
@@ -570,7 +570,7 @@ so it supports all of the standard Skyfield date methods:</p>
 <span class="n">lines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
 
 <span class="n">sat</span> <span class="o">=</span> <span class="n">EarthSatellite</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">lines</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sat</span><span class="o">.</span><span class="n">epoch</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sat</span><span class="o">.</span><span class="n">epoch</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>A.D. 2013-Nov-10 23:03:03.9479 UTC
@@ -599,14 +599,14 @@ from just before noon on Saturday to just past noon on Tuesday:</p>
 we can learn about the propagation errors
 that are limiting this TLE set’s predictions:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">geocentric</span> <span class="o">=</span> <span class="n">sat</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Before:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Before:&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
 
 <span class="n">geocentric</span> <span class="o">=</span> <span class="n">sat</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">After:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">After:&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Before:
@@ -672,8 +672,8 @@ section of the sgp4 library’s documentation on the Python Packaging Index.</p>
 <p>To wrap this low-level satellite model in a Skyfield object,
 call this special constructor:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sat</span> <span class="o">=</span> <span class="n">EarthSatellite</span><span class="o">.</span><span class="n">from_satrec</span><span class="p">(</span><span class="n">satrec</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Satellite number:&#39;</span><span class="p">,</span> <span class="n">sat</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">satnum</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Epoch:&#39;</span><span class="p">,</span> <span class="n">sat</span><span class="o">.</span><span class="n">epoch</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Satellite number:&#39;</span><span class="p">,</span> <span class="n">sat</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">satnum</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Epoch:&#39;</span><span class="p">,</span> <span class="n">sat</span><span class="o">.</span><span class="n">epoch</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Satellite number: 5

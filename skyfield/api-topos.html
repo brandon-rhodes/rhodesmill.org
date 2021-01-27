@@ -47,14 +47,14 @@ that don’t specify an alternative geoid.</p>
 <dd><p>Return the geographic position of a given latitude and longitude.</p>
 <p>Longitude is positive towards the east, so supply a negative
 number for west:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">wgs84</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">wgs84</span>
 <span class="n">observatory</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">37.3414</span><span class="p">,</span> <span class="o">-</span><span class="mf">121.6429</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can avoid remembering which directions are negative by using
 Skyfield’s compass direction constants, which have the values +1
 and −1:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">N</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">W</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">N</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">W</span>
 <span class="n">observatory</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">37.3414</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="mf">121.6429</span> <span class="o">*</span> <span class="n">W</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -86,7 +86,7 @@ reference frame: the international standard for an Earth-centered
 Earth-fixed (ECEF) reference frame.  Instead of instantiating this
 class directly, Skyfield users usually give a reference geoid the
 longitude and latitude they are interested in:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">wgs84</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">wgs84</span>
 <span class="n">topos</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">37.3414</span><span class="p">,</span> <span class="o">-</span><span class="mf">121.6429</span><span class="p">)</span>
 </pre></div>
 </div>

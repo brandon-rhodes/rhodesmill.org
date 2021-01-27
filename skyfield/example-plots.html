@@ -48,13 +48,13 @@ over one week of July&nbsp;2020:</p>
 that you will probably want to adjust for your own project.
 Use the script as a starting point:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="kn">import</span> <span class="n">LineCollection</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="k">import</span> <span class="n">LineCollection</span>
 
-<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">Star</span><span class="p">,</span> <span class="n">load</span>
-<span class="kn">from</span> <span class="nn">skyfield.constants</span> <span class="kn">import</span> <span class="n">GM_SUN_Pitjeva_2005_km3_s2</span> <span class="k">as</span> <span class="n">GM_SUN</span>
-<span class="kn">from</span> <span class="nn">skyfield.data</span> <span class="kn">import</span> <span class="n">hipparcos</span><span class="p">,</span> <span class="n">mpc</span><span class="p">,</span> <span class="n">stellarium</span>
-<span class="kn">from</span> <span class="nn">skyfield.projections</span> <span class="kn">import</span> <span class="n">build_stereographic_projection</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">Star</span><span class="p">,</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">skyfield.constants</span> <span class="k">import</span> <span class="n">GM_SUN_Pitjeva_2005_km3_s2</span> <span class="k">as</span> <span class="n">GM_SUN</span>
+<span class="kn">from</span> <span class="nn">skyfield.data</span> <span class="k">import</span> <span class="n">hipparcos</span><span class="p">,</span> <span class="n">mpc</span><span class="p">,</span> <span class="n">stellarium</span>
+<span class="kn">from</span> <span class="nn">skyfield.projections</span> <span class="k">import</span> <span class="n">build_stereographic_projection</span>
 
 <span class="c1"># The comet is plotted on several dates `t_comet`.  But the stars only</span>
 <span class="c1"># need to be drawn once, so we take the middle comet date as the single</span>
@@ -195,10 +195,10 @@ and it re-entered the atmosphere above the Pacific Ocean:</p>
 including custom tick marks that are based on the date,
 is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <span class="n">HourLocator</span><span class="p">,</span> <span class="n">DateFormatter</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="k">import</span> <span class="n">HourLocator</span><span class="p">,</span> <span class="n">DateFormatter</span>
 
-<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">EarthSatellite</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">EarthSatellite</span>
 
 <span class="c1"># Labels for both date and hour on the x axis, and km on y.</span>
 

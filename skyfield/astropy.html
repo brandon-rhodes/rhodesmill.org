@@ -40,11 +40,11 @@ and Skyfield will translate it into its own representation.</p>
 <span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
 
 <span class="n">atime</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s1">&#39;2010-01-01T00:00:00&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;utc&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
 
 <span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_astropy</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2010-01-01T00:00:00.000
@@ -59,7 +59,7 @@ A.D. 2010-Jan-01 00:00:00.0000 UTC
 position and velocity
 can convert themselves into an AstroPy quantity
 using any linear and velocity units you specify.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">astropy.units</span> <span class="kn">as</span> <span class="nn">u</span>
 <span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
 
 <span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
@@ -69,8 +69,8 @@ using any linear and velocity units you specify.</p>
 <span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">1980</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">barycentric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">barycentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">au</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">barycentric</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">au</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">day</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">barycentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">au</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">barycentric</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">au</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">day</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[-0.16287311  0.88787399  0.38473904] AU
@@ -82,7 +82,7 @@ using any linear and velocity units you specify.</p>
 object that couples the position vector with its reference frame.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">ICRS</span>
 <span class="n">sc</span> <span class="o">=</span> <span class="n">barycentric</span><span class="o">.</span><span class="n">to_skycoord</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;SkyCoord (ICRS): (x, y, z) in AU
@@ -94,7 +94,7 @@ object that couples the position vector with its reference frame.</p>
 in any requested unit of angular measure.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">barycentric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
 <span class="n">declination</span> <span class="o">=</span> <span class="n">dec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:0.03f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">declination</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;{0:0.03f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">declination</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>23.084 deg

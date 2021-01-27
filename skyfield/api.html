@@ -52,7 +52,7 @@
 <h2><a class="toc-backref" href="#id1">Opening files</a><a class="headerlink" href="#opening-files" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># File you already have.</span>
 
-<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load_file</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load_file</span>
 <span class="n">planets</span> <span class="o">=</span> <span class="n">load_file</span><span class="p">(</span><span class="s1">&#39;~/Downloads/de405.bsp&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -69,7 +69,7 @@
 </table>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># File you want Skyfield to download automatically.</span>
 
-<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load</span>
 <span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
 <span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de405.bsp&#39;</span><span class="p">)</span>
 </pre></div>
@@ -360,8 +360,8 @@ that returns vectors from the Solar System barycenter to the named body.</p>
 <p>This prototype function — which so far only supports Mercury, Venus,
 Earth, Jupiter, and Uranus — computes the visual magnitude of a
 planet, given its position relative to an observer.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.magnitudelib</span> <span class="kn">import</span> <span class="n">planetary_magnitude</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.magnitudelib</span> <span class="k">import</span> <span class="n">planetary_magnitude</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
@@ -630,25 +630,28 @@ then the attribute is simply the value <code class="docutils literal notranslate
 <tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.radec</span></code></a>([epoch])</td>
 <td>Compute equatorial (RA, declination, distance)</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.separation_from" title="skyfield.positionlib.ICRF.separation_from"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.separation_from</span></code></a>(another_icrf)</td>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.hadec" title="skyfield.positionlib.ICRF.hadec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.hadec</span></code></a>()</td>
+<td>Compute hour angle, declination, and distance.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.separation_from" title="skyfield.positionlib.ICRF.separation_from"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.separation_from</span></code></a>(another_icrf)</td>
 <td>Return the angle between this position and another.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz" title="skyfield.positionlib.ICRF.frame_xyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.frame_xyz</span></code></a>(frame)</td>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz" title="skyfield.positionlib.ICRF.frame_xyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.frame_xyz</span></code></a>(frame)</td>
 <td>Return this position as an (x,y,z) vector in a reference frame.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz_and_velocity" title="skyfield.positionlib.ICRF.frame_xyz_and_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.frame_xyz_and_velocity</span></code></a>(frame)</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz_and_velocity" title="skyfield.positionlib.ICRF.frame_xyz_and_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.frame_xyz_and_velocity</span></code></a>(frame)</td>
 <td>Return (x,y,z) position and velocity vectors in a reference frame.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_latlon" title="skyfield.positionlib.ICRF.frame_latlon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.frame_latlon</span></code></a>(frame)</td>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_latlon" title="skyfield.positionlib.ICRF.frame_latlon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.frame_latlon</span></code></a>(frame)</td>
 <td>Return longitude, latitude, and distance in the given frame.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_time_and_frame_vectors" title="skyfield.positionlib.ICRF.from_time_and_frame_vectors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_time_and_frame_vectors</span></code></a>(t,&nbsp;frame,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_time_and_frame_vectors" title="skyfield.positionlib.ICRF.from_time_and_frame_vectors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_time_and_frame_vectors</span></code></a>(t,&nbsp;frame,&nbsp;…)</td>
 <td>Constructor: build a position from two vectors in a reference frame.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_sunlit" title="skyfield.positionlib.ICRF.is_sunlit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.is_sunlit</span></code></a>(ephemeris)</td>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_sunlit" title="skyfield.positionlib.ICRF.is_sunlit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.is_sunlit</span></code></a>(ephemeris)</td>
 <td>Return whether a position in Earth orbit is in sunlight.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_altaz" title="skyfield.positionlib.ICRF.from_altaz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_altaz</span></code></a>([alt,&nbsp;az,&nbsp;alt_degrees,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_altaz" title="skyfield.positionlib.ICRF.from_altaz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_altaz</span></code></a>([alt,&nbsp;az,&nbsp;alt_degrees,&nbsp;…])</td>
 <td>Generate an Apparent position from an altitude and azimuth.</td>
 </tr>
 </tbody>
@@ -709,7 +712,7 @@ then the attribute is simply the value <code class="docutils literal notranslate
 <p>Skyfield carries an internal map of constellation boundaries that is
 optimized for quick position lookup.  Call this function to load the
 map and return a function mapping position to constellation name.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">position_of_radec</span><span class="p">,</span> <span class="n">load_constellation_map</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">position_of_radec</span><span class="p">,</span> <span class="n">load_constellation_map</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">constellation_at</span> <span class="o">=</span> <span class="n">load_constellation_map</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">north_pole</span> <span class="o">=</span> <span class="n">position_of_radec</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">constellation_at</span><span class="p">(</span><span class="n">north_pole</span><span class="p">)</span>
@@ -725,7 +728,7 @@ map and return a function mapping position to constellation name.</p>
 <dd><p>Return a list of abbreviation-name tuples, like <code class="docutils literal notranslate"><span class="pre">('Aql',</span> <span class="pre">'Aquila')</span></code>.</p>
 <p>You can pass the list to Python’s <code class="docutils literal notranslate"><span class="pre">dict()</span></code> to build a dictionary
 that turns a constellation abbreviation into a full name:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load_constellation_names</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load_constellation_names</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">load_constellation_names</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;UMa&#39;</span><span class="p">]</span>
 <span class="go">&#39;Ursa Major&#39;</span>

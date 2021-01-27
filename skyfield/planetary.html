@@ -42,8 +42,7 @@ for other observers in the Solar System.</li>
 Skyfield:</p>
 <ul class="simple">
 <li><em>Cannot</em> yet support a planetary reference frame
-whose orientation is described as a numeric series
-directly a text file.</li>
+whose orientation is specified as a numeric series in a text file.</li>
 <li><em>Cannot</em> yet compute latitude and longitude positions
 on the surface of non-spherical objects,
 whose three axes in the text file are not the same length.</li>
@@ -74,8 +73,8 @@ in this example, the famous Aristarchus crater.</p>
 
 <span class="n">apparent</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">aristarchus</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">apparent</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>13h 03m 22.96s
@@ -113,12 +112,12 @@ or in altitude and azimuth measured against the astronaut’s horizon.</p>
 
 <span class="n">apparent</span> <span class="o">=</span> <span class="n">aristarchus</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">earth</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">apparent</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
 
 <span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">apparent</span><span class="o">.</span><span class="n">altaz</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">alt</span><span class="p">,</span> <span class="s1">&#39;degrees above the horizon&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="s1">&#39;degrees around the horizon from north&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">alt</span><span class="p">,</span> <span class="s1">&#39;degrees above the horizon&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="s1">&#39;degrees around the horizon from north&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>01h 03m 22.96s
@@ -141,8 +140,8 @@ for the latitude and longitude.</p>
 <span class="n">p</span> <span class="o">=</span> <span class="n">moon</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
 <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">frame_latlon</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
 <span class="n">lon_degrees</span> <span class="o">=</span> <span class="p">(</span><span class="n">lon</span><span class="o">.</span><span class="n">degrees</span> <span class="o">+</span> <span class="mf">180.0</span><span class="p">)</span> <span class="o">%</span> <span class="mf">360.0</span> <span class="o">-</span> <span class="mf">180.0</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sub-solar latitude: </span><span class="si">{:.1f}</span><span class="s1"> degrees&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sub-solar longitude: </span><span class="si">{:.1f}</span><span class="s1"> degrees&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lon_degrees</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Sub-solar latitude: {:.1f} degrees&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Sub-solar longitude: {:.1f} degrees&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lon_degrees</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Sub-solar latitude: 0.3 degrees
@@ -162,8 +161,8 @@ Thus:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">earth</span> <span class="o">-</span> <span class="n">moon</span><span class="p">)</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">frame_latlon</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
 <span class="n">lon_degrees</span> <span class="o">=</span> <span class="p">(</span><span class="n">lon</span><span class="o">.</span><span class="n">degrees</span> <span class="o">+</span> <span class="mf">180.0</span><span class="p">)</span> <span class="o">%</span> <span class="mf">360.0</span> <span class="o">-</span> <span class="mf">180.0</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Libration in latitude: </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Libration in longitude: </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lon_degrees</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Libration in latitude: {:.3f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Libration in longitude: {:.3f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lon_degrees</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Libration in latitude: -6.749
@@ -198,7 +197,7 @@ the result will be a simple 3×3 matrix.</p>
 <span class="n">frame</span> <span class="o">=</span> <span class="n">pc</span><span class="o">.</span><span class="n">build_frame_named</span><span class="p">(</span><span class="s1">&#39;MOON_ME_DE421&#39;</span><span class="p">)</span>
 
 <span class="n">R</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">rotation_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(3, 3)
@@ -209,8 +208,8 @@ will return an array of matrices
 whose last dimension is as deep as the time vector is long.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
 <span class="n">R</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">rotation_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(10,)

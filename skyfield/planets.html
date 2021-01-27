@@ -58,9 +58,9 @@ and the dates over which it provides valid positions:</p>
 <span class="n">segment</span> <span class="o">=</span> <span class="n">planets</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">time_range</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Center:&#39;</span><span class="p">,</span> <span class="n">segment</span><span class="o">.</span><span class="n">center_name</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Target:&#39;</span><span class="p">,</span> <span class="n">segment</span><span class="o">.</span><span class="n">target_name</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Date range:&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">.</span><span class="n">tdb_strftime</span><span class="p">(),</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">.</span><span class="n">tdb_strftime</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Center:&#39;</span><span class="p">,</span> <span class="n">segment</span><span class="o">.</span><span class="n">center_name</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Target:&#39;</span><span class="p">,</span> <span class="n">segment</span><span class="o">.</span><span class="n">target_name</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Date range:&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">.</span><span class="n">tdb_strftime</span><span class="p">(),</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">.</span><span class="n">tdb_strftime</span><span class="p">())</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Center: 0 SOLAR SYSTEM BARYCENTER
@@ -179,7 +179,7 @@ be careful to ask an astronomer about the year&nbsp;−43 instead.</p>
 <div class="section" id="how-segments-are-linked-to-predict-positions">
 <h2>How segments are linked to predict positions<a class="headerlink" href="#how-segments-are-linked-to-predict-positions" title="Permalink to this headline">¶</a></h2>
 <p>You can <code class="docutils literal notranslate"><span class="pre">print()</span></code> an ephemeris to learn which objects it supports.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">planets</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">planets</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>SPICE kernel file &#39;de421.bsp&#39; has 15 segments
@@ -220,7 +220,7 @@ then it will have to add together two distances:</p>
 All you have to say is <code class="docutils literal notranslate"><span class="pre">planets[399]</span></code> or <code class="docutils literal notranslate"><span class="pre">planets['Earth']</span></code>
 and Skyfield will put together a solution using the segments provided.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">earth</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">earth</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">earth</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Sum of 2 vectors:
@@ -321,14 +321,14 @@ that calls the third-party module to generate coordinates:</p>
     <span class="k">def</span> <span class="nf">_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
         <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel</span>
         <span class="n">r</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">compute_type21</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">whole</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">tdb_fraction</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">r</span> <span class="o">/</span> <span class="n">AU_KM</span><span class="p">,</span> <span class="n">v</span> <span class="o">/</span> <span class="n">AU_KM</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">r</span> <span class="o">/</span> <span class="n">AU_KM</span><span class="p">,</span> <span class="n">v</span> <span class="o">/</span> <span class="n">AU_KM</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
 
 <span class="n">kernel</span> <span class="o">=</span> <span class="n">SPKType21</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;wld23593.15&#39;</span><span class="p">)</span>
 <span class="n">chiron</span> <span class="o">=</span> <span class="n">Type21Object</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="mi">2002060</span><span class="p">)</span>
 
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">chiron</span><span class="p">)</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>00h 27m 38.99s

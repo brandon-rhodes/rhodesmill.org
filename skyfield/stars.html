@@ -67,8 +67,8 @@ the star:</p>
 <span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 <span class="n">astrometric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">barnards_star</span><span class="p">)</span>
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>17h 57m 47.77s
@@ -106,7 +106,7 @@ constellation Orion — but only stars that are at least magnitude&nbsp;2.5.
 Pandas will let us filter the Hipparcos catalog dataframe in a single
 line of code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;magnitude&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">2.5</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;After filtering, there are </span><span class="si">{}</span><span class="s1"> stars&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;After filtering, there are {} stars&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>After filtering, there are 93 stars
@@ -120,8 +120,8 @@ object that will compute the positions of all 93 stars at once.</p>
 <span class="n">astrometric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">bright_stars</span><span class="p">)</span>
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;There are </span><span class="si">{}</span><span class="s1"> right ascensions&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">hours</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;and </span><span class="si">{}</span><span class="s1"> declinations&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">degrees</span><span class="p">)))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;There are {} right ascensions&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">hours</span><span class="p">)))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;and {} declinations&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">degrees</span><span class="p">)))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>There are 93 right ascensions
@@ -137,7 +137,7 @@ combined with their magnitude to produce a plot.</p>
 <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">hours</span><span class="p">,</span> <span class="n">dec</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="mi">8</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;magnitude&#39;</span><span class="p">],</span> <span class="s1">&#39;k&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">7.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;The brightest stars in Orion&#39;</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;bright_stars.png&#39;</span><span class="p">)</span>
 </pre></div>
@@ -168,8 +168,8 @@ pass tuples instead of floats:</p>
 <span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 <span class="n">astrometric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">barnard</span><span class="p">)</span>
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>17h 57m 48.50s
@@ -181,8 +181,8 @@ is that we can ask for the position to be expressed in the dynamical
 reference system of the moving Earth instead of in the same fixed ICRS
 system in which we provided it:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="n">ts</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>17h 58m 30.80s
@@ -201,7 +201,7 @@ if it has only been given its right ascension and declination,
 as is the case for Barnard’s Star as we defined it above.
 To represent this vector of unknown length,
 Skyfield generates a vector exactly one gigaparsec long:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>  <span class="c1"># exactly 1 gigaparsec</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>  <span class="c1"># exactly 1 gigaparsec</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2.06265e+14 au
@@ -243,9 +243,9 @@ there is even a tiny effect from its radial velocity if it is known.</p>
 
 <span class="n">astrometric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">barnard</span><span class="p">)</span>
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>17h 57m 47.76s
@@ -277,8 +277,8 @@ in the Hipparcos catalog:</p>
                 <span class="n">epoch</span><span class="o">=</span><span class="n">hipparcos_epoch</span><span class="p">)</span>
 
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">barnard2</span><span class="p">)</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>17h 57m 47.75s

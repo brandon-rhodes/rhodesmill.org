@@ -28,7 +28,7 @@ one file for each call the program makes to Skyfield’s <code class="docutils l
 If the program is attached to a terminal,
 then a&nbsp;simple progress bar will be displayed
 as Skyfield downloads each file.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load</span>
 <span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Ready&#39;</span><span class="p">)</span>
 </pre></div>
@@ -79,7 +79,7 @@ inside of a larger application —
 you can turn the progress bars off
 by building a <a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader" title="skyfield.iokit.Loader"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Loader</span></code></a> whose verbosity is set to false.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">Loader</span>
-<span class="n">load</span> <span class="o">=</span> <span class="n">Loader</span><span class="p">(</span><span class="s1">&#39;~/skyfield-data&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">load</span> <span class="o">=</span> <span class="n">Loader</span><span class="p">(</span><span class="s1">&#39;~/skyfield-data&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

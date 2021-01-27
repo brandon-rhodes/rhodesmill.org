@@ -110,7 +110,7 @@ access its magnitude as a number.</p>
 <dd><p>Compute equatorial (RA, declination, distance)</p>
 <p>When called without a parameter, this returns standard ICRF
 right ascension and declination:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
@@ -134,10 +134,29 @@ a specific epoch time.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="skyfield.positionlib.ICRF.hadec">
+<code class="descname">hadec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.hadec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute hour angle, declination, and distance.</p>
+<p>Returns a tuple of two <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> objects
+plus the <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> to the target.  The
+angles are the hour angle (±12&nbsp;hours) east or west of your
+meridian along the ITRS celestial equator, and the declination
+(±90&nbsp;degees) above or below it.  This only works for positions
+whose center is a geographic location; otherwise, there is no
+local meridian from which to measure the hour angle.</p>
+<p>Because this declination is measured from the plane of the
+Earth’s physical geographic equator, it will be slightly
+different than the declination returned by <code class="docutils literal notranslate"><span class="pre">radec()</span></code> if you
+have loaded a <a class="reference internal" href="accuracy-efficiency.html#polar-motion"><span class="std std-ref">Polar Motion</span></a> file.</p>
+<p>The coordinates are not adjusted for atmospheric refraction near
+the horizon.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="skyfield.positionlib.ICRF.separation_from">
 <code class="descname">separation_from</code><span class="sig-paren">(</span><em>another_icrf</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.separation_from" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the angle between this position and another.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>

@@ -43,8 +43,8 @@ if east, 180 if south, and 270 if west.</p>
 north to east around the horizon.  The position angle returned will
 be 0 degrees if position #2 is directly above position #1 in the
 sky, 90 degrees to its left, 180 if below, and 270 if to the right.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.trigonometry</span> <span class="kn">import</span> <span class="n">position_angle_of</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.units</span> <span class="kn">import</span> <span class="n">Angle</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.trigonometry</span> <span class="k">import</span> <span class="n">position_angle_of</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.units</span> <span class="k">import</span> <span class="n">Angle</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="n">degrees</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">Angle</span><span class="p">(</span><span class="n">degrees</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="n">degrees</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">Angle</span><span class="p">(</span><span class="n">degrees</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">position_angle_of</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
