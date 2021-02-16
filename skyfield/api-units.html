@@ -44,19 +44,19 @@ numeric formatting:</p>
 <dl class="attribute">
 <dt id="skyfield.units.Distance.au">
 <code class="descname">au</code><a class="headerlink" href="#skyfield.units.Distance.au" title="Permalink to this definition">¶</a></dt>
-<dd><p>The distance in astronomical units.</p>
+<dd><p>Astronomical units.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="skyfield.units.Distance.km">
 <code class="descname">km</code><a class="headerlink" href="#skyfield.units.Distance.km" title="Permalink to this definition">¶</a></dt>
-<dd><p>The distance in kilometers.</p>
+<dd><p>Kilometers.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="skyfield.units.Distance.m">
 <code class="descname">m</code><a class="headerlink" href="#skyfield.units.Distance.m" title="Permalink to this definition">¶</a></dt>
-<dd><p>The distance in meters.</p>
+<dd><p>Meters.</p>
 </dd></dl>
 
 <dl class="method">
@@ -65,7 +65,7 @@ numeric formatting:</p>
 <dd><p>Compute the length when this is an x,y,z vector.</p>
 <p>The Euclidean vector length of this vector is returned as a new
 <a class="reference internal" href="#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> object.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">Distance</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">Distance</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">Distance</span><span class="p">(</span><span class="n">au</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
 <span class="go">&lt;Distance 1.41421 au&gt;</span>
@@ -96,13 +96,19 @@ array to its <code class="docutils literal notranslate"><span class="pre">au_per
 <dl class="attribute">
 <dt id="skyfield.units.Velocity.au_per_d">
 <code class="descname">au_per_d</code><a class="headerlink" href="#skyfield.units.Velocity.au_per_d" title="Permalink to this definition">¶</a></dt>
-<dd><p>The velocity in astronomical units per day.</p>
+<dd><p>Astronomical units per day.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="skyfield.units.Velocity.km_per_s">
 <code class="descname">km_per_s</code><a class="headerlink" href="#skyfield.units.Velocity.km_per_s" title="Permalink to this definition">¶</a></dt>
-<dd><p>The velocity in kilometers per second.</p>
+<dd><p>Kilometers per second.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.units.Velocity.m_per_s">
+<code class="descname">m_per_s</code><a class="headerlink" href="#skyfield.units.Velocity.m_per_s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Meters per second.</p>
 </dd></dl>
 
 <dl class="method">
@@ -117,21 +123,21 @@ array to its <code class="docutils literal notranslate"><span class="pre">au_per
 <dt id="skyfield.units.Angle">
 <em class="property">class </em><code class="descclassname">skyfield.units.</code><code class="descname">Angle</code><span class="sig-paren">(</span><em>angle=None</em>, <em>radians=None</em>, <em>degrees=None</em>, <em>hours=None</em>, <em>preference=None</em>, <em>signed=False</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="attribute">
-<dt id="skyfield.units.Angle.degrees">
-<code class="descname">degrees</code><a class="headerlink" href="#skyfield.units.Angle.degrees" title="Permalink to this definition">¶</a></dt>
-<dd><p>The angle in degrees (360° in a circle).</p>
+<dt id="skyfield.units.Angle.radians">
+<code class="descname">radians</code><a class="headerlink" href="#skyfield.units.Angle.radians" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radians (𝜏&nbsp;=&nbsp;2𝜋 in a circle).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="skyfield.units.Angle.hours">
 <code class="descname">hours</code><a class="headerlink" href="#skyfield.units.Angle.hours" title="Permalink to this definition">¶</a></dt>
-<dd><p>The angle in hours (24 hours in a circle).</p>
+<dd><p>Hours (24 in a circle).</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="skyfield.units.Angle.radians">
-<code class="descname">radians</code><a class="headerlink" href="#skyfield.units.Angle.radians" title="Permalink to this definition">¶</a></dt>
-<dd><p>The angle in radians (𝜏&nbsp;=&nbsp;2𝜋 in a circle)</p>
+<dt id="skyfield.units.Angle.degrees">
+<code class="descname">degrees</code><a class="headerlink" href="#skyfield.units.Angle.degrees" title="Permalink to this definition">¶</a></dt>
+<dd><p>Degrees (360° in a circle).</p>
 </dd></dl>
 
 <dl class="method">
@@ -198,6 +204,72 @@ will all be positive.</p>
 <dt id="skyfield.units.Angle.to">
 <code class="descname">to</code><span class="sig-paren">(</span><em>unit</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert this angle to the given AstroPy unit.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="skyfield.units.AngleRate">
+<em class="property">class </em><code class="descclassname">skyfield.units.</code><code class="descname">AngleRate</code><a class="headerlink" href="#skyfield.units.AngleRate" title="Permalink to this definition">¶</a></dt>
+<dd><p>The rate at which an angle is changing.</p>
+<dl class="attribute">
+<dt id="skyfield.units.AngleRate.radians">
+<code class="descname">radians</code><a class="headerlink" href="#skyfield.units.AngleRate.radians" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#skyfield.units.Rate" title="skyfield.units.Rate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rate</span></code></a> of change in radians.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.units.AngleRate.degrees">
+<code class="descname">degrees</code><a class="headerlink" href="#skyfield.units.AngleRate.degrees" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#skyfield.units.Rate" title="skyfield.units.Rate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rate</span></code></a> of change in degrees.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.units.AngleRate.arcminutes">
+<code class="descname">arcminutes</code><a class="headerlink" href="#skyfield.units.AngleRate.arcminutes" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#skyfield.units.Rate" title="skyfield.units.Rate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rate</span></code></a> of change in arcminutes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.units.AngleRate.arcseconds">
+<code class="descname">arcseconds</code><a class="headerlink" href="#skyfield.units.AngleRate.arcseconds" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#skyfield.units.Rate" title="skyfield.units.Rate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rate</span></code></a> of change in arcseconds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.units.AngleRate.mas">
+<code class="descname">mas</code><a class="headerlink" href="#skyfield.units.AngleRate.mas" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#skyfield.units.Rate" title="skyfield.units.Rate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rate</span></code></a> of change in milliarcseconds.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="skyfield.units.Rate">
+<em class="property">class </em><code class="descclassname">skyfield.units.</code><code class="descname">Rate</code><a class="headerlink" href="#skyfield.units.Rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Measurement whose denominator is time.</p>
+<dl class="attribute">
+<dt id="skyfield.units.Rate.per_day">
+<code class="descname">per_day</code><a class="headerlink" href="#skyfield.units.Rate.per_day" title="Permalink to this definition">¶</a></dt>
+<dd><p>Units per day of Terrestrial Time.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.units.Rate.per_hour">
+<code class="descname">per_hour</code><a class="headerlink" href="#skyfield.units.Rate.per_hour" title="Permalink to this definition">¶</a></dt>
+<dd><p>Units per hour of Terrestrial Time.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.units.Rate.per_minute">
+<code class="descname">per_minute</code><a class="headerlink" href="#skyfield.units.Rate.per_minute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Units per minute of Terrestrial Time.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.units.Rate.per_second">
+<code class="descname">per_second</code><a class="headerlink" href="#skyfield.units.Rate.per_second" title="Permalink to this definition">¶</a></dt>
+<dd><p>Units per second of Terrestrial Time.</p>
 </dd></dl>
 
 </dd></dl>

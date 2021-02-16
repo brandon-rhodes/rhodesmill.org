@@ -110,7 +110,7 @@ access its magnitude as a number.</p>
 <dd><p>Compute equatorial (RA, declination, distance)</p>
 <p>When called without a parameter, this returns standard ICRF
 right ascension and declination:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
@@ -156,7 +156,7 @@ the horizon.</p>
 <dt id="skyfield.positionlib.ICRF.separation_from">
 <code class="descname">separation_from</code><span class="sig-paren">(</span><em>another_icrf</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.separation_from" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the angle between this position and another.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
@@ -224,6 +224,28 @@ velocity.  See <a class="reference internal" href="positions.html#reference-fram
 <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> objects and the range to the
 target as a <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a>.  See
 <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.frame_latlon_and_rates">
+<code class="descname">frame_latlon_and_rates</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.frame_latlon_and_rates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a reference frame longitude, latitude, range, and rates.</p>
+<p>Return a 6-element tuple of 3 coordinates and 3 rates-of-change
+for this position in the given reference <code class="docutils literal notranslate"><span class="pre">frame</span></code>:</p>
+<ul class="simple">
+<li>Latitude <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> from +90° north to −90° south</li>
+<li>Longitude <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> 0°–360° east</li>
+<li>Radial <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a></li>
+<li>Latitude <a class="reference internal" href="api-units.html#skyfield.units.AngleRate" title="skyfield.units.AngleRate"><code class="xref py py-class docutils literal notranslate"><span class="pre">AngleRate</span></code></a></li>
+<li>Longitude <a class="reference internal" href="api-units.html#skyfield.units.AngleRate" title="skyfield.units.AngleRate"><code class="xref py py-class docutils literal notranslate"><span class="pre">AngleRate</span></code></a></li>
+<li>Radial <a class="reference internal" href="api-units.html#skyfield.units.Velocity" title="skyfield.units.Velocity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Velocity</span></code></a></li>
+</ul>
+<p>If the reference frame is the ICRS, or is J2000, or otherwise
+involves the celestial equator and pole, then the latitude and
+longitude returned will measure what are more commonly called
+“declination” and “right ascension”.  Note that right ascension
+is usually expressed as hours (24 in a circle), rather than in
+the degrees that this routine will return.</p>
 </dd></dl>
 
 <dl class="method">

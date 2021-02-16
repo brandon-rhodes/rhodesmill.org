@@ -66,7 +66,7 @@ and then the angle between those positions:</p>
 <span class="n">s</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span>
 <span class="n">m</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">s</span><span class="o">.</span><span class="n">separation_from</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">s</span><span class="o">.</span><span class="n">separation_from</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>88.5752
@@ -94,7 +94,7 @@ Maybe we came up
 with a slightly different right ascension and declination for Mars.
 Let’s check:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>23h 01m 20.93s / -08deg 51&#39; 51.6&quot;
@@ -121,7 +121,7 @@ Thus:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
 <span class="n">m</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">s</span><span class="o">.</span><span class="n">separation_from</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">s</span><span class="o">.</span><span class="n">separation_from</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>88.5698
@@ -146,7 +146,7 @@ and see whether it’s growing or shrinking:</p>
 <span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">3</span><span class="p">))</span>
 
 <span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">ei</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">mars_elongation_degrees</span><span class="p">(</span><span class="n">t</span><span class="p">)):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%b </span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">ei</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%b </span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">ei</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>May 30 87.6881
@@ -176,7 +176,7 @@ around how the value changes through time.</p>
 <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>  <span class="c1"># Red line at 90°</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">J</span><span class="p">,</span> <span class="n">mars_elongation_degrees</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Elongation of Mars (degrees)&#39;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Year&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;mars-elongation.png&#39;</span><span class="p">)</span>
@@ -277,8 +277,8 @@ we are ready to unleash <a class="reference internal" href="api.html#skyfield.se
 <span class="n">t2</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2023</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">find_discrete</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">mars_quadrature</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;Time tt=[2458202.1729387594 ... 2459818.7282241164] len=5&gt;
@@ -294,7 +294,7 @@ The Python built-in function
 can iterate across both arrays at once
 to pair up the dates with the values:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">vi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M &#39;</span><span class="p">),</span> <span class="n">vi</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M &#39;</span><span class="p">),</span> <span class="n">vi</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2018-03-24 16:08  1
@@ -405,7 +405,7 @@ This step size can then be used to launch a search:</p>
 <span class="n">t2</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2023</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">find_maxima</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">venus_elongation_degrees</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="s1">&#39;maxima found&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="s1">&#39;maxima found&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>6 maxima found
@@ -416,7 +416,7 @@ This step size can then be used to launch a search:</p>
 you can loop across both arrays,
 printing the time and angle of each maximum elongation:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">vi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M &#39;</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vi</span><span class="p">,</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M &#39;</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vi</span><span class="p">,</span>
           <span class="s1">&#39;degrees elongation&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -438,7 +438,7 @@ To find when Venus is closest to the sun:</p>
 <span class="n">t</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">find_minima</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">venus_elongation_degrees</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">vi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S &#39;</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vi</span><span class="p">,</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S &#39;</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">vi</span><span class="p">,</span>
           <span class="s1">&#39;degrees elongation&#39;</span><span class="p">)</span>
 </pre></div>
 </div>

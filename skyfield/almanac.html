@@ -53,7 +53,7 @@ the output will be one minute too early.  For example, the Naval
 Observatory would round <code class="docutils literal notranslate"><span class="pre">14:59</span></code> up to <code class="docutils literal notranslate"><span class="pre">:15</span></code> in the following date.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">59</span><span class="p">)</span>
 <span class="n">dt</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_datetime</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2018-09-10 05:14
@@ -67,7 +67,7 @@ before truncating the seconds.</p>
     <span class="k">return</span> <span class="p">(</span><span class="n">dt</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">30</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="n">dt</span> <span class="o">=</span> <span class="n">nearest_minute</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_datetime</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2018-09-10 05:15
@@ -84,7 +84,7 @@ solstices that fall in between.</p>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">almanac</span><span class="o">.</span><span class="n">seasons</span><span class="p">(</span><span class="n">eph</span><span class="p">))</span>
 
 <span class="k">for</span> <span class="n">yi</span><span class="p">,</span> <span class="n">ti</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">yi</span><span class="p">,</span> <span class="n">almanac</span><span class="o">.</span><span class="n">SEASON_EVENTS</span><span class="p">[</span><span class="n">yi</span><span class="p">],</span> <span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">yi</span><span class="p">,</span> <span class="n">almanac</span><span class="o">.</span><span class="n">SEASON_EVENTS</span><span class="p">[</span><span class="n">yi</span><span class="p">],</span> <span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>0 Vernal Equinox 2018-03-20 16:15:27Z
@@ -109,7 +109,7 @@ for the current phase of the Moon as an angle, where 0° is New Moon and
 180° is Full:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
 <span class="n">phase</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">moon_phase</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Moon phase: {:.1f} degrees&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Moon phase: </span><span class="si">{:.1f}</span><span class="s1"> degrees&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Moon phase: 51.3 degrees
@@ -121,9 +121,9 @@ when the Moon reaches First Quarter, Full, Last Quarter, and New:</p>
 <span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">almanac</span><span class="o">.</span><span class="n">moon_phases</span><span class="p">(</span><span class="n">eph</span><span class="p">))</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="k">print</span><span class="p">([</span><span class="n">almanac</span><span class="o">.</span><span class="n">MOON_PHASES</span><span class="p">[</span><span class="n">yi</span><span class="p">]</span> <span class="k">for</span> <span class="n">yi</span> <span class="ow">in</span> <span class="n">y</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">([</span><span class="n">almanac</span><span class="o">.</span><span class="n">MOON_PHASES</span><span class="p">[</span><span class="n">yi</span><span class="p">]</span> <span class="k">for</span> <span class="n">yi</span> <span class="ow">in</span> <span class="n">y</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;2018-09-03T02:37:24Z&#39;, &#39;2018-09-09T18:01:28Z&#39;]
@@ -145,9 +145,9 @@ possible.</p>
 <span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">almanac</span><span class="o">.</span><span class="n">moon_nodes</span><span class="p">(</span><span class="n">eph</span><span class="p">))</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="k">print</span><span class="p">([</span><span class="n">almanac</span><span class="o">.</span><span class="n">MOON_NODES</span><span class="p">[</span><span class="n">yi</span><span class="p">]</span> <span class="k">for</span> <span class="n">yi</span> <span class="ow">in</span> <span class="n">y</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">([</span><span class="n">almanac</span><span class="o">.</span><span class="n">MOON_NODES</span><span class="p">[</span><span class="n">yi</span><span class="p">]</span> <span class="k">for</span> <span class="n">yi</span> <span class="ow">in</span> <span class="n">y</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;2020-04-27T17:54:17Z&#39;, &#39;2020-05-10T09:01:42Z&#39;]
@@ -166,8 +166,8 @@ conjunction with the Sun is when their ecliptic longitudes are at 0° or
 <span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">oppositions_conjunctions</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;mars&#39;</span><span class="p">])</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;2019-09-02T10:42:14Z&#39;, &#39;2020-10-13T23:25:47Z&#39;]
@@ -212,9 +212,9 @@ and then the antimeridian on the opposite side of the celestial globe:</p>
 <span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">meridian_transits</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Mars&#39;</span><span class="p">],</span> <span class="n">bluffton</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="k">print</span><span class="p">([</span><span class="n">almanac</span><span class="o">.</span><span class="n">MERIDIAN_TRANSITS</span><span class="p">[</span><span class="n">yi</span><span class="p">]</span> <span class="k">for</span> <span class="n">yi</span> <span class="ow">in</span> <span class="n">y</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">([</span><span class="n">almanac</span><span class="o">.</span><span class="n">MERIDIAN_TRANSITS</span><span class="p">[</span><span class="n">yi</span><span class="p">]</span> <span class="k">for</span> <span class="n">yi</span> <span class="ow">in</span> <span class="n">y</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;2020-11-06 03:32&#39;, &#39;2020-11-06 15:30&#39;]
@@ -256,8 +256,8 @@ and for the average refraction of the atmosphere at the horizon.</p>
 <span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">almanac</span><span class="o">.</span><span class="n">sunrise_sunset</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">bluffton</span><span class="p">))</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;2018-09-12T11:13:13Z&#39;, &#39;2018-09-12T23:49:38Z&#39;]
@@ -278,10 +278,10 @@ interests you, and the return value will indicate whether the sun is up.</p>
 <span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">sunrise_sunset</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">far_north</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">())</span>  <span class="c1"># Empty list: no sunrise or sunset</span>
-<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">t0</span><span class="p">))</span>        <span class="c1"># But we can ask if the sun is up</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">())</span>  <span class="c1"># Empty list: no sunrise or sunset</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">t0</span><span class="p">))</span>        <span class="c1"># But we can ask if the sun is up</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;polar day&#39;</span> <span class="k">if</span> <span class="n">f</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;polar night&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;polar day&#39;</span> <span class="k">if</span> <span class="n">f</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;polar night&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[]
@@ -307,7 +307,7 @@ of the phases of twilight using integers:</p>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">yi</span><span class="p">,</span> <span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(),</span> <span class="s1">&#39; Start of&#39;</span><span class="p">,</span> <span class="n">almanac</span><span class="o">.</span><span class="n">TWILIGHTS</span><span class="p">[</span><span class="n">yi</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">yi</span><span class="p">,</span> <span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(),</span> <span class="s1">&#39; Start of&#39;</span><span class="p">,</span> <span class="n">almanac</span><span class="o">.</span><span class="n">TWILIGHTS</span><span class="p">[</span><span class="n">yi</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>1 2019-11-08T10:40:19Z  Start of Astronomical twilight
@@ -338,7 +338,7 @@ using the <a class="reference internal" href="api-almanac.html#skyfield.almanac.
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(),</span> <span class="s1">&#39;Rise&#39;</span> <span class="k">if</span> <span class="n">yi</span> <span class="k">else</span> <span class="s1">&#39;Set&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(),</span> <span class="s1">&#39;Rise&#39;</span> <span class="k">if</span> <span class="n">yi</span> <span class="k">else</span> <span class="s1">&#39;Set&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2020-02-01T09:29:16Z Rise
@@ -362,13 +362,13 @@ in both the rising and setting time:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.earthlib</span> <span class="kn">import</span> <span class="n">refraction</span>
 
 <span class="n">r</span> <span class="o">=</span> <span class="n">refraction</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">temperature_C</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">pressure_mbar</span><span class="o">=</span><span class="mf">1030.0</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Arcminutes refraction for body seen at horizon: </span><span class="si">%.2f</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="mf">60.0</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Arcminutes refraction for body seen at horizon: </span><span class="si">%.2f</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="mf">60.0</span><span class="p">))</span>
 
 <span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">risings_and_settings</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Mars&#39;</span><span class="p">],</span> <span class="n">bluffton</span><span class="p">,</span> <span class="n">horizon_degrees</span><span class="o">=-</span><span class="n">r</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(),</span> <span class="s1">&#39;Rise&#39;</span> <span class="k">if</span> <span class="n">yi</span> <span class="k">else</span> <span class="s1">&#39;Set&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(),</span> <span class="s1">&#39;Rise&#39;</span> <span class="k">if</span> <span class="n">yi</span> <span class="k">else</span> <span class="s1">&#39;Set&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Arcminutes refraction for body seen at horizon: 34.53
@@ -391,11 +391,11 @@ would be a rough estimate for the Sun or Moon.</p>
 <p>The difference in rising time can be a minute or more:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">risings_and_settings</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Sun&#39;</span><span class="p">],</span> <span class="n">bluffton</span><span class="p">,</span> <span class="n">radius_degrees</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="s1">&#39;Limb of the Sun crests the horizon&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="s1">&#39;Limb of the Sun crests the horizon&#39;</span><span class="p">)</span>
 
 <span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">risings_and_settings</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Sun&#39;</span><span class="p">],</span> <span class="n">bluffton</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="s1">&#39;Center of the Sun reaches the horizon&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="s1">&#39;Center of the Sun reaches the horizon&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2020-02-01 12:46:27Z Limb of the Sun crests the horizon
@@ -433,14 +433,14 @@ to estimate the position of the horizon for an observer at altitude:</p>
 <span class="n">earth_radius_m</span> <span class="o">=</span> <span class="mf">6378136.6</span>
 <span class="n">side_over_hypotenuse</span> <span class="o">=</span> <span class="n">earth_radius_m</span> <span class="o">/</span> <span class="p">(</span><span class="n">earth_radius_m</span> <span class="o">+</span> <span class="n">altitude_m</span><span class="p">)</span>
 <span class="n">h</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="n">radians</span> <span class="o">=</span> <span class="o">-</span><span class="n">arccos</span><span class="p">(</span><span class="n">side_over_hypotenuse</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;The horizon from 300km up is at </span><span class="si">%.2f</span><span class="s1"> degrees&#39;</span> <span class="o">%</span> <span class="n">h</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The horizon from 300km up is at </span><span class="si">%.2f</span><span class="s1"> degrees&#39;</span> <span class="o">%</span> <span class="n">h</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span>
 
 <span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">risings_and_settings</span><span class="p">(</span>
     <span class="n">eph</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Sun&#39;</span><span class="p">],</span> <span class="n">bluffton</span><span class="p">,</span> <span class="n">horizon_degrees</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span>
     <span class="n">radius_degrees</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="s1">&#39;Limb of the Sun crests the horizon&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="s1">&#39;Limb of the Sun crests the horizon&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>The horizon from 300km up is at -17.24 degrees
@@ -487,7 +487,7 @@ Here, for example, are rising and setting times for the Galactic Center:</p>
 
 <span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="n">verb</span> <span class="o">=</span> <span class="s1">&#39;rises above&#39;</span> <span class="k">if</span> <span class="n">yi</span> <span class="k">else</span> <span class="s1">&#39;sets below&#39;</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="s1">&#39;- Galactic Center&#39;</span><span class="p">,</span> <span class="n">verb</span><span class="p">,</span> <span class="s1">&#39;the horizon&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="s1">&#39;- Galactic Center&#39;</span><span class="p">,</span> <span class="n">verb</span><span class="p">,</span> <span class="s1">&#39;the horizon&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2020-02-01 10:29:00Z - Galactic Center rises above the horizon
@@ -506,7 +506,7 @@ Here, for example, are rising and setting times for the Galactic Center:</p>
 <span class="n">t</span><span class="p">,</span> <span class="n">tm</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">almanac_ea</span><span class="o">.</span><span class="n">solar_terms</span><span class="p">(</span><span class="n">eph</span><span class="p">))</span>
 
 <span class="k">for</span> <span class="n">tmi</span><span class="p">,</span> <span class="n">ti</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tm</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">tmi</span><span class="p">,</span> <span class="n">almanac_ea</span><span class="o">.</span><span class="n">SOLAR_TERMS_ZHS</span><span class="p">[</span><span class="n">tmi</span><span class="p">],</span> <span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">tmi</span><span class="p">,</span> <span class="n">almanac_ea</span><span class="o">.</span><span class="n">SOLAR_TERMS_ZHS</span><span class="p">[</span><span class="n">tmi</span><span class="p">],</span> <span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>17 大雪 2019-12-07 10:18:28Z
@@ -530,8 +530,8 @@ as <code class="docutils literal notranslate"><span class="pre">SOLAR_TERMS_JP</
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">eclipselib</span><span class="o">.</span><span class="n">lunar_eclipses</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">eph</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">),</span>
-          <span class="s1">&#39;y={}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">yi</span><span class="p">),</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">),</span>
+          <span class="s1">&#39;y=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">yi</span><span class="p">),</span>
           <span class="n">eclipselib</span><span class="o">.</span><span class="n">LUNAR_ECLIPSES</span><span class="p">[</span><span class="n">yi</span><span class="p">])</span>
 </pre></div>
 </div>

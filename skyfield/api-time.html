@@ -52,7 +52,7 @@ See <a class="reference internal" href="time.html#choice-of-calendars"><span cla
 to translate between different time scales: the schedule of UTC leap
 seconds, and the value of ∆T over time.  Most programs create a
 single <a class="reference internal" href="#skyfield.timelib.Timescale" title="skyfield.timelib.Timescale"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Timescale</span></code></a> which they use to build their <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> objects:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">1980</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
@@ -402,6 +402,12 @@ Otherwise the value is truncated rather than rounded.</p>
 <p>Julian years are convenient uniform periods of exactly 365.25
 days of Terrestrial Time, centered on 2000 January 1 12h TT =
 Julian year 2000.0.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="skyfield.timelib.Time.utc">
+<code class="descname">utc</code><a class="headerlink" href="#skyfield.timelib.Time.utc" title="Permalink to this definition">¶</a></dt>
+<dd><p>A tuple <code class="docutils literal notranslate"><span class="pre">(year,</span> <span class="pre">month,</span> <span class="pre">day,</span> <span class="pre">hour,</span> <span class="pre">minute,</span> <span class="pre">seconds)</span></code> in UTC.</p>
 </dd></dl>
 
 <dl class="attribute">

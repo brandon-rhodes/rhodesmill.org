@@ -52,7 +52,7 @@
 <h2><a class="toc-backref" href="#id1">Opening files</a><a class="headerlink" href="#opening-files" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># File you already have.</span>
 
-<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load_file</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load_file</span>
 <span class="n">planets</span> <span class="o">=</span> <span class="n">load_file</span><span class="p">(</span><span class="s1">&#39;~/Downloads/de405.bsp&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -69,7 +69,7 @@
 </table>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># File you want Skyfield to download automatically.</span>
 
-<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
 <span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
 <span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de405.bsp&#39;</span><span class="p">)</span>
 </pre></div>
@@ -360,8 +360,8 @@ that returns vectors from the Solar System barycenter to the named body.</p>
 <p>This prototype function — which so far only supports Mercury, Venus,
 Earth, Jupiter, and Uranus — computes the visual magnitude of a
 planet, given its position relative to an observer.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.magnitudelib</span> <span class="k">import</span> <span class="n">planetary_magnitude</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.magnitudelib</span> <span class="kn">import</span> <span class="n">planetary_magnitude</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
@@ -645,13 +645,16 @@ then the attribute is simply the value <code class="docutils literal notranslate
 <tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_latlon" title="skyfield.positionlib.ICRF.frame_latlon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.frame_latlon</span></code></a>(frame)</td>
 <td>Return longitude, latitude, and distance in the given frame.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_time_and_frame_vectors" title="skyfield.positionlib.ICRF.from_time_and_frame_vectors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_time_and_frame_vectors</span></code></a>(t,&nbsp;frame,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_latlon_and_rates" title="skyfield.positionlib.ICRF.frame_latlon_and_rates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.frame_latlon_and_rates</span></code></a>(frame)</td>
+<td>Return a reference frame longitude, latitude, range, and rates.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_time_and_frame_vectors" title="skyfield.positionlib.ICRF.from_time_and_frame_vectors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_time_and_frame_vectors</span></code></a>(t,&nbsp;frame,&nbsp;…)</td>
 <td>Constructor: build a position from two vectors in a reference frame.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_sunlit" title="skyfield.positionlib.ICRF.is_sunlit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.is_sunlit</span></code></a>(ephemeris)</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_sunlit" title="skyfield.positionlib.ICRF.is_sunlit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.is_sunlit</span></code></a>(ephemeris)</td>
 <td>Return whether a position in Earth orbit is in sunlight.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_altaz" title="skyfield.positionlib.ICRF.from_altaz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_altaz</span></code></a>([alt,&nbsp;az,&nbsp;alt_degrees,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_altaz" title="skyfield.positionlib.ICRF.from_altaz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_altaz</span></code></a>([alt,&nbsp;az,&nbsp;alt_degrees,&nbsp;…])</td>
 <td>Generate an Apparent position from an altitude and azimuth.</td>
 </tr>
 </tbody>
@@ -712,7 +715,7 @@ then the attribute is simply the value <code class="docutils literal notranslate
 <p>Skyfield carries an internal map of constellation boundaries that is
 optimized for quick position lookup.  Call this function to load the
 map and return a function mapping position to constellation name.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">position_of_radec</span><span class="p">,</span> <span class="n">load_constellation_map</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">position_of_radec</span><span class="p">,</span> <span class="n">load_constellation_map</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">constellation_at</span> <span class="o">=</span> <span class="n">load_constellation_map</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">north_pole</span> <span class="o">=</span> <span class="n">position_of_radec</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">constellation_at</span><span class="p">(</span><span class="n">north_pole</span><span class="p">)</span>
@@ -728,7 +731,7 @@ map and return a function mapping position to constellation name.</p>
 <dd><p>Return a list of abbreviation-name tuples, like <code class="docutils literal notranslate"><span class="pre">('Aql',</span> <span class="pre">'Aquila')</span></code>.</p>
 <p>You can pass the list to Python’s <code class="docutils literal notranslate"><span class="pre">dict()</span></code> to build a dictionary
 that turns a constellation abbreviation into a full name:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load_constellation_names</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load_constellation_names</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">load_constellation_names</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;UMa&#39;</span><span class="p">]</span>
 <span class="go">&#39;Ursa Major&#39;</span>
@@ -894,37 +897,16 @@ instantaneous position and velocity.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a></td>
-<td>Distance measure.</td>
+<td>Distance</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">Distance.au</span></code></td>
-<td>Astronomical Units.</td>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Velocity" title="skyfield.units.Velocity"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Velocity</span></code></a></td>
+<td>Velocity</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">Distance.km</span></code></td>
-<td>Kilometers.</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a></td>
+<td>Angle</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">Distance.m</span></code></td>
-<td>Meters.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Velocity" title="skyfield.units.Velocity"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Velocity</span></code></a></td>
-<td>Velocity measure.</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">Velocity.au_per_d</span></code></td>
-<td>Astronomical Units.</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">Velocity.km_per_s</span></code></td>
-<td>Kilometers.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a></td>
-<td>Angle measure.</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">Angle.degrees</span></code></td>
-<td>Degrees of arc (360 in a complete circle).</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">Angle.hours</span></code></td>
-<td>Hours of arc (24 in a complete circle).</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">Angle.radians</span></code></td>
-<td>Radians (τ = 2π in a complete circle).</td>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.AngleRate" title="skyfield.units.AngleRate"><code class="xref any py py-class docutils literal notranslate"><span class="pre">AngleRate</span></code></a></td>
+<td>Rate at which an angle is changing</td>
 </tr>
 </tbody>
 </table>
@@ -935,47 +917,101 @@ instantaneous position and velocity.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance.length" title="skyfield.units.Distance.length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Distance.length</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance.au" title="skyfield.units.Distance.au"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Distance.au</span></code></a></td>
+<td>Astronomical units.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance.km" title="skyfield.units.Distance.km"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Distance.km</span></code></a></td>
+<td>Kilometers.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance.m" title="skyfield.units.Distance.m"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Distance.m</span></code></a></td>
+<td>Meters.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance.length" title="skyfield.units.Distance.length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Distance.length</span></code></a>()</td>
 <td>Compute the length when this is an x,y,z vector.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance.light_seconds" title="skyfield.units.Distance.light_seconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Distance.light_seconds</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance.light_seconds" title="skyfield.units.Distance.light_seconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Distance.light_seconds</span></code></a>()</td>
 <td>Return the length of this vector in light seconds.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance.to" title="skyfield.units.Distance.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Distance.to</span></code></a>(unit)</td>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance.to" title="skyfield.units.Distance.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Distance.to</span></code></a>(unit)</td>
 <td>Convert this distance to the given AstroPy unit.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Velocity.au_per_d" title="skyfield.units.Velocity.au_per_d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Velocity.au_per_d</span></code></a></td>
+<td>Astronomical units per day.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Velocity.km_per_s" title="skyfield.units.Velocity.km_per_s"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Velocity.km_per_s</span></code></a></td>
+<td>Kilometers per second.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Velocity.m_per_s" title="skyfield.units.Velocity.m_per_s"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Velocity.m_per_s</span></code></a></td>
+<td>Meters per second.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Velocity.to" title="skyfield.units.Velocity.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Velocity.to</span></code></a>(unit)</td>
 <td>Convert this velocity to the given AstroPy unit.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.arcminutes" title="skyfield.units.Angle.arcminutes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.arcminutes</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.radians" title="skyfield.units.Angle.radians"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.radians</span></code></a></td>
+<td>Radians (𝜏&nbsp;=&nbsp;2𝜋 in a circle).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.hours" title="skyfield.units.Angle.hours"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.hours</span></code></a></td>
+<td>Hours (24 in a circle).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.degrees" title="skyfield.units.Angle.degrees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.degrees</span></code></a></td>
+<td>Degrees (360° in a circle).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.arcminutes" title="skyfield.units.Angle.arcminutes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.arcminutes</span></code></a>()</td>
 <td>Return the angle in arcminutes.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.arcseconds" title="skyfield.units.Angle.arcseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.arcseconds</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.arcseconds" title="skyfield.units.Angle.arcseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.arcseconds</span></code></a>()</td>
 <td>Return the angle in arcseconds.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.mas" title="skyfield.units.Angle.mas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.mas</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.mas" title="skyfield.units.Angle.mas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.mas</span></code></a>()</td>
 <td>Return the angle in milliarcseconds.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.to" title="skyfield.units.Angle.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.to</span></code></a>(unit)</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.to" title="skyfield.units.Angle.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.to</span></code></a>(unit)</td>
 <td>Convert this angle to the given AstroPy unit.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.hms" title="skyfield.units.Angle.hms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.hms</span></code></a>([warn])</td>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.hms" title="skyfield.units.Angle.hms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.hms</span></code></a>([warn])</td>
 <td>Convert to a tuple (hours, minutes, seconds).</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.signed_hms" title="skyfield.units.Angle.signed_hms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.signed_hms</span></code></a>([warn])</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.signed_hms" title="skyfield.units.Angle.signed_hms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.signed_hms</span></code></a>([warn])</td>
 <td>Convert to a tuple (sign, hours, minutes, seconds).</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.hstr" title="skyfield.units.Angle.hstr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.hstr</span></code></a>([places,&nbsp;warn])</td>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.hstr" title="skyfield.units.Angle.hstr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.hstr</span></code></a>([places,&nbsp;warn])</td>
 <td>Convert to a string like <code class="docutils literal notranslate"><span class="pre">12h</span> <span class="pre">07m</span> <span class="pre">30.00s</span></code>.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.dms" title="skyfield.units.Angle.dms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.dms</span></code></a>([warn])</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.dms" title="skyfield.units.Angle.dms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.dms</span></code></a>([warn])</td>
 <td>Convert to a tuple (degrees, minutes, seconds).</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.signed_dms" title="skyfield.units.Angle.signed_dms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.signed_dms</span></code></a>([warn])</td>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.signed_dms" title="skyfield.units.Angle.signed_dms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.signed_dms</span></code></a>([warn])</td>
 <td>Convert to a tuple (sign, degrees, minutes, seconds).</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.dstr" title="skyfield.units.Angle.dstr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.dstr</span></code></a>([places,&nbsp;warn])</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.dstr" title="skyfield.units.Angle.dstr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.dstr</span></code></a>([places,&nbsp;warn])</td>
 <td>Convert to a string like <code class="docutils literal notranslate"><span class="pre">181deg</span> <span class="pre">52'</span> <span class="pre">30.0&quot;</span></code>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.AngleRate.radians" title="skyfield.units.AngleRate.radians"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AngleRate.radians</span></code></a></td>
+<td><a class="reference internal" href="api-units.html#skyfield.units.Rate" title="skyfield.units.Rate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rate</span></code></a> of change in radians.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.AngleRate.degrees" title="skyfield.units.AngleRate.degrees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AngleRate.degrees</span></code></a></td>
+<td><a class="reference internal" href="api-units.html#skyfield.units.Rate" title="skyfield.units.Rate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rate</span></code></a> of change in degrees.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.AngleRate.arcminutes" title="skyfield.units.AngleRate.arcminutes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AngleRate.arcminutes</span></code></a></td>
+<td><a class="reference internal" href="api-units.html#skyfield.units.Rate" title="skyfield.units.Rate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rate</span></code></a> of change in arcminutes.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.AngleRate.arcseconds" title="skyfield.units.AngleRate.arcseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AngleRate.arcseconds</span></code></a></td>
+<td><a class="reference internal" href="api-units.html#skyfield.units.Rate" title="skyfield.units.Rate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rate</span></code></a> of change in arcseconds.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.AngleRate.mas" title="skyfield.units.AngleRate.mas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AngleRate.mas</span></code></a></td>
+<td><a class="reference internal" href="api-units.html#skyfield.units.Rate" title="skyfield.units.Rate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rate</span></code></a> of change in milliarcseconds.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Rate.per_day" title="skyfield.units.Rate.per_day"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rate.per_day</span></code></a></td>
+<td>Units per day of Terrestrial Time.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Rate.per_hour" title="skyfield.units.Rate.per_hour"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rate.per_hour</span></code></a></td>
+<td>Units per hour of Terrestrial Time.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Rate.per_minute" title="skyfield.units.Rate.per_minute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rate.per_minute</span></code></a></td>
+<td>Units per minute of Terrestrial Time.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Rate.per_second" title="skyfield.units.Rate.per_second"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rate.per_second</span></code></a></td>
+<td>Units per second of Terrestrial Time.</td>
 </tr>
 </tbody>
 </table>

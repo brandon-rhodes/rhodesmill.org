@@ -32,14 +32,14 @@ to download and open the data files they need in order to operate.</p>
 <dd><p>A tool for downloading and opening astronomical data files.</p>
 <p>A default <a class="reference internal" href="#skyfield.iokit.Loader" title="skyfield.iokit.Loader"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Loader</span></code></a> that saves data files to the current working
 directory can be imported directly from the Skyfield API:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
 </pre></div>
 </div>
 <p>But users can also create a <a class="reference internal" href="#skyfield.iokit.Loader" title="skyfield.iokit.Loader"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Loader</span></code></a> of their own, if there is
 another directory they want data files saved to, or if they want to
 specify different options.  The directory is created automatically
 if it does not yet exist:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">Loader</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">Loader</span>
 <span class="n">load</span> <span class="o">=</span> <span class="n">Loader</span><span class="p">(</span><span class="s1">&#39;~/skyfield-data&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -154,7 +154,7 @@ Service.  For details, see <a class="reference internal" href="time.html#downloa
 <dd><p>Open a file on your local drive, using its extension to guess its type.</p>
 <p>This routine only works on <code class="docutils literal notranslate"><span class="pre">.bsp</span></code> ephemeris files right now, but
 will gain support for additional file types in the future.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load_file</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load_file</span>
 <span class="n">planets</span> <span class="o">=</span> <span class="n">load_file</span><span class="p">(</span><span class="s1">&#39;~/Downloads/de421.bsp&#39;</span><span class="p">)</span>
 </pre></div>
 </div>

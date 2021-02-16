@@ -49,7 +49,7 @@ To build a dataframe of comets:</p>
 <span class="k">with</span> <span class="n">load</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">mpc</span><span class="o">.</span><span class="n">COMET_URL</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">comets</span> <span class="o">=</span> <span class="n">mpc</span><span class="o">.</span><span class="n">load_comets_dataframe</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">comets</span><span class="p">),</span> <span class="s1">&#39;comets loaded&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">comets</span><span class="p">),</span> <span class="s1">&#39;comets loaded&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>864 comets loaded
@@ -67,8 +67,8 @@ but most Skyfield users will simply index their dataframe by comet designation.<
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Keep only the most recent orbit for each comet,</span>
 <span class="c1"># and index by designation for fast lookup.</span>
 <span class="n">comets</span> <span class="o">=</span> <span class="p">(</span><span class="n">comets</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;designation&#39;</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="p">()</span>
-          <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;designation&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+          <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;designation&#39;</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="p">()</span>
+          <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;designation&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
 <span class="c1"># Sample lookups.</span>
 <span class="n">row</span> <span class="o">=</span> <span class="n">comets</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;1P/Halley&#39;</span><span class="p">]</span>
@@ -95,8 +95,8 @@ which always measures positions from the Solar System barycenter.</p>
 
 <span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span>
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">comet</span><span class="p">)</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>23h 59m 16.85s
@@ -163,8 +163,8 @@ as the <code class="docutils literal notranslate"><span class="pre">zgrep</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">zlib</span>
 
-<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="k">import</span> <span class="n">load</span>
-<span class="kn">from</span> <span class="nn">skyfield.data</span> <span class="k">import</span> <span class="n">mpc</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">skyfield.data</span> <span class="kn">import</span> <span class="n">mpc</span>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="p">):</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Grep MPCORB.DAT.gz&#39;</span><span class="p">)</span>
@@ -201,7 +201,7 @@ is ready for Skyfield to load.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">load</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;MPCORB.excerpt.DAT&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">minor_planets</span> <span class="o">=</span> <span class="n">mpc</span><span class="o">.</span><span class="n">load_mpcorb_dataframe</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">minor_planets</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;minor planets loaded&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">minor_planets</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;minor planets loaded&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>4 minor planets loaded
@@ -224,7 +224,7 @@ you can ask Pandas to filter them out of your dataframe:</p>
 you can ask Pandas to index the dataframe by minor planet designation
 for quick lookup.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Index by designation for fast lookup.</span>
-<span class="n">minor_planets</span> <span class="o">=</span> <span class="n">minor_planets</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;designation&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">minor_planets</span> <span class="o">=</span> <span class="n">minor_planets</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;designation&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Sample lookups.</span>
 <span class="n">row</span> <span class="o">=</span> <span class="n">minor_planets</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;(1) Ceres&#39;</span><span class="p">]</span>
@@ -238,8 +238,8 @@ the Sun’s position vector must be added to theirs
 to build a complete position.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ceres</span> <span class="o">=</span> <span class="n">sun</span> <span class="o">+</span> <span class="n">mpc</span><span class="o">.</span><span class="n">mpcorb_orbit</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">GM_SUN</span><span class="p">)</span>
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">ceres</span><span class="p">)</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>05h 51m 45.85s

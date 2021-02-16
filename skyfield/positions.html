@@ -268,8 +268,8 @@ by asking Skyfield for their <code class="docutils literal notranslate"><span cl
 <span class="n">mars</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;mars&#39;</span><span class="p">]</span>
 
 <span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">1980</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">mars</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mars</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[-0.16287311  0.88787399  0.38473904]
@@ -317,7 +317,7 @@ that we see in our sky:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Observing Mars from the Earth&#39;s position</span>
 
 <span class="n">astrometric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">1980</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">astrometric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">astrometric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[-0.92909581  0.21939949  0.15266885]
@@ -332,9 +332,9 @@ and <a class="reference internal" href="api-units.html#skyfield.units.Angle.dstr
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Astrometric RA and declination</span>
 
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">hstr</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">hstr</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>11h 06m 51.22s
@@ -357,8 +357,8 @@ and then re-use that position for each object you want to observe.</p>
 <span class="n">mercury</span><span class="p">,</span> <span class="n">venus</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;mercury&#39;</span><span class="p">],</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;venus&#39;</span><span class="p">]</span>
 
 <span class="n">here</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">19</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">here</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mercury</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">here</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">venus</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">here</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mercury</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">here</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">venus</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[0.894231   0.67436002 0.24448674]
@@ -404,9 +404,9 @@ is typically expressed as the angles
 <span class="n">apparent</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">apparent</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">hstr</span><span class="p">())</span>   <span class="c1"># Unusual choice: usually apparent positions</span>
-<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>  <span class="c1"># are not expressed as ICRF/J2000 coordinates</span>
-<span class="k">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">hstr</span><span class="p">())</span>   <span class="c1"># Unusual choice: usually apparent positions</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>  <span class="c1"># are not expressed as ICRF/J2000 coordinates</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>11h 06m 51.75s
@@ -437,9 +437,9 @@ when you ask the apparent position for coordinates:</p>
 
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">apparent</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">hstr</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">hstr</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>11h 05m 48.68s
@@ -502,9 +502,9 @@ in case you don’t want to remember which directions are positive.</p>
 <span class="n">app</span> <span class="o">=</span> <span class="n">astro</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
 
 <span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">altaz</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">az</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">az</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>24deg 30&#39; 27.2&quot;
@@ -523,7 +523,7 @@ after the Earth’s atmosphere has <em>refracted</em> its image higher.
 If you know the weather conditions, you can specify them.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">altaz</span><span class="p">(</span><span class="n">temperature_C</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span>
                               <span class="n">pressure_mbar</span><span class="o">=</span><span class="mf">1005.0</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>24deg 32&#39; 34.1&quot;
@@ -532,7 +532,7 @@ If you know the weather conditions, you can specify them.</p>
 <p>Or you can ask Skyfield to use a standard temperature and pressure
 when generating its rough simulation of the effects of refraction.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">altaz</span><span class="p">(</span><span class="s1">&#39;standard&#39;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>24deg 32&#39; 36.4&quot;
@@ -559,7 +559,7 @@ subtract the position you want to use as the starting point
 from the other position.
 The result of this vector math will also itself be a position vector:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">v</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;moon&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;The Moon is </span><span class="si">%d</span><span class="s1"> km away&#39;</span> <span class="o">%</span> <span class="n">v</span><span class="o">.</span><span class="n">distance</span><span class="p">()</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The Moon is </span><span class="si">%d</span><span class="s1"> km away&#39;</span> <span class="o">%</span> <span class="n">v</span><span class="o">.</span><span class="n">distance</span><span class="p">()</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>The Moon is 385010 km away
@@ -575,7 +575,7 @@ you can measure how far an object has moved:</p>
 <span class="n">p2</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t2</span><span class="p">)</span>
 
 <span class="n">km</span> <span class="o">=</span> <span class="p">(</span><span class="n">p2</span> <span class="o">-</span> <span class="n">p1</span><span class="p">)</span><span class="o">.</span><span class="n">distance</span><span class="p">()</span><span class="o">.</span><span class="n">km</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;In one minute the ISS moved </span><span class="si">%d</span><span class="s1"> km&#39;</span> <span class="o">%</span> <span class="n">km</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;In one minute the ISS moved </span><span class="si">%d</span><span class="s1"> km&#39;</span> <span class="o">%</span> <span class="n">km</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>In one minute the ISS moved 461 km
@@ -595,7 +595,7 @@ to express the position of the Moon relative to the rotating Earth:</p>
 
 <span class="n">a</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">planets</span><span class="p">[</span><span class="s1">&#39;moon&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">frame_xyz</span><span class="p">(</span><span class="n">itrs</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">km</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">km</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[ 349045 -106774  122510]
