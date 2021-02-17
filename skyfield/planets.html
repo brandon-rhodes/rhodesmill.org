@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planets, and Choosing an Ephemeris</title>
+    <title>Planets and their moons: JPL ephemeris files</title>
     <link rel="stylesheet" type="text/css" href="_static/style.css">
   </head>
   <body>
@@ -19,29 +19,87 @@
       <a href="api.html">API Reference</a>
     </p>
     
-    <div class="section" id="planets-and-choosing-an-ephemeris">
-<h1>Planets, and Choosing an Ephemeris<a class="headerlink" href="#planets-and-choosing-an-ephemeris" title="Permalink to this headline">¶</a></h1>
-<p>If you are interested in observing the planets,
-the Jet Propulsion Laboratory (JPL)
-has prepared long tables that predict the positions of the planets
-both in the the distant past and out into the future.
-A&nbsp;table of positions is called an <em>ephemeris</em>
-and those supplied by the JPL are of very high accuracy.</p>
-<p>You can ask Skyfield to download an ephemeris from the JPL
-by giving <code class="docutils literal notranslate"><span class="pre">load()</span></code> a filename.
-Or you can load an ephemeris that you’ve already saved to disk
-with <a class="reference internal" href="api-iokit.html#skyfield.iokit.load_file" title="skyfield.iokit.load_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_file()</span></code></a>.</p>
-<p>A popular choice of ephemeris is DE421.
-It is recent, has good precision,
-was designed for general-purpose use,
-and is only 17&nbsp;MB in size:</p>
+    <div class="section" id="planets-and-their-moons-jpl-ephemeris-files">
+<h1>Planets and their moons: JPL ephemeris files<a class="headerlink" href="#planets-and-their-moons-jpl-ephemeris-files" title="Permalink to this headline">¶</a></h1>
+<p>If you are interested in observing the planets or their moons,
+NASA’s Jet Propulsion Laboratory (JPL)
+offers high accuracy tables of positions
+covering time periods that range from decades to centuries.
+You can use <code class="docutils literal notranslate"><span class="pre">load()</span></code> to download and open a JPL ephemeris:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
 <span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Once an ephemeris file has been downloaded to your current directory,
-re-running your program will simply reuse the copy on disk
-instead of downloading it all over again.</p>
+<p>See <a class="reference internal" href="files.html"><span class="doc">Downloading and Using Data Files</span></a> to learn more about downloading files
+and choosing the directory to which they are saved.
+Ephemeris files never receive updates,
+so once you have a file like <code class="docutils literal notranslate"><span class="pre">de421.bsp</span></code> on disk
+you won’t need to download it again.</p>
+<div class="section" id="choosing-an-ephemeris">
+<h2>Choosing an Ephemeris<a class="headerlink" href="#choosing-an-ephemeris" title="Permalink to this headline">¶</a></h2>
+<p>Here are the most popular general-purpose ephemeris files,
+from the JPL’s famous “Development Ephemeris” = “DE” series.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="38%" />
+<col width="8%" />
+<col width="42%" />
+<col width="8%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Year</th>
+<th class="head">Short-term ephemeris</th>
+<th class="head">Size</th>
+<th class="head">Long-term ephemeris</th>
+<th class="head">Size</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1997</td>
+<td><code class="docutils literal notranslate"><span class="pre">de405.bsp</span></code> (1600 to 2200)</td>
+<td>63&nbsp;MB</td>
+<td><code class="docutils literal notranslate"><span class="pre">de406.bsp</span></code> (−3000 to 3000)</td>
+<td>287&nbsp;MB</td>
+</tr>
+<tr class="row-odd"><td>2008</td>
+<td><code class="docutils literal notranslate"><span class="pre">de421.bsp</span></code> (1900 to 2050)</td>
+<td>17&nbsp;MB</td>
+<td><code class="docutils literal notranslate"><span class="pre">de422.bsp</span></code> (−3000 to 3000)</td>
+<td>623&nbsp;MB</td>
+</tr>
+<tr class="row-even"><td>2013</td>
+<td><code class="docutils literal notranslate"><span class="pre">de430t.bsp</span></code> (1550 to 2650)
+<code class="docutils literal notranslate"><span class="pre">de430_1850-2150.bsp</span></code></td>
+<td>128&nbsp;MB
+31&nbsp;MB</td>
+<td><code class="docutils literal notranslate"><span class="pre">de431t.bsp</span></code> (–13200 to 17191)</td>
+<td>3.5&nbsp;GB</td>
+</tr>
+<tr class="row-odd"><td>2020</td>
+<td><code class="docutils literal notranslate"><span class="pre">de440.bsp</span></code> (1550 to 2650)
+<code class="docutils literal notranslate"><span class="pre">de440s.bsp</span></code> (1849 to 2150)</td>
+<td>114&nbsp;MB
+32&nbsp;MB</td>
+<td><code class="docutils literal notranslate"><span class="pre">de441.bsp</span></code> (−13200 to 17191)</td>
+<td>3.1&nbsp;GB</td>
+</tr>
+</tbody>
+</table>
+<p>If you are interested in seeing the full range of ephemeris files available,
+check out the <a class="reference internal" href="#ephemeris-bibliography"><span class="std std-ref">Ephemeris bibliography</span></a> at the end of this page.</p>
+<p>You can think of negative years, as cited in the above table,
+as being almost like years BC except that they are off by one.
+Historians invented our calendar back before zero was a counting number,
+so AD&nbsp;1 was immediately preceded by 1&nbsp;BC without a year in between.
+But astronomers count backwards AD&nbsp;2, AD&nbsp;1, 0, −1, −2, and so forth.</p>
+<p>So if you are curious about the positions of the planets back in 44&nbsp;BC,
+when Julius Caesar was assassinated,
+be careful to ask an astronomer about the year&nbsp;−43 instead.</p>
+<p>A popular choice of ephemeris is DE421.
+It is recent, has good precision,
+was designed for general-purpose use,
+and is only 17&nbsp;MB in size.</p>
 <p>After you have loaded an ephemeris and have used a statement like:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mars</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;Mars&#39;</span><span class="p">]</span>
 </pre></div>
@@ -72,6 +130,7 @@ Date range: 1899-07-29 00:00:00 TDB - 2053-10-09 00:00:00 TDB
 that the first segment of the ephemeris DE421
 provides the position of Mercury relative to the center of the Solar System
 over the entire twentieth century and half of the twenty-first.</p>
+</div>
 <div class="section" id="making-an-excerpt-of-an-ephemeris">
 <h2>Making an excerpt of an ephemeris<a class="headerlink" href="#making-an-excerpt-of-an-ephemeris" title="Permalink to this headline">¶</a></h2>
 <p>Several of the ephemeris files listed below are very large.
@@ -113,68 +172,6 @@ File type DAF/SPK and format LTL-IEEE with 13 segments:
 </div>
 <p>You can load and use it directly off of disk
 with <a class="reference internal" href="api-iokit.html#skyfield.iokit.load_file" title="skyfield.iokit.load_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_file()</span></code></a>.</p>
-</div>
-<div class="section" id="popular-ephemerides">
-<h2>Popular ephemerides<a class="headerlink" href="#popular-ephemerides" title="Permalink to this headline">¶</a></h2>
-<p>Here are several popular ephemerides that you can use with Skyfield.
-The filenames matching <code class="docutils literal notranslate"><span class="pre">de*</span></code>
-predict the positions of many or all of the major planets,
-while <code class="docutils literal notranslate"><span class="pre">jup310.bsp</span></code> focuses on Jupiter and its major moons:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="23%" />
-<col width="14%" />
-<col width="30%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Ephemeris</th>
-<th class="head">Size</th>
-<th class="head">Years</th>
-<th class="head">Issued</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>de405.bsp</td>
-<td>63&nbsp;MB</td>
-<td>1600 to 2200</td>
-<td>May 1997</td>
-</tr>
-<tr class="row-odd"><td>de406.bsp</td>
-<td>287&nbsp;MB</td>
-<td>−3000 to 3000</td>
-<td>May 1997</td>
-</tr>
-<tr class="row-even"><td>de421.bsp</td>
-<td>17&nbsp;MB</td>
-<td>1900 to 2050</td>
-<td>February 2008</td>
-</tr>
-<tr class="row-odd"><td>de422.bsp</td>
-<td>623&nbsp;MB</td>
-<td>−3000 to 3000</td>
-<td>September 2009</td>
-</tr>
-<tr class="row-even"><td>de430t.bsp</td>
-<td>128&nbsp;MB</td>
-<td>1550 to 2650</td>
-<td>February 2010</td>
-</tr>
-<tr class="row-odd"><td>jup310.bsp</td>
-<td>932&nbsp;MB</td>
-<td>1900 to 2100</td>
-<td>December 2013</td>
-</tr>
-</tbody>
-</table>
-<p>You can think of negative years, as cited in the above table,
-as being almost like years BC except that they are off by one.
-Historians invented our calendar back before zero was a counting number,
-so AD&nbsp;1 was immediately preceded by 1&nbsp;BC without a year in between.
-But astronomers count backwards AD&nbsp;2, AD&nbsp;1, 0, −1, −2, and so forth.</p>
-<p>So if you are curious about the positions of the planets back in 44&nbsp;BC,
-when Julius Caesar was assassinated,
-be careful to ask an astronomer about the year&nbsp;−43 instead.</p>
 </div>
 <div class="section" id="how-segments-are-linked-to-predict-positions">
 <h2>How segments are linked to predict positions<a class="headerlink" href="#how-segments-are-linked-to-predict-positions" title="Permalink to this headline">¶</a></h2>
@@ -340,6 +337,61 @@ for Type&nbsp;1 and Type&nbsp;23 SPK ephemeris segments
 will be sufficient for projects that need them,
 until there is time for a Skyfield contributor
 to integrate such support into Skyfield itself.</p>
+</div>
+<div class="section" id="ephemeris-bibliography">
+<span id="id1"></span><h2>Ephemeris bibliography<a class="headerlink" href="#ephemeris-bibliography" title="Permalink to this headline">¶</a></h2>
+<p>Download directories</p>
+<ul>
+<li><p class="first">For planets:</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="ftp://ssd.jpl.nasa.gov/pub/eph/planets/bsp/">ftp://ssd.jpl.nasa.gov/pub/eph/planets/bsp/</a></div>
+<div class="line"><a class="reference external" href="https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/">https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/</a></div>
+</div>
+</li>
+<li><p class="first">For planet moons:</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="ftp://ssd.jpl.nasa.gov/pub/eph/satellites/bsp/">ftp://ssd.jpl.nasa.gov/pub/eph/satellites/bsp/</a></div>
+<div class="line"><a class="reference external" href="https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/satellites/">https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/satellites/</a></div>
+</div>
+</li>
+</ul>
+<p>DE405 / DE406</p>
+<ul class="simple">
+<li><a class="reference external" href="ftp://ssd.jpl.nasa.gov/pub/eph/planets/ioms/de405.iom.pdf">JPL Planetary and Lunar Ephemerides, DE405/LE405</a>
+(Standish 1998)</li>
+<li><a class="reference external" href="https://aas.aanda.org/articles/aas/pdf/1998/18/ds1546.pdf">Check on JPL DE405 using modern optical observations</a>
+(Morrison and Evans 1998)</li>
+<li><a class="reference external" href="https://iopscience.iop.org/article/10.1086/300507/fulltext/">CCD Positions for the Outer Planets in 1996–1997
+Determined in the Extragalactic Reference Frame</a>
+(Stone 1998)</li>
+<li><a class="reference external" href="https://www.aanda.org/articles/aa/full/2002/09/aa1965/aa1965.html">Astrometry of Pluto and Saturn
+with the CCD meridian instruments of Bordeaux and Valinhos</a>
+(Rapaport, Teixeira, Le Campion, Ducourant1, Camargo,
+Benevides-Soares 2002)</li>
+</ul>
+<p>DE421</p>
+<ul class="simple">
+<li><a class="reference external" href="https://ipnpr.jpl.nasa.gov/progress_report/42-178/178C.pdf">The Planetary and Lunar Ephemeris DE421</a>
+(Folkner, Williams, Boggs 2009)</li>
+</ul>
+<p>DE430 / DE431</p>
+<ul class="simple">
+<li><a class="reference external" href="https://ipnpr.jpl.nasa.gov/progress_report/42-196/196C.pdf">The Planetary and Lunar Ephemerides DE430 and DE431</a>
+(Folkner, Williams, Boggs, Park, Kuchynka 2014)</li>
+<li><a class="reference external" href="https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de430_moon_coord.pdf">DE430 Lunar Orbit, Physical Librations and Surface Coordinates</a>
+(Williams, Boggs, Folkner 2013)</li>
+</ul>
+<p>DE440 / DE441</p>
+<ul class="simple">
+<li><a class="reference external" href="https://iopscience.iop.org/article/10.3847/1538-3881/abd414">The JPL Planetary and Lunar Ephemerides DE440 and DE441</a>
+(Park, Folkner, Williams, and Boggs 2021)</li>
+</ul>
+<p>Analysis mentioning several ephemerides</p>
+<ul class="simple">
+<li><a class="reference external" href="https://arxiv.org/pdf/2001.00595.pdf">Modeling the Uncertainties of Solar-System Ephemerides
+for Robust Gravitational-Wave Searches with Pulsar Timing Arrays</a>
+(The NANOGrav Collaboration 2020)</li>
+</ul>
 </div>
 </div>
 
