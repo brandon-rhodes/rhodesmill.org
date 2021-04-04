@@ -21,118 +21,282 @@
     
     <div class="section" id="planets-and-their-moons-jpl-ephemeris-files">
 <h1>Planets and their moons: JPL ephemeris files<a class="headerlink" href="#planets-and-their-moons-jpl-ephemeris-files" title="Permalink to this headline">¶</a></h1>
-<p>If you are interested in observing the planets or their moons,
+<p>For planets and their moons,
 NASA’s Jet Propulsion Laboratory (JPL)
 offers high accuracy tables of positions
-covering time periods that range from decades to centuries.
-You can use <code class="docutils literal notranslate"><span class="pre">load()</span></code> to download and open a JPL ephemeris:</p>
+for time spans ranging from decades to centuries.
+Each table is called an <em>ephemeris</em>,
+from the ancient Greek word for <em>daily</em>.
+Here’s how to download and open the JPL ephemeris DE421
+and ask for the position of Mars:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
-<span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
+
+<span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>  <span class="c1"># ephemeris DE421</span>
+<span class="n">mars</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;Mars Barycenter&#39;</span><span class="p">]</span>
+<span class="n">barycentric</span> <span class="o">=</span> <span class="n">mars</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>See <a class="reference internal" href="files.html"><span class="doc">Downloading and Using Data Files</span></a> to learn more about downloading files
-and choosing the directory to which they are saved.
-Ephemeris files never receive updates,
+<p>Or you can compute the position of Mars
+from another vantage point in the Solar System:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">earth</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;Earth&#39;</span><span class="p">]</span>
+<span class="n">astrometric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For details:</p>
+<ul class="simple">
+<li>See <a class="reference internal" href="files.html"><span class="doc">Downloading and Using Data Files</span></a> to learn more about the <code class="docutils literal notranslate"><span class="pre">load()</span></code> routine
+and how you can choose the directory
+to which it downloads files.
+Note that ephemeris files never receive updates,
 so once you have a file like <code class="docutils literal notranslate"><span class="pre">de421.bsp</span></code> on disk
-you won’t need to download it again.</p>
+you never need to download it again.</li>
+<li>See <a class="reference internal" href="positions.html"><span class="doc">Positions and Coordinates</span></a> to learn what you can do
+with the <code class="docutils literal notranslate"><span class="pre">barycentric</span></code> and <code class="docutils literal notranslate"><span class="pre">astrometric</span></code> positions
+computed in the code above.</li>
+</ul>
+<p>To learn more about ephemeris files themselves, keep reading here.</p>
 <div class="section" id="choosing-an-ephemeris">
 <h2>Choosing an Ephemeris<a class="headerlink" href="#choosing-an-ephemeris" title="Permalink to this headline">¶</a></h2>
 <p>Here are the most popular general-purpose ephemeris files,
-from the JPL’s famous “Development Ephemeris” = “DE” series.</p>
+from the JPL’s famous “DE” Development Ephemeris series.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="5%" />
-<col width="38%" />
-<col width="8%" />
-<col width="42%" />
-<col width="8%" />
+<col width="9%" />
+<col width="39%" />
+<col width="25%" />
+<col width="27%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">Year</th>
-<th class="head">Short-term ephemeris</th>
-<th class="head">Size</th>
-<th class="head">Long-term ephemeris</th>
-<th class="head">Size</th>
+<tr class="row-odd"><th class="head">Issued</th>
+<th class="head">Short</th>
+<th class="head">Medium</th>
+<th class="head">Long</th>
 </tr>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>1997</td>
-<td><code class="docutils literal notranslate"><span class="pre">de405.bsp</span></code> (1600 to 2200)</td>
-<td>63&nbsp;MB</td>
-<td><code class="docutils literal notranslate"><span class="pre">de406.bsp</span></code> (−3000 to 3000)</td>
-<td>287&nbsp;MB</td>
+<td>&#160;</td>
+<td><div class="first last line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">de405.bsp</span></code></div>
+<div class="line">1600&nbsp;to&nbsp;2200</div>
+<div class="line">63&nbsp;MB</div>
+</div>
+</td>
+<td><div class="first last line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">de406.bsp</span></code></div>
+<div class="line">−3000&nbsp;to&nbsp;3000</div>
+<div class="line">287&nbsp;MB</div>
+</div>
+</td>
 </tr>
 <tr class="row-odd"><td>2008</td>
-<td><code class="docutils literal notranslate"><span class="pre">de421.bsp</span></code> (1900 to 2050)</td>
-<td>17&nbsp;MB</td>
-<td><code class="docutils literal notranslate"><span class="pre">de422.bsp</span></code> (−3000 to 3000)</td>
-<td>623&nbsp;MB</td>
+<td><div class="first last line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">de421.bsp</span></code></div>
+<div class="line">1900&nbsp;to&nbsp;2050</div>
+<div class="line">17&nbsp;MB</div>
+</div>
+</td>
+<td>&#160;</td>
+<td><div class="first last line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">de422.bsp</span></code></div>
+<div class="line">−3000&nbsp;to&nbsp;3000</div>
+<div class="line">623&nbsp;MB</div>
+</div>
+</td>
 </tr>
 <tr class="row-even"><td>2013</td>
-<td><code class="docutils literal notranslate"><span class="pre">de430t.bsp</span></code> (1550 to 2650)
-<code class="docutils literal notranslate"><span class="pre">de430_1850-2150.bsp</span></code></td>
-<td>128&nbsp;MB
-31&nbsp;MB</td>
-<td><code class="docutils literal notranslate"><span class="pre">de431t.bsp</span></code> (–13200 to 17191)</td>
-<td>3.5&nbsp;GB</td>
+<td><div class="first last line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">de430_1850-2150.bsp</span></code></div>
+<div class="line">1850&nbsp;to&nbsp;2150</div>
+<div class="line">31&nbsp;MB</div>
+</div>
+</td>
+<td><div class="first last line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">de430t.bsp</span></code></div>
+<div class="line">1550&nbsp;to&nbsp;2650</div>
+<div class="line">128&nbsp;MB</div>
+</div>
+</td>
+<td><div class="first last line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">de431t.bsp</span></code></div>
+<div class="line">–13200&nbsp;to&nbsp;17191</div>
+<div class="line">3.5&nbsp;GB</div>
+</div>
+</td>
 </tr>
 <tr class="row-odd"><td>2020</td>
-<td><code class="docutils literal notranslate"><span class="pre">de440.bsp</span></code> (1550 to 2650)
-<code class="docutils literal notranslate"><span class="pre">de440s.bsp</span></code> (1849 to 2150)</td>
-<td>114&nbsp;MB
-32&nbsp;MB</td>
-<td><code class="docutils literal notranslate"><span class="pre">de441.bsp</span></code> (−13200 to 17191)</td>
-<td>3.1&nbsp;GB</td>
+<td><div class="first last line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">de440s.bsp</span></code></div>
+<div class="line">1849&nbsp;to&nbsp;2150</div>
+<div class="line">32&nbsp;MB</div>
+</div>
+</td>
+<td><div class="first last line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">de440.bsp</span></code></div>
+<div class="line">1550&nbsp;to&nbsp;2650</div>
+<div class="line">114&nbsp;MB</div>
+</div>
+</td>
+<td><div class="first last line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">de441.bsp</span></code></div>
+<div class="line">−13200 to 17191</div>
+<div class="line">3.1&nbsp;GB</div>
+</div>
+</td>
 </tr>
 </tbody>
 </table>
-<p>If you are interested in seeing the full range of ephemeris files available,
-check out the <span class="xref std std-doc">Ephemeris bibliography</span> at the end of this page.</p>
-<p>You can think of negative years, as cited in the above table,
-as being almost like years BC except that they are off by one.
-Historians invented our calendar back before zero was a counting number,
-so AD&nbsp;1 was immediately preceded by 1&nbsp;BC without a year in between.
-But astronomers count backwards AD&nbsp;2, AD&nbsp;1, 0, −1, −2, and so forth.</p>
-<p>So if you are curious about the positions of the planets back in 44&nbsp;BC,
-when Julius Caesar was assassinated,
-be careful to ask an astronomer about the year&nbsp;−43 instead.</p>
-<p>A popular choice of ephemeris is DE421.
-It is recent, has good precision,
-was designed for general-purpose use,
-and is only 17&nbsp;MB in size.</p>
-<p>After you have loaded an ephemeris and have used a statement like:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mars</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;Mars&#39;</span><span class="p">]</span>
+<p>You can find even more ephemeris files on the Internet
+at the various <a class="reference internal" href="#ephemeris-download-links"><span class="std std-ref">Ephemeris download links</span></a>
+listed near the bottom of this page.</p>
+<p>How can you choose the right ephemeris for your project?</p>
+<ol class="arabic">
+<li><p class="first">Make sure that the planets, moons, or other bodies you want to observe
+are among the targets supported by the ephemeris.
+See <a class="reference internal" href="#listing-ephemeris-targets"><span class="std std-ref">Listing the targets that an ephemeris supports</span></a> below
+if you want to download ephemeris files
+and examine their contents yourself.
+Some online ephemeris directories include an index
+that lists the content of each ephemeris in the directory;
+look for a file with a name like <code class="docutils literal notranslate"><span class="pre">README.txt</span></code> or <code class="docutils literal notranslate"><span class="pre">aa_summaries.txt</span></code>.</p>
+</li>
+<li><p class="first">Choose the shortest ephemeris
+that will cover the dates your project needs.
+Not only will a shorter file save download time and disk space,
+but the most recent short-term ephemerides DE430 and DE440
+are more accurate than their long-term counterparts DE431 and DE441
+because the shorter files include the effect of the Moon’s liquid core,
+an effect that’s
+“not suitable for backward integration of more than a few centuries.”</p>
+<p>If you need a specific range of ancient dates
+but find a long-term ephemeris too large,
+read the section below about <a class="reference internal" href="#making-an-ephemeris-excerpt"><span class="std std-ref">Making an excerpt of an ephemeris</span></a> —
+you should be able to generate a smaller file
+that includes only the range of dates you need.</p>
+</li>
+<li><p class="first">The most recent ephemeris files should be the most accurate
+because they are built using the highest accuracy data
+from humankind’s telescopes and spacecraft.</p>
+</li>
+</ol>
+<p>Note that ephemeris files don’t provide numbers
+for how accurate their planet positions are.
+Sometimes you can find ballpark estimates of accuracy
+in an ephemeris file’s official report.
+The report <em>The Planetary and Lunar Ephemerides DE430 and DE431</em>,
+for example, states that:</p>
+<ul class="simple">
+<li>“The orbits of the inner planets are known to subkilometer accuracy”</li>
+<li>“an accuracy of 0″.0002 …
+is the limiting error source for the orbits of the terrestrial planets,
+and corresponds to orbit uncertainties of a few hundred meters.”</li>
+<li>“The orbits of Jupiter and Saturn
+are determined to accuracies of tens of kilometers”</li>
+<li>“Uranus, Neptune, and Pluto … observations …
+limit position accuracies to several thousand kilometers.”</li>
+</ul>
+<p>You can find links to the various ephemeris reports
+in the <a class="reference internal" href="#ephemeris-bibliography"><span class="std std-ref">Ephemeris bibliography</span></a> at the bottom of this page.
+Some ephemeris files also have a built-in text summary
+you can print to the screen:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">planets</span><span class="o">.</span><span class="n">spk</span><span class="o">.</span><span class="n">daf</span><span class="o">.</span><span class="n">comments</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>— to retrieve a planet, consult the chapter <a class="reference internal" href="positions.html"><span class="doc">Positions and Coordinates</span></a>
-to learn about all the positions that you can use it to generate.</p>
-<p>If you want to examine the segments that make up the ephemeris,
-you can loop over its <code class="docutils literal notranslate"><span class="pre">segments</span></code> list.
-You can <code class="docutils literal notranslate"><span class="pre">print()</span></code> a segment to see a textual description,
-or access segment attributes that give its center, target,
-and the dates over which it provides valid positions:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
-
-<span class="n">segment</span> <span class="o">=</span> <span class="n">planets</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">time_range</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Center:&#39;</span><span class="p">,</span> <span class="n">segment</span><span class="o">.</span><span class="n">center_name</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Target:&#39;</span><span class="p">,</span> <span class="n">segment</span><span class="o">.</span><span class="n">target_name</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Date range:&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">.</span><span class="n">tdb_strftime</span><span class="p">(),</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">.</span><span class="n">tdb_strftime</span><span class="p">())</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>; de421.bsp LOG FILE
+;
+; Created 2008-02-12/11:33:34.00.
+...
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Center: 0 SOLAR SYSTEM BARYCENTER
-Target: 1 MERCURY BARYCENTER
-Date range: 1899-07-29 00:00:00 TDB - 2053-10-09 00:00:00 TDB
+<p>The more recent ephemeris files tend to have the most informative comment texts.</p>
+<p>I myself use DE421 and DE422
+because they’re small, accurate, and cover long enough time periods
+for all of my projects.
+When the time comes to upgrade,
+I’ll probably move next to DE440;
+its short-term <code class="docutils literal notranslate"><span class="pre">de440s.bsp</span></code> file is especially attractive
+because it’s only twice the size of DE421
+while delivering higher accuracy plus an extra century of data.</p>
+<p>To find out what difference the choice of ephemeris makes,
+simply run a sample calculation with one ephemeris then again using another.
+The difference will usually be far below the resolution of your instruments
+unless (a)&nbsp;you’re doing radio astronomy
+or (b)&nbsp;you’re planning to place an actual payload
+in orbit around the target body.</p>
+</div>
+<div class="section" id="listing-the-targets-that-an-ephemeris-supports">
+<span id="listing-ephemeris-targets"></span><h2>Listing the targets that an ephemeris supports<a class="headerlink" href="#listing-the-targets-that-an-ephemeris-supports" title="Permalink to this headline">¶</a></h2>
+<p>You can use <code class="docutils literal notranslate"><span class="pre">print()</span></code> to check whether an ephemeris
+lists a specific planet or moon.
+Here, for example, are the targets supported by DE421:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">planets</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For example, you can see above
-that the first segment of the ephemeris DE421
-provides the position of Mercury relative to the center of the Solar System
-over the entire twentieth century and half of the twenty-first.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>SPICE kernel file &#39;de421.bsp&#39; has 15 segments
+  JD 2414864.50 - JD 2471184.50  (1899-07-28 through 2053-10-08)
+      0 -&gt; 1    SOLAR SYSTEM BARYCENTER -&gt; MERCURY BARYCENTER
+      0 -&gt; 2    SOLAR SYSTEM BARYCENTER -&gt; VENUS BARYCENTER
+      0 -&gt; 3    SOLAR SYSTEM BARYCENTER -&gt; EARTH BARYCENTER
+      0 -&gt; 4    SOLAR SYSTEM BARYCENTER -&gt; MARS BARYCENTER
+      0 -&gt; 5    SOLAR SYSTEM BARYCENTER -&gt; JUPITER BARYCENTER
+      0 -&gt; 6    SOLAR SYSTEM BARYCENTER -&gt; SATURN BARYCENTER
+      0 -&gt; 7    SOLAR SYSTEM BARYCENTER -&gt; URANUS BARYCENTER
+      0 -&gt; 8    SOLAR SYSTEM BARYCENTER -&gt; NEPTUNE BARYCENTER
+      0 -&gt; 9    SOLAR SYSTEM BARYCENTER -&gt; PLUTO BARYCENTER
+      0 -&gt; 10   SOLAR SYSTEM BARYCENTER -&gt; SUN
+      3 -&gt; 301  EARTH BARYCENTER -&gt; MOON
+      3 -&gt; 399  EARTH BARYCENTER -&gt; EARTH
+      1 -&gt; 199  MERCURY BARYCENTER -&gt; MERCURY
+      2 -&gt; 299  VENUS BARYCENTER -&gt; VENUS
+      4 -&gt; 499  MARS BARYCENTER -&gt; MARS
+</pre></div>
+</div>
+<p>Skyfield can generate positions
+for any body that an ephemeris links to target zero,
+the Solar System barycenter.
+For example,
+DE421 — as you can see above —
+provides a segment directly linking the Solar System barycenter
+with the Sun:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sun</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;Sun&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&#39;de421.bsp&#39; segment 0 SOLAR SYSTEM BARYCENTER -&gt; 10 SUN
+</pre></div>
+</div>
+<p>By contrast,
+generating a position for the Moon with DE421
+requires Skyfield to add together two segments behind the scenes.
+The first segment provides the position of the Earth-Moon center of gravity,
+while the second segment provides the offset from there to the Moon.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">moon</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;Moon&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">moon</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Sum of 2 vectors:
+ &#39;de421.bsp&#39; segment 0 SOLAR SYSTEM BARYCENTER -&gt; 3 EARTH BARYCENTER
+ &#39;de421.bsp&#39; segment 3 EARTH BARYCENTER -&gt; 301 MOON
+</pre></div>
+</div>
+<p>Note that most planets are so massive compared to their moons
+that you can ignore the difference
+between the planet and its system barycenter.
+If you want to observe Mars or Jupiter from elsewhere in the Solar System,
+just ask for the <code class="docutils literal notranslate"><span class="pre">Mars</span> <span class="pre">Barycenter</span></code>
+or <code class="docutils literal notranslate"><span class="pre">Jupiter</span> <span class="pre">Barycenter</span></code> position instead.
+The Earth-Moon system is unusual
+for featuring a satellite with so much mass —
+though even in that case,
+their common barycenter is always inside the Earth.
+Only Pluto has a satellite so massive and so distant
+that the Pluto-Charon barycenter is in space between them.</p>
 </div>
 <div class="section" id="making-an-excerpt-of-an-ephemeris">
-<h2>Making an excerpt of an ephemeris<a class="headerlink" href="#making-an-excerpt-of-an-ephemeris" title="Permalink to this headline">¶</a></h2>
+<span id="making-an-ephemeris-excerpt"></span><h2>Making an excerpt of an ephemeris<a class="headerlink" href="#making-an-excerpt-of-an-ephemeris" title="Permalink to this headline">¶</a></h2>
 <p>Several of the ephemeris files listed below are very large.
 While most programmers will follow the example above and use DE421,
 if you wish to go beyond its 150-year period
@@ -173,72 +337,15 @@ File type DAF/SPK and format LTL-IEEE with 13 segments:
 <p>You can load and use it directly off of disk
 with <a class="reference internal" href="api-iokit.html#skyfield.iokit.load_file" title="skyfield.iokit.load_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_file()</span></code></a>.</p>
 </div>
-<div class="section" id="how-segments-are-linked-to-predict-positions">
-<h2>How segments are linked to predict positions<a class="headerlink" href="#how-segments-are-linked-to-predict-positions" title="Permalink to this headline">¶</a></h2>
-<p>You can <code class="docutils literal notranslate"><span class="pre">print()</span></code> an ephemeris to learn which objects it supports.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">planets</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>SPICE kernel file &#39;de421.bsp&#39; has 15 segments
-  JD 2414864.50 - JD 2471184.50  (1899-07-28 through 2053-10-08)
-      0 -&gt; 1    SOLAR SYSTEM BARYCENTER -&gt; MERCURY BARYCENTER
-      0 -&gt; 2    SOLAR SYSTEM BARYCENTER -&gt; VENUS BARYCENTER
-      0 -&gt; 3    SOLAR SYSTEM BARYCENTER -&gt; EARTH BARYCENTER
-      0 -&gt; 4    SOLAR SYSTEM BARYCENTER -&gt; MARS BARYCENTER
-      0 -&gt; 5    SOLAR SYSTEM BARYCENTER -&gt; JUPITER BARYCENTER
-      0 -&gt; 6    SOLAR SYSTEM BARYCENTER -&gt; SATURN BARYCENTER
-      0 -&gt; 7    SOLAR SYSTEM BARYCENTER -&gt; URANUS BARYCENTER
-      0 -&gt; 8    SOLAR SYSTEM BARYCENTER -&gt; NEPTUNE BARYCENTER
-      0 -&gt; 9    SOLAR SYSTEM BARYCENTER -&gt; PLUTO BARYCENTER
-      0 -&gt; 10   SOLAR SYSTEM BARYCENTER -&gt; SUN
-      3 -&gt; 301  EARTH BARYCENTER -&gt; MOON
-      3 -&gt; 399  EARTH BARYCENTER -&gt; EARTH
-      1 -&gt; 199  MERCURY BARYCENTER -&gt; MERCURY
-      2 -&gt; 299  VENUS BARYCENTER -&gt; VENUS
-      4 -&gt; 499  MARS BARYCENTER -&gt; MARS
-</pre></div>
-</div>
-<p>Bodies in JPL ephemeris files are each identified by an integer,
-but Skyfield translates them so that you do not have to remember
-that a code like 399 stands for the Earth and 499 for&nbsp;Mars.</p>
-<p>Each ephemeris segment predicts the position of one body
-with respect to another.
-Sometimes several segments sometimes have to be combined
-to generate a complete position.
-The DE421 ephemeris shown above, for example,
-can produce the position of the Sun directly.
-But if you ask it for the position of Earth
-then it will have to add together two distances:</p>
-<ul class="simple">
-<li>From the Solar System’s center&nbsp;(0) to the Earth-Moon barycenter&nbsp;(3)</li>
-<li>From the Earth-Moon barycenter&nbsp;(3) to the Earth itself&nbsp;(399)</li>
-</ul>
-<p>This happens automatically behind the scenes.
-All you have to say is <code class="docutils literal notranslate"><span class="pre">planets[399]</span></code> or <code class="docutils literal notranslate"><span class="pre">planets['Earth']</span></code>
-and Skyfield will put together a solution using the segments provided.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">earth</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">earth</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Sum of 2 vectors:
- &#39;de421.bsp&#39; segment 0 SOLAR SYSTEM BARYCENTER -&gt; 3 EARTH BARYCENTER
- &#39;de421.bsp&#39; segment 3 EARTH BARYCENTER -&gt; 399 EARTH
-</pre></div>
-</div>
-<p>Each time you ask this <code class="docutils literal notranslate"><span class="pre">earth</span></code> object for its position at a given time,
-Skyfield will compute both of these underlying vectors
-and add them together to generate the position.</p>
-</div>
-<div class="section" id="closing-the-file-automatically">
-<h2>Closing the file automatically<a class="headerlink" href="#closing-the-file-automatically" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="closing-the-ephemeris-file-automatically">
+<h2>Closing the ephemeris file automatically<a class="headerlink" href="#closing-the-ephemeris-file-automatically" title="Permalink to this headline">¶</a></h2>
 <p>If you need to close files as you finish using them
 instead of waiting until the application exits,
 each Skyfield ephemeris offers a
 <a class="reference internal" href="api-ephemeris.html#skyfield.jpllib.SpiceKernel.close" title="skyfield.jpllib.SpiceKernel.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a> method.
-It can either be called manually when you are done with an ephemeris,
-or you can use Python’s <a class="reference external" href="https://docs.python.org/3/library/contextlib.html#contextlib.closing"><code class="docutils literal notranslate"><span class="pre">closing()</span></code></a> context manager
-to call the method automatically
-at the completion of a <code class="docutils literal notranslate"><span class="pre">with</span></code> statement:</p>
+You can either call it manually,
+or use Python’s <a class="reference external" href="https://docs.python.org/3/library/contextlib.html#contextlib.closing"><code class="docutils literal notranslate"><span class="pre">closing()</span></code></a> context manager
+to call <code class="docutils literal notranslate"><span class="pre">close()</span></code> automatically when a block of code finishes:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">closing</span>
 
 <span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
@@ -246,13 +353,6 @@ at the completion of a <code class="docutils literal notranslate"><span class="p
 
 <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">planets</span><span class="p">):</span>
     <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;venus&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>  <span class="c1"># Ephemeris can be used here</span>
-
-<span class="n">planets</span><span class="p">[</span><span class="s1">&#39;venus&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>  <span class="c1"># But it’s closed outside the “with”</span>
-</pre></div>
-</div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Traceback (most recent call last):
-  ...
-ValueError: seek of closed file
 </pre></div>
 </div>
 </div>
@@ -338,9 +438,16 @@ will be sufficient for projects that need them,
 until there is time for a Skyfield contributor
 to integrate such support into Skyfield itself.</p>
 </div>
-<div class="section" id="ephemeris-bibliography">
-<span id="id1"></span><h2>Ephemeris bibliography<a class="headerlink" href="#ephemeris-bibliography" title="Permalink to this headline">¶</a></h2>
-<p>Download directories</p>
+<div class="section" id="ephemeris-download-links">
+<span id="id1"></span><h2>Ephemeris download links<a class="headerlink" href="#ephemeris-download-links" title="Permalink to this headline">¶</a></h2>
+<p>Skyfield knows a URL for each of the most popular ephemeris files —
+so you can simply <code class="docutils literal notranslate"><span class="pre">load('de421.bsp')</span></code>
+and Skyfield will know where to download the file
+if you don’t already have it on disk.
+But for more obscure ephemeris files
+you might need to give <code class="docutils literal notranslate"><span class="pre">load()</span></code> the full URL instead.</p>
+<p>Here are some common sites
+from which you can download official ephemeris files:</p>
 <ul>
 <li><p class="first">For planets:</p>
 <div class="line-block">
@@ -355,6 +462,9 @@ to integrate such support into Skyfield itself.</p>
 </div>
 </li>
 </ul>
+</div>
+<div class="section" id="ephemeris-bibliography">
+<span id="id2"></span><h2>Ephemeris bibliography<a class="headerlink" href="#ephemeris-bibliography" title="Permalink to this headline">¶</a></h2>
 <p>DE405 / DE406</p>
 <ul class="simple">
 <li><a class="reference external" href="ftp://ssd.jpl.nasa.gov/pub/eph/planets/ioms/de405.iom.pdf">JPL Planetary and Lunar Ephemerides, DE405/LE405</a>
@@ -391,6 +501,13 @@ Benevides-Soares 2002)</li>
 <li><a class="reference external" href="https://arxiv.org/pdf/2001.00595.pdf">Modeling the Uncertainties of Solar-System Ephemerides
 for Robust Gravitational-Wave Searches with Pulsar Timing Arrays</a>
 (The NANOGrav Collaboration 2020)</li>
+</ul>
+<p>File format <code class="docutils literal notranslate"><span class="pre">.bsp</span></code> documentation</p>
+<ul class="simple">
+<li><a class="reference external" href="https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/spk.html">SPICE toolkit: SPK Required Reading</a>
+(describes <code class="docutils literal notranslate"><span class="pre">.bsp</span></code> files)</li>
+<li><a class="reference external" href="https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/daf.html">SPICE toolkit: Double Precision Array Files (DAF)</a>
+(describes binary format)</li>
 </ul>
 </div>
 </div>

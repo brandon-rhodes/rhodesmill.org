@@ -75,6 +75,33 @@ simply create an issue on the project’s GitHub page:</p>
 <blockquote>
 <div><a class="reference external" href="https://github.com/brandon-rhodes/python-skyfield">https://github.com/brandon-rhodes/python-skyfield</a></div></blockquote>
 <p>Good luck!</p>
+<div class="section" id="checking-your-skyfield-version">
+<span id="skyfield-version-constant"></span><h2>Checking your Skyfield version<a class="headerlink" href="#checking-your-skyfield-version" title="Permalink to this headline">¶</a></h2>
+<p>The Skyfield package offers a <code class="docutils literal notranslate"><span class="pre">VERSION</span></code> tuple
+that your code can use to test which version of Skyfield is running.
+For example,
+this code checks whether Skyfield is at least at version 1.24:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">skyfield</span>
+
+<span class="k">if</span> <span class="n">skyfield</span><span class="o">.</span><span class="n">VERSION</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Too old&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A new featured added in Skyfield&nbsp;1.36 (released January&nbsp;2021)
+is that you can invoke the <code class="docutils literal notranslate"><span class="pre">skyfield</span></code> module from the command line
+to display its version:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -m skyfield
+
+Skyfield version: 1.37
+jplephem version: 2.14
+sgp4 version: 2.17
+Built-in leap seconds table ends with leap second at: 2016-12-31 23:59:60 UTC
+Built-in ∆T table from finals2000A.all covers: 1973-01-01 to 2022-01-29
+</pre></div>
+</div>
+<p>Also displayed are the versions of the libraries Skyfield depends on,
+and the start and end dates of its built-in timescale tables.</p>
+</div>
 <div class="section" id="citing-skyfield">
 <span id="id1"></span><h2>Citing Skyfield<a class="headerlink" href="#citing-skyfield" title="Permalink to this headline">¶</a></h2>
 <p>If Skyfield has proven useful in your research,
@@ -93,6 +120,19 @@ in this URL to match papers already using it as an identifier):
 </div>
 <div class="section" id="changelog">
 <span id="id2"></span><h2>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v1-38-2021-april-3">
+<h3>v1.38 — 2021 April 3<a class="headerlink" href="#v1-38-2021-april-3" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Replaced the old historic ∆T table from the United States Naval Observatory
+with up-to-date splines from the 2020 release of the extensive research by
+<a class="reference internal" href="bibliography.html#morrison-stephenson-et-al"><span class="std std-ref">Morrison, Stephenson, Hohenkerk, and Zawilski</span></a>
+and also adjusted the slope of Skyfield’s near-future ∆T estimates
+to make the slope of ∆T much less abrupt over the coming century.</li>
+<li>Added a full reference frame object
+for the <a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.TEME" title="skyfield.sgp4lib.TEME"><code class="xref py py-class docutils literal notranslate"><span class="pre">TEME</span></code></a> reference frame
+used by SGP4 Earth satellite elements.</li>
+</ul>
+</div>
 <div class="section" id="v1-37-2021-february-15">
 <h3>v1.37 — 2021 February 15<a class="headerlink" href="#v1-37-2021-february-15" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">

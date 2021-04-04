@@ -292,8 +292,9 @@ polar day
 </div>
 <div class="section" id="twilight">
 <h2>Twilight<a class="headerlink" href="#twilight" title="Permalink to this headline">¶</a></h2>
-<p>An expanded version of the sunrise-sunset routine separately codes each
-of the phases of twilight using integers:</p>
+<p>An expanded version of the sunrise-sunset routine
+named <a class="reference internal" href="api-almanac.html#skyfield.almanac.dark_twilight_day" title="skyfield.almanac.dark_twilight_day"><code class="xref py py-func docutils literal notranslate"><span class="pre">dark_twilight_day()</span></code></a>
+returns a separate code for each of the phases of twilight:</p>
 <ol class="arabic simple" start="0">
 <li>Dark of night.</li>
 <li>Astronomical twilight.</li>
@@ -301,25 +302,8 @@ of the phases of twilight using integers:</p>
 <li>Civil twilight.</li>
 <li>Daytime.</li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-<span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">dark_twilight_day</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">bluffton</span><span class="p">)</span>
-<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">yi</span><span class="p">,</span> <span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(),</span> <span class="s1">&#39; Start of&#39;</span><span class="p">,</span> <span class="n">almanac</span><span class="o">.</span><span class="n">TWILIGHTS</span><span class="p">[</span><span class="n">yi</span><span class="p">])</span>
-</pre></div>
-</div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>1 2019-11-08T10:40:19Z  Start of Astronomical twilight
-2 2019-11-08T11:12:31Z  Start of Nautical twilight
-3 2019-11-08T11:45:18Z  Start of Civil twilight
-4 2019-11-08T12:14:15Z  Start of Day
-3 2019-11-08T22:23:52Z  Start of Civil twilight
-2 2019-11-08T22:52:48Z  Start of Nautical twilight
-1 2019-11-08T23:25:34Z  Start of Astronomical twilight
-0 2019-11-08T23:57:44Z  Start of Night
-</pre></div>
-</div>
+<p>You can find a full example of its use
+at the <a class="reference internal" href="examples.html#dark-twilight-day-example"><span class="std std-ref">When will it get dark tonight?</span></a>.</p>
 </div>
 <div class="section" id="risings-and-settings">
 <span id="id2"></span><h2>Risings and Settings<a class="headerlink" href="#risings-and-settings" title="Permalink to this headline">¶</a></h2>

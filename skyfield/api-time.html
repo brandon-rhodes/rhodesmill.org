@@ -78,27 +78,44 @@ correct UTC date and time.</p>
 <dd><p>Return a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> for a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">datetime</span></code> must be “timezone-aware”: it must have a time
 zone object as its <code class="docutils literal notranslate"><span class="pre">tzinfo</span></code> attribute instead of <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.24.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="skyfield.timelib.Timescale.from_datetimes">
 <code class="descname">from_datetimes</code><span class="sig-paren">(</span><em>datetime_list</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.from_datetimes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> for a list of Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code>s.</p>
+<dd><p>Return a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> for a list of Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> objects.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">datetime</span></code> objects must each be “timezone-aware”: they
 must each have a time zone object as their <code class="docutils literal notranslate"><span class="pre">tzinfo</span></code> attribute
 instead of <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.24.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="skyfield.timelib.Timescale.utc">
 <code class="descname">utc</code><span class="sig-paren">(</span><em>year</em>, <em>month=1</em>, <em>day=1</em>, <em>hour=0</em>, <em>minute=0</em>, <em>second=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.utc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a UTC <a class="reference internal" href="#calendar-date"><span class="std std-ref">Calendar date</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.24: </span>Passing a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> or a list of datetimes as the
+first argument has been deprecated (and was never supported
+for the other time scale methods).  Instead, use the methods
+<a class="reference internal" href="#skyfield.timelib.Timescale.from_datetime" title="skyfield.timelib.Timescale.from_datetime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_datetime()</span></code></a> and
+<a class="reference internal" href="#skyfield.timelib.Timescale.from_datetimes" title="skyfield.timelib.Timescale.from_datetimes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_datetimes()</span></code></a>.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="skyfield.timelib.Timescale.tai">
 <code class="descname">tai</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=1</em>, <em>day=1</em>, <em>hour=0</em>, <em>minute=0</em>, <em>second=0.0</em>, <em>jd=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.tai" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from an International Atomic Time <a class="reference internal" href="#calendar-date"><span class="std std-ref">Calendar date</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.6: </span>Passing a Julian date with <code class="docutils literal notranslate"><span class="pre">jd=</span></code> has been deprecated;
+instead, use <a class="reference internal" href="#skyfield.timelib.Timescale.tai_jd" title="skyfield.timelib.Timescale.tai_jd"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tai_jd()</span></code></a>.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -111,6 +128,10 @@ instead of <code class="docutils literal notranslate"><span class="pre">None</sp
 <dt id="skyfield.timelib.Timescale.tt">
 <code class="descname">tt</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=1</em>, <em>day=1</em>, <em>hour=0</em>, <em>minute=0</em>, <em>second=0.0</em>, <em>jd=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.tt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a Terrestrial Time <a class="reference internal" href="#calendar-date"><span class="std std-ref">Calendar date</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.6: </span>Passing a Julian date with <code class="docutils literal notranslate"><span class="pre">jd=</span></code> has been deprecated;
+instead, use <a class="reference internal" href="#skyfield.timelib.Timescale.tt_jd" title="skyfield.timelib.Timescale.tt_jd"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tt_jd()</span></code></a>.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -132,18 +153,26 @@ Julian year 2000.0.</p>
 <dt id="skyfield.timelib.Timescale.tdb">
 <code class="descname">tdb</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=1</em>, <em>day=1</em>, <em>hour=0</em>, <em>minute=0</em>, <em>second=0.0</em>, <em>jd=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.tdb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a Barycentric Dynamical Time <a class="reference internal" href="#calendar-date"><span class="std std-ref">Calendar date</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.6: </span>Passing a Julian date with <code class="docutils literal notranslate"><span class="pre">jd=</span></code> has been deprecated;
+instead, use <a class="reference internal" href="#skyfield.timelib.Timescale.tdb_jd" title="skyfield.timelib.Timescale.tdb_jd"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tdb_jd()</span></code></a>.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="skyfield.timelib.Timescale.tdb_jd">
 <code class="descname">tdb_jd</code><span class="sig-paren">(</span><em>jd</em>, <em>fraction=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.tdb_jd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a Barycentric Dynamical Time Julian date.</p>
+<dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a Barycentric Dynamical Time Julian date.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="skyfield.timelib.Timescale.ut1">
 <code class="descname">ut1</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=1</em>, <em>day=1</em>, <em>hour=0</em>, <em>minute=0</em>, <em>second=0.0</em>, <em>jd=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.timelib.Timescale.ut1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a <a class="reference internal" href="#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from a UT1 Universal Time <a class="reference internal" href="#calendar-date"><span class="std std-ref">Calendar date</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.6: </span>Passing a Julian date with <code class="docutils literal notranslate"><span class="pre">jd=</span></code> has been deprecated;
+instead, use <a class="reference internal" href="#skyfield.timelib.Timescale.ut1_jd" title="skyfield.timelib.Timescale.ut1_jd"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ut1_jd()</span></code></a>.</p>
+</div>
 </dd></dl>
 
 <dl class="method">

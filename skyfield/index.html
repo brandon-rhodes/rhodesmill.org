@@ -27,11 +27,15 @@ whose vector operations make Skyfield efficient.</li>
 <p>Computing the position of Mars in the sky is as easy as:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
 
+<span class="c1"># Create a timescale and ask the current time.</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+<span class="c1"># Load the JPL ephemeris DE421 (covers 1900-2050).</span>
 <span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
 <span class="n">earth</span><span class="p">,</span> <span class="n">mars</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">],</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;mars&#39;</span><span class="p">]</span>
 
-<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+<span class="c1"># What&#39;s the position of Mars, viewed from Earth?</span>
 <span class="n">astrometric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
 
@@ -63,10 +67,9 @@ on the Earth’s surface:</p>
 101deg 33&#39; 44.1&quot;
 </pre></div>
 </div>
-<p>Skyfield does not depend on the <a class="reference external" href="http://docs.astropy.org/en/stable/">AstroPy</a> project
-or its compiled libraries.
-But it accepts AstroPy time objects as input,
-and can return results in native AstroPy units:</p>
+<p>While Skyfield itself has no dependency on the <a class="reference external" href="http://docs.astropy.org/en/stable/">AstroPy</a> library,
+it’s willing to accept AstroPy time objects as input
+and return results in native AstroPy units:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
 <span class="n">xyz</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
 <span class="n">altitude</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
@@ -86,7 +89,7 @@ or
 <a class="reference internal" href="installation.html#citing-skyfield"><span class="std std-ref">(more…)</span></a></p>
 <div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
-<p>Skyfield’s documentation lives here at the main Skyfield web site:</p>
+<p>Skyfield’s documentation lives here on the main Skyfield web site:</p>
 <ul class="simple">
 <li><a class="reference internal" href="toc.html"><span class="doc">Table of Contents</span></a></li>
 <li><a class="reference internal" href="installation.html"><span class="doc">Installing Skyfield</span></a></li>
@@ -95,9 +98,10 @@ or
 </ul>
 <p>But the source code and issue tracker live on other web sites:</p>
 <ul class="simple">
-<li><a class="reference external" href="https://pypi.python.org/pypi/skyfield">Skyfield on the Python Package Index</a></li>
-<li><a class="reference external" href="https://github.com/skyfielders/python-skyfield/">GitHub repository</a></li>
-<li><a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues">GitHub issue tracker</a></li>
+<li><a class="reference external" href="https://pypi.python.org/pypi/skyfield">Packages: at the Python Package Index</a></li>
+<li><a class="reference external" href="https://github.com/skyfielders/python-skyfield/">Source: on GitHub</a></li>
+<li><a class="reference external" href="https://github.com/skyfielders/python-skyfield/discussions">Discussion: on GitHub</a></li>
+<li><a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues">Issues: on GitHub</a></li>
 </ul>
 <p>See the <a class="reference internal" href="installation.html#changelog"><span class="std std-ref">Changelog</span></a> for the current version’s release notes —
 and also for the updates that landed with each previous version!</p>
