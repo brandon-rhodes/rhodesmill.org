@@ -175,8 +175,11 @@ will all be positive.</p>
 
 <dl class="method">
 <dt id="skyfield.units.Angle.hstr">
-<code class="descname">hstr</code><span class="sig-paren">(</span><em>places=2</em>, <em>warn=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.hstr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert to a string like <code class="docutils literal notranslate"><span class="pre">12h</span> <span class="pre">07m</span> <span class="pre">30.00s</span></code>.</p>
+<code class="descname">hstr</code><span class="sig-paren">(</span><em>places=2</em>, <em>warn=True</em>, <em>format='{0}{1:02}h {2:02}m {3:02}.{4:0{5}}s'</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.hstr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string like <code class="docutils literal notranslate"><span class="pre">12h</span> <span class="pre">07m</span> <span class="pre">30.00s</span></code>; see <a class="reference internal" href="#formatting-angles"><span class="std std-ref">Formatting angles</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.39: </span>Added the <code class="docutils literal notranslate"><span class="pre">format=</span></code> parameter.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -196,8 +199,11 @@ will all be positive.</p>
 
 <dl class="method">
 <dt id="skyfield.units.Angle.dstr">
-<code class="descname">dstr</code><span class="sig-paren">(</span><em>places=1</em>, <em>warn=True</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.dstr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert to a string like <code class="docutils literal notranslate"><span class="pre">181deg</span> <span class="pre">52'</span> <span class="pre">30.0&quot;</span></code>.</p>
+<code class="descname">dstr</code><span class="sig-paren">(</span><em>places=1</em>, <em>warn=True</em>, <em>format=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.units.Angle.dstr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string like <code class="docutils literal notranslate"><span class="pre">181deg</span> <span class="pre">52'</span> <span class="pre">30.0&quot;</span></code>; see <a class="reference internal" href="#formatting-angles"><span class="std std-ref">Formatting angles</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.39: </span>Added the <code class="docutils literal notranslate"><span class="pre">format=</span></code> parameter.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -274,6 +280,118 @@ will all be positive.</p>
 
 </dd></dl>
 
+<div class="section" id="formatting-angles">
+<span id="id1"></span><h2>Formatting angles<a class="headerlink" href="#formatting-angles" title="Permalink to this headline">¶</a></h2>
+<p>To display an angle as decimal degrees or hours,
+ask the angle for its <code class="docutils literal notranslate"><span class="pre">.hours</span></code> or <code class="docutils literal notranslate"><span class="pre">.degrees</span></code> attribute
+and then use any normal Python mechanism for formatting a float.
+For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mf">5.5877286</span><span class="p">),</span> <span class="n">Angle</span><span class="p">(</span><span class="n">degrees</span><span class="o">=-</span><span class="mf">5.38731536</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;RA </span><span class="si">{:.8f}</span><span class="s1"> hours&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">hours</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Dec </span><span class="si">{:+.8f}</span><span class="s1"> degrees&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>RA 5.58772860 hours
+Dec -5.38731536 degrees
+</pre></div>
+</div>
+<p>If you let Skyfield do the formatting instead,
+then hours are split into 60&nbsp;minutes of 60&nbsp;seconds each,
+and degrees are split into 60&nbsp;arcminutes of 60&nbsp;arcseconds each:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;RA&#39;</span><span class="p">,</span> <span class="n">ra</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Dec&#39;</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>RA 05h 35m 15.82s
+Dec -05deg 23&#39; 14.3&quot;
+</pre></div>
+</div>
+<p>If you want more control over the display of minutes and seconds,
+you can call an angle’s “hours as a string” method <a class="reference internal" href="#skyfield.units.Angle.hstr" title="skyfield.units.Angle.hstr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hstr()</span></code></a>
+or “degrees as a string” method <a class="reference internal" href="#skyfield.units.Angle.dstr" title="skyfield.units.Angle.dstr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dstr()</span></code></a>.
+The simplest adjustment you can make
+is to specify the number of decimal <code class="docutils literal notranslate"><span class="pre">places</span></code>
+that will be shown in the seconds field.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;RA&#39;</span><span class="p">,</span> <span class="n">ra</span><span class="o">.</span><span class="n">hstr</span><span class="p">(</span><span class="n">places</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Dec&#39;</span><span class="p">,</span> <span class="n">dec</span><span class="o">.</span><span class="n">dstr</span><span class="p">(</span><span class="n">places</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>RA 05h 35m 15.8230s
+Dec -05deg 23&#39; 14.3353&quot;
+</pre></div>
+</div>
+<p>In each of these examples
+you can see that Skyfield marks arcminutes
+with the ASCII apostrophe <code class="docutils literal notranslate"><span class="pre">'</span></code>
+and arcseconds
+with the ASCII quotation mark <code class="docutils literal notranslate"><span class="pre">&quot;</span></code>.
+Using plain ASCII lets Skyfield
+support as many operating systems and output media as possible.
+But it would be more correct
+to denote arcseconds and arcminutes
+with the Unicode symbols PRIME and DOUBLE PRIME,
+and to use the Unicode DEGREE SIGN to mark the whole number:</p>
+<p>−5°23′14.3″</p>
+<p>If you want to override Skyfield’s default notation
+to create either the string above, or any other notation,
+then give <a class="reference internal" href="#skyfield.units.Angle.hstr" title="skyfield.units.Angle.hstr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hstr()</span></code></a> or <a class="reference internal" href="#skyfield.units.Angle.dstr" title="skyfield.units.Angle.dstr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dstr()</span></code></a>
+a <code class="docutils literal notranslate"><span class="pre">format=</span></code> string of your own.
+It should use the syntax of Python’s
+<a class="reference external" href="https://docs.python.org/3/library/string.html#formatstrings">str.format()</a>
+method.
+For example,
+here’s the exact string you would use
+to format an angle in degrees, arcminutes, and arcseconds
+using the traditional typographic symbols discussed above:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">dstr</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1">°</span><span class="si">{2:02}</span><span class="s1">′</span><span class="si">{3:02}</span><span class="s1">.{4:0</span><span class="si">{5}</span><span class="s1">}″&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-5°23′14.3″
+</pre></div>
+</div>
+<p>(Note that the leading <code class="docutils literal notranslate"><span class="pre">u</span></code>, for “Unicode”, is only mandatory
+in Python&nbsp;2, not Python&nbsp;3.)</p>
+<p>Skyfield will call your string’s format method
+with these six arguments:</p>
+<dl class="docutils">
+<dt>{0}</dt>
+<dd>An ASCII hyphen <code class="docutils literal notranslate"><span class="pre">'-'</span></code> if the angle is negative,
+else the empty string.
+If you want positive angles to be decorated with a plus sign,
+try using <code class="docutils literal notranslate"><span class="pre">{0:+&gt;1}</span></code> which tells Python,
+“display positional parameter 0,
+padding the field to one character wide
+if it’s less than one character already,
+and use the <code class="docutils literal notranslate"><span class="pre">+</span></code> character to do the padding.”</dd>
+<dt>{1}</dt>
+<dd>The number of whole hours or degrees.</dd>
+<dt>{2}</dt>
+<dd>The number of whole minutes.</dd>
+<dt>{3}</dt>
+<dd>The number of whole seconds.</dd>
+<dt>{4}</dt>
+<dd>The fractions of a second.
+Be sure to pad this field
+to the number of <code class="docutils literal notranslate"><span class="pre">places=</span></code> you’ve requested,
+or else a fraction like <code class="docutils literal notranslate"><span class="pre">.0012</span></code> will format incorrectly as <code class="docutils literal notranslate"><span class="pre">.12</span></code>.
+If you have asked for <code class="docutils literal notranslate"><span class="pre">places=3</span></code>, for example,
+you’ll want to display this field as <code class="docutils literal notranslate"><span class="pre">{4:03}</span></code>.
+(See also the next item.)</dd>
+<dt>{5}</dt>
+<dd>The number of <code class="docutils literal notranslate"><span class="pre">places=</span></code> you requested,
+which you will probably use like <code class="docutils literal notranslate"><span class="pre">{4:0{5}}</span></code>
+when formatting field&nbsp;4.
+You can use this
+in case you might not know the number of places ahead of time,
+for example if the number of places is configured by your user.</dd>
+</dl>
+<p>It would have been nice if the <code class="docutils literal notranslate"><span class="pre">format=</span></code> string
+were the first option to <a class="reference internal" href="#skyfield.units.Angle.hstr" title="skyfield.units.Angle.hstr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hstr()</span></code></a> or <a class="reference internal" href="#skyfield.units.Angle.dstr" title="skyfield.units.Angle.dstr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dstr()</span></code></a>
+so that its keyword name could be omitted
+but, alas, it was only added in Skyfield&nbsp;1.39,
+by which point the other options had already grabbed the first spots.</p>
+</div>
 </div>
 
   </body>
