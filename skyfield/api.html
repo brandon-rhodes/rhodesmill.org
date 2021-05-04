@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Reference</title>
+    <title>API Reference — Skyfield documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/style.css">
   </head>
   <body>
@@ -462,53 +462,52 @@ within about 0.1&nbsp;magnitudes.</p>
 </div>
 <div class="section" id="topocentric-locations">
 <h2><a class="toc-backref" href="#id11">Topocentric locations</a><a class="headerlink" href="#topocentric-locations" title="Permalink to this headline">¶</a></h2>
-<p>You can create a vector function
-that computes the location of any position on the Earth’s surface.
-Start with a reference model of the Earth’s exact shape:</p>
+<p>You can ask Skyfield to compute the position
+of any geographic location on the Earth’s surface.
+First, choose a reference model of the Earth’s exact shape
+(click either name to learn more about them):</p>
 <ul class="simple">
 <li><a class="reference internal" href="api-topos.html#skyfield.toposlib.wgs84" title="skyfield.toposlib.wgs84"><code class="xref any py py-data docutils literal notranslate"><span class="pre">wgs84</span></code></a></li>
 <li><a class="reference internal" href="api-topos.html#skyfield.toposlib.iers2010" title="skyfield.toposlib.iers2010"><code class="xref any py py-data docutils literal notranslate"><span class="pre">iers2010</span></code></a></li>
 </ul>
-<p>Then ask the model for the location of a given longitude and latitude:</p>
+<p>Then, call one of the model’s methods
+to build an object representing a specific longitude and latitude.
+Both of the above models are instances of the <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid" title="skyfield.toposlib.Geoid"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Geoid</span></code></a> class
+and offer these methods:</p>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid" title="skyfield.toposlib.Geoid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid</span></code></a>(name,&nbsp;radius_m,&nbsp;inverse_flattening)</td>
-<td>An Earth ellipsoid; maps latitudes and longitudes to x,y,z positions.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.latlon" title="skyfield.toposlib.Geoid.latlon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.latlon</span></code></a>(latitude_degrees,&nbsp;longitude_degrees)</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.latlon" title="skyfield.toposlib.Geoid.latlon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.latlon</span></code></a>(latitude_degrees,&nbsp;longitude_degrees)</td>
 <td>Return the geographic position of a given latitude and longitude.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.subpoint" title="skyfield.toposlib.Geoid.subpoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.subpoint</span></code></a>(position)</td>
+<tr class="row-even"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.subpoint" title="skyfield.toposlib.Geoid.subpoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.subpoint</span></code></a>(position)</td>
 <td>Return Earth latitude and longitude beneath a celestial <code class="docutils literal notranslate"><span class="pre">position</span></code>.</td>
 </tr>
 </tbody>
 </table>
-<p>Finally, the resulting geographic location
-can compute its position at any specified time
-by combining its coordinates with the orientation and rotation of the Earth:</p>
+<p>Finally, the resulting <a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref any py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a>
+can compute its position at any specified time,
+by combining its coordinates
+with the orientation of the Earth at that moment:</p>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a>(model,&nbsp;latitude,&nbsp;…)</td>
-<td>The position of a latitude and longitude on Earth.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition.at" title="skyfield.toposlib.GeographicPosition.at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeographicPosition.at</span></code></a>(t)</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition.at" title="skyfield.toposlib.GeographicPosition.at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeographicPosition.at</span></code></a>(t)</td>
 <td>At time <code class="docutils literal notranslate"><span class="pre">t</span></code>, compute the target’s position relative to the center.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition.lst_hours_at" title="skyfield.toposlib.GeographicPosition.lst_hours_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeographicPosition.lst_hours_at</span></code></a>(t)</td>
+<tr class="row-even"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition.lst_hours_at" title="skyfield.toposlib.GeographicPosition.lst_hours_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeographicPosition.lst_hours_at</span></code></a>(t)</td>
 <td>Return this position’s Local Sidereal Time in hours at time <code class="docutils literal notranslate"><span class="pre">t</span></code>.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition.refract" title="skyfield.toposlib.GeographicPosition.refract"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeographicPosition.refract</span></code></a>(altitude_degrees,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition.refract" title="skyfield.toposlib.GeographicPosition.refract"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeographicPosition.refract</span></code></a>(altitude_degrees,&nbsp;…)</td>
 <td>Predict how the atmosphere will refract a position.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition.rotation_at" title="skyfield.toposlib.GeographicPosition.rotation_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeographicPosition.rotation_at</span></code></a>(t)</td>
+<tr class="row-even"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition.rotation_at" title="skyfield.toposlib.GeographicPosition.rotation_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeographicPosition.rotation_at</span></code></a>(t)</td>
 <td>Compute rotation from GCRS to this location’s altazimuth system.</td>
 </tr>
 </tbody>
@@ -561,7 +560,7 @@ See <a class="reference internal" href="earth-satellites.html"><span class="doc"
 <h2><a class="toc-backref" href="#id15">Astronomical positions</a><a class="headerlink" href="#astronomical-positions" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a> three-dimensional position vector serves as the base class
 for all of the following position classes.  Each class represents an
-(x,y,z) <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> vector oriented to the axes of
+(<em>x,y,z</em>) <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> vector oriented to the axes of
 the International Celestial Reference Frame, an inertial system that is
 an update to J2000 and that does not rotate with respect to the
 universe.</p>
@@ -572,19 +571,19 @@ universe.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF</span></code></a></td>
-<td>An (x,y,z) position and velocity oriented to the ICRF axes.</td>
+<td>An (<em>x,y,z</em>) position and velocity oriented to the ICRF axes.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric" title="skyfield.positionlib.Barycentric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Barycentric</span></code></a></td>
-<td>An (x,y,z) position measured from the Solar System barycenter.</td>
+<td>An (<em>x,y,z</em>) position measured from the Solar System barycenter.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric" title="skyfield.positionlib.Astrometric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Astrometric</span></code></a></td>
-<td>An astrometric (x,y,z) position relative to a particular observer.</td>
+<td>An astrometric (<em>x,y,z</em>) position relative to a particular observer.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent" title="skyfield.positionlib.Apparent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Apparent</span></code></a></td>
-<td>An apparent <code class="docutils literal notranslate"><span class="pre">[x</span> <span class="pre">y</span> <span class="pre">z]</span></code> position relative to a particular observer.</td>
+<td>An apparent (<em>x,y,z</em>) position relative to a particular observer.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.Geocentric" title="skyfield.positionlib.Geocentric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geocentric</span></code></a></td>
-<td>An (x,y,z) position measured from the center of the Earth.</td>
+<td>An (<em>x,y,z</em>) position measured from the center of the Earth.</td>
 </tr>
 </tbody>
 </table>
@@ -651,10 +650,10 @@ then the attribute is simply the value <code class="docutils literal notranslate
 <td>Return the angle between this position and another.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz" title="skyfield.positionlib.ICRF.frame_xyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.frame_xyz</span></code></a>(frame)</td>
-<td>Return this position as an (x,y,z) vector in a reference frame.</td>
+<td>Return this position as an (<em>x,y,z</em>) vector in a reference frame.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz_and_velocity" title="skyfield.positionlib.ICRF.frame_xyz_and_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.frame_xyz_and_velocity</span></code></a>(frame)</td>
-<td>Return (x,y,z) position and velocity vectors in a reference frame.</td>
+<td>Return (<em>x,y,z</em>) position and velocity vectors in a reference frame.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_latlon" title="skyfield.positionlib.ICRF.frame_latlon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.frame_latlon</span></code></a>(frame)</td>
 <td>Return longitude, latitude, and distance in the given frame.</td>
@@ -941,7 +940,7 @@ instantaneous position and velocity.</p>
 <td>Meters.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance.length" title="skyfield.units.Distance.length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Distance.length</span></code></a>()</td>
-<td>Compute the length when this is an x,y,z vector.</td>
+<td>Compute the length when this is an (<em>x,y,z</em>) vector.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Distance.light_seconds" title="skyfield.units.Distance.light_seconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Distance.light_seconds</span></code></a>()</td>
 <td>Return the length of this vector in light seconds.</td>

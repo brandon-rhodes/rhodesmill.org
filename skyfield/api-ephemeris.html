@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Reference — Planetary Ephemerides</title>
+    <title>API Reference — Planetary Ephemerides — Skyfield documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/style.css">
   </head>
   <body>
@@ -30,7 +30,7 @@ to compute the positions of planets, moons, and the Sun.</p>
 <em class="property">class </em><code class="descclassname">skyfield.jpllib.</code><code class="descname">SpiceKernel</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.jpllib.SpiceKernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ephemeris file in NASA .bsp format.</p>
 <p>A “Spacecraft and Planet Kernel” (SPK) file from NASA provides
-(x,y,z) coordinates for bodies in the Solar System like the Sun,
+(<em>x,y,z</em>) coordinates for bodies in the Solar System like the Sun,
 planets, moons, and spacecraft.</p>
 <p>You can download a .bsp file yourself and use this class to open it,
 or use the Skyfield <code class="docutils literal notranslate"><span class="pre">load()</span></code> function to automatically download a
