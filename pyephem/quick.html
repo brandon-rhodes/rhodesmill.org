@@ -139,7 +139,7 @@ when the body is on the morning side of the sky.</div>
 </div>
 <div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">circumpolar</span></code> — whether it stays above the horizon</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">neverup</span></code> — whether is stays below the horizon</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">neverup</span></code> — whether it stays below the horizon</div>
 </div>
 </li>
 <li><p class="first">On Solar System bodies, also sets:</p>
@@ -832,7 +832,10 @@ when an observer is high off of the ground.</li>
 </pre></div>
 </div>
 <ul class="simple">
-<li>Called like <code class="docutils literal notranslate"><span class="pre">radec_of(az,</span> <span class="pre">alt)</span></code>.</li>
+<li>Both arguments to <code class="docutils literal notranslate"><span class="pre">radec_of(az,</span> <span class="pre">alt)</span></code> are interpreted as angles,
+using PyEphem’s usual convention:
+a float point number is interpreted as plain radians,
+while a string is expected to give a number in degrees.</li>
 <li>Returns the apparent topocentric coordinates
 behind the given point in the sky.</li>
 </ul>

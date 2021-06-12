@@ -59,6 +59,13 @@ which you can view by using <code class="docutils literal notranslate"><span cla
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span> <span class="nb">repr</span><span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">dec</span><span class="p">)</span>  <span class="c1"># =&gt; -0.21219402907256785</span>
 </pre></div>
 </div>
+<p>Since its numeric value is in radians,
+printing the angle as degrees requires an extra step to convert the units.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Degrees: </span><span class="si">{:.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">dec</span> <span class="o">/</span> <span class="n">pi</span> <span class="o">*</span> <span class="mf">180.0</span><span class="p">))</span>
+<span class="go">Degrees: -12.1578</span>
+</pre></div>
+</div>
 <p>The only kind of angle which does not use degrees for display
 is right ascension,
 which instead traditionally breaks the celestial equator

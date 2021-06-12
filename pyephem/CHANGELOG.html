@@ -39,18 +39,31 @@
             
   <div class="section" id="pyephem-changelog">
 <h1>PyEphem CHANGELOG<a class="headerlink" href="#pyephem-changelog" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="next">
-<h2>Next<a class="headerlink" href="#next" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="version-4-0-0-1-2020-june-12">
+<h2>Version 4.0.0.1 (2020 June 12)<a class="headerlink" href="#version-4-0-0-1-2020-june-12" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Fixed the body <code class="docutils literal notranslate"><span class="pre">copy()</span></code> method to correctly copy the extra
-attributes that some bodies have beyond those of a normal body, like
-the catalog number of an Earth satellite.  This bug had in some cases
-caused segmentation faults.</li>
+<li>Fix <code class="docutils literal notranslate"><span class="pre">MANIFEST.in</span></code> so the <code class="docutils literal notranslate"><span class="pre">.tar.gz</span></code> source distribution includes
+all the header files necessary for compilation.</li>
+</ul>
+</div>
+<div class="section" id="version-4-0-0-2020-june-12">
+<h2>Version 4.0.0 (2020 June 12)<a class="headerlink" href="#version-4-0-0-2020-june-12" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Upgraded to the MIT license following Elwood Downey’s generous
+decision to open-source XEphem’s code.</li>
+<li>Fix a bug where supplying a string with a decimal degree measurement
+could send the parser into an infinite loop.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">FixedBody</span></code> constructor, which accepts no arguments, now
+correctly raises a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> if any are supplied.</li>
 </ul>
 </div>
 <div class="section" id="version-3-7-7-1-2020-february-22">
 <h2>Version 3.7.7.1 (2020 February 22)<a class="headerlink" href="#version-3-7-7-1-2020-february-22" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
+<li>Fixed the body <code class="docutils literal notranslate"><span class="pre">copy()</span></code> method to correctly copy the extra
+attributes that some bodies have beyond those of a normal body, like
+the catalog number of an Earth satellite.  This bug had in some cases
+caused segmentation faults.</li>
 <li>GitHub issue #166: Fixed a memory leak in <code class="docutils literal notranslate"><span class="pre">readdb()</span></code>.</li>
 <li>GitHub issue #119: Fixed the <code class="docutils literal notranslate"><span class="pre">Body.copy()</span></code> method to correctly copy
 object-specific fields across to the new object, like Saturn ring tilt
