@@ -179,11 +179,12 @@ they give the Moon’s <em>geocentric</em> longitude and latitude.</p>
 <div class="line-block">
 <div class="line">Geographic point beneath satellite:</div>
 <div class="line-block">
-<div class="line"><code class="docutils literal notranslate"><span class="pre">sublat</span></code> — Latitude&nbsp;(+N)</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">sublong</span></code> — Longitude&nbsp;(+E)</div>
-<div class="line"><br /></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">sublat</span></code> — Geocentric latitude&nbsp;(+N)</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">sublong</span></code> — Geocentric longitude&nbsp;(+E)</div>
 </div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">elevation</span></code> — Geocentric height above sea level&nbsp;(m)</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">elevation</span></code> — Geocentric height above sea level,
+measured from the surface of the WGS66 ellipsoid&nbsp;(m)</div>
+<div class="line"><br /></div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">range</span></code> — Distance from observer to satellite&nbsp;(m)</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">range_velocity</span></code> — Range rate of change&nbsp;(m/s)</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">eclipsed</span></code> — Whether satellite is in Earth’s shadow</div>
@@ -592,13 +593,13 @@ or J2000 is used as the default.</p>
 <div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">date</span></code> — Date and time</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">epoch</span></code> — Epoch for astrometric RA/dec</div>
-</div>
-<div class="line-block">
-<div class="line"><code class="docutils literal notranslate"><span class="pre">lat</span></code> — Latitude&nbsp;(+N)</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">lon</span></code> — Longitude&nbsp;(+E)</div>
+<div class="line"><br /></div>
+<div class="line">Geographic coordinates, assuming the IERS&nbsp;1989 ellipsoid
+(flattening=1/298.257):</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">lat</span></code> — Geodetic latitude&nbsp;(+N)</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">lon</span></code> — Geodetic longitude&nbsp;(+E)</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">elevation</span></code> — Elevation&nbsp;(m)</div>
-</div>
-<div class="line-block">
+<div class="line"><br /></div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">temp</span></code> — Temperature&nbsp;(°C)</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">pressure</span></code> — Atmospheric pressure&nbsp;(mBar)</div>
 </div>
