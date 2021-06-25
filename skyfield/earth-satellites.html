@@ -407,6 +407,44 @@ or else in dynamical coordinates of the date you specify.</p>
 </div>
 <p>See <a class="reference internal" href="positions.html"><span class="doc">Positions and Coordinates</span></a> to learn more about these possibilities.</p>
 </div>
+<div class="section" id="find-a-satellites-range-rate">
+<h2>Find a satellite’s range rate<a class="headerlink" href="#find-a-satellites-range-rate" title="Permalink to this headline">¶</a></h2>
+<p>If you’re interested in the Doppler shift
+of the radio signal from a satellite,
+you’ll want to know the rate
+at which the satellite’s range to your antenna is changing.
+To determine the rate,
+use the position method
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_latlon_and_rates" title="skyfield.positionlib.ICRF.frame_latlon_and_rates"><code class="xref py py-meth docutils literal notranslate"><span class="pre">frame_latlon_and_rates()</span></code></a>
+whose third return value will be the range
+and whose sixth return value will be the range’s rate of change.</p>
+<p>Our example satellite culminates
+at around 20° above the horizon
+just after 11:20pm&nbsp;UTC.
+As expected,
+is range reaches a minimum during that minute
+and its range rate swaps from negative (drawing closer)
+to positive (moving away).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">))</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">satellite</span> <span class="o">-</span> <span class="n">bluffton</span><span class="p">)</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">the_range</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">range_rate</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">frame_latlon_and_rates</span><span class="p">(</span><span class="n">bluffton</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array2string</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">array2string</span><span class="p">(</span><span class="n">the_range</span><span class="o">.</span><span class="n">km</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">array2string</span><span class="p">(</span><span class="n">range_rate</span><span class="o">.</span><span class="n">km_per_s</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="s1">&#39;km/s&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[1434.2 1190.5 1064.3 1097.3 1277.4 1553.6] km
+[-4.74 -3.24 -0.84  1.9   3.95  5.14] km/s
+</pre></div>
+</div>
+<p>I’ve chosen here to ask for coordinates
+in the observer’s alt-az frame of reference,
+but in fact the choice of coordinate system doesn’t matter
+if we’re going to ignore everything but the range and range rate:
+those two quantities should be independent
+of the orientation of the spherical coordinate system we choose.</p>
+</div>
 <div class="section" id="find-when-a-satellite-is-in-sunlight">
 <span id="satellite-is-sunlit"></span><h2>Find when a satellite is in sunlight<a class="headerlink" href="#find-when-a-satellite-is-in-sunlight" title="Permalink to this headline">¶</a></h2>
 <p>A satellite is generally only visible to a ground observer
@@ -516,6 +554,7 @@ that predicts the Solar System position of the Earth:</p>
 <span class="c1"># barycenter (&quot;ssb&quot;), then call observe() to compensate</span>
 <span class="c1"># for light-travel time.</span>
 
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
 <span class="n">de421</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
 <span class="n">earth</span> <span class="o">=</span> <span class="n">de421</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
 <span class="n">ssb_bluffton</span> <span class="o">=</span> <span class="n">earth</span> <span class="o">+</span> <span class="n">bluffton</span>
