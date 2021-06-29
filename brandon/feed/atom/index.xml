@@ -13,7 +13,8 @@
     <id>http://rhodesmill.org/brandon/2019/animating-the-equant/</id>
     <title>Animating Ptolemy’s Equant with Python, SVG, and CSS</title>
     <updated>2019-08-23T00:00:00-04:00</updated>
-    <content type="html">&lt;p&gt;You will recall
+    <content type="html">&lt;p&gt;[&lt;strong&gt;UPDATE:&lt;/strong&gt; A full Solar System model is now available that you can view, animated using the techniques described in this post! See &lt;a href="https://rhodesmill.org/ptolemy/"&gt;Ptolemy’s cosmos, to scale&lt;/a&gt;.]&lt;/p&gt;
+&lt;p&gt;You will recall
 my &lt;a href="https://rhodesmill.org/brandon/2018/matplotlib-blit-repair/"&gt;previous blog post&lt;/a&gt;
 that tried to build the necessary scaffolding
 for me to finally write up my 2017 PyCon Ireland keynote
