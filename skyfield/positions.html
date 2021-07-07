@@ -26,9 +26,9 @@ as (<em>x,y,z</em>) vectors that it calls <em>positions.</em>
 There are several kinds of celestial object
 for which Skyfield can produce a position.
 If there’s a particular kind of object you’re interested in,
-you might want to read its documentation first
+you might want to read its documentation first,
 then return here when you’re ready
-to learn more about the position objects that Skyfield returns:</p>
+to learn more about the position objects that they generate:</p>
 <ul class="simple">
 <li><a class="reference internal" href="planets.html"><span class="doc">Planets and their moons: JPL ephemeris files</span></a></li>
 <li><a class="reference internal" href="stars.html"><span class="doc">Stars and Distant Objects</span></a></li>
@@ -36,8 +36,7 @@ to learn more about the position objects that Skyfield returns:</p>
 <li><a class="reference internal" href="kepler-orbits.html"><span class="doc">Kepler Orbits</span></a> (comets and asteroids)</li>
 </ul>
 <p>You can also build a position object yourself
-by passing (<em>x,y,z</em>) coordinates
-to any of the classes described in the sections below.
+by providing (<em>x,y,z</em>) coordinates to a position class.
 For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.positionlib</span> <span class="kn">import</span> <span class="n">Barycentric</span>
 
@@ -50,6 +49,23 @@ For example:</p>
 <p>This document focuses
 on what you can do with positions once they’ve been computed,
 and on how position objects are used in Skyfield code.</p>
+<div class="section" id="quick-reference">
+<h2>Quick reference<a class="headerlink" href="#quick-reference" title="Permalink to this headline">¶</a></h2>
+<p>For a succinct catalog of the attributes and methods
+offered by Skyfield’s position classes,
+follow these links to the API documentation.</p>
+<ul>
+<li><p class="first"><a class="reference internal" href="api.html#astronomical-positions"><span class="std std-ref">Astronomical positions</span></a></p>
+<p>All the attributes and methods of the core Skyfield position classes.</p>
+</li>
+<li><p class="first"><a class="reference internal" href="api.html#units"><span class="std std-ref">Units</span></a></p>
+<p>Skyfield’s distance, velocity, and angle classes,
+which offer simple attributes like <code class="docutils literal notranslate"><span class="pre">km</span></code>
+but also fancy methods like <code class="docutils literal notranslate"><span class="pre">dstr()</span></code>
+that formats an angle as degrees, minutes, and seconds.</p>
+</li>
+</ul>
+</div>
 <div class="section" id="the-icrs-reference-system-and-j2000">
 <h2>The ICRS reference system and J2000<a class="headerlink" href="#the-icrs-reference-system-and-j2000" title="Permalink to this headline">¶</a></h2>
 <p>Even though Skyfield scripts often produce output
@@ -60,87 +76,26 @@ Skyfield always stores positions internally
 as Cartesian (<em>x,y,z</em>) vectors
 oriented along the axes of the International Celestial Reference System&nbsp;(ICRS).</p>
 <p>The ICRS is a higher-accuracy replacement
-for the old J2000 reference system,
-which was defined by the orientation of the Earth’s mean equator
-on 2000&nbsp;January&nbsp;1 —
-raising the problem
-that we only know the Earth’s orientation
-to a certain precision.
-By contrast, the ICRS defines its axes
-using the positions of very distant quasars,
+for the old J2000 reference system.
+It’s defined using the positions of very distant quasars,
 so its precision can improve each decade
-as radio telescopes become more sensitive
-and measure quasar positions ever more accurately.</p>
+as radio telescopes measure quasar positions ever more accurately.</p>
 <p>If you want to interact directly with ICRS (<em>x,y,z</em>) coordinates,
 here is where its axes point:</p>
 <ul class="simple">
-<li><em>x-axis</em> — Aims at the Vernal Equinox’s position on 2000&nbsp;January&nbsp;1,
+<li><em>x-axis</em> — Aims at 2000&nbsp;January&nbsp;1 position of the Vernal Equinox,
 which is defined more technically
-as the ascending node of the ecliptic on the celestial equator.
+as the ascending node of the ecliptic on the mean celestial equator.
 Ancient astronomers called this “the first point of Ares”
-but precession has gradually moved it into the constellation Pisces.</li>
+but precession has gradually shifted it into the constellation Pisces.</li>
 <li><em>y-axis</em> — Aims at the point 90° east of the Vernal Equinox
 along the celestial equator,
 which lies south of Betelgeuse and a few degrees east of Orion’s belt.</li>
 <li><em>z-axis</em> — Aims at the North Celestial Pole.</li>
 </ul>
-<p>The ICRS axes are within 0.02 arcseconds of the J2000 axes,
-so many scripts simply treat old J2000 coordinates
-as equivalent to modern ICRS coordinates.</p>
-</div>
-<div class="section" id="quick-reference">
-<h2>Quick reference<a class="headerlink" href="#quick-reference" title="Permalink to this headline">¶</a></h2>
-<p>Here is a quick reference to the three basic kinds of position,
-together with all of the attributes and methods that they support:</p>
-<pre class="literal-block">
-Position attributes and methods
- │
- ├── <a class="reference external" href="api-position.html#skyfield.positionlib.ICRF.position">position</a>.au         →   x, y, z
- ├── <a class="reference external" href="api-position.html#skyfield.positionlib.ICRF.position">position</a>.km         →   x, y, z
- ├── <a class="reference external" href="api-position.html#skyfield.positionlib.ICRF.position">position</a>.m          →   x, y, z
- ├── <a class="reference external" href="api-position.html#skyfield.positionlib.ICRF.position">position</a>.to(unit)   →   AstroPy distance units
- │
- ├── velocity.au_per_d   →   xdot, ydot, zdot
- ├── velocity.km_per_s   →   xdot, ydot, zdot
- ├── velocity.to(unit)   →   AstroPy velocity units
- │
- ├── <a class="reference external" href="api-position.html#skyfield.positionlib.ICRF.radec">radec()</a>             →   ra, dec, distance (ICRF = J2000)
- ├── <a class="reference external" href="api-position.html#skyfield.positionlib.ICRF.radec">radec(epoch=t)</a>      →   ra, dec, distance (Equinox of time t)
- ├── <a class="reference external" href="api-position.html#skyfield.positionlib.ICRF.distance">distance()</a>          →   distance
- ├── <a class="reference external" href="api-position.html#skyfield.positionlib.ICRF.separation_from">separation_from(p2)</a> →   angle
- │
- ├── <a class="reference external" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz">frame_xyz(frame)</a>    →   <a class="reference external" href="api-units.html#skyfield.units.Distance">Distance</a>
- ├── <a class="reference external" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz_and_velocity">frame_xyz_and_velocity(frame)</a> → <a class="reference external" href="api-units.html#skyfield.units.Distance">Distance</a>, <a class="reference external" href="api-units.html#skyfield.units.Velocity">Velocity</a>
- └── <a class="reference external" href="api-position.html#skyfield.positionlib.ICRF.frame_latlon">frame_latlon()</a>      →   lat, lon, distance
-
-Apparent position only
- │
- └── <a class="reference external" href="api-position.html#skyfield.positionlib.Apparent.altaz">altaz(…)</a>            →   alt, az, distance
-
-Angle like ra, dec, alt, and az
- │
- ├── <a class="reference external" href="api-units.html#skyfield.units.Angle.radians">radians</a>             →   6.266029488577352
- │
- ├── <a class="reference external" href="api-units.html#skyfield.units.Angle.hours">hours</a>               →   23.934469599999996
- ├── <a class="reference external" href="api-units.html#skyfield.units.Angle.hstr">hstr()</a>              →   '23h 56m 04.09s'
- ├── <a class="reference external" href="api-units.html#skyfield.units.Angle.hstr">hstr(places=4)</a>      →   '23h 56m 04.0906s'
- ├── <a class="reference external" href="api-units.html#skyfield.units.Angle.hms">hms()</a>               →   (23.0, 56.0, 4.0)
- ├── <a class="reference external" href="api-units.html#skyfield.units.Angle.hms">signed_hms()</a>        →   (1.0, 23.0, 56.0, 4.0)
- │
- ├── <a class="reference external" href="api-units.html#skyfield.units.Angle.degrees">degrees</a>             →   359.017044
- ├── <a class="reference external" href="api-units.html#skyfield.units.Angle.dstr">dstr()</a>              →   '359deg 01' 01.4&quot;'
- ├── <a class="reference external" href="api-units.html#skyfield.units.Angle.dstr">dstr(places=3)</a>      →   '359deg 01' 01.358&quot;'
- ├── <a class="reference external" href="api-units.html#skyfield.units.Angle.dms">dms()</a>               →   (359.0, 1.0, 1.3584)
- └── <a class="reference external" href="api-units.html#skyfield.units.Angle.signed_dms">signed_dms()</a>        →   (1.0, 359.0, 1.0, 1.3584)
-</pre>
-<p>The rest of this page is designed to explain
-all of the features outlined in the quick reference above.
-All hyperlinked attributes and method names,
-both in the text above and in the explanations below,
-lead to the low-level <a class="reference internal" href="api.html"><span class="doc">API Reference</span></a>
-which explains each option in even greater detail.</p>
-<p>What can you do with a position once it has been generated?
-The rest of this document is a complete tour of the possibilities.</p>
+<p>The ICRS axes are within 0.02 arcseconds of the old J2000 axes,
+so many scripts simply treat J2000 coordinates
+as modern ICRS coordinates.</p>
 </div>
 <div class="section" id="barycentric-astrometric-apparent">
 <h2>Barycentric → Astrometric → Apparent<a class="headerlink" href="#barycentric-astrometric-apparent" title="Permalink to this headline">¶</a></h2>
@@ -195,11 +150,10 @@ Now that we’ve given them names,
 we can discuss the three positions:</p>
 <ul>
 <li><p class="first">A <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric" title="skyfield.positionlib.Barycentric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Barycentric</span></code></a> position
-measures its (<em>x,y,z</em>) from the Solar System’s center of mass,
+measures from the Solar System’s center of mass,
+so its (<em>x,y,z</em>) is in the Barycentric Celestial Reference System (BCRS) —
 a frame of reference that’s inertial enough
-to support the <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">observe()</span></code></a> method,
-which needs to apply effects like light travel time and relativity
-to determine where a <em>target</em> object will appear in the sky.</p>
+to support the <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">observe()</span></code></a> method.</p>
 <p>You’ll usually start a Skyfield script
 by generating a barycentric position
 for the <em>center</em> from which you’ll be observing —
@@ -207,26 +161,21 @@ whether that’s the Earth,
 a specific location on the Earth’s surface,
 a satellite,
 or another body like a planet or Moon.</p>
-<p>More formally, a barycentric position’s (<em>x,y,z</em>)
-are coordinates in the Barycentric Celestial Reference System (BCRS).</p>
 </li>
 <li><p class="first">An <a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric" title="skyfield.positionlib.Astrometric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Astrometric</span></code></a> position
-is returned by the <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">observe()</span></code></a> method which,
+is returned by the <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Barycentric.observe()</span></code></a> method which,
 given a target you want to observe,
 applies the effect of light travel time.
 For example,
-on Earth we see the Moon not where it is right now,
-but where it was about 1.3&nbsp;seconds ago
-when the light now reaching our eyes left its surface.
-We see the Sun where it was 8&nbsp;minutes ago,
-Jupiter where it was more than a half hour ago,
-and Neptune where it was about four hours ago.</p>
+on Earth we see the Moon where it was about 1.3&nbsp;seconds ago,
+the Sun where it was 8&nbsp;minutes ago,
+Jupiter where it was more than half an hour ago,
+and Neptune where it was about 4&nbsp;hours ago.</p>
 </li>
 </ul>
 <ul>
 <li><p class="first">An <a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent" title="skyfield.positionlib.Apparent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Apparent</span></code></a> position is computed
-by calling an astrometric position’s
-<a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric.apparent" title="skyfield.positionlib.Astrometric.apparent"><code class="xref py py-meth docutils literal notranslate"><span class="pre">apparent()</span></code></a> method.
+by calling the <a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric.apparent" title="skyfield.positionlib.Astrometric.apparent"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Astrometric.apparent()</span></code></a> method.
 This applies two real-world effects
 that slightly shift everything in the night sky:
 the aberration of light
@@ -234,10 +183,10 @@ produced by the observer’s own motion through space,
 and the gravitational deflection of light
 that passes close to masses like the Sun and Jupiter —
 and, for an observer on the Earth’s surface,
-the way incoming light is bent by the Earth itself.
+for deflection produced by the Earth’s own gravity.
 The result is an “apparent” position
-telling you where the target will really “appear” in tonight’s sky —
-the direction in which you should point your telescope.</p>
+telling you where the target will really “appear” in tonight’s sky;
+it’s the direction you should point your telescope.</p>
 <p>When an apparent position is measured from the Earth’s center,
 it can be described more formally
 as an (<em>x,y,z</em>) position
@@ -274,7 +223,7 @@ in Geocentric Celestial Reference System (GCRS) coordinates.</p>
 <p>The first three attributes listed above
 are simple instances of Skyfield’s distance, velocity, and time classes,
 which you can learn more about
-by clicking on the class names above.
+by clicking on their class names.
 They support operations like:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Earth x,y,z:&#39;</span><span class="p">,</span> <span class="n">barycentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">,</span> <span class="s1">&#39;au&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mars relative velocity:&#39;</span><span class="p">,</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">km_per_s</span><span class="p">,</span> <span class="s1">&#39;km/s&#39;</span><span class="p">)</span>
@@ -333,7 +282,7 @@ This supports casual inferences,
 like the fact
 that a star with an RA of&nbsp;3<sup>h</sup> will climb to your meridian
 one hour later than a star with an RA of&nbsp;2<sup>h</sup>.</p>
-<p>The design of right ascension presented astronomers
+<p>This coordinate presented astronomers
 with the same challenge that longitude presented geographers:
 the arbitrary choice of a starting point.
 In the case of longitude,
@@ -342,12 +291,14 @@ from the Airy Transit Circle at the Royal Observatory Greenwich.
 For RA,
 astronomers measure east from the Vernal Equinox,
 the point where the Sun crosses the celestial equator in March
-as it crosses from the southern to the northern half of the sky.</p>
+as it passes from the southern to the northern half of the sky.</p>
 </li>
 <li><p class="first"><em>Declination</em> (“Dec”)
 is the sky’s equivalent of latitude,
 measured north and south of the celestial equator
-in degrees, with north being positive.</p>
+in degrees, with north being positive.
+The North Celestial Pole is at +90°
+and the South Celestial Pole is at&nbsp;−90°.</p>
 </li>
 </ul>
 <p>There are two common uses for RA/Dec coordinates.</p>
