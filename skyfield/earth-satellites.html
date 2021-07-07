@@ -333,8 +333,8 @@ Height: 420.9 km
 </pre></div>
 </div>
 </div>
-<div class="section" id="satellite-altitude-azimuth-and-height">
-<h2>Satellite altitude, azimuth, and height<a class="headerlink" href="#satellite-altitude-azimuth-and-height" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="satellite-altitude-azimuth-and-distance">
+<h2>Satellite altitude, azimuth, and distance<a class="headerlink" href="#satellite-altitude-azimuth-and-distance" title="Permalink to this headline">¶</a></h2>
 <p>You might be most interested
 in whether the satellite is above or below the horizon
 from your own position as an observer,
@@ -366,20 +366,20 @@ for its altitude and azimuth.
 The altitude angle runs from 0° at the horizon
 to 90° directly overhead at the zenith.
 A&nbsp;negative altitude means the satellite is that many degrees below the horizon.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">topocentric</span><span class="o">.</span><span class="n">altaz</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">topocentric</span><span class="o">.</span><span class="n">altaz</span><span class="p">()</span>
 
 <span class="k">if</span> <span class="n">alt</span><span class="o">.</span><span class="n">degrees</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The ISS is above the horizon&#39;</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Altitude:&#39;</span><span class="p">,</span> <span class="n">alt</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Azimuth:&#39;</span><span class="p">,</span> <span class="n">az</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Height: </span><span class="si">{:.1f}</span><span class="s1"> km&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">height</span><span class="o">.</span><span class="n">km</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Distance: </span><span class="si">{:.1f}</span><span class="s1"> km&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">km</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>The ISS is above the horizon
 Altitude: 16deg 16&#39; 32.6&quot;
 Azimuth: 350deg 15&#39; 20.4&quot;
-Height: 1168.7 km
+Distance: 1168.7 km
 </pre></div>
 </div>
 <p>The azimuth is measured clockwise around the horizon,

@@ -21,21 +21,78 @@
     
     <div class="section" id="positions-and-coordinates">
 <h1>Positions and Coordinates<a class="headerlink" href="#positions-and-coordinates" title="Permalink to this headline">¶</a></h1>
-<p>Skyfield is careful to distinguish the <em>position</em> of an object
-from the several choices of <em>coordinate</em>
-that you can use to designate that position with numbers.
-There are only three basic kinds of position that Skyfield recognizes,
-but several different ways in which each position
-can be turned into coordinates.</p>
+<p>Skyfield stores the locations of celestial bodies
+as (<em>x,y,z</em>) vectors that it calls <em>positions.</em>
+There are several kinds of celestial object
+for which Skyfield can produce a position.
+If there’s a particular kind of object you’re interested in,
+you might want to read its documentation first
+then return here when you’re ready
+to learn more about the position objects that Skyfield returns:</p>
+<ul class="simple">
+<li><a class="reference internal" href="planets.html"><span class="doc">Planets and their moons: JPL ephemeris files</span></a></li>
+<li><a class="reference internal" href="stars.html"><span class="doc">Stars and Distant Objects</span></a></li>
+<li><a class="reference internal" href="earth-satellites.html"><span class="doc">Earth Satellites</span></a></li>
+<li><a class="reference internal" href="kepler-orbits.html"><span class="doc">Kepler Orbits</span></a> (comets and asteroids)</li>
+</ul>
+<p>You can also build a position object yourself
+by passing (<em>x,y,z</em>) coordinates
+to any of the classes described in the sections below.
+For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.positionlib</span> <span class="kn">import</span> <span class="n">Barycentric</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="mf">3141.0</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mf">2718.0</span>
+<span class="n">z</span> <span class="o">=</span> <span class="mf">5820.0</span>
+<span class="n">barycentric</span> <span class="o">=</span> <span class="n">Barycentric</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>This document focuses
+on what you can do with positions once they’ve been computed,
+and on how position objects are used in Skyfield code.</p>
+<div class="section" id="the-icrs-reference-system-and-j2000">
+<h2>The ICRS reference system and J2000<a class="headerlink" href="#the-icrs-reference-system-and-j2000" title="Permalink to this headline">¶</a></h2>
+<p>Even though Skyfield scripts often produce output
+in spherical coordinates —
+like right ascension and declination,
+or altitude and azimuth —
+Skyfield always stores positions internally
+as Cartesian (<em>x,y,z</em>) vectors
+oriented along the axes of the International Celestial Reference System&nbsp;(ICRS).</p>
+<p>The ICRS is a higher-accuracy replacement
+for the old J2000 reference system,
+which was defined by the orientation of the Earth’s mean equator
+on 2000&nbsp;January&nbsp;1 —
+raising the problem
+that we only know the Earth’s orientation
+to a certain precision.
+By contrast, the ICRS defines its axes
+using the positions of very distant quasars,
+so its precision can improve each decade
+as radio telescopes become more sensitive
+and measure quasar positions ever more accurately.</p>
+<p>If you want to interact directly with ICRS (<em>x,y,z</em>) coordinates,
+here is where its axes point:</p>
+<ul class="simple">
+<li><em>x-axis</em> — Aims at the Vernal Equinox’s position on 2000&nbsp;January&nbsp;1,
+which is defined more technically
+as the ascending node of the ecliptic on the celestial equator.
+Ancient astronomers called this “the first point of Ares”
+but precession has gradually moved it into the constellation Pisces.</li>
+<li><em>y-axis</em> — Aims at the point 90° east of the Vernal Equinox
+along the celestial equator,
+which lies south of Betelgeuse and a few degrees east of Orion’s belt.</li>
+<li><em>z-axis</em> — Aims at the North Celestial Pole.</li>
+</ul>
+<p>The ICRS axes are within 0.02 arcseconds of the J2000 axes,
+so many scripts simply treat old J2000 coordinates
+as equivalent to modern ICRS coordinates.</p>
+</div>
+<div class="section" id="quick-reference">
+<h2>Quick reference<a class="headerlink" href="#quick-reference" title="Permalink to this headline">¶</a></h2>
 <p>Here is a quick reference to the three basic kinds of position,
 together with all of the attributes and methods that they support:</p>
 <pre class="literal-block">
-Creating 3 kinds of position
-
-obj1.at(time)        →  Barycentric position (BCRS)
-    .observe(obj2)   →  Astrometric position (∆BCRS)
-    .apparent()      →  Apparent position (GCRS)
-
 Position attributes and methods
  │
  ├── <a class="reference external" href="api-position.html#skyfield.positionlib.ICRF.position">position</a>.au         →   x, y, z
@@ -82,377 +139,329 @@ All hyperlinked attributes and method names,
 both in the text above and in the explanations below,
 lead to the low-level <a class="reference internal" href="api.html"><span class="doc">API Reference</span></a>
 which explains each option in even greater detail.</p>
-<div class="section" id="quick-reference-to-generating-positions">
-<h2>Quick reference to generating positions<a class="headerlink" href="#quick-reference-to-generating-positions" title="Permalink to this headline">¶</a></h2>
-<p>Skyfield already supports several kinds of object
-that can compute their position.
-Each object offers an <code class="docutils literal notranslate"><span class="pre">at()</span></code> method
-whose argument can be a <a class="reference internal" href="time.html"><span class="doc">Time</span></a> object
-that either holds a single time
-or a whole array of different time values.
-Objects respond by returning either a single scalar position
-or else by generating a whole series of positions.</p>
-<dl class="docutils">
-<dt><strong>Instantiating positions from numeric coordinates</strong></dt>
-<dd><p class="first">If you already possess <em>x</em>, <em>y</em>, and <em>z</em> coordinates
-oriented along the ICRF axes,
-then you can directly instantiate any of the position classes
-by providing those coordinates as a vector of length&nbsp;3.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.positionlib</span> <span class="kn">import</span> <span class="n">ICRF</span>
-
-<span class="n">x</span> <span class="o">=</span> <span class="mf">3141.0</span>
-<span class="n">y</span> <span class="o">=</span> <span class="mf">2718.0</span>
-<span class="n">z</span> <span class="o">=</span> <span class="mf">5820.0</span>
-<span class="n">vec</span> <span class="o">=</span> <span class="n">ICRF</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">])</span>
-</pre></div>
-</div>
-<p class="last">This also works with more specific position classes
-like the <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric" title="skyfield.positionlib.Barycentric"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Barycentric</span></code></a> class.
-The resulting position object will support
-all of the main features described on this page.</p>
-</dd>
-<dt><strong>The planets</strong></dt>
-<dd><p class="first">The eight planets and Pluto are all supported,
-thanks to the excellent work of the Jet Propulsion Laboratory (JPL).
-Skyfield supports their major solar system ephemerides.
-<a class="reference internal" href="planets.html"><span class="doc">Read&nbsp;more</span></a></p>
-<div class="last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">N</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">wgs84</span>
-
-<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-
-<span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
-<span class="n">mars</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;mars&#39;</span><span class="p">]</span>
-
-<span class="c1"># From the center of the Solar System (Barycentric)</span>
-
-<span class="n">barycentric</span> <span class="o">=</span> <span class="n">mars</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-
-<span class="c1"># From the center of the Sun (Heliocentric)</span>
-
-<span class="n">sun</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;sun&#39;</span><span class="p">]</span>
-<span class="n">heliocentric</span> <span class="o">=</span> <span class="n">sun</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
-
-<span class="c1"># From the center of the Earth (Geocentric)</span>
-
-<span class="n">earth</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
-<span class="n">astrometric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
-<span class="n">apparent</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
-
-<span class="c1"># From a place on Earth (Topocentric)</span>
-
-<span class="n">boston</span> <span class="o">=</span> <span class="n">earth</span> <span class="o">+</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">42.3583</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="mf">71.0603</span> <span class="o">*</span> <span class="n">W</span><span class="p">,</span> <span class="n">elevation_m</span><span class="o">=</span><span class="mi">43</span><span class="p">)</span>
-<span class="n">astrometric</span> <span class="o">=</span> <span class="n">boston</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
-<span class="n">apparent</span> <span class="o">=</span> <span class="n">boston</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
-</pre></div>
-</div>
-</dd>
-<dt><strong>Comets and Minor Planets Asteroids</strong></dt>
-<dd><p class="first">Comet, asteroid, and other minor planet positions
-can be generated through Skyfield’s <a class="reference internal" href="kepler-orbits.html"><span class="doc">Kepler Orbits</span></a> support
-of data files downloaded from the Minor Planet Center.</p>
-<p class="last">And any Type&nbsp;1 or Type&nbsp;21 ephemerides you generate
-using NASA’s <a class="reference external" href="https://ssd.jpl.nasa.gov/horizons.cgi">HORIZONS</a> system
-are supported through third-party libraries;
-for details, see <a class="reference internal" href="planets.html#third-party-ephemerides"><span class="std std-ref">Type 1 and Type 21 ephemeris formats</span></a>.</p>
-</dd>
-<dt><strong>The stars</strong></dt>
-<dd><p class="first">Stars and other fixed objects with catalog coordinates
-are able to generate their current astrometric position
-when observed from a planet. <a class="reference internal" href="stars.html"><span class="doc">Read&nbsp;more</span></a></p>
-<div class="last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">N</span><span class="p">,</span> <span class="n">Star</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">wgs84</span>
-
-<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-
-<span class="n">boston</span> <span class="o">=</span> <span class="n">earth</span> <span class="o">+</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">42.3583</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="mf">71.0603</span> <span class="o">*</span> <span class="n">W</span><span class="p">,</span> <span class="n">elevation_m</span><span class="o">=</span><span class="mi">43</span><span class="p">)</span>
-<span class="n">barnard</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">ra_hours</span><span class="o">=</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mf">48.49803</span><span class="p">),</span>
-               <span class="n">dec_degrees</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mf">36.2072</span><span class="p">))</span>
-
-<span class="c1"># From the center of the Earth (Geocentric)</span>
-
-<span class="n">astrometric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">barnard</span><span class="p">)</span>
-<span class="n">apparent</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">barnard</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
-
-<span class="c1"># From a place on Earth (Topocentric)</span>
-
-<span class="n">astrometric</span> <span class="o">=</span> <span class="n">boston</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">barnard</span><span class="p">)</span>
-<span class="n">apparent</span> <span class="o">=</span> <span class="n">boston</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">barnard</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
-</pre></div>
-</div>
-</dd>
-<dt><strong>Earth satellites</strong></dt>
-<dd><p class="first">Earth satellite positions can be generated
-from public TLE elements describing their current orbit,
-which you can download from Celestrak. <a class="reference internal" href="earth-satellites.html"><span class="doc">Read&nbsp;more</span></a></p>
-<div class="last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">EarthSatellite</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">wgs84</span><span class="p">,</span> <span class="n">load</span>
-
-<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-
-<span class="n">line1</span> <span class="o">=</span> <span class="s1">&#39;1 25544U 98067A   14020.93268519  .00009878  00000-0  18200-3 0  5082&#39;</span>
-<span class="n">line2</span> <span class="o">=</span> <span class="s1">&#39;2 25544  51.6498 109.4756 0003572  55.9686 274.8005 15.49815350868473&#39;</span>
-
-<span class="n">boston</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">42.3583</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="mf">71.0603</span> <span class="o">*</span> <span class="n">W</span><span class="p">,</span> <span class="n">elevation_m</span><span class="o">=</span><span class="mi">43</span><span class="p">)</span>
-<span class="n">satellite</span> <span class="o">=</span> <span class="n">EarthSatellite</span><span class="p">(</span><span class="n">line1</span><span class="p">,</span> <span class="n">line2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ISS (ZARYA)&#39;</span><span class="p">)</span>
-
-<span class="c1"># Geocentric</span>
-
-<span class="n">geometry</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-
-<span class="c1"># Geographic point beneath satellite</span>
-
-<span class="n">subpoint</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">subpoint</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
-<span class="n">latitude</span> <span class="o">=</span> <span class="n">subpoint</span><span class="o">.</span><span class="n">latitude</span>
-<span class="n">longitude</span> <span class="o">=</span> <span class="n">subpoint</span><span class="o">.</span><span class="n">longitude</span>
-<span class="n">elevation</span> <span class="o">=</span> <span class="n">subpoint</span><span class="o">.</span><span class="n">elevation</span>
-
-<span class="c1"># Topocentric</span>
-
-<span class="n">difference</span> <span class="o">=</span> <span class="n">satellite</span> <span class="o">-</span> <span class="n">boston</span>
-<span class="n">geometry</span> <span class="o">=</span> <span class="n">difference</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-<p>Read <a class="reference internal" href="time.html"><span class="doc">Dates and Time</span></a> for more information
-about how to build dates and pass them to planets and satellites
-when generating positions.</p>
 <p>What can you do with a position once it has been generated?
 The rest of this document is a complete tour of the possibilities.</p>
 </div>
-<div class="section" id="barycentric-position">
-<h2>Barycentric position<a class="headerlink" href="#barycentric-position" title="Permalink to this headline">¶</a></h2>
-<p>When you ask Skyfield for the position of a planet or star,
-it produces a three-dimensional position
-that is measured from the Solar System <em>barycenter</em> —
-the center of mass around which all of the planets revolve.
-The position is stored as <em>x</em>, <em>y</em>, and <em>z</em> coordinates
-in the International Celestial Reference System (ICRS),
-a permanent frame of reference
-that is a high-precision replacement
-for the old J2000.0 system
-that was popular at the end of the 20th century.
-The orientation of the axes is roughly:</p>
-<ul class="simple">
-<li><em>x-axis</em> — points at the Vernal Equinox:
-the position of the Sun in our sky
-at the moment the Sun’s annual journey along the ecliptic
-carries it from south to north across the celestial equator
-and Spring begins in the Northern Hemisphere.
-To express the same thing more technically,
-this axis points towards
-the “ascending node of the ecliptic on the celestial equator”
-as of the beginning of the year&nbsp;2000.
-In ancient times this point in the sky was called “the first point of Ares.”</li>
-<li><em>y-axis</em> — is aimed at the point 90° east of the Vernal Equinox
-on the celestial equator.
-It can be hard to remember which way is east in the sky, so:
-if you were standing at the center of the celestial sphere
-with the north pole above your head
-and the x-axis in front of you,
-this axis would be 90° to your <em>left.</em></li>
-<li><em>z-axis</em> — points towards the celestial North Pole.</li>
-</ul>
-<p>Instead of using an acronym,
-Skyfield uses the class name <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric" title="skyfield.positionlib.Barycentric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Barycentric</span></code></a>
-for coordinates expressed in the ICRS.
-You can view the raw <em>x</em>, <em>y</em>, and <em>z</em> coordinates
-by asking Skyfield for their <code class="docutils literal notranslate"><span class="pre">position</span></code> attribute:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># BCRS positions of Earth and Venus</span>
+<div class="section" id="barycentric-astrometric-apparent">
+<h2>Barycentric → Astrometric → Apparent<a class="headerlink" href="#barycentric-astrometric-apparent" title="Permalink to this headline">¶</a></h2>
+<p>The most common calculations in Skyfield
+produce a succession of three (<em>x,y,z</em>) positions,
+one for the observer and two for the body being observed.
+The three positions can be hard to find in Skyfield code
+because they are often created and used
+without ever being given a name.
+As an example,
+let’s use an <a class="reference internal" href="planets.html"><span class="doc">ephemeris</span></a>
+to compute a geocentric position for Mars:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
 
-<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
-
-<span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
-<span class="n">earth</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
-<span class="n">mars</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;mars&#39;</span><span class="p">]</span>
-
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">1980</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">mars</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[-0.16287311  0.88787399  0.38473904]
-[-1.09202418  1.10723168  0.53739021]
-</pre></div>
-</div>
-<p>The coordinates shown above are measured
-using the Astronomical Unit (“au”),
-which is the average distance from the Earth to the Sun.
-You can, if you want, ask for these coordinates
-in kilometers with the <a class="reference internal" href="api-units.html#skyfield.units.Distance.km" title="skyfield.units.Distance.km"><code class="xref py py-attr docutils literal notranslate"><span class="pre">km</span></code></a> attribute
-or in meters with the <a class="reference internal" href="api-units.html#skyfield.units.Distance.m" title="skyfield.units.Distance.m"><code class="xref py py-attr docutils literal notranslate"><span class="pre">m</span></code></a> attribute.
-And if you have the third-party AstroPy package installed,
-then you can convert these coordinates
-into any length unit with the <a class="reference internal" href="api-units.html#skyfield.units.Distance.to" title="skyfield.units.Distance.to"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to()</span></code></a> method.</p>
-</div>
-<div class="section" id="astrometric-position">
-<h2>Astrometric position<a class="headerlink" href="#astrometric-position" title="Permalink to this headline">¶</a></h2>
-<p>You might think that you could determine
-the position of Mars in the night sky of Earth
-by simply subtracting these two positions
-to generate the vector difference between them.
-But that would ignore the fact that light takes several minutes
-to travel between Mars and the Earth.
-The image of Mars in our sky
-does not show us where it <em>is</em>, right now,
-but where it <em>was</em> — several minutes ago —
-when the light now reaching our eyes or instruments
-actually left its surface.</p>
-<p>Correcting for the light-travel time
-does not simply fix a minor inconvenience,
-but reflects a very deep physical reality.
-Not only the light from Mars,
-but <em>all</em> of its physical effects,
-arrive no faster than the speed of light.
-As Mars tugs at the Earth with its gravity,
-we do not get pulled in the direction of the “real” Mars —
-we get tugged in the direction of its time-delayed image
-hanging in the sky above us!</p>
-<p>So Skyfield offers
-an <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">observe()</span></code></a> method
-that carefully backdates the position of another object
-to determine where it was when it generated the image
-that we see in our sky:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Observing Mars from the Earth&#39;s position</span>
+<span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">earth</span><span class="p">,</span> <span class="n">mars</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">],</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;mars&#39;</span><span class="p">]</span>
 
-<span class="n">astrometric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">1980</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">astrometric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[-0.92909581  0.21939949  0.15266885]
-</pre></div>
-</div>
-<p>This light-delayed position is called the <em>astrometric</em> position,
-and is traditionally mapped on a star chart
-by the angles <em>right ascension</em> and <em>declination</em>
-that you can compute using the <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radec()</span></code></a> method
-and display using their <a class="reference internal" href="api-units.html#skyfield.units.Angle.hstr" title="skyfield.units.Angle.hstr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hstr()</span></code></a>
-and <a class="reference internal" href="api-units.html#skyfield.units.Angle.dstr" title="skyfield.units.Angle.dstr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dstr()</span></code></a> methods:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Astrometric RA and declination</span>
+<span class="c1"># Three positions in a single line of code!</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">distance</span><span class="p">()</span>
 
-<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">hstr</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mars is </span><span class="si">{:.2f}</span><span class="s1"> au from Earth&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">au</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>11h 06m 51.22s
-+09deg 05&#39; 09.2&quot;
-0.96678 au
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Mars is 0.97 au from Earth
 </pre></div>
 </div>
-<p>As we will explore in the next section,
-objects never appear at exactly the position in the sky
-predicted by the simple and ideal astrometric position.
-But it is useful for mapping the planet
-against the background of stars in a
-<a class="reference external" href="http://www.amazon.com/s/?_encoding=UTF8&amp;camp=1789&amp;creative=390957&amp;linkCode=ur2&amp;pageMinusResults=1&amp;suo=1389754954253&amp;tag=letsdisthemat-20&amp;url=search-alias%3Daps#/ref=nb_sb_noss_1?url=search-alias%3Daps&amp;field-keywords=star%20atlas&amp;sprefix=star+%2Caps&amp;rh=i%3Aaps%2Ck%3Astar%20atlas&amp;sepatfbtf=true&amp;tc=1389754955568">printed star atlas</a>,
-because star atlases use astrometric positions.</p>
-<p>If you have several bodies for which you want to generate positions,
-note that it’s more efficient to generate the observer’s position only once
-and then re-use that position for each object you want to observe.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Observing Mars from the Earth&#39;s position</span>
+<p>By chaining together four different methods,
+the line that computes the distance <code class="docutils literal notranslate"><span class="pre">d</span> <span class="pre">=</span> <span class="pre">…</span></code>
+creates and discards three different Skyfield positions
+in a single line of code!
+To learn about them,
+the beginner will probably need to slow up and re-write that line
+so each object is assigned a separate name:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># The “d =” line from the previous example,</span>
+<span class="c1"># rewritten to give each position a name.</span>
 
-<span class="n">mercury</span><span class="p">,</span> <span class="n">venus</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;mercury&#39;</span><span class="p">],</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;venus&#39;</span><span class="p">]</span>
-
-<span class="n">here</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">19</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">here</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mercury</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">here</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">venus</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[0.894231   0.67436002 0.24448674]
-[0.02134722 1.22511631 0.57114432]
-</pre></div>
-</div>
-</div>
-<div class="section" id="apparent-position">
-<span id="apparent"></span><h2>Apparent position<a class="headerlink" href="#apparent-position" title="Permalink to this headline">¶</a></h2>
-<p>To determine the position of an object in the night sky
-with even greater accuracy,
-two further effects must be taken into account:</p>
-<ul class="simple">
-<li><strong>Deflection</strong> —
-The object’s light is bent,
-and thus its image displaced,
-if the light passes close to another large mass
-on its way to the observer.
-This will happen if the object lies very near to the Sun in the sky,
-for example, or is nearly behind Jupiter.
-The effect is small,
-but must be taken into account for research-grade results.</li>
-<li><strong>Aberration</strong> —
-The velocity of the Earth itself through space
-adds a very slight slant to light arriving at our planet,
-in the same way that rain or snow
-seen through the windshield while driving
-appears to be slanting towards you
-because of your own motion.
-The effect is small enough — at most about 20 arcseconds —
-that only in 1728 was it finally observed and explained,
-when James Bradley realized that it provided the long-awaited proof
-that the Earth is indeed in motion in an orbit around the Sun.</li>
-</ul>
-<p>Skyfield lets you apply both of these effects
-by invoking the <a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric.apparent" title="skyfield.positionlib.Astrometric.apparent"><code class="xref py py-meth docutils literal notranslate"><span class="pre">apparent()</span></code></a> method
-on an astrometric position.
-Like an astrometric position, an apparent position
-is typically expressed as the angles
-<em>right ascension</em> and <em>declination</em>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Apparent GCRS (&quot;J2000.0&quot;) coordinates</span>
-
+<span class="n">barycentric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">astrometric</span> <span class="o">=</span> <span class="n">barycentric</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
 <span class="n">apparent</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
-<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">apparent</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">apparent</span><span class="o">.</span><span class="n">distance</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This is a common Python pattern —
+by assigning names to intermediate values,
+the programmer can pivot between
+succinct code that fits on a single line
+and more verbose code that names each intermediate value,
+without changing the code’s result.
+Now that we’ve given them names,
+we can discuss the three positions:</p>
+<ul>
+<li><p class="first">A <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric" title="skyfield.positionlib.Barycentric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Barycentric</span></code></a> position
+measures its (<em>x,y,z</em>) from the Solar System’s center of mass,
+a frame of reference that’s inertial enough
+to support the <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">observe()</span></code></a> method,
+which needs to apply effects like light travel time and relativity
+to determine where a <em>target</em> object will appear in the sky.</p>
+<p>You’ll usually start a Skyfield script
+by generating a barycentric position
+for the <em>center</em> from which you’ll be observing —
+whether that’s the Earth,
+a specific location on the Earth’s surface,
+a satellite,
+or another body like a planet or Moon.</p>
+<p>More formally, a barycentric position’s (<em>x,y,z</em>)
+are coordinates in the Barycentric Celestial Reference System (BCRS).</p>
+</li>
+<li><p class="first">An <a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric" title="skyfield.positionlib.Astrometric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Astrometric</span></code></a> position
+is returned by the <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">observe()</span></code></a> method which,
+given a target you want to observe,
+applies the effect of light travel time.
+For example,
+on Earth we see the Moon not where it is right now,
+but where it was about 1.3&nbsp;seconds ago
+when the light now reaching our eyes left its surface.
+We see the Sun where it was 8&nbsp;minutes ago,
+Jupiter where it was more than a half hour ago,
+and Neptune where it was about four hours ago.</p>
+</li>
+</ul>
+<ul>
+<li><p class="first">An <a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent" title="skyfield.positionlib.Apparent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Apparent</span></code></a> position is computed
+by calling an astrometric position’s
+<a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric.apparent" title="skyfield.positionlib.Astrometric.apparent"><code class="xref py py-meth docutils literal notranslate"><span class="pre">apparent()</span></code></a> method.
+This applies two real-world effects
+that slightly shift everything in the night sky:
+the aberration of light
+produced by the observer’s own motion through space,
+and the gravitational deflection of light
+that passes close to masses like the Sun and Jupiter —
+and, for an observer on the Earth’s surface,
+the way incoming light is bent by the Earth itself.
+The result is an “apparent” position
+telling you where the target will really “appear” in tonight’s sky —
+the direction in which you should point your telescope.</p>
+<p>When an apparent position is measured from the Earth’s center,
+it can be described more formally
+as an (<em>x,y,z</em>) position
+in Geocentric Celestial Reference System (GCRS) coordinates.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="position-attributes">
+<h2>Position attributes<a class="headerlink" href="#position-attributes" title="Permalink to this headline">¶</a></h2>
+<p>Five basic attributes are available on each position:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.position</span></code></td>
+<td>An (<em>x,y,z</em>) <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.velocity</span></code></td>
+<td>An (<em>x,y,z</em>) <a class="reference internal" href="api-units.html#skyfield.units.Velocity" title="skyfield.units.Velocity"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Velocity</span></code></a>, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.t</span></code></td>
+<td>The <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> of the position, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.center</span></code></td>
+<td>Body the vector is measured from.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.target</span></code></td>
+<td>Body the vector is measured to.</td>
+</tr>
+</tbody>
+</table>
+<p>The first three attributes listed above
+are simple instances of Skyfield’s distance, velocity, and time classes,
+which you can learn more about
+by clicking on the class names above.
+They support operations like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Earth x,y,z:&#39;</span><span class="p">,</span> <span class="n">barycentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">,</span> <span class="s1">&#39;au&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mars relative velocity:&#39;</span><span class="p">,</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">km_per_s</span><span class="p">,</span> <span class="s1">&#39;km/s&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Time of observation:&#39;</span><span class="p">,</span> <span class="n">apparent</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Earth x,y,z: [-0.16287311  0.88787399  0.38473904] au
+Mars relative velocity: [12.66638873 -8.12551301 -3.38356109] km/s
+Time of observation: 1980-01-01 00:00:00 UTC
+</pre></div>
+</div>
+<p>Note that the distance unit attributes
+like <code class="docutils literal notranslate"><span class="pre">au</span></code> and <code class="docutils literal notranslate"><span class="pre">km</span></code>
+and the velocity unit attributes
+like <code class="docutils literal notranslate"><span class="pre">au_per_d</span></code> and <code class="docutils literal notranslate"><span class="pre">km_per_s</span></code>
+are each three-element NumPy arrays offering (<em>x,y,z</em>) coordinates.
+If the times you’re using are <a class="reference internal" href="time.html#date-arrays"><span class="std std-ref">Date arrays</span></a>,
+then the distance and velocity will each have an additional dimension
+offering as many (<em>x,y,z</em>) coordinates as there are dates in your array.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">.center</span></code> and <code class="docutils literal notranslate"><span class="pre">.target</span></code> attributes require a bit more explanation.
+They specify the origin and destination of the vector,
+and are displayed if you ask Python to print the vector:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">apparent</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;Apparent GCRS position and velocity at date t center=399 target=499&gt;
+</pre></div>
+</div>
+<p>In this case our positions were generated from a JPL ephemeris file,
+so the center and target are the simple integers
+<code class="docutils literal notranslate"><span class="pre">399</span></code> indicating the Earth and <code class="docutils literal notranslate"><span class="pre">499</span></code> indicating Mars.
+If instead the center or target were defined by a Skyfield object
+like an Earth satellite or latitude-longitude position,
+then the <code class="docutils literal notranslate"><span class="pre">.center</span></code> and <code class="docutils literal notranslate"><span class="pre">.target</span></code>
+will be those Skyfield objects themselves.</p>
+</div>
+<div class="section" id="right-ascension-and-declination-astrometric">
+<h2>Right ascension and declination: astrometric<a class="headerlink" href="#right-ascension-and-declination-astrometric" title="Permalink to this headline">¶</a></h2>
+<p>The most popular coordinate system for star catalogs
+treats the night sky as a slowly spinning globe
+that we view from the inside.
+Just as we specify position on the Earth’s globe
+by degrees longitude that you would travel along the equator
+and then degrees latitude that you would travel north or south,
+coordinates in the sky are measured by two angles.
+These are called “equatorial coordinates”
+since they are measured with respect to the equator.</p>
+<ul>
+<li><p class="first"><em>Right ascension</em> (“RA”)
+is the sky’s equivalent of longitude,
+and is measured east along the celestial equator.
+Since the sky makes roughly one complete turn every day,
+RA is usually expressed in units of 24&nbsp;hours
+rather than 360 degrees.
+This supports casual inferences,
+like the fact
+that a star with an RA of&nbsp;3<sup>h</sup> will climb to your meridian
+one hour later than a star with an RA of&nbsp;2<sup>h</sup>.</p>
+<p>The design of right ascension presented astronomers
+with the same challenge that longitude presented geographers:
+the arbitrary choice of a starting point.
+In the case of longitude,
+we measure east and west
+from the Airy Transit Circle at the Royal Observatory Greenwich.
+For RA,
+astronomers measure east from the Vernal Equinox,
+the point where the Sun crosses the celestial equator in March
+as it crosses from the southern to the northern half of the sky.</p>
+</li>
+<li><p class="first"><em>Declination</em> (“Dec”)
+is the sky’s equivalent of latitude,
+measured north and south of the celestial equator
+in degrees, with north being positive.</p>
+</li>
+</ul>
+<p>There are two common uses for RA/Dec coordinates.</p>
+<p>The first common use is as a reference coordinate system
+for perennial knowledge like star charts,
+celestial catalogs, and record keeping.
+This use case presents two complications.</p>
+<p>The first complication
+is that real star positions appear to be in constant motion.
+The Earth’s revolution around the Sun
+moves the stars in little circles thanks to the aberration of light,
+and their light can be bent and their images shifted
+by the gravity of the Sun, Jupiter, and even the Earth.
+Because these effects are periodic or temporary,
+they are entirely unsuitable for star charts,
+which are supposed to be independent of any particular day of the year.</p>
+<p>For this reason,
+always generate reference RA/Dec coordinates
+from astrometric Skyfield positions,
+never from apparent positions.</p>
+<p>The second complication is that the Earth’s poles
+don’t point in a fixed direction
+but gradually trace 26,000-year circles around the sky.
+This requires RA/Dec coordinates to specify which year’s “equinox”
+their right ascension is measured from,
+which will also be the year whose poles and equator they use.</p>
+<p>The modern standard for astrometric RA/Dec is the ICRS,
+described above,
+which having been fixed in the directions of the J2000 equinox and poles
+is now permanent and will never suffer precession.
+Skyfield returns ICRS coordinates
+if you simply call <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radec()</span></code></a>
+without an argument:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Astrometric RA/Dec.</span>
+<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">hstr</span><span class="p">())</span>   <span class="c1"># Unusual choice: usually apparent positions</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>  <span class="c1"># are not expressed as ICRF/J2000 coordinates</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;RA:&#39;</span><span class="p">,</span> <span class="n">ra</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Dec:&#39;</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Distance:&#39;</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>11h 06m 51.75s
-+09deg 05&#39; 04.7&quot;
-0.96678 au
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>RA: 11h 06m 51.22s
+Dec: +09deg 05&#39; 09.2&quot;
+Distance: 0.96678 au
 </pre></div>
 </div>
-<p>But printing apparent coordinates in ICRF coordinates like this
-is an unusual choice.
-You are unlikely to find the two values above
-if you look up the position of Mars on 1980&nbsp;January&nbsp;1
-in an almanac or by using other astronomy software.</p>
-<p>Instead, apparent positions are usually expressed
-relative to the Earth’s real equator and poles
-as its rolls and tumbles through space —
-which, after all,
-is how right ascension and declination were defined
-through most of human history,
-before the invention of the ICRF axes.
-The Earth’s equator and poles move at least slightly every day,
-and move by larger amounts as years add up to centuries.</p>
-<p>To ask for right ascension and declination
-relative to the real equator and poles of Earth,
-and not the ideal permanent axes of the ICRF,
-simply add the keyword argument <code class="docutils literal notranslate"><span class="pre">epoch='date'</span></code>
-when you ask the apparent position for coordinates:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Coordinates relative to true equator and equinox</span>
+<p>Here we have printed RA and declination using their default units.
+See the <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> class documentation
+for the attributes and methods
+by which you can retrieve and format an angle’s value
+in units of your own choice.</p>
+<p>If your project specifically requires coordinates
+expressed in the RA/Dec of an older equinox,
+you can build a time object and pass it to  <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radec()</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Astrometric RA/Dec relative to another equinox.</span>
 
-<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">apparent</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
+<span class="n">equinox</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="mf">1991.25</span><span class="p">)</span>
+<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="n">equinox</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="right-ascension-and-declination-apparent">
+<h2>Right ascension and declination: apparent<a class="headerlink" href="#right-ascension-and-declination-apparent" title="Permalink to this headline">¶</a></h2>
+<p>The other reason that you might generate RA/Dec is practical:
+you are planning to point a telescope,
+and after orienting its equatorial mount to the Earth’s poles
+you want a declination that stays fixed all night
+while your telescope tracks the specified right ascension across the sky.</p>
+<p>In this case you aren’t likely to be satisfied
+with RA/Dec coordinates of some other era.
+You’ll want them measured against where the Earth’s poles
+are really pointing tonight.</p>
+<p>Skyfield uses the high precision IAU&nbsp;2000A standard
+for both the precession that carries the Earth’s poles
+in their 26,000-year circle around the sky
+and also the short term wobbles in the Earth’s orientation
+that are called nutation.
+Together they give Skyfield an accurate assessment
+of the direction of the poles and equator
+on a given date.</p>
+<p>When pointing a telescope,
+always use apparent coordinates,
+since you will want every possible effect accounted for
+that produces the position of your target in the sky.</p>
+<p>While you could pass each position’s time
+to its own <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radec()</span></code></a> method,
+that would be a bit tedious,
+so Skyfield provides a shortcut:
+if you pass the string <code class="docutils literal notranslate"><span class="pre">'date'</span></code>
+then the RA/Dec coordinates use the equinox and poles
+of the date of the position itself:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Apparent RA/Dec.</span>
+<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">apparent</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">hstr</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">dstr</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;RA:&#39;</span><span class="p">,</span> <span class="n">ra</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Dec:&#39;</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Distance:&#39;</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>11h 05m 48.68s
-+09deg 11&#39; 35.7&quot;
-0.96678 au
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>RA: 11h 05m 48.68s
+Dec: +09deg 11&#39; 35.7&quot;
+Distance: 0.96678 au
 </pre></div>
 </div>
-<p>These are the coordinates
-that should match other astronomy software
-and the data in the
-<a class="reference external" href="http://www.amazon.com/s/?_encoding=UTF8&amp;camp=1789&amp;creative=390957&amp;field-keywords=astronomical%20almanac&amp;linkCode=ur2&amp;tag=letsdisthemat-20&amp;url=search-alias%3Daps">Astronomical Almanac</a>,
-and are sometimes said to be expressed
-in the “dynamical reference system” defined by the Earth itself.</p>
+<p>Note that there are two sources of difference
+between the astrometric coordinates printed in the previous section
+and the apparent coordinates printed here.
+We switched to the RA/Dec system of a different year,
+so even the exact same position
+would have been assigned a different coordinate than before.
+But we have also asked for the RA/Dec of a whole different point in the sky:
+the point where Mars will actually appear,
+not the ideal point where it should sit on a star chart
+that ignores aberration and deflection.</p>
 </div>
 <div class="section" id="azimuth-and-altitude">
 <h2>Azimuth and altitude<a class="headerlink" href="#azimuth-and-altitude" title="Permalink to this headline">¶</a></h2>
@@ -494,7 +503,9 @@ by calling its <a class="reference internal" href="api-topos.html#skyfield.topos
 Skyfield provides constants <code class="docutils literal notranslate"><span class="pre">N</span></code>, <code class="docutils literal notranslate"><span class="pre">S</span></code>, <code class="docutils literal notranslate"><span class="pre">E</span></code>, and <code class="docutils literal notranslate"><span class="pre">W</span></code>
 that are each positive one or negative one,
 in case you don’t want to remember which directions are positive.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Altitude and azimuth in the sky of a</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">N</span><span class="p">,</span><span class="n">S</span><span class="p">,</span><span class="n">E</span><span class="p">,</span><span class="n">W</span><span class="p">,</span> <span class="n">wgs84</span>
+
+<span class="c1"># Altitude and azimuth in the sky of a</span>
 <span class="c1"># specific geographic location</span>
 
 <span class="n">boston</span> <span class="o">=</span> <span class="n">earth</span> <span class="o">+</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">42.3583</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="mf">71.0603</span> <span class="o">*</span> <span class="n">W</span><span class="p">,</span> <span class="n">elevation_m</span><span class="o">=</span><span class="mi">43</span><span class="p">)</span>
@@ -571,14 +582,15 @@ you can measure how far an object has moved:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
 <span class="n">t2</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span>
 
-<span class="n">p1</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span>
-<span class="n">p2</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t2</span><span class="p">)</span>
+<span class="n">moon</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;moon&#39;</span><span class="p">]</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">moon</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">moon</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t2</span><span class="p">)</span>
 
 <span class="n">km</span> <span class="o">=</span> <span class="p">(</span><span class="n">p2</span> <span class="o">-</span> <span class="n">p1</span><span class="p">)</span><span class="o">.</span><span class="n">distance</span><span class="p">()</span><span class="o">.</span><span class="n">km</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;In one minute the ISS moved </span><span class="si">%d</span><span class="s1"> km&#39;</span> <span class="o">%</span> <span class="n">km</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;In one minute the Moon moved </span><span class="si">%d</span><span class="s1"> km&#39;</span> <span class="o">%</span> <span class="n">km</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>In one minute the ISS moved 461 km
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>In one minute the Moon moved 1736 km
 </pre></div>
 </div>
 </div>
