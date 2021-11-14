@@ -107,6 +107,14 @@ meaning of the <code class="docutils literal notranslate"><span class="pre">relo
 saved; the default is to use the final component of <code class="docutils literal notranslate"><span class="pre">url</span></code>.
 Set <code class="docutils literal notranslate"><span class="pre">backup</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> if you want an already-existing file
 moved out of the way instead of overwritten.</p>
+<p>Your operating system may raise any of several errors during a
+download: hostname lookup failure (this is the usual symptom if
+you are disconnected from the Internet); the server refusing the
+connection; and the connection closing mid-download.  Skyfield
+makes no attempt to intercept or interpret these errors — which
+vary by operating system — so your application itself should
+catch network errors if it needs to avoid printing raw Python
+exceptions, or if you want to retry failed downloads.</p>
 </dd></dl>
 
 <dl class="method">

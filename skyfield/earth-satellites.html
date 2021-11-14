@@ -317,19 +317,40 @@ than those of the old J2000 system.)</p>
 </div>
 <div class="section" id="satellite-longitude-latitude-and-height">
 <h2>Satellite longitude, latitude, and height<a class="headerlink" href="#satellite-longitude-latitude-and-height" title="Permalink to this headline">¶</a></h2>
-<p>Once you have the geocentric satellite position computed above,
-you can ask for the satellite’s longitude and latitude
-by passing the position
-to the <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.subpoint" title="skyfield.toposlib.Geoid.subpoint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">subpoint()</span></code></a> method of a standard geoid.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">subpoint</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">subpoint</span><span class="p">(</span><span class="n">geocentric</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Latitude:&#39;</span><span class="p">,</span> <span class="n">subpoint</span><span class="o">.</span><span class="n">latitude</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Longitude:&#39;</span><span class="p">,</span> <span class="n">subpoint</span><span class="o">.</span><span class="n">longitude</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Height: </span><span class="si">{:.1f}</span><span class="s1"> km&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">subpoint</span><span class="o">.</span><span class="n">elevation</span><span class="o">.</span><span class="n">km</span><span class="p">))</span>
+<p>Once you have computed a geocentric satellite position,
+you can use either of several <a class="reference internal" href="api-topos.html#skyfield.toposlib.wgs84" title="skyfield.toposlib.wgs84"><code class="xref py py-data docutils literal notranslate"><span class="pre">wgs84</span></code></a> object methods
+to learn the satellite’s latitude, longitude, and height:</p>
+<ul class="simple">
+<li><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.latlon_of" title="skyfield.toposlib.Geoid.latlon_of"><code class="xref py py-meth docutils literal notranslate"><span class="pre">latlon_of()</span></code></a></li>
+<li><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.height_of" title="skyfield.toposlib.Geoid.height_of"><code class="xref py py-meth docutils literal notranslate"><span class="pre">height_of()</span></code></a></li>
+<li><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.geographic_position_of" title="skyfield.toposlib.Geoid.geographic_position_of"><code class="xref py py-meth docutils literal notranslate"><span class="pre">geographic_position_of()</span></code></a></li>
+</ul>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon_of</span><span class="p">(</span><span class="n">geocentric</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Latitude:&#39;</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Longitude:&#39;</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Latitude: 50deg 14&#39; 37.4&quot;
 Longitude: -86deg 23&#39; 23.3&quot;
-Height: 420.9 km
+</pre></div>
+</div>
+<p>Another <a class="reference internal" href="api-topos.html#skyfield.toposlib.wgs84" title="skyfield.toposlib.wgs84"><code class="xref py py-data docutils literal notranslate"><span class="pre">wgs84</span></code></a> method
+computes the subpoint directly below the satellite —
+the point on the Earth
+with the same latitude and longitude as the satellite,
+but with a height above the WGS84 ellipsoid of zero:</p>
+<ul class="simple">
+<li><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.subpoint_of" title="skyfield.toposlib.Geoid.subpoint_of"><code class="xref py py-meth docutils literal notranslate"><span class="pre">subpoint_of()</span></code></a></li>
+</ul>
+<p>If you want the actual position of the ground beneath the satellite,
+you of course can’t assume that the position will be exactly at sea level.
+You’ll need to find a geographic library
+that lets you load a digital elevation model (DEM),
+then build a subpoint manually using the elevation returned
+for the satellite’s latitude and longitude.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">elevation_m</span> <span class="o">=</span> <span class="mf">123.0</span>
+<span class="n">subpoint</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="n">lat</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="n">lon</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span> <span class="n">elevation_m</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -686,8 +707,20 @@ and otherwise recording the propagator error:</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="build-a-satellite-with-a-specific-gravity-model">
+<span id="from-satrec"></span><h2>Build a satellite with a specific gravity model<a class="headerlink" href="#build-a-satellite-with-a-specific-gravity-model" title="Permalink to this headline">¶</a></h2>
+<p>If your satellite elements
+are designed for another gravity model besides the default WGS72 model,
+then use the underlying <code class="docutils literal notranslate"><span class="pre">sgp4</span></code> module to build the satellite.
+It will let you customize the choice of gravity model:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sgp4.api</span> <span class="kn">import</span> <span class="n">Satrec</span><span class="p">,</span> <span class="n">WGS84</span>
+<span class="n">satrec</span> <span class="o">=</span> <span class="n">Satrec</span><span class="o">.</span><span class="n">twoline2rv</span><span class="p">(</span><span class="n">line1</span><span class="p">,</span> <span class="n">line2</span><span class="p">,</span> <span class="n">WGS84</span><span class="p">)</span>
+<span class="n">sat</span> <span class="o">=</span> <span class="n">EarthSatellite</span><span class="o">.</span><span class="n">from_satrec</span><span class="p">(</span><span class="n">satrec</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="build-a-satellite-from-orbital-elements">
-<span id="from-satrec"></span><h2>Build a satellite from orbital elements<a class="headerlink" href="#build-a-satellite-from-orbital-elements" title="Permalink to this headline">¶</a></h2>
+<h2>Build a satellite from orbital elements<a class="headerlink" href="#build-a-satellite-from-orbital-elements" title="Permalink to this headline">¶</a></h2>
 <p>If you are starting with raw satellite orbital parameters
 instead of TLE text,
 you will want to interact directly

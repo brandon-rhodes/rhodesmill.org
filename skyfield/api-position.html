@@ -66,7 +66,7 @@ specified for this position.</p>
 <dd><p>Constructor: build a position from two vectors in a reference frame.</p>
 <ul class="simple">
 <li><code class="docutils literal notranslate"><span class="pre">t</span></code> — The <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> of the position.</li>
-<li><code class="docutils literal notranslate"><span class="pre">frame</span></code> — A reference frame listed at <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">frame</span></code> — A reference frame listed at <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">ECI and ECEF coordinates</span></a>.</li>
 <li><code class="docutils literal notranslate"><span class="pre">distance</span></code> — A <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> (<em>x,y,z</em>) vector in the given frame.</li>
 <li><code class="docutils literal notranslate"><span class="pre">velocity</span></code> — A <a class="reference internal" href="api-units.html#skyfield.units.Velocity" title="skyfield.units.Velocity"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Velocity</span></code></a> ẋ,ẏ,ż vector in the given frame.</li>
 </ul>
@@ -107,7 +107,7 @@ access its magnitude as a number.</p>
 <dl class="method">
 <dt id="skyfield.positionlib.ICRF.radec">
 <code class="descname">radec</code><span class="sig-paren">(</span><em>epoch=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.radec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute equatorial (RA, declination, distance)</p>
+<dd><p>Compute equatorial RA, declination, and distance.</p>
 <p>When called without a parameter, this returns standard ICRF
 right ascension and declination:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
@@ -203,7 +203,7 @@ calculated at a specific epoch.</p>
 <dd><p>Return this position as an (<em>x,y,z</em>) vector in a reference frame.</p>
 <p>Returns a <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> object giving the
 (<em>x,y,z</em>) of this position in the given <code class="docutils literal notranslate"><span class="pre">frame</span></code>.  See
-<a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</p>
+<a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">ECI and ECEF coordinates</span></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -213,7 +213,7 @@ calculated at a specific epoch.</p>
 <p>Returns two vectors in the given coordinate <code class="docutils literal notranslate"><span class="pre">frame</span></code>: a
 <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> providing an (<em>x,y,z</em>) position
 and a <a class="reference internal" href="api-units.html#skyfield.units.Velocity" title="skyfield.units.Velocity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Velocity</span></code></a> giving (xdot,ydot,zdot)
-velocity.  See <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</p>
+velocity.  See <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">ECI and ECEF coordinates</span></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -223,7 +223,7 @@ velocity.  See <a class="reference internal" href="positions.html#reference-fram
 <p>Returns a 3-element tuple giving the latitude and longitude as
 <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> objects and the range to the
 target as a <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a>.  See
-<a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</p>
+<a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">ECI and ECEF coordinates</span></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -457,7 +457,7 @@ well as the orientation of its axes in space.</p>
 <dl class="method">
 <dt id="skyfield.positionlib.Geocentric.itrf_xyz">
 <code class="descname">itrf_xyz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Geocentric.itrf_xyz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deprecated; instead, call <code class="docutils literal notranslate"><span class="pre">.frame_xyz(itrs)</span></code>.         See <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</p>
+<dd><p>Deprecated; instead, call <code class="docutils literal notranslate"><span class="pre">.frame_xyz(itrs)</span></code>.         See <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">ECI and ECEF coordinates</span></a>.</p>
 </dd></dl>
 
 <dl class="method">

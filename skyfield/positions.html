@@ -36,8 +36,7 @@ to learn more about the position objects that they generate:</p>
 <li><a class="reference internal" href="kepler-orbits.html"><span class="doc">Kepler Orbits</span></a> (comets and asteroids)</li>
 </ul>
 <p>You can also build a position object yourself
-by providing (<em>x,y,z</em>) coordinates to a position class.
-For example:</p>
+by providing (<em>x,y,z</em>) coordinates to a position class:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.positionlib</span> <span class="kn">import</span> <span class="n">Barycentric</span>
 
 <span class="n">x</span> <span class="o">=</span> <span class="mf">3141.0</span>
@@ -67,7 +66,7 @@ that formats an angle as degrees, minutes, and seconds.</p>
 </ul>
 </div>
 <div class="section" id="the-icrs-reference-system-and-j2000">
-<h2>The ICRS reference system and J2000<a class="headerlink" href="#the-icrs-reference-system-and-j2000" title="Permalink to this headline">¶</a></h2>
+<span id="icrs"></span><h2>The ICRS reference system and J2000<a class="headerlink" href="#the-icrs-reference-system-and-j2000" title="Permalink to this headline">¶</a></h2>
 <p>Even though Skyfield scripts often produce output
 in spherical coordinates —
 like right ascension and declination,
@@ -140,27 +139,28 @@ so each object is assigned a separate name:</p>
 <span class="n">d</span> <span class="o">=</span> <span class="n">apparent</span><span class="o">.</span><span class="n">distance</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>This is a common Python pattern —
-by assigning names to intermediate values,
-the programmer can pivot between
+<p>This is a common Python pattern.
+By assigning names to intermediate values,
+the programmer
+— without changing the code’s result —
+can pivot between
 succinct code that fits on a single line
-and more verbose code that names each intermediate value,
-without changing the code’s result.
-Now that we’ve given them names,
+and more verbose code that names each intermediate value.</p>
+<p>Now that we’ve given them names,
 we can discuss the three positions:</p>
 <ul>
 <li><p class="first">A <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric" title="skyfield.positionlib.Barycentric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Barycentric</span></code></a> position
-measures from the Solar System’s center of mass,
-so its (<em>x,y,z</em>) is in the Barycentric Celestial Reference System (BCRS) —
+measures from the Solar System’s center of mass.
+This places its (<em>x,y,z</em>) vector
+in the Barycentric Celestial Reference System (BCRS) —
 a frame of reference that’s inertial enough
 to support the <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">observe()</span></code></a> method.</p>
 <p>You’ll usually start a Skyfield script
 by generating a barycentric position
 for the <em>center</em> from which you’ll be observing —
 whether that’s the Earth,
-a specific location on the Earth’s surface,
-a satellite,
-or another body like a planet or Moon.</p>
+or a specific location on the Earth’s surface,
+or another body like a satellite, planet, or moon.</p>
 </li>
 <li><p class="first">An <a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric" title="skyfield.positionlib.Astrometric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Astrometric</span></code></a> position
 is returned by the <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Barycentric.observe()</span></code></a> method which,
@@ -177,7 +177,7 @@ and Neptune where it was about 4&nbsp;hours ago.</p>
 <li><p class="first">An <a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent" title="skyfield.positionlib.Apparent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Apparent</span></code></a> position is computed
 by calling the <a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric.apparent" title="skyfield.positionlib.Astrometric.apparent"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Astrometric.apparent()</span></code></a> method.
 This applies two real-world effects
-that slightly shift everything in the night sky:
+that slightly shift everything in the sky:
 the aberration of light
 produced by the observer’s own motion through space,
 and the gravitational deflection of light
@@ -325,10 +325,11 @@ but gradually trace 26,000-year circles around the sky.
 This requires RA/Dec coordinates to specify which year’s “equinox”
 their right ascension is measured from,
 which will also be the year whose poles and equator they use.</p>
-<p>The modern standard for astrometric RA/Dec is the ICRS,
-described above,
-which having been fixed in the directions of the J2000 equinox and poles
-is now permanent and will never suffer precession.
+<p>The modern standard for astrometric RA/Dec is the ICRS
+(<a class="reference internal" href="#icrs"><span class="std std-ref">described above</span></a>).
+With axes that are fixed in the directions of the J2000 equinox and poles,
+the ICRS is a permanent coordinate system
+that will never suffer precession.
 Skyfield returns ICRS coordinates
 if you simply call <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radec()</span></code></a>
 without an argument:</p>
@@ -353,7 +354,8 @@ in units of your own choice.</p>
 <p>If your project specifically requires coordinates
 expressed in the RA/Dec of an older equinox,
 you can build a time object and pass it to  <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radec()</span></code></a>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Astrometric RA/Dec relative to another equinox.</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Astrometric RA/Dec relative to another equinox:</span>
+<span class="c1"># the J1991.25 epoch used by the Hipparcos catalog.</span>
 
 <span class="n">equinox</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="mf">1991.25</span><span class="p">)</span>
 <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="n">equinox</span><span class="p">)</span>
@@ -371,8 +373,8 @@ while your telescope tracks the specified right ascension across the sky.</p>
 with RA/Dec coordinates of some other era.
 You’ll want them measured against where the Earth’s poles
 are really pointing tonight.</p>
-<p>Skyfield uses the high precision IAU&nbsp;2000A standard
-for both the precession that carries the Earth’s poles
+<p>Skyfield uses the high precision IAU&nbsp;2000A model
+to compute both the precession that carries the Earth’s poles
 in their 26,000-year circle around the sky
 and also the short term wobbles in the Earth’s orientation
 that are called nutation.
@@ -381,8 +383,7 @@ of the direction of the poles and equator
 on a given date.</p>
 <p>When pointing a telescope,
 always use apparent coordinates,
-since you will want every possible effect accounted for
-that produces the position of your target in the sky.</p>
+since you will want every possible real-world effect accounted for.</p>
 <p>While you could pass each position’s time
 to its own <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radec()</span></code></a> method,
 that would be a bit tedious,
@@ -414,18 +415,18 @@ the point where Mars will actually appear,
 not the ideal point where it should sit on a star chart
 that ignores aberration and deflection.</p>
 </div>
-<div class="section" id="azimuth-and-altitude">
-<h2>Azimuth and altitude<a class="headerlink" href="#azimuth-and-altitude" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="azimuth-and-altitude-from-a-geographic-position">
+<h2>Azimuth and altitude from a geographic position<a class="headerlink" href="#azimuth-and-altitude-from-a-geographic-position" title="Permalink to this headline">¶</a></h2>
 <p>The final result that many users seek
 is the altitude and azimuth of an object
 above their own local horizon.</p>
 <ul class="simple">
 <li><em>Altitude</em> measures the angle above or below the horizon.
-The great circle of the horizon itself has 0° altitude,
-while a positive number gives the number of degrees above the horizon.</li>
-<li><em>Azimuth</em> measures the angle around the sky from the north pole.
-Thus 0° means that the object is exactly north,
-90° directly east, 180° directly south, and 270° directly west.</li>
+The zenith is at&nbsp;+90°,
+an object on the horizon’s great circle is at&nbsp;0°,
+and the nadir beneath your feet is at&nbsp;−90°.</li>
+<li><em>Azimuth</em> measures the angle around the sky from the north pole:
+0° means exactly north, 90° is east, 180° is south, and 270° is west.</li>
 </ul>
 <p>Altitude and azimuth are computed
 by calling the <a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent.altaz" title="skyfield.positionlib.Apparent.altaz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">altaz()</span></code></a> method on an apparent position.
@@ -545,8 +546,75 @@ you can measure how far an object has moved:</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="eci-and-ecef-coordinates">
+<span id="reference-frames"></span><h2>ECI and ECEF coordinates<a class="headerlink" href="#eci-and-ecef-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>Programmers are sometimes asked to produce “ECI” or “ECEF” coordinates,
+or to convert between the two.</p>
+<p>ECI means <em>Earth-Centered Inertial</em> —
+a position centered on the Earth
+that’s expressed in a non-rotating reference frame.
+Remember the very first coordinates we produced above,
+in the <a class="reference internal" href="#barycentric-astrometric-apparent"><span class="std std-ref">Barycentric → Astrometric → Apparent</span></a> section?
+They qualify as ECI coordinates!
+Why?
+Because they’re measured from the Earth’s center,
+and because Skyfield’s default ICRS reference frame is inertial.
+So when generating positions centered on the Earth,
+Skyfield produces ECI coordinates by default.</p>
+<p>ECEF means <em>Earth-Centered Earth-Fixed</em> —
+a position measured from the Earth’s center
+that rotates with the Earth’s surface instead of staying fixed in space.
+Skyfield uses the standard ITRS reference frame for Earth-fixed positions.
+If all you need are (<em>x,y,z</em>) coordinates,
+you can ask Skyfield for them directly.
+The ITRS <em>x</em>-axis points at 0° longitude on the Earth’s equator,
+the <em>y</em>-axis at 90° east longitude on the equator,
+and the <em>z</em>-axis at the North Pole:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.framelib</span> <span class="kn">import</span> <span class="n">itrs</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">moon</span><span class="p">)</span>
+
+<span class="c1"># Cartesian ECEF coordinates.</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">frame_xyz</span><span class="p">(</span><span class="n">itrs</span><span class="p">)</span><span class="o">.</span><span class="n">km</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cartesian (km): x=</span><span class="si">{:.0f}</span><span class="s1"> y=</span><span class="si">{:.0f}</span><span class="s1"> z=</span><span class="si">{:.0f}</span><span class="s1">&#39;</span>
+      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Cartesian (km): x=349034 y=-106810 z=122509
+</pre></div>
+</div>
+<p>But ECEF coordinates
+are more often expressed using latitude, longitude, and height.
+Earlier on this page,
+we learned the <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.latlon" title="skyfield.toposlib.Geoid.latlon"><code class="xref py py-meth docutils literal notranslate"><span class="pre">latlon()</span></code></a> method
+that takes a latitude and longitude
+and returns an ECEF position.
+There’s a matching method that goes the other direction,
+and computes the latitude and longitude of an existing position.
+For example,
+we can ask for the Earth longitude and latitude
+of the point directly beneath the Moon:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">wgs84</span>
+
+<span class="c1"># Geographic ECEF coordinates.</span>
+
+<span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon_of</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Latitude: </span><span class="si">{:.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Longitude: </span><span class="si">{:.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lon</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Latitude: 18.5553
+Longitude: -17.0149
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="api.html#geographic-locations"><span class="std std-ref">Geographic locations</span></a> section
+of the API documentation
+for the whole slate of methods
+that can convert between inertial and Earth-fixed positions.</p>
+</div>
 <div class="section" id="coordinates-in-other-reference-frames">
-<span id="reference-frames"></span><h2>Coordinates in other reference frames<a class="headerlink" href="#coordinates-in-other-reference-frames" title="Permalink to this headline">¶</a></h2>
+<h2>Coordinates in other reference frames<a class="headerlink" href="#coordinates-in-other-reference-frames" title="Permalink to this headline">¶</a></h2>
 <p>You can ask Skyfield to express a position
 in a number of other reference frames
 besides the standard ICRF reference frame

@@ -34,7 +34,7 @@
 <li><a class="reference internal" href="#planetary-magnitudes" id="id8">Planetary magnitudes</a></li>
 <li><a class="reference internal" href="#planetary-reference-frames" id="id9">Planetary reference frames</a></li>
 <li><a class="reference internal" href="#almanac" id="id10">Almanac</a></li>
-<li><a class="reference internal" href="#topocentric-locations" id="id11">Topocentric locations</a></li>
+<li><a class="reference internal" href="#geographic-locations" id="id11">Geographic locations</a></li>
 <li><a class="reference internal" href="#kepler-orbits" id="id12">Kepler orbits</a></li>
 <li><a class="reference internal" href="#earth-satellites" id="id13">Earth satellites</a></li>
 <li><a class="reference internal" href="#stars-and-other-distant-objects" id="id14">Stars and other distant objects</a></li>
@@ -169,6 +169,9 @@ to use for all date and time conversions:</p>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.from_astropy" title="skyfield.timelib.Timescale.from_astropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.from_astropy</span></code></a>(t)</td>
 <td>Build a Skyfield <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> from an AstroPy time object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Timescale.linspace" title="skyfield.timelib.Timescale.linspace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timescale.linspace</span></code></a>(t0,&nbsp;t1[,&nbsp;num])</td>
+<td>Return <code class="docutils literal notranslate"><span class="pre">num</span></code> times spaced uniformly between <code class="docutils literal notranslate"><span class="pre">t0</span></code> to <code class="docutils literal notranslate"><span class="pre">t1</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -366,9 +369,6 @@ that returns vectors from the Solar System barycenter to the named body.</p>
 <dt id="skyfield.magnitudelib.planetary_magnitude">
 <code class="descclassname">skyfield.magnitudelib.</code><code class="descname">planetary_magnitude</code><span class="sig-paren">(</span><em>position</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.magnitudelib.planetary_magnitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given the position of a planet, return its visual magnitude.</p>
-<p>This prototype function — which so far only supports Mercury, Venus,
-Earth, Jupiter, and Uranus — computes the visual magnitude of a
-planet, given its position relative to an observer.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skyfield.magnitudelib</span> <span class="kn">import</span> <span class="n">planetary_magnitude</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
@@ -379,9 +379,24 @@ planet, given its position relative to an observer.</p>
 <span class="go">-2.73</span>
 </pre></div>
 </div>
-<p>The routine does not yet take into account whether the observer is
-facing the equator or poles of Uranus, so will only be accurate to
-within about 0.1&nbsp;magnitudes.</p>
+<p>The formulae are from <a class="reference external" href="https://arxiv.org/pdf/1808.01973.pdf">Mallama and Hilton “Computing Apparent
+Planetary Magnitude for the Astronomical Almanac” (2018)</a>.  Two of the formulae have
+inherent limits:</p>
+<ul class="simple">
+<li>Saturn’s magnitude is unknown and the function will return <code class="docutils literal notranslate"><span class="pre">nan</span></code>
+(the floating-point value “Not a Number”) if the “illumination
+phase angle” — the angle of the vertex observer-Saturn-Sun —
+exceeds&nbsp;6.5°.</li>
+<li>Neptune’s magnitude is unknown and will return <code class="docutils literal notranslate"><span class="pre">nan</span></code> if the
+illumination phase angle exceeds 1.9° and the position’s date is
+before the year 2000.</li>
+</ul>
+<p>And one formula is not fully implemented (though contributions are
+welcome!):</p>
+<ul class="simple">
+<li>Skyfield does not compute which features on Mars are facing the
+observer, which can introduce an error of ±0.06&nbsp;magnitude.</li>
+</ul>
 </dd></dl>
 
 </div>
@@ -458,20 +473,18 @@ within about 0.1&nbsp;magnitudes.</p>
 </tbody>
 </table>
 </div>
-<div class="section" id="topocentric-locations">
-<h2><a class="toc-backref" href="#id11">Topocentric locations</a><a class="headerlink" href="#topocentric-locations" title="Permalink to this headline">¶</a></h2>
-<p>You can ask Skyfield to compute the position
-of any geographic location on the Earth’s surface.
-First, choose a reference model of the Earth’s exact shape
-(click either name to learn more about them):</p>
+<div class="section" id="geographic-locations">
+<h2><a class="toc-backref" href="#id11">Geographic locations</a><a class="headerlink" href="#geographic-locations" title="Permalink to this headline">¶</a></h2>
+<p id="topocentric-locations">Skyfield supports two Earth datums
+for translating between latitude/longitude and Cartesian coordinates.
+They each use a slightly different estimate of the Earth’s oblateness.
+The most popular is WGS84, which is used by the world’s GPS devices:</p>
 <ul class="simple">
 <li><a class="reference internal" href="api-topos.html#skyfield.toposlib.wgs84" title="skyfield.toposlib.wgs84"><code class="xref any py py-data docutils literal notranslate"><span class="pre">wgs84</span></code></a></li>
 <li><a class="reference internal" href="api-topos.html#skyfield.toposlib.iers2010" title="skyfield.toposlib.iers2010"><code class="xref any py py-data docutils literal notranslate"><span class="pre">iers2010</span></code></a></li>
 </ul>
-<p>Then, call one of the model’s methods
-to build an object representing a specific longitude and latitude.
-Both of the above models are instances of the <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid" title="skyfield.toposlib.Geoid"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Geoid</span></code></a> class
-and offer these methods:</p>
+<p>Each datum offers a method for taking a latitude and longitude
+and returning a <a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref any py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a> that knows its position in space:</p>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
@@ -479,17 +492,36 @@ and offer these methods:</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.latlon" title="skyfield.toposlib.Geoid.latlon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.latlon</span></code></a>(latitude_degrees,&nbsp;longitude_degrees)</td>
-<td>Return the geographic position of a given latitude and longitude.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.subpoint" title="skyfield.toposlib.Geoid.subpoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.subpoint</span></code></a>(position)</td>
-<td>Return Earth latitude and longitude beneath a celestial <code class="docutils literal notranslate"><span class="pre">position</span></code>.</td>
+<td>Return a <a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref any py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a> for a given latitude and longitude.</td>
 </tr>
 </tbody>
 </table>
-<p>Finally, the resulting <a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref any py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a>
-can compute its position at any specified time,
-by combining its coordinates
-with the orientation of the Earth at that moment:</p>
+<p>Going in the other direction,
+there are several methods for converting an existing Skyfield position
+into latitude, longitude, and height:</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.latlon_of" title="skyfield.toposlib.Geoid.latlon_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.latlon_of</span></code></a>(position)</td>
+<td>Return the latitude and longitude of a geocentric <code class="docutils literal notranslate"><span class="pre">position</span></code>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.height_of" title="skyfield.toposlib.Geoid.height_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.height_of</span></code></a>(position)</td>
+<td>Return height above the ellipsoid for a geocentric <code class="docutils literal notranslate"><span class="pre">position</span></code>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.geographic_position_of" title="skyfield.toposlib.Geoid.geographic_position_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.geographic_position_of</span></code></a>(position)</td>
+<td>Return the <a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref any py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a> of a geocentric <code class="docutils literal notranslate"><span class="pre">position</span></code>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.subpoint_of" title="skyfield.toposlib.Geoid.subpoint_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.subpoint_of</span></code></a>(position)</td>
+<td>Return the point on the ellipsoid directly below a <code class="docutils literal notranslate"><span class="pre">position</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Once you have used either of the above approaches
+to build a <a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref any py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a>,
+it offers several methods:</p>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
@@ -639,7 +671,7 @@ declination coordinates with
 <td>Compute the magnitude of the velocity vector.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.radec</span></code></a>([epoch])</td>
-<td>Compute equatorial (RA, declination, distance)</td>
+<td>Compute equatorial RA, declination, and distance.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.hadec" title="skyfield.positionlib.ICRF.hadec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.hadec</span></code></a>()</td>
 <td>Compute hour angle, declination, and distance.</td>
@@ -962,7 +994,7 @@ instantaneous position and velocity.</p>
 <td>Radians (𝜏&nbsp;=&nbsp;2𝜋 in a circle).</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.hours" title="skyfield.units.Angle.hours"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.hours</span></code></a></td>
-<td>Hours (24 in a circle).</td>
+<td>Hours (24<sup>h</sup> in a circle).</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="api-units.html#skyfield.units.Angle.degrees" title="skyfield.units.Angle.degrees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle.degrees</span></code></a></td>
 <td>Degrees (360° in a circle).</td>
