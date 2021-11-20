@@ -259,8 +259,9 @@ and sets four more <code class="docutils literal notranslate"><span class="pre">
 </div>
 <div class="line"><a class="reference external" href="radec">Apparent position</a> relative to horizon</div>
 <div class="line-block">
-<div class="line"><code class="docutils literal notranslate"><span class="pre">az</span></code> — Azimuth east of north</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">alt</span></code> — Altitude above horizon</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">az</span></code> — Azimuth 0°–360° east of north</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">alt</span></code> — Altitude ±90° relative to the horizon’s great circle
+(unaffected by the rise/set setting <code class="docutils literal notranslate"><span class="pre">horizon</span></code>)</div>
 </div>
 </div>
 </li>
@@ -407,16 +408,16 @@ measured east of north&nbsp;(°)</div>
 </li>
 <li><p class="first"><code class="docutils literal notranslate"><span class="pre">EarthSatellite</span></code> elements of man-made satellites:</p>
 <div class="line-block">
-<div class="line"><code class="docutils literal notranslate"><span class="pre">_epoch</span></code> — Reference epoch</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">_n</span></code> — Mean motion, in revolutions per day</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">_inc</span></code> — Inclination&nbsp;(°)</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">_raan</span></code> — Right Ascension of ascending node&nbsp;(°)</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">_e</span></code> — Eccentricity</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">_ap</span></code> — Argument of perigee at epoch&nbsp;(°)</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">_M</span></code> — Mean anomaly from perigee at epoch&nbsp;(°)</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">_decay</span></code> — Orbit decay rate in revolutions per day, per day</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">_drag</span></code> — Object drag coefficient in per earth radii</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">_orbit</span></code> — Integer orbit number of epoch</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">epoch</span></code> — Reference epoch</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">n</span></code> — Mean motion, in revolutions per day</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">inc</span></code> — Inclination&nbsp;(°)</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">raan</span></code> — Right Ascension of ascending node&nbsp;(°)</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">e</span></code> — Eccentricity</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">ap</span></code> — Argument of perigee at epoch&nbsp;(°)</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">M</span></code> — Mean anomaly from perigee at epoch&nbsp;(°)</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">decay</span></code> — Orbit decay rate in revolutions per day, per day</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">drag</span></code> — Object drag coefficient in per earth radii</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">orbit</span></code> — Integer orbit number of epoch</div>
 </div>
 </li>
 </ul>
@@ -653,6 +654,7 @@ and then cut-and-paste the latitude and longitude into your code.</li>
 ValueError: Google cannot find a place named ‘nonsense string’</p>
 <ul class="last simple">
 <li>A <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> signals a non-existent place.</li>
+<li>You can make a copy of an <code class="docutils literal notranslate"><span class="pre">Observer</span></code> with its <code class="docutils literal notranslate"><span class="pre">copy()</span></code> method.</li>
 </ul>
 </dd>
 </dl>
@@ -822,23 +824,35 @@ when an observer is high off of the ground.</li>
 </pre></div>
 </div>
 <ul class="simple">
-<li>Called without arguments.</li>
-<li>Returns the sidereal time for the observer’s circumstances.</li>
+<li>Takes no arguments.</li>
+<li>Computes the Local Apparent Sidereal Time (LAST)
+for the observer’s latitude, longitude, date, and time.</li>
+<li>The return value is a floating point angle measured in radians
+that prints as hours, minutes, and seconds
+where there are 24&nbsp;hours in a full Earth rotation.</li>
 </ul>
 </div></blockquote>
 <blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span> <span class="o">=</span> <span class="n">madrid</span><span class="o">.</span><span class="n">radec_of</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;90&#39;</span><span class="p">)</span>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span> <span class="o">=</span> <span class="n">madrid</span><span class="o">.</span><span class="n">radec_of</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;90&#39;</span><span class="p">)</span>  <span class="c1"># altitude=90°: the zenith</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">))</span>
 <span class="go">12:05:35.12 40:17:49.8</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>Both arguments to <code class="docutils literal notranslate"><span class="pre">radec_of(az,</span> <span class="pre">alt)</span></code> are interpreted as angles,
+<li>Both of the arguments <code class="docutils literal notranslate"><span class="pre">az</span></code> and <code class="docutils literal notranslate"><span class="pre">alt</span></code> are interpreted as angles,
 using PyEphem’s usual convention:
-a float point number is interpreted as plain radians,
-while a string is expected to give a number in degrees.</li>
-<li>Returns the apparent topocentric coordinates
-behind the given point in the sky.</li>
+a float point number is radians,
+while a string is interpreted as degrees.</li>
+<li>Returns the astrometric right ascension and declination
+of the point on the celestial sphere
+that lies at the apparent azimuth and altitude provided as arguments.</li>
+<li>Returns J2000 star chart coordinates
+if the observer’s <code class="docutils literal notranslate"><span class="pre">.epoch</span></code> is left at its default value of J2000.
+To instead return equinox-of-date coordinates,
+which are measured against where the Earth’s pole
+is actually pointing on that date,
+override the default
+with an assignment like <code class="docutils literal notranslate"><span class="pre">madrid.epoch</span> <span class="pre">=</span> <span class="pre">madrid.date</span></code>.</li>
 </ul>
 </div></blockquote>
 </div>
@@ -996,7 +1010,7 @@ Therefore two attributes are provided for each angle:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">triple</span><span class="p">()</span>
 <span class="go">(1997, 3, 9.21736111111386)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">tuple</span><span class="p">()</span>
-<span class="go">(1997, 3, 9, 5, 13, 2.3748725652694702e-07)</span>
+<span class="go">(1997, 3, 9, 5, 13, 0.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">+</span> <span class="n">ephem</span><span class="o">.</span><span class="n">hour</span>
 <span class="go">35496.75902777778</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ephem</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="n">ephem</span><span class="o">.</span><span class="n">hour</span><span class="p">))</span>

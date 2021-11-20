@@ -39,6 +39,30 @@
             
   <div class="section" id="pyephem-changelog">
 <h1>PyEphem CHANGELOG<a class="headerlink" href="#pyephem-changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="version-4-1-2021-september-29">
+<h2>Version 4.1 (2021 September 29)<a class="headerlink" href="#version-4-1-2021-september-29" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Planetary moon positions are now available through the year 2040
+(previously, asking for a position past 2020 returned zeroes).</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">Date</span></code> object is improved such that the return values of
+<code class="docutils literal notranslate"><span class="pre">str(d)</span></code>, <code class="docutils literal notranslate"><span class="pre">d.datetime()</span></code>, and <code class="docutils literal notranslate"><span class="pre">d.tuple()</span></code> always agree and are
+always rounded to the nearest microsecond.</li>
+<li>Earth satellites offer new orbit parameter attributes.  The old names
+(which are still present, but no longer documented) started awkwardly
+with underscores, and had inconsistent getters and setters that would
+change the satellite if you attempted a round trip like <code class="docutils literal notranslate"><span class="pre">sat._inc</span> <span class="pre">=</span>
+<span class="pre">sat._inc</span></code>.  The new attributes (see the list in the Quick Reference)
+have simple names and use the same units when getting and setting.</li>
+<li>Updated Pluto’s long-term orbital elements
+to match the Astronomical Almanac 2020.</li>
+<li>Expanded the ∆T table so that it now runs through 2018,
+with data from the Astronomical Almanac 2020.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">Observer.copy()</span></code> method is now documented,
+and (after a user requested it)
+the class also now works with Python’s <code class="docutils literal notranslate"><span class="pre">copy</span></code> module.</li>
+<li>PyEphem should now be able to compile for pypy3.</li>
+</ul>
+</div>
 <div class="section" id="version-4-0-0-2-2020-june-14">
 <h2>Version 4.0.0.2 (2020 June 14)<a class="headerlink" href="#version-4-0-0-2-2020-june-14" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -439,6 +463,16 @@ near the horizon.</li>
 computation of a body’s <code class="docutils literal notranslate"><span class="pre">ra</span></code> and <code class="docutils literal notranslate"><span class="pre">dec</span></code> before determining the
 constellation in which the body lies.</li>
 <li>Code should produce cleaner compiles on many platforms.</li>
+</ul>
+</div>
+<div class="section" id="early-history">
+<h2>Early History<a class="headerlink" href="#early-history" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>27 Jul 1998</strong>: the original PyEphem, an awkward SWIG wrapper around
+the raw <code class="docutils literal notranslate"><span class="pre">libastro</span></code> C structures and functions, was ready to appear
+on the “Contributed.html” page on the Python web site.  (With an
+apology from the python.org webmaster, it was not actually posted
+until 1998&nbsp;August&nbsp;26.)</li>
 </ul>
 </div>
 </div>
