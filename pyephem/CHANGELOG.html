@@ -39,6 +39,37 @@
             
   <div class="section" id="pyephem-changelog">
 <h1>PyEphem CHANGELOG<a class="headerlink" href="#pyephem-changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="version-4-1-1-2021-november-27">
+<h2>Version 4.1.1 (2021 November 27)<a class="headerlink" href="#version-4-1-1-2021-november-27" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>When you provide PyEphem with a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> that has a time
+zone attached, PyEphem now detects the time zone and converts the date
+and time to UTC automatically.</li>
+<li>A new search routine had been written and tested
+to power the <a class="reference internal" href="quick.html#transit-rising-setting"><span class="std std-ref">transit, rising, and setting</span></a> methods
+<code class="docutils literal notranslate"><span class="pre">previous_rising()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">previous_setting()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">next_rising()</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">next_setting()</span></code>.
+They should no longer be susceptible to getting hung up in a loop.
+You should also find them substantially faster.</li>
+<li>Fixed the <code class="docutils literal notranslate"><span class="pre">constellation()</span></code> routine so that it uses astrometric,
+rather than apparent, right ascension and declination.  This should
+make it more accurate along the borders of each constellation.</li>
+<li>Fixed how the underlying “libastro” library computes whether a body’s
+image is deflected by gravity when its light passes close to the Sun.
+Previously, users would see coordinates jump unexpectedly as the
+deflection formula turned on and off haphazardly.</li>
+<li>Fixed the star positions in the <code class="docutils literal notranslate"><span class="pre">ephem.stars</span></code> star catalog by adding
+8.75 years of proper motion to each star.  Previously, each 1991.25
+position from the Hipparcos catalog was being incorrectly treated as a
+2000.0 position.</li>
+<li>A new routine <code class="docutils literal notranslate"><span class="pre">unrefract()</span></code> lets you compute the real altitude
+of a body that you observe in the sky at a given apparent altitude.</li>
+<li>The old <code class="docutils literal notranslate"><span class="pre">cities.lookup()</span></code> function is now officially deprecated.
+Because of a Google API restriction, it stopped working in&nbsp;2018.</li>
+</ul>
+</div>
 <div class="section" id="version-4-1-2021-september-29">
 <h2>Version 4.1 (2021 September 29)<a class="headerlink" href="#version-4-1-2021-september-29" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">

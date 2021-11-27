@@ -105,7 +105,7 @@ are used to perform an initial <code class="docutils literal notranslate"><span 
 <div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">j</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">Jupiter</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">j</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s1">&#39;1986/2/8&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">j</span><span class="o">.</span><span class="n">dec</span><span class="p">))</span>
-<span class="go">21:57:50.46 -13:17:37.2</span>
+<span class="go">21:57:50.47 -13:17:37.2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">j</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s1">&#39;1986/2/9&#39;</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="s1">&#39;1950&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">a_ra</span><span class="p">,</span> <span class="n">j</span><span class="o">.</span><span class="n">a_dec</span><span class="p">))</span>
 <span class="go">21:56:50.83 -13:22:54.3</span>
@@ -233,7 +233,7 @@ with southward tilt being positive, and northward, negative:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">gatech</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;1984/5/30 16:22:56&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">Venus</span><span class="p">(</span><span class="n">gatech</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">alt</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">az</span><span class="p">))</span>
-<span class="go">72:19:44.8 134:14:25.3</span>
+<span class="go">72:19:45.1 134:14:25.4</span>
 </pre></div>
 </div>
 <ul>
@@ -243,9 +243,11 @@ with southward tilt being positive, and northward, negative:</p>
 </li>
 <li><p class="first">Uses the <code class="docutils literal notranslate"><span class="pre">epoch</span></code> of the observer.</p>
 </li>
-<li><p class="first">Sets all of the <code class="docutils literal notranslate"><span class="pre">Body</span></code> attributes listed in the previous section
-(but <code class="docutils literal notranslate"><span class="pre">ra</span></code> and <code class="docutils literal notranslate"><span class="pre">dec</span></code> will get different values;
-see below).</p>
+<li><p class="first">Sets all of the <code class="docutils literal notranslate"><span class="pre">Body</span></code> attributes listed in the previous section.</p>
+</li>
+<li><p class="first">For earth satellite objects,
+the astrometric coordinates <code class="docutils literal notranslate"><span class="pre">a_ra</span></code> and <code class="docutils literal notranslate"><span class="pre">a_dec</span></code> are topocentric
+instead of geocentric.</p>
 </li>
 <li><p class="first">Also computes where the body appears in the sky
 (or below the horizon) for the observer,
@@ -270,13 +272,29 @@ include an adjustment to simulate atmospheric refraction
 for the observer’s <code class="docutils literal notranslate"><span class="pre">temp</span></code> and <code class="docutils literal notranslate"><span class="pre">pressure</span></code>;
 set the observer’s <code class="docutils literal notranslate"><span class="pre">pressure</span></code> to zero to ignore refraction.</p>
 </li>
-<li><p class="first">For earth satellite objects,
-the astrometric coordinates <code class="docutils literal notranslate"><span class="pre">a_ra</span></code> and <code class="docutils literal notranslate"><span class="pre">a_dec</span></code> are topocentric
-instead of geocentric,
-since there is little point in figuring out where the satellite
-would appear on a J2000 (or whatever epoch you are using) star chart
-for an observer sitting at the center of the earth.</p>
+<li><p class="first">If you are curious about how big an effect
+atmospheric refraction had on a position,
+the most comprehensive approach is to re-run your calculation
+with the body’s <code class="docutils literal notranslate"><span class="pre">.pressure</span></code> set to zero,
+which turns refraction off.
+You can then compare to see how refraction affected not only its <code class="docutils literal notranslate"><span class="pre">.alt</span></code>
+but also its apparent <code class="docutils literal notranslate"><span class="pre">.ra</span></code> and <code class="docutils literal notranslate"><span class="pre">.dec</span></code>.</p>
 </li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">alt</span><span class="p">)</span>
+<span class="go">72:19:45.1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">unrefract</span><span class="p">(</span><span class="n">gatech</span><span class="o">.</span><span class="n">pressure</span><span class="p">,</span> <span class="n">gatech</span><span class="o">.</span><span class="n">temp</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">alt</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="go">72:19:26.9</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>But if you simply want to perform a quick check
+of how much a body’s altitude was affected by refraction,
+you can call <code class="docutils literal notranslate"><span class="pre">unrefract()</span></code> and pass it an altitude.
+It will return the true altitude at which the body would appear
+if its image were not affected by atmospheric refraction.
+The effect of refraction will only be large near the horizon.</li>
 </ul>
 </div></blockquote>
 </div>
@@ -615,6 +633,8 @@ or J2000 is used as the default.</p>
 </li>
 <li><p class="first">Other attributes default to zero.</p>
 </li>
+<li><p class="first">You can make a copy of an <code class="docutils literal notranslate"><span class="pre">Observer</span></code> with its <code class="docutils literal notranslate"><span class="pre">copy()</span></code> method.</p>
+</li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lowell</span><span class="o">.</span><span class="n">compute_pressure</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lowell</span><span class="o">.</span><span class="n">pressure</span>
@@ -634,30 +654,8 @@ using the International Standard Atmosphere.</li>
 <li>XEphem includes a small database of world cities.</li>
 <li>Each call to <code class="docutils literal notranslate"><span class="pre">city()</span></code> returns a new <code class="docutils literal notranslate"><span class="pre">Observer</span></code>.</li>
 <li>Only latitude, longitude, and elevation are set.</li>
-<li>XEphem can also perform Google geocoding lookups:</li>
 </ul>
 </div></blockquote>
-<p>&nbsp;&gt;&gt;&gt; from ephem import cities
-&nbsp;&gt;&gt;&gt; ven = cities.lookup(‘Ven, Sweden’)</p>
-<blockquote>
-<div><ul class="simple">
-<li>To avoid Google rate limits,
-avoid performing any <code class="docutils literal notranslate"><span class="pre">lookup()</span></code> more than once —
-instead, print the result to your screen
-and then cut-and-paste the latitude and longitude into your code.</li>
-</ul>
-</div></blockquote>
-<dl class="docutils">
-<dt>&nbsp;&gt;&gt;&gt; cities.lookup(‘nonsense string’)</dt>
-<dd><p class="first">Traceback (most recent call last):
-…
-ValueError: Google cannot find a place named ‘nonsense string’</p>
-<ul class="last simple">
-<li>A <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> signals a non-existent place.</li>
-<li>You can make a copy of an <code class="docutils literal notranslate"><span class="pre">Observer</span></code> with its <code class="docutils literal notranslate"><span class="pre">copy()</span></code> method.</li>
-</ul>
-</dd>
-</dl>
 <div class="section" id="transit-rising-and-setting">
 <span id="transit-rising-setting"></span><h3>transit, rising, and setting<a class="headerlink" href="#transit-rising-and-setting" title="Permalink to this headline">¶</a></h3>
 <blockquote>
@@ -1072,13 +1070,14 @@ the following constants may be helpful:</p>
 </li>
 </ul>
 </div></blockquote>
-<div class="section" id="local-time">
-<h3>local time<a class="headerlink" href="#local-time" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="to-your-local-time-zone">
+<h3>to your local time zone<a class="headerlink" href="#to-your-local-time-zone" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">Date</span><span class="p">(</span><span class="s1">&#39;1997/3/9 5:13&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ephem</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">local</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">local</span>
 <span class="go">datetime.datetime(1997, 3, 9, 0, 13)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ephem</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">local</span><span class="p">)</span>
 <span class="go">1997-03-09 00:13:00</span>
 </pre></div>
 </div>
@@ -1088,14 +1087,16 @@ into a Python <code class="docutils literal notranslate"><span class="pre">datet
 </ul>
 </div></blockquote>
 </div>
-<div class="section" id="to-timezone">
-<h3>to timezone<a class="headerlink" href="#to-timezone" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="to-a-specific-timezone">
+<h3>to a specific timezone<a class="headerlink" href="#to-a-specific-timezone" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">Date</span><span class="p">(</span><span class="s1">&#39;1997/3/9 5:13&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ephem</span><span class="o">.</span><span class="n">to_timezone</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">ephem</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span>
-<span class="go">datetime.datetime(1997, 3, 9, 5, 13, tzinfo=&lt;ephem.UTC&gt;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ephem</span><span class="o">.</span><span class="n">to_timezone</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">ephem</span><span class="o">.</span><span class="n">UTC</span><span class="p">))</span>
-<span class="go">1997-03-09 05:13:00+00:00</span>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">zoneinfo</span> <span class="kn">import</span> <span class="n">ZoneInfo</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">zone</span> <span class="o">=</span> <span class="n">ZoneInfo</span><span class="p">(</span><span class="s1">&#39;US/Eastern&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">local</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">to_timezone</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">zone</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">local</span>
+<span class="go">datetime.datetime(1997, 3, 9, 0, 13, tzinfo=zoneinfo.ZoneInfo(key=&#39;US/Eastern&#39;))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">local</span><span class="p">)</span>
+<span class="go">1997-03-09 00:13:00-05:00</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -1103,6 +1104,33 @@ into a Python <code class="docutils literal notranslate"><span class="pre">datet
 into a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> object expressed in the provided time zone.
 The timezone needs to be <code class="docutils literal notranslate"><span class="pre">datetime.tzinfo</span></code>-compliant.
 For simplicity an own implementation for UTC is provided.</li>
+<li>Python&nbsp;3.9 and later offer world time zones in the
+<a class="reference external" href="https://docs.python.org/3/library/zoneinfo.html">zoneinfo</a> module.
+Previous versions of Python can load world time zones by installing
+the third-party <a class="reference external" href="https://pypi.org/project/pytz/">pytz</a> module.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="from-a-specific-timezone">
+<h3>from a specific timezone<a class="headerlink" href="#from-a-specific-timezone" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">zoneinfo</span> <span class="kn">import</span> <span class="n">ZoneInfo</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">zone</span> <span class="o">=</span> <span class="n">ZoneInfo</span><span class="p">(</span><span class="s1">&#39;US/Eastern&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">local</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">zone</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">Date</span><span class="p">(</span><span class="n">local</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="go">2021/11/26 15:17:00</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><em>New in PyEphem 4.1.1:</em>
+If you pass PyEphem a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> that specifies a time zone,
+then PyEphem will automatically convert the date into UTC for you.</li>
+<li>Python&nbsp;3.9 and later offer world time zones in the
+<a class="reference external" href="https://docs.python.org/3/library/zoneinfo.html">zoneinfo</a> module.
+Previous versions of Python can load world time zones by installing
+the third-party <a class="reference external" href="https://pypi.org/project/pytz/">pytz</a> module.</li>
 </ul>
 </div></blockquote>
 </div>
@@ -1113,7 +1141,7 @@ For simplicity an own implementation for UTC is provided.</li>
 <blockquote>
 <div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rigel</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">star</span><span class="p">(</span><span class="s1">&#39;Rigel&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rigel</span><span class="o">.</span><span class="n">_ra</span><span class="p">,</span> <span class="n">rigel</span><span class="o">.</span><span class="n">_dec</span><span class="p">))</span>
-<span class="go">5:14:32.30 -8:12:06.0</span>
+<span class="go">5:14:32.27 -8:12:05.9</span>
 </pre></div>
 </div>
 <ul class="simple">
