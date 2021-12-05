@@ -255,6 +255,7 @@ and sets four more <code class="docutils literal notranslate"><span class="pre">
 <div class="line-block">
 <div class="line"><a class="reference external" href="radec">Apparent topocentric position</a></div>
 <div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">ha</span></code> — Hour angle</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">ra</span></code> — Right ascension</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">dec</span></code> — Declination</div>
 <div class="line"><br /></div>
@@ -269,7 +270,7 @@ and sets four more <code class="docutils literal notranslate"><span class="pre">
 </li>
 <li><p class="first">These apparent positions
 include an adjustment to simulate atmospheric refraction
-for the observer’s <code class="docutils literal notranslate"><span class="pre">temp</span></code> and <code class="docutils literal notranslate"><span class="pre">pressure</span></code>;
+for the observer’s <code class="docutils literal notranslate"><span class="pre">temperature</span></code> and <code class="docutils literal notranslate"><span class="pre">pressure</span></code>;
 set the observer’s <code class="docutils literal notranslate"><span class="pre">pressure</span></code> to zero to ignore refraction.</p>
 </li>
 <li><p class="first">If you are curious about how big an effect
@@ -283,7 +284,7 @@ but also its apparent <code class="docutils literal notranslate"><span class="pr
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">alt</span><span class="p">)</span>
 <span class="go">72:19:45.1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">unrefract</span><span class="p">(</span><span class="n">gatech</span><span class="o">.</span><span class="n">pressure</span><span class="p">,</span> <span class="n">gatech</span><span class="o">.</span><span class="n">temp</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">alt</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">ephem</span><span class="o">.</span><span class="n">unrefract</span><span class="p">(</span><span class="n">gatech</span><span class="o">.</span><span class="n">pressure</span><span class="p">,</span> <span class="n">gatech</span><span class="o">.</span><span class="n">temperature</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">alt</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 <span class="go">72:19:26.9</span>
 </pre></div>
@@ -619,7 +620,7 @@ or J2000 is used as the default.</p>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">lon</span></code> — Geodetic longitude&nbsp;(+E)</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">elevation</span></code> — Elevation&nbsp;(m)</div>
 <div class="line"><br /></div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">temp</span></code> — Temperature&nbsp;(°C)</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">temperature</span></code> — Temperature&nbsp;(°C)</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">pressure</span></code> — Atmospheric pressure&nbsp;(mBar)</div>
 </div>
 </li>
@@ -627,11 +628,13 @@ or J2000 is used as the default.</p>
 </li>
 <li><p class="first">The <code class="docutils literal notranslate"><span class="pre">epoch</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">'2000'</span></code>.</p>
 </li>
-<li><p class="first">The <code class="docutils literal notranslate"><span class="pre">temp</span></code> defaults to 25°C.</p>
+<li><p class="first">The <code class="docutils literal notranslate"><span class="pre">temperature</span></code> defaults to 25°C.</p>
 </li>
 <li><p class="first">The <code class="docutils literal notranslate"><span class="pre">pressure</span></code> defaults to 1010mBar.</p>
 </li>
 <li><p class="first">Other attributes default to zero.</p>
+</li>
+<li><p class="first">You can also refer to temperature by its old name <code class="docutils literal notranslate"><span class="pre">temp</span></code>.</p>
 </li>
 <li><p class="first">You can make a copy of an <code class="docutils literal notranslate"><span class="pre">Observer</span></code> with its <code class="docutils literal notranslate"><span class="pre">copy()</span></code> method.</p>
 </li>
@@ -733,7 +736,7 @@ as the moments when the upper limb of the body touches the horizon
 </li>
 <li><p class="first">Rising and setting
 are sensitive to atmospheric refraction at the horizon,
-and therefore to the observer’s <code class="docutils literal notranslate"><span class="pre">temp</span></code> and <code class="docutils literal notranslate"><span class="pre">pressure</span></code>;
+and therefore to the observer’s <code class="docutils literal notranslate"><span class="pre">temperature</span></code> and <code class="docutils literal notranslate"><span class="pre">pressure</span></code>;
 set the <code class="docutils literal notranslate"><span class="pre">pressure</span></code> to zero to turn off refraction.</p>
 </li>
 <li><p class="first">Rising and setting pay attention
@@ -800,7 +803,7 @@ rather than computing refraction dynamically,
 uses a constant estimate of 34’ of refraction at the horizon.
 So in the above example,
 rather than attempting to jury-rig values
-for <code class="docutils literal notranslate"><span class="pre">temp</span></code> and <code class="docutils literal notranslate"><span class="pre">pressure</span></code>
+for <code class="docutils literal notranslate"><span class="pre">temperature</span></code> and <code class="docutils literal notranslate"><span class="pre">pressure</span></code>
 that yield the magic 34’,
 we turn off PyEphem refraction entirely
 and define the horizon itself as being at 34’&nbsp;altitude instead.</li>

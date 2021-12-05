@@ -39,6 +39,18 @@
             
   <div class="section" id="pyephem-changelog">
 <h1>PyEphem CHANGELOG<a class="headerlink" href="#pyephem-changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="version-4-1-2-2021-december-5">
+<h2>Version 4.1.2 (2021 December 5)<a class="headerlink" href="#version-4-1-2-2021-december-5" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Fixed the new rising and setting routines so they properly detect if a
+body is always below the horizon and raise a <code class="docutils literal notranslate"><span class="pre">NeverUpError</span></code> instead
+of a plain <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>.</li>
+<li>Gave bodies a new <code class="docutils literal notranslate"><span class="pre">ha</span></code> Hour Angle attribute, since the quantity was
+computed internally but then discarded.</li>
+<li>Renamed the observer attribute <code class="docutils literal notranslate"><span class="pre">temp</span></code> to <code class="docutils literal notranslate"><span class="pre">temperature</span></code>, leaving an
+alias behind to support the old spelling.</li>
+</ul>
+</div>
 <div class="section" id="version-4-1-1-2021-november-27">
 <h2>Version 4.1.1 (2021 November 27)<a class="headerlink" href="#version-4-1-1-2021-november-27" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
