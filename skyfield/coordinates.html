@@ -1,0 +1,599 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coordinates — Skyfield documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="coordinates">
+<h1>Coordinates<a class="headerlink" href="#coordinates" title="Permalink to this headline">¶</a></h1>
+<p>“Coordinates” are the numbers we use to name astronomical positions.
+For any given position,
+Skyfield can return
+any of at least a half-dozen different sets of coordinates
+naming that position.</p>
+<p>Through the discussion that follows,
+remember that coordinates are merely names for a position.
+Asking for a different coordinate doesn’t change the position itself.
+As explained in the <a class="reference internal" href="positions.html"><span class="doc">Positions</span></a> chapter,
+there is a real physical difference between,
+say, an astrometric position and an apparent position:
+they are two distinct points in the sky.
+But given a single position —
+a single point in the sky —
+all the various coordinates you can produce
+mean exactly the same thing:
+the direction you would point a telescope to put that point at its center.</p>
+<div class="section" id="cartesian-coordinates-versus-spherical-coordinates">
+<h2>Cartesian coordinates versus Spherical coordinates<a class="headerlink" href="#cartesian-coordinates-versus-spherical-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>A given coordinate system can be used to produce
+two kinds of coordinate:
+Cartesian and spherical.</p>
+<p><em>Cartesian</em> coordinates,
+named after their inventor René Descartes,
+measure a position as three distances (<em>x,y,z</em>)
+along axes that stand at right angles to each other.</p>
+<p><em>Spherical</em> coordinates instead specify a location
+using two angles plus a distance.
+Just as a geographic latitude and longitude
+designate a position on the Earth,
+the two angles of a spherical coordinate
+pick out a particular point in the sky —
+a particular point on the celestial sphere —
+and the distance says how far you would need to travel in that direction
+to reach the target.</p>
+<p>Through the following sections,
+we will see how to ask for both Cartesian and spherical coordinates
+in a variety of coordinate systems.</p>
+</div>
+<div class="section" id="icrs-and-equatorial-right-ascension-and-declination">
+<h2>ICRS and equatorial right ascension and declination<a class="headerlink" href="#icrs-and-equatorial-right-ascension-and-declination" title="Permalink to this headline">¶</a></h2>
+<p><em>Equatorial</em> coordinates,
+which measure angles from the Earth’s equator and poles,
+have already been described in the <a class="reference internal" href="positions.html"><span class="doc">Positions</span></a> chapter:</p>
+<ul class="simple">
+<li><a class="reference internal" href="positions.html#right-ascension-and-declination-astrometric"><span class="std std-ref">Right ascension and declination: astrometric</span></a></li>
+<li><a class="reference internal" href="positions.html#right-ascension-and-declination-apparent"><span class="std std-ref">Right ascension and declination: apparent</span></a></li>
+</ul>
+<p>Here’s how the axes and angles are defined:</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><strong>Equatorial Coordinates</strong></div>
+<div class="line"><em>xy</em>-plane: Earth’s equator</div>
+<div class="line"><em>x</em>-axis: March equinox</div>
+<div class="line"><em>z</em>-axis: North celestial pole</div>
+<div class="line">↔ Right ascension 0<sup>h</sup>–24<sup>h</sup> east around the equator</div>
+<div class="line">↕ Declination ±90° from equator toward poles</div>
+</div>
+</div></blockquote>
+<p>There’s a problem with this coordinate system:
+it slowly changes.
+Thanks to <a class="reference external" href="https://en.wikipedia.org/wiki/Axial_precession">precession</a>,
+the Earth’s poles are in constant — if gradual — motion.
+So equatorial coordinates
+always have to specify
+whether they are measuring against the Earth’s equator and equinox
+as of 1950, or 2000, or some other specific year.
+In the late twentieth century
+“J2000” coordinates became popular,
+measured against the Earth’s mean equator
+as of noon Terrestrial Time on 2000&nbsp;January&nbsp;1.</p>
+<p>But in 1998,
+astronomers decided it was time to get off of the equatorial treadmill.
+They defined a new coordinate system:
+the ICRS (International Celestial Reference System).
+Its axes point almost exactly along the old J2000 axes,
+but are permanent and immobile,
+and can achieve unbounded precision
+because instead of using the Earth
+its axes are tied to the locations of very distant quasars.</p>
+<p>In the <a class="reference internal" href="positions.html"><span class="doc">Positions</span></a> chapter
+you’ve already seen
+how to retrieve ICRS coordinates in both Cartesian and spherical form:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Building an example position.</span>
+
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">earth</span><span class="p">,</span> <span class="n">mars</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;mars&#39;</span><span class="p">]</span>
+<span class="n">position</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
+
+<span class="c1"># Producing coordinates.</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cartesian ICRS:&#39;</span><span class="p">)</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">au</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  x = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  y = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  z = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Spherical ICRS:&#39;</span><span class="p">)</span>
+
+<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="s1">&#39;right ascension&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="s1">&#39;declination&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="s1">&#39;distance&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Cartesian ICRS:
+  x = -1.521 au
+  y = -1.800 au
+  z = -0.772 au
+
+Spherical ICRS:
+  15h 19m 15.08s right ascension
+  -18deg 08&#39; 37.0&quot; declination
+  2.47983 au distance
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> is a <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> object
+and supports not only <code class="docutils literal notranslate"><span class="pre">.au</span></code>
+but also several other units of measure.</p>
+<p>If instead of using the permanent ICRS
+you want to measure coordinates against the Earth’s axes as they precess,
+then retrieving spherical coordinates is easy:
+simply provide a date to <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radec()</span></code></a>
+and it will return a right ascension and declination
+relative to the Earth’s equator and equinox as of that date.</p>
+<p>It’s less usual for someone to want (<em>x,y,z</em>) coordinates
+measured against the real equator and equinox,
+so there’s no built-in method to retrieve them.
+Instead, you’ll need to import the reference frame itself
+and pass it to the position’s
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz" title="skyfield.positionlib.ICRF.frame_xyz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">frame_xyz()</span></code></a> method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.framelib</span> <span class="kn">import</span> \
+    <span class="n">true_equator_and_equinox_of_date</span> <span class="k">as</span> <span class="n">of_date</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cartesian equinox-of-date coordinates:&#39;</span><span class="p">)</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">frame_xyz</span><span class="p">(</span><span class="n">of_date</span><span class="p">)</span><span class="o">.</span><span class="n">au</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  x = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  y = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  z = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Spherical equinox-of-date coordinates:&#39;</span><span class="p">)</span>
+
+<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="n">position</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="s1">&#39;right ascension&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="s1">&#39;declination&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="s1">&#39;distance&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Cartesian equinox-of-date coordinates:
+  x = -1.510 au
+  y = -1.808 au
+  z = -0.775 au
+
+Spherical equinox-of-date coordinates:
+  15h 20m 28.70s right ascension
+  -18deg 13&#39; 18.5&quot; declination
+  2.47983 au distance
+</pre></div>
+</div>
+<p>Note that the distance is exactly the same as before,
+because this is exactly the same position —
+it’s merely being measured against a slightly different set of axes.</p>
+</div>
+<div class="section" id="horizonal-coordinates">
+<h2>Horizonal coordinates<a class="headerlink" href="#horizonal-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>Altitude and azimuth have already been explained
+in the <a class="reference internal" href="positions.html"><span class="doc">Positions</span></a> chapter,
+so you can start reading about them there:</p>
+<ul class="simple">
+<li><a class="reference internal" href="positions.html#azimuth-and-altitude-from-a-geographic-position"><span class="std std-ref">Azimuth and altitude from a geographic position</span></a></li>
+</ul>
+<p>The coordinate system is called <em>horizonal</em>
+in the sense of “pertaining to the horizon.”</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><strong>Horizonal Coordinates</strong></div>
+<div class="line"><em>xy</em>-plane: Horizon</div>
+<div class="line"><em>x</em>-axis: North point on the horizon</div>
+<div class="line"><em>y</em>-axis: East point on the horizon (left-handed)</div>
+<div class="line"><em>z</em>-axis: Zenith</div>
+<div class="line">↕ Altitude ±90° above or below horizon</div>
+<div class="line">↔ Azimuth 0°–360° measured clockwise from north</div>
+</div>
+</div></blockquote>
+<p>As with the equatorial system,
+the angles associated with horizontal coordinates are so popular
+that Skyfield provides a built-in
+method <a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent.altaz" title="skyfield.positionlib.Apparent.altaz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">altaz()</span></code></a> to retrieve them,
+while (<em>x,y,z</em>) coordinates require a call to
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz" title="skyfield.positionlib.ICRF.frame_xyz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">frame_xyz()</span></code></a>
+with the geographic location itself passed as the reference frame:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># From the chapter on Positions:</span>
+<span class="c1"># computing altitude and azimuth.</span>
+
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">wgs84</span>
+
+<span class="n">bluffton</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="o">+</span><span class="mf">40.8939</span><span class="p">,</span> <span class="o">-</span><span class="mf">83.8917</span><span class="p">)</span>
+<span class="n">astrometric</span> <span class="o">=</span> <span class="p">(</span><span class="n">earth</span> <span class="o">+</span> <span class="n">bluffton</span><span class="p">)</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
+<span class="n">position</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cartesian:&#39;</span><span class="p">)</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">frame_xyz</span><span class="p">(</span><span class="n">bluffton</span><span class="p">)</span><span class="o">.</span><span class="n">au</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  x = </span><span class="si">{:.3f}</span><span class="s1"> au north&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  y = </span><span class="si">{:.3f}</span><span class="s1"> au east&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  z = </span><span class="si">{:.3f}</span><span class="s1"> au up&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Spherical:&#39;</span><span class="p">)</span>
+
+<span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">altaz</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  Altitude:&#39;</span><span class="p">,</span> <span class="n">alt</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  Azimuth:&#39;</span><span class="p">,</span> <span class="n">az</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  Distance:&#39;</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Cartesian:
+  x = -1.913 au north
+  y = 1.200 au east
+  z = 1.025 au up
+
+Spherical:
+  Altitude: 24deg 24&#39; 20.2&quot;
+  Azimuth: 147deg 54&#39; 27.9&quot;
+  Distance: 2.47981 au
+</pre></div>
+</div>
+<p>Note that some astronomers use the term “elevation”
+for what Skyfield calls “altitude”:
+the angle at which a target stands above the horizon.
+Obviously both words are ambiguous,
+since “elevation” can also mean a site’s vertical distance above sea level,
+and “altitude” can mean an airplane’s height
+above either sea level or the ground.</p>
+</div>
+<div class="section" id="hour-angle-and-declination">
+<h2>Hour Angle and Declination<a class="headerlink" href="#hour-angle-and-declination" title="Permalink to this headline">¶</a></h2>
+<p>If you are pointing a telescope or other instrument,
+you might be interested in a variation on equatorial coordinates:
+replacing right ascension with <em>hour angle,</em>
+which measures ±180° from your own local meridian.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ha</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">hadec</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hour Angle:&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Declination:&#39;</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Distance:&#39;</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Hour Angle: -02h 02m 28.94s
+Declination: -18deg 13&#39; 16.4&quot;
+Distance: 2.47981 au
+</pre></div>
+</div>
+<p>To make the hour angle and declination even more useful
+for pointing real-world instruments,
+Skyfield includes the effect of polar motion
+if you have <a class="reference internal" href="accuracy-efficiency.html#polar-motion"><span class="std std-ref">loaded a polar motion table</span></a>.
+In that case the declination you get from
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.hadec" title="skyfield.positionlib.ICRF.hadec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hadec()</span></code></a>
+will vary slightly from the declination returned by
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radec()</span></code></a>,
+which doesn’t include polar motion.</p>
+</div>
+<div class="section" id="eci-versus-ecef-coordinates">
+<h2>ECI versus ECEF coordinates<a class="headerlink" href="#eci-versus-ecef-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>Here’s a quick explanation of two acronyms
+that you’re likely to run across in discussions about coordinates.</p>
+<p>ECI stands for <em>Earth-Centered Inertial</em>
+and specifies coordinates that are
+(a)&nbsp;measured from the Earth’s center
+and (b)&nbsp;that don’t rotate with the Earth itself.
+The very first coordinates we computed in this chapter,
+for example,
+qualify as ECI coordinates,
+because the <code class="docutils literal notranslate"><span class="pre">position</span></code> used the Earth as its center
+and because the ICRS system of right ascension and declination
+stays fixed on the celestial sphere
+even as the Earth rotates beneath it.</p>
+<p>ECEF stands for <em>Earth-Centered Earth-Fixed</em>
+and specifies coordinates that are
+(a)&nbsp;measured from the Earth’s center
+but (b)&nbsp;which rotate with the Earth instead of staying fixed in space.
+An example would be the latitude and longitude of the Lowell Observatory,
+which stays in place on the Earth’s surface
+but from the point of view of the rest of the Solar System
+is rotating with the Earth.
+A&nbsp;fixed  on the Earth’s surface is a good example.
+We will learn about generating ECEF coordinates in the next section.</p>
+</div>
+<div class="section" id="geographic-itrs-latitude-and-longitude">
+<h2>Geographic ITRS latitude and longitude<a class="headerlink" href="#geographic-itrs-latitude-and-longitude" title="Permalink to this headline">¶</a></h2>
+<p>Skyfield uses the standard ITRS reference frame
+to specify positions
+that are fixed relative to the Earth’s surface.</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><strong>ITRS Coordinates</strong></div>
+<div class="line"><em>xy</em>-plane: Earth’s equator</div>
+<div class="line"><em>x</em>-axis: 0° longitude on the equator</div>
+<div class="line"><em>y</em>-axis: 90° east longitude on the equator</div>
+<div class="line"><em>z</em>-axis: North pole</div>
+<div class="line">↕ Latitude ±90° from equator toward poles</div>
+<div class="line">↔ Longitude ±180° from prime meridian with east positive</div>
+</div>
+</div></blockquote>
+<p>A location’s latitude will vary slightly
+depending on whether you model the Earth as a simple sphere
+or more realistically as a slightly flattened ellipsoid.
+The most popular choice today is to use the WGS84 ellipsoid,
+which is the one used by the GPS system.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">wgs84</span>
+<span class="kn">from</span> <span class="nn">skyfield.framelib</span> <span class="kn">import</span> <span class="n">itrs</span>
+
+<span class="c1"># Important: must start with a position</span>
+<span class="c1"># measured from the Earth’s center.</span>
+<span class="n">position</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cartesian:&#39;</span><span class="p">)</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">frame_xyz</span><span class="p">(</span><span class="n">itrs</span><span class="p">)</span><span class="o">.</span><span class="n">au</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  x = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  y = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  z = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Geographic:&#39;</span><span class="p">)</span>
+
+<span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon_of</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+<span class="n">height</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">height_of</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{:.4f}</span><span class="s1">° latitude&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{:.4f}</span><span class="s1">° longitude&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lon</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{:.0f}</span><span class="s1"> km above sea level&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">km</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Cartesian:
+  x = 1.409 au
+  y = -1.888 au
+  z = -0.775 au
+
+Geographic:
+ -18.2218° latitude
+ -53.2660° longitude
+ 370974969 km above sea level
+</pre></div>
+</div>
+<p>Note that height is measured from sea level,
+not from the center of the Earth.</p>
+<p>The code above is slightly inefficient,
+because <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.height_of" title="skyfield.toposlib.Geoid.height_of"><code class="xref py py-meth docutils literal notranslate"><span class="pre">height_of()</span></code></a>
+will wind up recomputing several values
+that were already computed in <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.latlon_of" title="skyfield.toposlib.Geoid.latlon_of"><code class="xref py py-meth docutils literal notranslate"><span class="pre">latlon_of()</span></code></a>.
+If you need both, it’s more efficient to call
+<a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.geographic_position_of" title="skyfield.toposlib.Geoid.geographic_position_of"><code class="xref py py-meth docutils literal notranslate"><span class="pre">geographic_position_of()</span></code></a>.</p>
+<p>There’s also a <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.subpoint_of" title="skyfield.toposlib.Geoid.subpoint_of"><code class="xref py py-meth docutils literal notranslate"><span class="pre">subpoint_of()</span></code></a> method
+if you want Skyfield to compute the geographic position
+of the sea-level point beneath a given celestial object.</p>
+</div>
+<div class="section" id="ecliptic-coordinates">
+<h2>Ecliptic coordinates<a class="headerlink" href="#ecliptic-coordinates" title="Permalink to this headline">¶</a></h2>
+<p><em>Ecliptic coordinates</em> are measured from the plane of the Earth’s orbit.
+They are useful
+when making maps and diagrams of the Solar System
+and when exploring the properties of orbits around the Sun,
+because they place the orbits of the major planets
+nearly flat against the <em>xy</em>-plane —
+unlike right ascension and declination,
+which twist the Solar System up at a 23° angle
+because of the tilt of the Earth’s axis.</p>
+<p>You might be tempted to ask
+why we measure against the plane of the Earth’s orbit,
+instead of averaging together all the planets
+to compute the “invariable plane” of the whole Solar System
+(to which the Earth’s orbit is inclined by something like 1.57°).
+The answer is: precision.
+We know the plane of the Earth’s orbit to many decimal places,
+because the Earth carries all of our highest-precision observatories
+along with it as it revolves around the Sun.
+Our estimate of the invariable plane, by contrast,
+is a mere average
+that changes — at least slightly —
+every time we discover a new asteroid, comet, or trans-Neptunian object.
+So the Earth’s own orbit winds up being the most pragmatic choice
+for a coordinate system oriented to the Solar System.</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><strong>Ecliptic Coordinates</strong></div>
+<div class="line"><em>xy</em>-plane: Ecliptic plane (plane of Earth’s orbit)</div>
+<div class="line"><em>x</em>-axis: March equinox</div>
+<div class="line"><em>z</em>-axis: North ecliptic pole</div>
+<div class="line">↕ Latitude ±90° above or below the ecliptic</div>
+<div class="line">↔ Longitude 0°–360° measured east from March equinox</div>
+</div>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.framelib</span> <span class="kn">import</span> <span class="n">ecliptic_frame</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cartesian ecliptic coordinates:&#39;</span><span class="p">)</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">frame_xyz</span><span class="p">(</span><span class="n">ecliptic_frame</span><span class="p">)</span><span class="o">.</span><span class="n">au</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  x = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  y = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  z = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Spherical ecliptic coordinates:&#39;</span><span class="p">)</span>
+
+<span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">frame_latlon</span><span class="p">(</span><span class="n">ecliptic_frame</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{:.4f}</span><span class="s1"> latitude&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{:.4f}</span><span class="s1"> longitude&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lon</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{:.3f}</span><span class="s1"> au distant&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">au</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Cartesian ecliptic coordinates:
+  x = -1.510 au
+  y = -1.967 au
+  z = 0.007 au
+
+Spherical ecliptic coordinates:
+ 0.1732 latitude
+ 232.4801 longitude
+ 2.480 au distant
+</pre></div>
+</div>
+<p>Note the very small values returned
+for the ecliptic <em>z</em> coordinate
+and for the ecliptic latitude,
+because Mars revolves around the Sun
+in very nearly the same plane as the Earth.</p>
+</div>
+<div class="section" id="galactic-coordinates">
+<h2>Galactic coordinates<a class="headerlink" href="#galactic-coordinates" title="Permalink to this headline">¶</a></h2>
+<p><em>Galactic coordinates</em> are measured
+against the disc of our own Milky Way galaxy,
+as measured from our vantage point here inside the Orion Arm:</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><strong>Galactic Coordinates</strong></div>
+<div class="line"><em>xy</em>-plane: Galactic plane</div>
+<div class="line"><em>x</em>-axis: Galactic center</div>
+<div class="line"><em>z</em>-axis: North galactic pole</div>
+<div class="line">↕ Latitude ±90° above galactic plane</div>
+<div class="line">↔ Longitude 0°–360° east from galactic center</div>
+</div>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.framelib</span> <span class="kn">import</span> <span class="n">galactic_frame</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cartesian galactic coordinates:&#39;</span><span class="p">)</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">frame_xyz</span><span class="p">(</span><span class="n">galactic_frame</span><span class="p">)</span><span class="o">.</span><span class="n">au</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  x = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  y = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  z = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Spherical galactic coordinates:&#39;</span><span class="p">)</span>
+
+<span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">frame_latlon</span><span class="p">(</span><span class="n">galactic_frame</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{:.4f}</span><span class="s1"> latitude&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{:.4f}</span><span class="s1"> longitude&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lon</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{:.3f}</span><span class="s1"> au distant&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">au</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Cartesian galactic coordinates:
+  x = 2.029 au
+  y = -0.527 au
+  z = 1.324 au
+
+Spherical galactic coordinates:
+ 32.2664 latitude
+ 345.4330 longitude
+ 2.480 au distant
+</pre></div>
+</div>
+<p>Astronomers have generated a series of more and more precise estimates
+of our galaxy’s orientation over the past hundred years.
+Skyfield uses the <a class="reference external" href="https://adsabs.harvard.edu/full/1960MNRAS.121..123B">IAU 1958 Galactic System&nbsp;II</a>,
+which is believed to be accurate to within&nbsp;±0.1°.</p>
+</div>
+<div class="section" id="velocity">
+<h2>Velocity<a class="headerlink" href="#velocity" title="Permalink to this headline">¶</a></h2>
+<p>If you need not only a position vector but a velocity vector
+relative to a particular reference frame,
+then switch from
+the <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz" title="skyfield.positionlib.ICRF.frame_xyz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">frame_xyz()</span></code></a> method
+to the <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz_and_velocity" title="skyfield.positionlib.ICRF.frame_xyz_and_velocity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">frame_xyz_and_velocity()</span></code></a> method.
+As explained in its documentation,
+its return values include the velocity vector.</p>
+</div>
+<div class="section" id="turning-coordinates-into-a-position">
+<h2>Turning coordinates into a position<a class="headerlink" href="#turning-coordinates-into-a-position" title="Permalink to this headline">¶</a></h2>
+<p>All of the above examples take a Skyfield position and return coordinates,
+but sometimes you start with coordinates
+and want to produce a position.</p>
+<p>If you happen to start with ICRS (<em>x,y,z</em>) coordinates,
+then you can create a position with a function call:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.positionlib</span> <span class="kn">import</span> <span class="n">build_position</span>
+
+<span class="n">icrs_xyz_au</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.521</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.800</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.772</span><span class="p">]</span>
+<span class="n">position</span> <span class="o">=</span> <span class="n">build_position</span><span class="p">(</span><span class="n">icrs_xyz_au</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>But it’s probably more common for you
+to have been given a target’s right ascension and declination.
+One common approach is to create a
+<a class="reference internal" href="api-stars.html#skyfield.starlib.Star" title="skyfield.starlib.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a>
+as described in the <a class="reference internal" href="stars.html"><span class="doc">Stars and Distant Objects</span></a> chapter,
+which will give you an object
+that you can pass to <code class="docutils literal notranslate"><span class="pre">.observe()</span></code>
+like any other Skyfield body.
+But you can also create a position directly
+by using the <code class="docutils literal notranslate"><span class="pre">from_radec()</span></code> method carried by each position class.
+To create an apparent position, for example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.positionlib</span> <span class="kn">import</span> <span class="n">Apparent</span>
+
+<span class="n">position</span> <span class="o">=</span> <span class="n">Apparent</span><span class="o">.</span><span class="n">from_radec</span><span class="p">(</span><span class="n">ra_hours</span><span class="o">=</span><span class="mf">5.59</span><span class="p">,</span> <span class="n">dec_degrees</span><span class="o">=</span><span class="mf">5.45</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A final common situation
+is that you measured an altitude and azimuth relative to your horizon
+and want to learn the right ascension and declination of that position.
+The solution is to use the <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_altaz" title="skyfield.positionlib.ICRF.from_altaz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_altaz()</span></code></a>
+method,
+but there’s a catch:
+because the true coordinates behind any particular altitude and azimuth
+are changing every moment as the Earth spins,
+you first need to compute the position of your observatory
+<code class="docutils literal notranslate"><span class="pre">.at()</span></code> the moment you measured the altitude and azimuth,
+and only then call the method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># What are the coordinates of the zenith?</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="n">bluffton</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">apparent</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">from_altaz</span><span class="p">(</span><span class="n">alt_degrees</span><span class="o">=</span><span class="mf">90.0</span><span class="p">,</span> <span class="n">az_degrees</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+
+<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">apparent</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Right ascension:&#39;</span><span class="p">,</span> <span class="n">ra</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Declination:&#39;</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Right ascension: 13h 17m 00.20s
+Declination: +41deg 00&#39; 27.7&quot;
+</pre></div>
+</div>
+<p>If you find yourself in an even less common situation,
+like needing to build a position from ecliptic or galactic coordinates,
+then —
+while there aren’t yet any documented examples for you to follow —
+you might be able to assemble a solution together from these pieces:</p>
+<ul class="simple">
+<li>The position constructor method
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_time_and_frame_vectors" title="skyfield.positionlib.ICRF.from_time_and_frame_vectors"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_time_and_frame_vectors()</span></code></a>.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">from_spherical(r,</span> <span class="pre">theta,</span> <span class="pre">phi)</span></code> method in <code class="docutils literal notranslate"><span class="pre">skyfield/functions.py</span></code>.</li>
+</ul>
+</div>
+</div>
+
+  </body>
+</html>

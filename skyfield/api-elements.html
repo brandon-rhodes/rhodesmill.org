@@ -23,13 +23,19 @@
 <h1>API Reference — Orbital Elements<a class="headerlink" href="#api-reference-orbital-elements" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="skyfield.elementslib.osculating_elements_of">
-<code class="descclassname">skyfield.elementslib.</code><code class="descname">osculating_elements_of</code><span class="sig-paren">(</span><em>position</em>, <em>reference_frame=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.elementslib.osculating_elements_of" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">skyfield.elementslib.</code><code class="descname">osculating_elements_of</code><span class="sig-paren">(</span><em>position</em>, <em>reference_frame=None</em>, <em>gm_km3_s2=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.elementslib.osculating_elements_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produce the osculating orbital elements for a position.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">position</span></code> should be an <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a>
-instance like that returned by the <code class="docutils literal notranslate"><span class="pre">at()</span></code> method of any Solar
-System body, specifying a position, a velocity, and a time.  An
-instance of <a class="reference internal" href="#skyfield.elementslib.OsculatingElements" title="skyfield.elementslib.OsculatingElements"><code class="xref py py-class docutils literal notranslate"><span class="pre">OsculatingElements</span></code></a> is
-returned.</p>
+<p><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.position" title="skyfield.positionlib.ICRF.position"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">position</span></code></a> is an instance of <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a>.
+These are commonly returned by the <code class="docutils literal notranslate"><span class="pre">at()</span></code> method of any
+Solar System body. <code class="xref any docutils literal notranslate"><span class="pre">reference_frame</span></code> is an optional argument
+and is a 3x3 numpy array. The reference frame by default
+is the ICRF. Commonly used reference frames are found in
+skyfield.data.spice.inertial_frames. <code class="xref any docutils literal notranslate"><span class="pre">gm_km3_s2</span></code> is an optional
+float argument representing the gravitational parameter (G*M) in
+units of km^3/s^2, which is the sum of the masses of the orbiting
+object and the object being orbited. If not specified, this is
+calculated for you.</p>
+<p>This function returns an instance of <a class="reference internal" href="#skyfield.elementslib.OsculatingElements" title="skyfield.elementslib.OsculatingElements"><code class="xref py py-class docutils literal notranslate"><span class="pre">OsculatingElements</span></code></a></p>
 </dd></dl>
 
 <dl class="class">

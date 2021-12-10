@@ -21,7 +21,7 @@
     
     <div class="section" id="api-reference-astronomical-positions">
 <h1>API Reference — Astronomical Positions<a class="headerlink" href="#api-reference-astronomical-positions" title="Permalink to this headline">¶</a></h1>
-<p>See <a class="reference internal" href="positions.html"><span class="doc">Positions and Coordinates</span></a> for a detailed guide
+<p>See <a class="reference internal" href="positions.html"><span class="doc">Positions</span></a> for a detailed guide
 to these various kinds of position that Skyfield can compute,
 and to the selection of coordinate systems
 that can be used to express them.</p>
@@ -66,7 +66,7 @@ specified for this position.</p>
 <dd><p>Constructor: build a position from two vectors in a reference frame.</p>
 <ul class="simple">
 <li><code class="docutils literal notranslate"><span class="pre">t</span></code> — The <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> of the position.</li>
-<li><code class="docutils literal notranslate"><span class="pre">frame</span></code> — A reference frame listed at <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">ECI and ECEF coordinates</span></a>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">frame</span></code> — A reference frame listed at <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</li>
 <li><code class="docutils literal notranslate"><span class="pre">distance</span></code> — A <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> (<em>x,y,z</em>) vector in the given frame.</li>
 <li><code class="docutils literal notranslate"><span class="pre">velocity</span></code> — A <a class="reference internal" href="api-units.html#skyfield.units.Velocity" title="skyfield.units.Velocity"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Velocity</span></code></a> ẋ,ẏ,ż vector in the given frame.</li>
 </ul>
@@ -203,7 +203,7 @@ calculated at a specific epoch.</p>
 <dd><p>Return this position as an (<em>x,y,z</em>) vector in a reference frame.</p>
 <p>Returns a <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> object giving the
 (<em>x,y,z</em>) of this position in the given <code class="docutils literal notranslate"><span class="pre">frame</span></code>.  See
-<a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">ECI and ECEF coordinates</span></a>.</p>
+<a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -213,7 +213,7 @@ calculated at a specific epoch.</p>
 <p>Returns two vectors in the given coordinate <code class="docutils literal notranslate"><span class="pre">frame</span></code>: a
 <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> providing an (<em>x,y,z</em>) position
 and a <a class="reference internal" href="api-units.html#skyfield.units.Velocity" title="skyfield.units.Velocity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Velocity</span></code></a> giving (xdot,ydot,zdot)
-velocity.  See <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">ECI and ECEF coordinates</span></a>.</p>
+velocity.  See <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -223,7 +223,7 @@ velocity.  See <a class="reference internal" href="positions.html#reference-fram
 <p>Returns a 3-element tuple giving the latitude and longitude as
 <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> objects and the range to the
 target as a <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a>.  See
-<a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">ECI and ECEF coordinates</span></a>.</p>
+<a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -457,7 +457,7 @@ well as the orientation of its axes in space.</p>
 <dl class="method">
 <dt id="skyfield.positionlib.Geocentric.itrf_xyz">
 <code class="descname">itrf_xyz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Geocentric.itrf_xyz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deprecated; instead, call <code class="docutils literal notranslate"><span class="pre">.frame_xyz(itrs)</span></code>.         See <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">ECI and ECEF coordinates</span></a>.</p>
+<dd><p>Deprecated; instead, call <code class="docutils literal notranslate"><span class="pre">.frame_xyz(itrs)</span></code>.         See <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.</p>
 </dd></dl>
 
 <dl class="method">
