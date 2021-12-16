@@ -257,8 +257,8 @@ with the geographic location itself passed as the reference frame:</p>
   z = 1.025 au up
 
 Spherical:
-  Altitude: 24deg 24&#39; 20.2&quot;
-  Azimuth: 147deg 54&#39; 27.9&quot;
+  Altitude: 24deg 24&#39; 20.6&quot;
+  Azimuth: 147deg 54&#39; 28.8&quot;
   Distance: 2.47981 au
 </pre></div>
 </div>
@@ -283,7 +283,7 @@ which measures ±180° from your own local meridian.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Distance:&#39;</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Hour Angle: -02h 02m 28.94s
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Hour Angle: -02h 02m 28.88s
 Declination: -18deg 13&#39; 16.4&quot;
 Distance: 2.47981 au
 </pre></div>
@@ -378,7 +378,7 @@ which is the one used by the GPS system.</p>
 
 Geographic:
  -18.2218° latitude
- -53.2660° longitude
+ -53.2662° longitude
  370974969 km above sea level
 </pre></div>
 </div>
@@ -578,7 +578,7 @@ and only then call the method.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Declination:&#39;</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Right ascension: 13h 17m 00.20s
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Right ascension: 13h 17m 00.26s
 Declination: +41deg 00&#39; 27.7&quot;
 </pre></div>
 </div>
@@ -592,6 +592,41 @@ you might be able to assemble a solution together from these pieces:</p>
 <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_time_and_frame_vectors" title="skyfield.positionlib.ICRF.from_time_and_frame_vectors"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_time_and_frame_vectors()</span></code></a>.</li>
 <li>The <code class="docutils literal notranslate"><span class="pre">from_spherical(r,</span> <span class="pre">theta,</span> <span class="pre">phi)</span></code> method in <code class="docutils literal notranslate"><span class="pre">skyfield/functions.py</span></code>.</li>
 </ul>
+</div>
+<div class="section" id="rotation-matrices">
+<h2>Rotation Matrices<a class="headerlink" href="#rotation-matrices" title="Permalink to this headline">¶</a></h2>
+<p>If you are doing some of your own mathematics,
+you might want access to the low-level 3×3 rotation matrices
+that define the relationship between each coordinate reference frame
+and the ICRS.
+To compute a rotation matrix,
+simply pass a time to the frame’s <code class="docutils literal notranslate"><span class="pre">rotation_at()</span></code> method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 3×3 rotation matrix: ICRS → frame</span>
+
+<span class="n">R</span> <span class="o">=</span> <span class="n">ecliptic_frame</span><span class="o">.</span><span class="n">rotation_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[ 0.99998613 -0.00482998 -0.00209857]
+ [ 0.00526619  0.9174892   0.39772583]
+ [ 0.00000441 -0.39773137  0.91750191]]
+</pre></div>
+</div>
+<p>You should find the matrix easy to work with if <code class="docutils literal notranslate"><span class="pre">t</span></code> is a single time,
+but if <code class="docutils literal notranslate"><span class="pre">t</span></code> is a whole <a class="reference internal" href="time.html#date-arrays"><span class="std std-ref">array of times</span></a>
+then the resulting matrix will have a third dimension
+with the same number of elements as the time vector.
+NumPy provides no direct support
+for rotation matrices with an extra dimension,
+so avoid using NumPy’s multiplication operators.
+Instead, use Skyfield utility functions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.functions</span> <span class="kn">import</span> <span class="n">T</span><span class="p">,</span> <span class="n">mxm</span><span class="p">,</span> <span class="n">mxv</span>
+
+<span class="n">T</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>        <span class="c1"># reverse rotation matrix: frame → ICRS</span>
+<span class="n">mxm</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">R2</span><span class="p">)</span>  <span class="c1"># matrix × matrix: combines rotations</span>
+<span class="n">mxv</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>   <span class="c1"># matrix × vector: rotates a vector</span>
+</pre></div>
+</div>
 </div>
 </div>
 

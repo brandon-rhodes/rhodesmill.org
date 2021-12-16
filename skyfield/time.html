@@ -396,6 +396,29 @@ then you will have to decide
 whether to simply ignore the <code class="docutils literal notranslate"><span class="pre">leap_second</span></code> value
 or to somehow output the leap second information.</p>
 </div>
+<div class="section" id="date-arithmetic">
+<h2>Date arithmetic<a class="headerlink" href="#date-arithmetic" title="Permalink to this headline">¶</a></h2>
+<p>Dates support a few simple math operations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+
+<span class="n">t</span> <span class="o">-</span> <span class="mi">10</span>                   <span class="c1"># 10 days earlier</span>
+<span class="n">t</span> <span class="o">+</span> <span class="mf">0.25</span>                 <span class="c1"># 6 hours later</span>
+<span class="n">t</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>  <span class="c1"># 12 hours later</span>
+
+<span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span>  <span class="c1"># difference between times, in days</span>
+</pre></div>
+</div>
+<p>Raw numbers,
+like <code class="docutils literal notranslate"><span class="pre">10</span></code> and <code class="docutils literal notranslate"><span class="pre">0.25</span></code> above,
+specify days of Terrestrial Time —
+units of exactly 24 hours of 60 minutes of 60 SI&nbsp;seconds,
+measured in the Earth’s relativistic frame of reference.
+If you increment or decrement a date
+across a <a class="reference internal" href="#leap-seconds"><span class="std std-ref">leap second</span></a>,
+you will notice
+that the clock time returned by Skyfield’s UTC functions
+is one second earlier or later than you expect.</p>
+</div>
 <div class="section" id="date-arrays">
 <span id="id1"></span><h2>Date arrays<a class="headerlink" href="#date-arrays" title="Permalink to this headline">¶</a></h2>
 <p>If you want to ask where a planet or satellite was

@@ -27,10 +27,10 @@
 <dd><p>Produce the osculating orbital elements for a position.</p>
 <p><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.position" title="skyfield.positionlib.ICRF.position"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">position</span></code></a> is an instance of <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a>.
 These are commonly returned by the <code class="docutils literal notranslate"><span class="pre">at()</span></code> method of any
-Solar System body. <code class="xref any docutils literal notranslate"><span class="pre">reference_frame</span></code> is an optional argument
+Solar System body. <code class="docutils literal notranslate"><span class="pre">reference_frame</span></code> is an optional argument
 and is a 3x3 numpy array. The reference frame by default
 is the ICRF. Commonly used reference frames are found in
-skyfield.data.spice.inertial_frames. <code class="xref any docutils literal notranslate"><span class="pre">gm_km3_s2</span></code> is an optional
+skyfield.data.spice.inertial_frames. <code class="docutils literal notranslate"><span class="pre">gm_km3_s2</span></code> is an optional
 float argument representing the gravitational parameter (G*M) in
 units of km^3/s^2, which is the sum of the masses of the orbiting
 object and the object being orbited. If not specified, this is
