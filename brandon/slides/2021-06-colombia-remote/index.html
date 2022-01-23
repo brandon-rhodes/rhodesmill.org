@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<title>&lt;stdin&gt;</title>
+<link rel="stylesheet" href="/css/slides2.css" type="text/css" />
+<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+</head>
+<body class="reading-mode">
+<div class="document">
+
+
+<style>
+  body.presentation-mode .section {
+   width: 1280px;
+   height: 720px;
+   font-size: 42px;
+  }
+  body.presentation-mode pre {
+   font-size: 30px;
+   background: none;
+   box-shadow: none;
+  }
+  body.presentation-mode tt {
+   font-size: 36px;
+  }
+  .big {font-size: 2em;}
+  .timer {font-size: 2.0em; left: 1300px;}
+  .strike {text-decoration: line-through;}
+  .line-block {margin: 0;}
+ </style><div class="section" id="slide">
+
+<div class="line-block">
+<div class="line">—</div>
+<div class="line">The <strong>Contingent</strong> Build System</div>
+<div class="line">—</div>
+<div class="line"><br /></div>
+<div class="line">PyCon Colombia (remote)</div>
+<div class="line"><em>Juneteenth, 2021</em></div>
+<div class="line">Brandon Rhodes</div>
+</div>
+</div>
+<div class="section" id="id1">
+
+<div class="line-block">
+<div class="line">So!</div>
+<div class="line">I often use <strong>Sphinx</strong></div>
+<div class="line">to write documentation</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">pip install sphinx</tt></div>
+</div>
+</div>
+<div class="section" id="id2">
+
+<div class="line-block">
+<div class="line">Sphinx is a framework</div>
+<div class="line">for writing documentation</div>
+<div class="line">using <em>plain text</em> + <em>markup</em>.</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">pip install sphinx</tt></div>
+</div>
+</div>
+<div class="section" id="id3">
+
+<img alt="diagram01.png" src="diagram01.png" />
+</div>
+<div class="section" id="id4">
+
+<div class="line-block">
+<div class="line">Running Sphinx <strong>generates HTML</strong></div>
+<div class="line"><br /></div>
+</div>
+<img alt="diagram02.png" src="diagram02.png" />
+</div>
+<div class="section" id="id5">
+
+<div class="line-block">
+<div class="line">When you first run Sphinx,</div>
+<div class="line"><em>all</em> the pages are built</div>
+</div>
+<div class="highlight"><pre><span></span><span class="s">preparing</span><span class="err"> </span><span class="s">documents</span><span class="err">... </span><span class="s">done</span>
+<span class="s">writing</span><span class="err"> </span><span class="s">output</span><span class="err">... [ </span><span class="s">50</span><span class="err">%] </span><span class="s">home</span>
+<span class="s">writing</span><span class="err"> </span><span class="s">output</span><span class="err">... [</span><span class="s">100</span><span class="err">%] </span><span class="s">tutorial</span>
+</pre></div>
+
+</div>
+<div class="section" id="id6">
+
+<div class="line-block">
+<div class="line">But if you run Sphinx a second time,</div>
+<div class="line">it <strong>detects</strong> that no input files have</div>
+<div class="line">been edited and rebuilds <em>nothing</em></div>
+</div>
+<div class="highlight"><pre><span></span><span class="s">no</span><span class="err"> </span><span class="s">targets</span><span class="err"> </span><span class="s">are</span><span class="err"> </span><span class="s">out</span><span class="err"> </span><span class="s">of</span><span class="err"> </span><span class="s">date</span><span class="err">.</span>
+<span class="s">build</span><span class="err"> </span><span class="s">succeeded</span><span class="err">.</span>
+</pre></div>
+
+</div>
+<div class="section" id="id7">
+
+<div class="line-block">
+<div class="line">If you then edit <em>one</em> file and run Sphinx,</div>
+<div class="line">then Sphinx rebuilds only <em>one</em> target</div>
+</div>
+<div class="highlight"><pre><span></span><span class="s">preparing</span><span class="err"> </span><span class="s">documents</span><span class="err">... </span><span class="s">done</span>
+<span class="s">writing</span><span class="err"> </span><span class="s">output</span><span class="err">... [</span><span class="s">100</span><span class="err">%] </span><span class="s">tutorial</span>
+</pre></div>
+
+</div>
+<div class="section" id="id8">
+
+<div class="line-block">
+<div class="line">Sphinx <em>saves time</em></div>
+<div class="line">by <strong>skipping</strong> files whose</div>
+<div class="line">HTML is already up-to-date</div>
+</div>
+</div>
+<div class="section" id="id9">
+
+<div class="line-block">
+<div class="line">Sphinx, thus, is one example</div>
+<div class="line">of what’s called a <em>build tool</em></div>
+</div>
+</div>
+<div class="section" id="id10">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">make</tt></div>
+<div class="line">April 1976</div>
+<div class="line">Stuart Feldman</div>
+<div class="line"><br /></div>
+<div class="line">Bell Laboratories</div>
+<div class="line">UNIX project</div>
+</div>
+</div>
+<div class="section" id="id11">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">make</tt></div>
+<div class="line">Still in use today!</div>
+</div>
+</div>
+<div class="section" id="id12">
+
+<div class="line-block">
+<div class="line">The <tt class="docutils literal">make</tt> tool</div>
+<div class="line">is general-purpose</div>
+<div class="line"><br /></div>
+<div class="line">It doesn’t need <em>built-in</em> knowledge</div>
+<div class="line">of your programming language</div>
+<div class="line">or document system</div>
+<div class="line"><br /></div>
+<div class="line">Instead, you describe a build</div>
+<div class="line">by writing a <tt class="docutils literal">Makefile</tt></div>
+</div>
+</div>
+<div class="section" id="id13">
+
+<div class="line-block">
+<div class="line">(Aside: why the capital <tt class="docutils literal">M</tt>,</div>
+<div class="line">when UNIX folks love</div>
+<div class="line">lowercase?</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">Makefile</tt></div>
+</div>
+</div>
+<div class="section" id="id14">
+
+<div class="line-block">
+<div class="line">A: When the computer sorts filenames</div>
+<div class="line">by their <tt class="docutils literal">chr()</tt> code, capitals go first!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="err">!&quot;#$%&amp;&#39;()*+,-./</span><span class="s">0123456789</span><span class="err">:;&lt;=&gt;?</span>
+<span class="err">@</span><span class="s">ABCDEFGHIJKLMNOPQRSTUVWXYZ</span><span class="err">[\]^</span><span class="s">_</span>
+<span class="err">`</span><span class="s">abcdefghijklmnopqrstuvwxyz</span><span class="err">{|}~</span>
+</pre></div>
+
+</div>
+<div class="section" id="id15">
+
+<div class="highlight"><pre><span></span><span class="err">$ </span><span class="s">ls</span>
+
+<span class="s">LICENSE</span>
+<span class="s">Makefile</span>
+<span class="s">README</span>
+<span class="s">home</span><span class="err">.</span><span class="s">html</span>
+<span class="s">home</span><span class="err">.</span><span class="s">rst</span>
+<span class="s">tutorial</span><span class="err">.</span><span class="s">html</span>
+<span class="s">tutorial</span><span class="err">.</span><span class="s">rst</span>
+</pre></div>
+
+</div>
+<div class="section" id="id16">
+
+<div class="line-block">
+<div class="line">If <tt class="docutils literal">ls</tt> on your laptop</div>
+<div class="line">doesn’t sort capital letters first,</div>
+<div class="line">set <tt class="docutils literal">LC_COLLATE=C</tt> in your <tt class="docutils literal">.bashrc</tt></div>
+<div class="line">to experience UNIX as it was intended.)</div>
+</div>
+</div>
+<div class="section" id="id17">
+
+<div class="line-block">
+<div class="line">Anyway, the <tt class="docutils literal">Makefile</tt> lists</div>
+<div class="line">the tasks for <tt class="docutils literal">make</tt> to perform:</div>
+</div>
+<ol class="arabic simple">
+<li>Output files (“target”)</li>
+<li>Input files (“dependency”)</li>
+<li>The command to build each target</li>
+</ol>
+</div>
+<div class="section" id="id18">
+
+<div class="line-block">
+<div class="line">Example:</div>
+<div class="line"><br /></div>
+<div class="line">Let’s write a <tt class="docutils literal">Makefile</tt></div>
+<div class="line">to build the two Sphinx pages</div>
+<div class="line">we saw earlier.</div>
+</div>
+</div>
+<div class="section" id="id19">
+
+<img alt="diagram03.png" src="diagram03.png" />
+</div>
+<div class="section" id="id20">
+
+<div class="line-block">
+<div class="line">If we didn’t have Sphinx</div>
+<div class="line">to do the building for us,</div>
+<div class="line">we might write this:</div>
+</div>
+</div>
+<div class="section" id="id21">
+
+<div class="highlight"><pre><span></span><span class="c1"># Makefile</span>
+
+<span class="s">home</span><span class="err">.</span><span class="s">html</span><span class="err">: </span><span class="s">home</span><span class="err">.</span><span class="s">rst</span>
+<span class="err">        </span><span class="s">rst2html</span><span class="err">.</span><span class="s">py</span><span class="err"> $&lt; $@</span>
+
+<span class="s">tutorial</span><span class="err">.</span><span class="s">html</span><span class="err">: </span><span class="s">tutorial</span><span class="err">.</span><span class="s">rst</span>
+<span class="err">        </span><span class="s">rst2html</span><span class="err">.</span><span class="s">py</span><span class="err"> $&lt; $@</span>
+</pre></div>
+
+</div>
+<div class="section" id="id22">
+
+<div class="line-block">
+<div class="line">Those two tasks are each a single step,</div>
+<div class="line">but build systems are often given</div>
+<div class="line">work that is <em>several</em> tasks deep</div>
+</div>
+</div>
+<div class="section" id="id23">
+
+<img alt="diagram04.png" src="diagram04.png" />
+</div>
+<div class="section" id="id24">
+
+<div class="highlight"><pre><span></span><span class="c1"># Makefile</span>
+
+<span class="s">program</span><span class="err">: </span><span class="s">main</span><span class="err">.</span><span class="s">o</span><span class="err"> </span><span class="s">sort</span><span class="err">.</span><span class="s">o</span><span class="err"> </span><span class="s">utils</span><span class="err">.</span><span class="s">o</span>
+<span class="err">        </span><span class="s">ld</span><span class="err"> -</span><span class="s">o</span><span class="err"> </span><span class="s">program</span><span class="err"> </span><span class="s">main</span><span class="err">.</span><span class="s">o</span><span class="err"> </span><span class="s">sort</span><span class="err">.</span><span class="s">o</span><span class="err"> </span><span class="s">utils</span><span class="err">.</span><span class="s">o</span>
+
+<span class="s">main</span><span class="err">.</span><span class="s">o</span><span class="err">: </span><span class="s">main</span><span class="err">.</span><span class="s">c</span>
+<span class="err">        </span><span class="s">cc</span><span class="err"> -</span><span class="s">c</span><span class="err"> $&lt;</span>
+
+<span class="s">sort</span><span class="err">.</span><span class="s">o</span><span class="err">: </span><span class="s">sort</span><span class="err">.</span><span class="s">c</span>
+<span class="err">        </span><span class="s">cc</span><span class="err"> -</span><span class="s">c</span><span class="err"> $&lt;</span>
+
+<span class="s">tree</span><span class="err">.</span><span class="s">o</span><span class="err">: </span><span class="s">tree</span><span class="err">.</span><span class="s">c</span>
+<span class="err">        </span><span class="s">cc</span><span class="err"> -</span><span class="s">c</span><span class="err"> $&lt;</span>
+</pre></div>
+
+</div>
+<div class="section" id="id25">
+
+<div class="line-block">
+<div class="line">Just like Sphinx, <tt class="docutils literal">make</tt> does</div>
+<div class="line"><em>nothing</em> if no files have changed</div>
+</div>
+</div>
+<div class="section" id="id26">
+
+<div class="line-block">
+<div class="line">Make only builds a target if:</div>
+</div>
+<ol class="arabic simple">
+<li>The output file is <strong>missing</strong></li>
+<li>The input file has been <em>edited</em></li>
+</ol>
+</div>
+<div class="section" id="id27">
+
+<div class="line-block">
+<div class="line">Like Sphinx, when <tt class="docutils literal">make</tt> detects</div>
+<div class="line">that an input file has been <em>edited,</em></div>
+<div class="line">it rebuilds only the targets</div>
+<div class="line">affected by that edit.</div>
+</div>
+</div>
+<div class="section" id="id28">
+
+<img alt="diagram05.png" src="diagram05.png" />
+</div>
+<div class="section" id="id29">
+
+<div class="line-block">
+<div class="line">Once you learn about <strong>make</strong>,</div>
+<div class="line">you will start to see little</div>
+<div class="line">build systems <em>everywhere</em></div>
+</div>
+</div>
+<div class="section" id="id30">
+
+<div class="line-block">
+<div class="line">As we’ve already seen,</div>
+<div class="line">the <em>Sphinx</em> tool has a little</div>
+<div class="line">build system inside</div>
+</div>
+</div>
+<div class="section" id="id31">
+
+<div class="line-block">
+<div class="line">Another example: Python’s <tt class="docutils literal">distutils</tt></div>
+<div class="line">in the Standard Library has a little</div>
+<div class="line">build system inside of it!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="c1"># setup.py</span>
+<span class="n">module1</span> <span class="o">=</span> <span class="n">Extension</span><span class="p">(</span><span class="s1">&#39;demo&#39;</span><span class="p">,</span> <span class="n">sources</span><span class="o">=</span><span class="p">[</span>
+    <span class="s1">&#39;main.c&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sort.c&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;util.c&#39;</span><span class="p">,</span>
+<span class="p">])</span>
+</pre></div>
+
+</div>
+<div class="section" id="id32">
+
+<div class="line-block">
+<div class="line">A final example:</div>
+<div class="line">the <em>Python interpreter itself</em></div>
+<div class="line">contains a tiny build system!</div>
+</div>
+</div>
+<div class="section" id="id33">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">foo.py</tt> → <tt class="docutils literal">foo.pyc</tt></div>
+</div>
+</div>
+<div class="section" id="id34">
+
+<div class="line-block">
+<div class="line">(Aside: have you ever removed <tt class="docutils literal">foo.py</tt></div>
+<div class="line">but found you can <em>still import</em> the module <tt class="docutils literal">foo</tt></div>
+<div class="line">because you forgot to remove <tt class="docutils literal">foo.pyc</tt>? —</div>
+</div>
+</div>
+<div class="section" id="id35">
+
+<div class="line-block">
+<div class="line">— Back in 2004, I set</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal">PYTHONDONTWRITEBYTECODE=TRUE</tt></div>
+<div class="line"><br /></div>
+<div class="line">in my <tt class="docutils literal">.bashrc</tt> and over</div>
+<div class="line">the subsequent 17 years, I</div>
+<div class="line">have <em>never</em> regretted it!)</div>
+</div>
+</div>
+<div class="section" id="id36">
+
+<div class="line-block">
+<div class="line">So: build systems</div>
+<div class="line">are <strong>everywhere</strong></div>
+</div>
+<ul class="simple">
+<li><tt class="docutils literal">make</tt></li>
+<li>Sphinx</li>
+<li>distutils</li>
+<li>Python <tt class="docutils literal">.py</tt> → <tt class="docutils literal">.pyc</tt></li>
+</ul>
+</div>
+<div class="section" id="id37">
+
+<div class="line-block">
+<div class="line">But build systems</div>
+<div class="line">for <em>documents</em> always seem</div>
+<div class="line">to have the same <strong>problem:</strong></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id38">
+
+<div class="line-block">
+<div class="line">But build systems</div>
+<div class="line">for <em>documents</em> always seem</div>
+<div class="line">to have the same <strong>problem:</strong></div>
+<div class="line"><br /></div>
+<div class="line">Cross references</div>
+</div>
+</div>
+<div class="section" id="id39">
+
+<img alt="diagram06.png" src="diagram06.png" />
+</div>
+<div class="section" id="id40">
+
+<div class="line-block">
+<div class="line">What if I edit the</div>
+<div class="line"><em>title</em> of <strong>tutorial.rst</strong>?</div>
+</div>
+<div class="highlight"><pre><span></span><span class="s">Tutorial</span><span class="err"> → </span><span class="s">Math</span><span class="err"> </span><span class="s">Tutorial</span>
+<span class="err">--------   -------------</span>
+</pre></div>
+
+</div>
+<div class="section" id="id41">
+
+<img alt="diagram07.png" src="diagram07.png" />
+</div>
+<div class="section" id="id42">
+
+<img alt="diagram08.png" src="diagram08.png" />
+</div>
+<div class="section" id="id43">
+
+<div class="highlight"><pre><span></span><span class="s">preparing</span><span class="err"> </span><span class="s">documents</span><span class="err">... </span><span class="s">done</span>
+<span class="s">writing</span><span class="err"> </span><span class="s">output</span><span class="err">... [</span><span class="s">100</span><span class="err">%] </span><span class="s">tutorial</span>
+</pre></div>
+
+</div>
+<div class="section" id="id44">
+
+<img alt="diagram09.png" src="diagram09.png" />
+</div>
+<div class="section" id="id45">
+
+<div class="line-block">
+<div class="line">There’s just <em>one problem.</em></div>
+<div class="line"><br /></div>
+<div class="line">Check out the cross reference</div>
+<div class="line">in <tt class="docutils literal">home.html</tt> — it’s still</div>
+<div class="line">using the old title!</div>
+</div>
+</div>
+<div class="section" id="id46">
+
+<img alt="diagram10.png" src="diagram10.png" />
+</div>
+<div class="section" id="id47">
+
+<div class="line-block">
+<div class="line">Sphinx didn’t realize</div>
+<div class="line">that <tt class="docutils literal">home.html</tt> depends</div>
+<div class="line">on text that lives over</div>
+<div class="line">in <tt class="docutils literal">tutorial.html</tt>.</div>
+</div>
+</div>
+<div class="section" id="id48">
+
+<div class="line-block">
+<div class="line">This happens <em>all the time</em>,</div>
+<div class="line">so we programmers have learned</div>
+<div class="line">ways <strong>around</strong> the problem.</div>
+</div>
+</div>
+<div class="section" id="id49">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">touch home.rst</tt></div>
+<div class="line">to force a rebuild</div>
+</div>
+</div>
+<div class="section" id="id50">
+
+<div class="line-block">
+<div class="line"><tt class="docutils literal">rm <span class="pre">-r</span> build/ &amp;&amp; <span class="pre">sphinx-build</span></tt></div>
+</div>
+</div>
+<div class="section" id="id51">
+
+<div class="line-block">
+<div class="line">But even though we can <strong>work around</strong></div>
+<div class="line">the problem, it raises a big question.</div>
+</div>
+</div>
+<div class="section" id="id52">
+
+<div class="line-block">
+<div class="line"><strong>Big Question:</strong></div>
+<div class="line"><br /></div>
+<div class="line">Could this be <em>fixed?</em></div>
+<div class="line"><br /></div>
+<div class="line">Could we design a build system</div>
+<div class="line">that <em>understands</em> cross references</div>
+<div class="line">and always knows what to rebuild?</div>
+</div>
+</div>
+<div class="section" id="id53">
+
+<div class="line-block">
+<div class="line">I won’t leave you in suspense</div>
+</div>
+</div>
+<div class="section" id="id54">
+
+<div class="line-block">
+<div class="line"><strong>Answer:</strong></div>
+<div class="line"><br /></div>
+<div class="line"><em>Yes!</em></div>
+<div class="line"><br /></div>
+<div class="line">Yes, we can.</div>
+</div>
+</div>
+<div class="section" id="id55">
+
+<div class="line-block">
+<div class="line">I helped write a <em>successful</em> prototype</div>
+<div class="line">solution as an open source project.</div>
+</div>
+</div>
+<div class="section" id="id56">
+
+<div class="line-block">
+<div class="line">For their <em>500 Lines or Less</em> book,</div>
+<div class="line">the <strong>Architecture of Open Source Applications</strong> (AOSA) project</div>
+<div class="line">asked me and computer scientist Dr. Daniel Rocco</div>
+<div class="line">contribute a small project and a chapter</div>
+</div>
+</div>
+<div class="section" id="id57">
+
+<div class="line-block">
+<div class="line">The task they gave us:</div>
+</div>
+<ol class="arabic simple">
+<li>Write a project in <strong>≤500 lines</strong> of code</li>
+<li>Discuss its <em>software design</em> in a book chapter</li>
+</ol>
+</div>
+<div class="section" id="id58">
+
+<div class="line-block">
+<div class="line">We decided: it was time to tackle</div>
+<div class="line">the <strong>cross reference problem!</strong></div>
+<div class="line"><br /></div>
+<div class="line">Chapter 4</div>
+<div class="line"><em>“Contingent: A Fully Dynamic Build System”</em></div>
+</div>
+</div>
+<div class="section" id="id59">
+
+<div class="line-block">
+<div class="line">So how do you</div>
+<div class="line">design a <strong>build system?</strong></div>
+<div class="line"><br /></div>
+<div class="line">Happily, the solution is <em>very</em> well-known</div>
+</div>
+</div>
+<div class="section" id="id60">
+
+<div class="line-block">
+<div class="line">Build System Design</div>
+</div>
+<ol class="arabic simple">
+<li>Dependency graph</li>
+<li>Detect changes</li>
+<li>Rebuild in the right order</li>
+</ol>
+</div>
+<div class="section" id="id61">
+
+<div class="line-block">
+<div class="line">1. Dependency graph</div>
+</div>
+</div>
+<div class="section" id="id62">
+
+<div class="line-block">
+<div class="line">“graph”</div>
+<div class="line"><br /></div>
+</div>
+<img alt="diagram11.png" src="diagram11.png" />
+</div>
+<div class="section" id="id63">
+
+<div class="line-block">
+<div class="line">There are <em>several</em> ways</div>
+<div class="line">to represent a graph in</div>
+<div class="line">a computer program</div>
+</div>
+</div>
+<div class="section" id="id64">
+
+<img alt="diagram12.png" src="diagram12.png" />
+<div class="highlight"><pre><span></span><span class="p">[(</span><span class="s1">&#39;main.c&#39;</span><span class="p">,</span> <span class="s1">&#39;main.o&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;tree.c&#39;</span><span class="p">,</span> <span class="s1">&#39;tree.o&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;main.o&#39;</span><span class="p">,</span> <span class="s1">&#39;program&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;tree.o&#39;</span><span class="p">,</span> <span class="s1">&#39;program&#39;</span><span class="p">)]</span>
+</pre></div>
+
+</div>
+<div class="section" id="id65">
+
+<img alt="diagram13.png" src="diagram13.png" />
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;main.c&#39;</span><span class="p">:</span> <span class="p">{},</span>
+ <span class="s1">&#39;tree.c&#39;</span><span class="p">:</span> <span class="p">{},</span>
+ <span class="s1">&#39;main.o&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;main.c&#39;</span><span class="p">},</span>
+ <span class="s1">&#39;tree.o&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;tree.c&#39;</span><span class="p">},</span>
+ <span class="s1">&#39;program&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;main.o&#39;</span><span class="p">,</span> <span class="s1">&#39;tree.o&#39;</span><span class="p">}}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id66">
+
+<div class="line-block">
+<div class="line">Graphs are so popular,</div>
+<div class="line">you can even choose to skip</div>
+<div class="line">building your own representation —</div>
+</div>
+<ul class="simple">
+<li><tt class="docutils literal">networkx</tt> (Python library)</li>
+<li><tt class="docutils literal">neo4j</tt> (database system)</li>
+<li><tt class="docutils literal">GraphQL</tt> (query language)</li>
+</ul>
+</div>
+<div class="section" id="id67">
+
+<div class="line-block">
+<div class="line">So: there are <em>plenty</em> of ways</div>
+<div class="line">for a build system to represent the</div>
+<div class="line">links between dependencies and targets</div>
+</div>
+</div>
+<div class="section" id="id68">
+
+<div class="line-block">
+<div class="line">2. Detect Changes</div>
+<div class="line"><br /></div>
+<div class="line">Three well-known approaches</div>
+</div>
+</div>
+<div class="section" id="id69">
+
+<div class="line-block">
+<div class="line">a. Compare file modify times</div>
+<div class="line">(<tt class="docutils literal">make</tt>, <tt class="docutils literal">distutils</tt>, <tt class="docutils literal">Sphinx</tt>)</div>
+</div>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">stat</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">stat</span><span class="p">(</span><span class="s1">&#39;home.rst&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">st_mtime</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">stat</span><span class="p">(</span><span class="s1">&#39;home.html&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">st_mtime</span>
+<span class="k">if</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="n">h</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Out of date!&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id70">
+
+<div class="line-block">
+<div class="line">b. Compute file checksums</div>
+<div class="line">(Bazel, Gradle)</div>
+</div>
+</div>
+<div class="section" id="id71">
+
+<div class="line-block">
+<div class="line">c. Subscribe to live OS file</div>
+<div class="line">events using <tt class="docutils literal">inotify</tt></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id72">
+
+<div class="line-block">
+<div class="line">c. Subscribe to live OS file</div>
+<div class="line">events using <tt class="docutils literal">inotify</tt></div>
+<div class="line">(Contingent!)</div>
+<div class="line"><br /></div>
+<div class="line">I use Contingent to build my website</div>
+<div class="line">and <strong>don’t want</strong> to waste time running</div>
+<div class="line">a command — I like it to rebuild</div>
+<div class="line">the <em>moment</em> I hit save!</div>
+</div>
+</div>
+<div class="section" id="id73">
+
+<div class="line-block">
+<div class="line">So, there are several ways</div>
+<div class="line">to detect file changes</div>
+<div class="line"><br /></div>
+<div class="line">Once you <em>detect</em> a change,</div>
+<div class="line">it’s time to <strong>rebuild</strong></div>
+</div>
+</div>
+<div class="section" id="id74">
+
+<div class="line-block">
+<div class="line">3. Rebuild in the correct order</div>
+</div>
+</div>
+<div class="section" id="id75">
+
+<img alt="diagram14.png" src="diagram14.png" />
+</div>
+<div class="section" id="id76">
+
+<div class="line-block">
+<div class="line">What if <em>both</em> <tt class="docutils literal">*.c</tt> files</div>
+<div class="line">have been modified?</div>
+<div class="line"><br /></div>
+<div class="line"><strong>Danger</strong></div>
+<div class="line">If we rebuild in random order,</div>
+<div class="line">we might build one of the</div>
+<div class="line">targets twice!</div>
+</div>
+</div>
+<div class="section" id="id77">
+
+<div class="line-block">
+<div class="line">Why?</div>
+<div class="line"><br /></div>
+<div class="line">If you don’t give your</div>
+<div class="line">build system any guidance,</div>
+<div class="line">here’s what it might do:</div>
+</div>
+</div>
+<div class="section" id="id78">
+
+<img alt="diagram15.png" src="diagram15.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">Both main.c and tree.c have been edited.</div>
+</div>
+</div>
+<div class="section" id="id79">
+
+<img alt="diagram16.png" src="diagram16.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">“Let’s rebuild main.o first”</div>
+</div>
+</div>
+<div class="section" id="id80">
+
+<img alt="diagram17.png" src="diagram17.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">“Next, let’s rebuild the program”</div>
+</div>
+</div>
+<div class="section" id="id81">
+
+<img alt="diagram18.png" src="diagram18.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id82">
+
+<img alt="diagram19.png" src="diagram19.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">“Is there anything left to build?”</div>
+</div>
+</div>
+<div class="section" id="id83">
+
+<img alt="diagram20.png" src="diagram20.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">Oh, yes, now let’s rebuild tree.o</div>
+</div>
+</div>
+<div class="section" id="id84">
+
+<img alt="diagram21.png" src="diagram21.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">Oh, no, that made “program” out-of-date <em>again!</em></div>
+</div>
+</div>
+<div class="section" id="id85">
+
+<img alt="diagram22.png" src="diagram22.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">Only a second build of “program” makes it fully up-to-date</div>
+</div>
+</div>
+<div class="section" id="id86">
+
+<div class="line-block">
+<div class="line">Building files in <em>random order</em> can</div>
+<div class="line">make us waste time building a target</div>
+<div class="line"><strong>several times</strong> during the same run.</div>
+</div>
+</div>
+<div class="section" id="id87">
+
+<div class="line-block">
+<div class="line">General lesson:</div>
+<div class="line"><br /></div>
+<div class="line">To avoid building a target <strong>twice</strong>,</div>
+<div class="line">wait until <em>all</em> its dependencies</div>
+<div class="line">have been rebuilt</div>
+</div>
+</div>
+<div class="section" id="id88">
+
+<div class="line-block">
+<div class="line">Well-known solution:</div>
+<div class="line"><br /></div>
+<div class="line">Run a <strong>topological sort</strong> on the</div>
+<div class="line">targets that need to be rebuilt,</div>
+<div class="line">to put targets <em>after</em> dependencies</div>
+</div>
+</div>
+<div class="section" id="id89">
+
+<div class="line-block">
+<div class="line">So that’s basic <strong>build system design</strong></div>
+</div>
+<ol class="arabic simple">
+<li>Dependency graph</li>
+<li>Detect changes</li>
+<li>Rebuild in the right order</li>
+</ol>
+</div>
+<div class="section" id="id90">
+
+<div class="line-block">
+<div class="line">So!</div>
+<div class="line">What big lesson do Dr. Rocco and I teach</div>
+<div class="line">in our book chapter about Contingent?</div>
+</div>
+</div>
+<div class="section" id="id91">
+
+<div class="line-block">
+<div class="line">Well, I’m known for my</div>
+<div class="line">writing on Design Patterns</div>
+<div class="line"><br /></div>
+<div class="line"><a class="reference external" href="https://python-patterns.guide/">python-patterns.guide</a></div>
+</div>
+</div>
+<div class="section" id="id92">
+
+<div class="line-block">
+<div class="line">So, maybe predictably,</div>
+<div class="line">we use our chapter that describes</div>
+<div class="line">Contingent to <em>illustrate a Design Pattern</em></div>
+</div>
+</div>
+<div class="section" id="id93">
+
+<div class="line-block">
+<div class="line">We focused on how Contingent</div>
+<div class="line">represents the dependency graph</div>
+<div class="line"><br /></div>
+<div class="line"><strong>Facade Pattern</strong></div>
+<div class="line">+</div>
+<div class="line"><em>Anonymous</em> data structures</div>
+</div>
+</div>
+<div class="section" id="id94">
+
+<div class="line-block">
+<div class="line">Old days</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Node</span><span class="p">:</span> <span class="err">…</span>
+<span class="k">class</span> <span class="nc">Edge</span><span class="p">:</span> <span class="err">…</span>
+<span class="k">class</span> <span class="nc">Graph</span><span class="p">:</span> <span class="err">…</span>
+</pre></div>
+
+</div>
+<div class="section" id="id95">
+
+<div class="line-block">
+<div class="line">Modern</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Graph</span><span class="p">:</span> <span class="err">…</span>
+</pre></div>
+
+</div>
+<div class="section" id="id96">
+
+<div class="line-block">
+<div class="line">Q: If you only have <strong>one class,</strong></div>
+<div class="line">how does it store its <em>data?</em></div>
+<div class="line"><br /></div>
+<div class="line">A: In <em>“anonymous”</em> data structures!</div>
+</div>
+</div>
+<div class="section" id="id97">
+
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What do I mean by an</div>
+<div class="line"><em>“anonymous”</em> data structure?</div>
+<div class="line"><br /></div>
+<div class="line"><strong>A:</strong> I mean data structures <em>without</em></div>
+<div class="line">special domain-specific names</div>
+<div class="line">like <tt class="docutils literal">Edge</tt> or <tt class="docutils literal">Node</tt></div>
+</div>
+</div>
+<div class="section" id="id98">
+
+<div class="line-block">
+<div class="line">Instead, we use simple data structures</div>
+<div class="line">like tuples, lists, dictionaries, and sets</div>
+<div class="line">to represent the dependency graph</div>
+</div>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;main.c&#39;</span><span class="p">:</span> <span class="p">{},</span>
+ <span class="s1">&#39;tree.c&#39;</span><span class="p">:</span> <span class="p">{},</span>
+ <span class="s1">&#39;main.o&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;main.c&#39;</span><span class="p">},</span>
+ <span class="s1">&#39;tree.o&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;tree.c&#39;</span><span class="p">},</span>
+ <span class="s1">&#39;program&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;main.o&#39;</span><span class="p">,</span> <span class="s1">&#39;tree.o&#39;</span><span class="p">}}</span>
+</pre></div>
+
+</div>
+<div class="section" id="id99">
+
+<div class="line-block">
+<div class="line">Then, use the <strong>Facade Pattern</strong> to hide</div>
+<div class="line">those data structures behind a single</div>
+<div class="line">big class that gives them <em>meaning</em></div>
+</div>
+</div>
+<div class="section" id="id100">
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Graph</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="n">name1</span><span class="p">,</span> <span class="n">name2</span><span class="p">):</span> <span class="err">…</span>
+    <span class="k">def</span> <span class="nf">remove_edge</span><span class="p">(</span><span class="n">name1</span><span class="p">,</span> <span class="n">name2</span><span class="p">):</span> <span class="err">…</span>
+    <span class="k">def</span> <span class="nf">nodes_upstream_of</span><span class="p">(</span><span class="n">name</span><span class="p">):</span> <span class="err">…</span>
+    <span class="k">def</span> <span class="nf">nodes_downstream_from</span><span class="p">(</span><span class="n">name</span><span class="p">):</span> <span class="err">…</span>
+</pre></div>
+
+<div class="line-block">
+<div class="line">Our <strong>Graph</strong> methods speak the graph “domain language”</div>
+<div class="line">of “<em>nodes</em>” connected by “<em>edges</em>” but stores them</div>
+<div class="line">using plain old Python data structures!</div>
+</div>
+</div>
+<div class="section" id="id101">
+
+<div class="line-block">
+<div class="line"><strong>Facade Pattern</strong></div>
+<div class="line">+</div>
+<div class="line"><em>Anonymous</em> data structures</div>
+<div class="line"><br /></div>
+<div class="line">We argued that this Pythonic pattern</div>
+<div class="line">produces <em>simpler code</em> than a forest</div>
+<div class="line">of domain-specific classes</div>
+<div class="line">like <tt class="docutils literal">Node</tt> and <tt class="docutils literal">Edge</tt></div>
+</div>
+</div>
+<div class="section" id="id102">
+
+<div class="line-block">
+<div class="line">But re-reading Contingent’s code today,</div>
+<div class="line">I think there’s a <strong>seconds lesson</strong> that</div>
+<div class="line">Dr. Rocco and I could have drawn!</div>
+</div>
+</div>
+<div class="section" id="id103">
+
+<div class="line-block">
+<div class="line">Yes, we usually think of a Design Pattern</div>
+<div class="line">as something we <em>add</em> to our code.</div>
+<div class="line"><br /></div>
+<div class="line">But I now think that it can be just as important</div>
+<div class="line">to see a Design Pattern and <strong>remove it!</strong></div>
+</div>
+</div>
+<div class="section" id="id104">
+
+<div class="line-block">
+<div class="line">Let’s now make explicit</div>
+<div class="line">the innovation we wanted</div>
+<div class="line">to make in Contingent!</div>
+</div>
+</div>
+<div class="section" id="id105">
+
+<img alt="diagram23.png" src="diagram23.png" />
+</div>
+<div class="section" id="id106">
+
+<div class="line-block">
+<div class="line">Build systems usually build their graphs</div>
+<div class="line">driven only by <em>filenames</em>.</div>
+<div class="line"><br /></div>
+<div class="line">We wanted Contingent to understand</div>
+<div class="line">dependencies that arise from file <strong>content</strong>!</div>
+</div>
+</div>
+<div class="section" id="id107">
+
+<div class="line-block">
+<div class="line">I now want to show an <em>example</em></div>
+<div class="line">with <strong>real</strong> parsing and rendering code</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id108">
+
+<div class="line-block">
+<div class="line">I now want to show an <em>example</em></div>
+<div class="line">with <strong>real</strong> parsing and rendering code</div>
+<div class="line"><br /></div>
+<div class="line"><strong>Problem:</strong> parsing <tt class="docutils literal">*.rst</tt></div>
+<div class="line">files is pretty complex!</div>
+</div>
+</div>
+<div class="section" id="id109">
+
+<div class="line-block">
+<div class="line">So let’s define a simpler markup language!</div>
+</div>
+<ol class="arabic simple">
+<li>Render <tt class="docutils literal">*.in</tt> → <tt class="docutils literal">*.out</tt></li>
+<li>Most text will be copied verbatim.</li>
+<li>But <strong>`filename`</strong> will be replaced with that file’s title.</li>
+<li>What’s a file’s “title”? Its <em>first line</em> of text!</li>
+</ol>
+</div>
+<div class="section" id="id110">
+
+<img alt="diagram24.png" src="diagram24.png" />
+</div>
+<div class="section" id="id111">
+
+<div class="line-block">
+<div class="line">Happily, it’s <em>easy</em> to parse</div>
+<div class="line">this markup format!</div>
+</div>
+</div>
+<div class="section" id="id112">
+
+<div class="highlight"><pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;Read `tutorial.in` and `guide.in`.&#39;</span>
+<span class="n">pieces</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;`&#39;</span><span class="p">)</span>
+
+<span class="c1">#     0          1            2         3        4</span>
+<span class="c1"># [&#39;Read &#39;, &#39;tutorial.in&#39;, &#39; and &#39;, &#39;guide.in&#39;, &#39;.&#39;]</span>
+<span class="c1">#</span>
+<span class="c1"># Even index: text</span>
+<span class="c1"># Odd index: document filename</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pieces</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="err">…</span>  <span class="c1"># Loops over filenames!</span>
+</pre></div>
+
+</div>
+<div class="section" id="id113">
+
+<div class="line-block">
+<div class="line">So —</div>
+</div>
+</div>
+<div class="section" id="id114">
+
+<div class="line-block">
+<div class="line">How can we explain to Contingent that</div>
+<div class="line"><tt class="docutils literal">home.in</tt> needs the title from <tt class="docutils literal">tutorial.in</tt>?</div>
+</div>
+</div>
+<div class="section" id="id115">
+
+<div class="line-block">
+<div class="line"><em>Every</em> build system I had ever seen:</div>
+</div>
+<ol class="arabic simple">
+<li>Builds the dependency graph</li>
+<li>Starts running commands</li>
+</ol>
+<div class="line-block">
+<div class="line">That was <strong>always</strong> the order.</div>
+</div>
+</div>
+<div class="section" id="id116">
+
+<div class="line-block">
+<div class="line">So I tried imagining the same thing:</div>
+</div>
+</div>
+<div class="section" id="id117">
+
+<div class="highlight"><pre><span></span><span class="c1"># First idea: give framework two functions.</span>
+<span class="c1"># One finds dependencies to build the graph,</span>
+<span class="c1"># the other builds the output file.</span>
+
+<span class="k">def</span> <span class="nf">learn_dependencies</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+    <span class="k">yield</span> <span class="s1">&#39;text_of&#39;</span><span class="p">,</span> <span class="n">path</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;`&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="s1">&#39;title_of&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">title_dict</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;`&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">title_dict</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id118">
+
+<div class="line-block">
+<div class="line">Two-phase approach</div>
+<div class="line"><br /></div>
+<div class="line"><em>First step</em> tells Contingent</div>
+<div class="line">the dependency → target edges</div>
+<div class="line">needed to build the graph.</div>
+<div class="line"><br /></div>
+<div class="line"><em>Second step</em> renders the output.</div>
+</div>
+</div>
+<div class="section" id="id119">
+
+<div class="line-block">
+<div class="line">I then stepped back</div>
+<div class="line">and looked at the</div>
+<div class="line">sample code.</div>
+</div>
+</div>
+<div class="section" id="id120">
+
+<div class="line-block">
+<div class="line">My reaction?</div>
+</div>
+</div>
+<div class="section" id="id121">
+
+<div class="line-block">
+<div class="line">Ugh!</div>
+</div>
+</div>
+<div class="section" id="id122">
+
+<div class="line-block">
+<div class="line">It made me unhappy.</div>
+</div>
+</div>
+<div class="section" id="id123">
+
+<div class="line-block">
+<div class="line"><strong>Why?</strong></div>
+<div class="line"><br /></div>
+<div class="line">As I stared at the code, I realized</div>
+<div class="line">that it <em>reminded me of something.</em></div>
+</div>
+</div>
+<div class="section" id="id124">
+
+<div class="highlight"><pre><span></span><span class="c1"># Have you ever seen “callback” code?</span>
+
+<span class="k">def</span> <span class="nf">step1</span><span class="p">(</span><span class="n">sock</span><span class="p">):</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s1">&#39;python.org&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="n">step2</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">step2</span><span class="p">(</span><span class="n">sock</span><span class="p">):</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">step3</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">step3</span><span class="p">(</span><span class="n">sock</span><span class="p">):</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id125">
+
+<div class="highlight"><pre><span></span><span class="c1"># Callbacks are SO MUCH WORK!</span>
+<span class="c1"># All you wanted was normal</span>
+<span class="c1"># procedural code, like:</span>
+
+<span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s1">&#39;python.org&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span>
+<span class="n">sock</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+<span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id126">
+
+<div class="highlight"><pre><span></span><span class="c1"># But instead, some framework forced you to</span>
+<span class="c1"># atomize your code into a maze of goto’s.</span>
+
+<span class="k">def</span> <span class="nf">step1</span><span class="p">(</span><span class="n">sock</span><span class="p">):</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s1">&#39;python.org&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="n">step2</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">step2</span><span class="p">(</span><span class="n">sock</span><span class="p">):</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">step3</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">step3</span><span class="p">(</span><span class="n">sock</span><span class="p">):</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id127">
+
+<div class="line-block">
+<div class="line">Well. Drat.</div>
+</div>
+</div>
+<div class="section" id="id128">
+
+<div class="line-block">
+<div class="line">That’s exactly how I had just</div>
+<div class="line">designed Contingent: it needs each</div>
+<div class="line">task written as callback code!</div>
+</div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">learn_dependencies</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="k">yield</span> <span class="s1">&#39;text_of&#39;</span><span class="p">,</span> <span class="n">path</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;`&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="s1">&#39;title_of&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">title_dict</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;`&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">title_dict</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<div class="section" id="id129">
+
+<div class="line-block">
+<div class="line">Just <strong>how bad</strong> is callback code?</div>
+<div class="line"><br /></div>
+<div class="line">It’s so bad that Python&nbsp;3 added</div>
+<div class="line"><em>two new keywords</em> (“async” and “await”)</div>
+<div class="line">simply to help <em>avoid</em> the Callback Pattern.</div>
+</div>
+</div>
+<div class="section" id="id130">
+
+<div class="line-block">
+<div class="line">Usually we think of a Design Pattern</div>
+<div class="line">as something we bring <em>into</em> our code.</div>
+<div class="line">(Facade Pattern → Contingent)</div>
+<div class="line"><br /></div>
+<div class="line">But in this case, I <strong>discovered</strong> a</div>
+<div class="line">pattern already in my design</div>
+<div class="line">that I wanted to <em>remove.</em></div>
+</div>
+</div>
+<div class="section" id="id131">
+
+<div class="line-block">
+<div class="line"><strong>Q:</strong> I <em>know</em> how to pivot</div>
+<div class="line">from callback network code</div>
+<div class="line">to procedural network code.</div>
+</div>
+</div>
+<div class="section" id="id132">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">step1</span><span class="p">(</span><span class="n">sock</span><span class="p">):</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s1">&#39;python.org&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="n">step2</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">step2</span><span class="p">(</span><span class="n">sock</span><span class="p">):</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">step3</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">step3</span><span class="p">(</span><span class="n">sock</span><span class="p">):</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id133">
+
+<div class="highlight"><pre><span></span><span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s1">&#39;python.org&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span>
+<span class="n">sock</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+<span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id134">
+
+<div class="line-block">
+<div class="line">Can I now do the same thing</div>
+<div class="line">with text rendering code?</div>
+</div>
+</div>
+<div class="section" id="id135">
+
+<div class="line-block">
+<div class="line"><em>Yes!</em></div>
+</div>
+</div>
+<div class="section" id="id136">
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">pieces</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;`&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pieces</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">pieces</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">title_of</span><span class="p">(</span><span class="n">pieces</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pieces</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">title_of</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">read</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<div class="section" id="id137">
+
+<div class="line-block">
+<div class="line">I love how code looks! But —</div>
+</div>
+</div>
+<div class="section" id="id138">
+
+<div class="line-block">
+<div class="line"><strong>Q:</strong> How can Contingent run this code</div>
+<div class="line">while <em>learning</em> its dependencies?</div>
+</div>
+</div>
+<div class="section" id="id139">
+
+<div class="line-block">
+<div class="line"><strong>A:</strong></div>
+</div>
+<div class="line-block">
+<div class="line">“<em>All problems</em> in computer</div>
+<div class="line">science can be <strong>solved</strong></div>
+<div class="line">by another level</div>
+<div class="line">of indirection”</div>
+<div class="line"><br /></div>
+<div class="line">— David Wheeler</div>
+</div>
+</div>
+<div class="section" id="id140">
+
+<div class="highlight"><pre><span></span><span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">title_of</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+
+</div>
+<div class="section" id="id141">
+
+<div class="line-block">
+<div class="line">By giving Contingent a <tt class="docutils literal">&#64;task</tt> decorator,</div>
+<div class="line">it can assume <em>full control</em> of each build step, even</div>
+<div class="line">though they are written as simple procedural code!</div>
+</div>
+</div>
+<div class="section" id="id142">
+
+<div class="line-block">
+<div class="line">1. Contingent can now <em>observe</em> calls between tasks.</div>
+</div>
+</div>
+<div class="section" id="id143">
+
+<img alt="diagram25.png" src="diagram25.png" />
+</div>
+<div class="section" id="id144">
+
+<img alt="diagram26.png" src="diagram26.png" />
+</div>
+<div class="section" id="id145">
+
+<img alt="diagram27.png" src="diagram27.png" />
+</div>
+<div class="section" id="id146">
+
+<img alt="diagram28.png" src="diagram28.png" />
+</div>
+<div class="section" id="id147">
+
+<img alt="diagram29.png" src="diagram29.png" />
+</div>
+<div class="section" id="id148">
+
+<img alt="diagram30.png" src="diagram30.png" />
+</div>
+<div class="section" id="id149">
+
+<img alt="diagram31.png" src="diagram31.png" />
+</div>
+<div class="section" id="id150">
+
+<img alt="diagram32.png" src="diagram32.png" />
+</div>
+<div class="section" id="id151">
+
+<div class="line-block">
+<div class="line">Thanks to Contingent’s decorator,</div>
+<div class="line">(a) we now know the call graph, and</div>
+<div class="line">(b) we rendered the first page successfully!</div>
+</div>
+</div>
+<div class="section" id="id152">
+
+<div class="line-block">
+<div class="line">Let’s render the other page.</div>
+</div>
+</div>
+<div class="section" id="id153">
+
+<img alt="diagram33.png" src="diagram33.png" />
+</div>
+<div class="section" id="id154">
+
+<img alt="diagram34.png" src="diagram34.png" />
+</div>
+<div class="section" id="id155">
+
+<div class="line-block">
+<div class="line"><em>Wait! Wait!</em></div>
+</div>
+</div>
+<div class="section" id="id156">
+
+<div class="line-block">
+<div class="line">Isn’t <tt class="docutils literal"><span class="pre">read('tutorial.in')</span></tt> a</div>
+<div class="line">task that we have already run?</div>
+</div>
+</div>
+<div class="section" id="id157">
+
+<img alt="diagram35.png" src="diagram35.png" />
+</div>
+<div class="section" id="id158">
+
+<div class="line-block">
+<div class="line">This is a problem specific to Contingent.</div>
+<div class="line"><br /></div>
+<div class="line">Because <tt class="docutils literal">make</tt> deals with <em>files,</em></div>
+<div class="line">a target only needs to be built <strong>once</strong>.</div>
+<div class="line">The file can then be read over and over.</div>
+</div>
+</div>
+<div class="section" id="id159">
+
+<div class="line-block">
+<div class="line">But Contingent has made a crucial pivot:</div>
+<div class="line">its nodes aren’t files; they are calls!</div>
+<div class="line"><br /></div>
+<div class="line"><em>nouns</em> → <em>verbs</em></div>
+</div>
+</div>
+<div class="section" id="id160">
+
+<img alt="diagram36.png" src="diagram36.png" />
+</div>
+<div class="section" id="id161">
+
+<div class="line-block">
+<div class="line"><strong>Q:</strong> Can Contingent, with its graph</div>
+<div class="line">of <em>verbs,</em> still avoid repeating an action?</div>
+<div class="line"><br /></div>
+<div class="line"><strong>A:</strong> Yes! It can use <em>memoization.</em></div>
+</div>
+</div>
+<div class="section" id="id162">
+
+<img alt="diagram37.png" src="diagram37.png" />
+</div>
+<div class="section" id="id163">
+
+<div class="line-block">
+<div class="line">By caching the return</div>
+<div class="line">value of the first call to</div>
+<div class="line"><br /></div>
+<div class="line"><tt class="docutils literal"><span class="pre">read('tutorial.in')</span></tt></div>
+<div class="line"><br /></div>
+<div class="line">Contingent makes sure that</div>
+<div class="line">the task only runs <em>once.</em></div>
+</div>
+</div>
+<div class="section" id="id164">
+
+<div class="line-block">
+<div class="line">Victory!</div>
+<div class="line"><br /></div>
+<div class="line">This is a <em>complete</em></div>
+<div class="line">and <em>workable</em> design.</div>
+</div>
+</div>
+<div class="section" id="id165">
+
+<div class="line-block">
+<div class="line">Endgame</div>
+<div class="line"><br /></div>
+<div class="line">What does Contingent</div>
+<div class="line">do when a file changes?</div>
+<div class="line"><br /></div>
+<div class="line"><strong>Removes</strong> out-of-date return</div>
+<div class="line">values from the memoization cache</div>
+<div class="line">and <em>re-runs</em> those tasks.</div>
+</div>
+</div>
+<div class="section" id="id166">
+
+<div class="line-block">
+<div class="line">Running Contingent</div>
+<div class="line">to rebuild my blog</div>
+<div class="line">feels <strong>magic!</strong></div>
+</div>
+</div>
+<div class="section" id="id167">
+
+<div class="line-block">
+<div class="line">Documents are rebuilt</div>
+<div class="line">with a <em>minimum</em> of work, and —</div>
+<div class="line"><br /></div>
+<div class="line">for the <strong>first time</strong> in my</div>
+<div class="line"><em>long history</em> of using document</div>
+<div class="line">build systems</div>
+<div class="line"><br /></div>
+<div class="line">— the output is <strong>always correct.</strong></div>
+</div>
+</div>
+<div class="section" id="id168">
+
+<div class="line-block">
+<div class="line"><cite>rm -r build/</cite></div>
+</div>
+</div>
+<div class="section" id="id169">
+
+<div class="line-block">
+<div class="line"><span class="strike">rm -r build/</span></div>
+</div>
+</div>
+<div class="section" id="id170">
+
+<div class="line-block">
+<div class="line">Contingent <strong>builds</strong> and <strong>maintains</strong></div>
+<div class="line">a complete call graph, while all the</div>
+<div class="line">programmer needs to do is write</div>
+<div class="line"><em>plain procedural functions!</em></div>
+</div>
+</div>
+<div class="section" id="id171">
+
+<div class="line-block">
+<div class="line"><strong>&lt;Conclusion&gt;</strong></div>
+<div class="line"><br /></div>
+<div class="line">Don’t learn patterns in <strong>isolation</strong></div>
+<div class="line"><br /></div>
+<div class="line">That only prepares you</div>
+<div class="line">to <em>drop in</em> a pattern when</div>
+<div class="line">you see a matching problem.</div>
+</div>
+</div>
+<div class="section" id="id172">
+
+<div class="line-block">
+<div class="line">Instead, learn patterns</div>
+<div class="line">as <em>alternatives</em> to each other</div>
+<div class="line"><br /></div>
+<div class="line">Callbacks ↔ Procedures</div>
+<div class="line"><tt class="docutils literal">list</tt> ↔ <tt class="docutils literal">dict</tt></div>
+</div>
+</div>
+<div class="section" id="id173">
+
+<div class="line-block">
+<div class="line">How often do you have the chance</div>
+<div class="line">to try writing a <em>second</em> solution</div>
+<div class="line">to a programming problem?</div>
+<div class="line"><br /></div>
+<div class="line">It’s a <strong>crucial</strong> exercise</div>
+<div class="line">as you grow as a programmer!</div>
+</div>
+</div>
+<div class="section" id="id174">
+
+<div class="line-block">
+<div class="line">When you don’t have time</div>
+<div class="line">to write two <em>complete</em> solutions,</div>
+<div class="line">learning to <strong>prototype</strong> can be crucial</div>
+<div class="line">to testing out different paths before</div>
+<div class="line">committing to one or the other.</div>
+</div>
+</div>
+<div class="section" id="id175">
+
+<div class="line-block">
+<div class="line">You will be a much stronger programmer</div>
+<div class="line">when you know <em>not only</em> the code</div>
+<div class="line">you are currently writing,</div>
+<div class="line"><br /></div>
+<div class="line">but how the <em>other</em> possible</div>
+<div class="line">approaches would have turned out</div>
+<div class="line">that you <strong>could have been</strong> writing instead.</div>
+<div class="line"><br /></div>
+<div class="line"><strong>&lt;/Conclusion&gt;</strong></div>
+</div>
+</div>
+<div class="section" id="id176">
+
+<div class="line-block">
+<div class="line">I know that, since PyCon Colombia is remote,</div>
+<div class="line">you won’t be able to simply walk up after my talk</div>
+<div class="line">and ask about my slides, or Python, or our community.</div>
+</div>
+</div>
+<div class="section" id="id177">
+
+<div class="line-block">
+<div class="line">But, please, if you want to talk,</div>
+<div class="line">find me on Slack this weekend,</div>
+<div class="line">I would love to learn more about what</div>
+<div class="line">you are doing with Python in Colombia!</div>
+<div class="line"><br /></div>
+</div>
+<img alt="white.png" src="white.png" style="width: 100px;" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="id178">
+
+<div class="line-block">
+<div class="line">But, please, if you want to talk,</div>
+<div class="line">find me on Slack this weekend,</div>
+<div class="line">I would love to learn more about what</div>
+<div class="line">you are doing with Python in Colombia!</div>
+<div class="line"><br /></div>
+</div>
+<img alt="flag.png" src="flag.png" style="width: 100px;" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>&#64;brandon_rhodes</strong></div>
+<div class="line">Thank you for listening!</div>
+</div>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<script src="/js/jquery-1.6.2.min.js"></script>
+<script src="/js/jquery.url.min.js"></script>
+<script src="/js/slides3.js"></script></div>
+</div>
+</body>
+</html>
