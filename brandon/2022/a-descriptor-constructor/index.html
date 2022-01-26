@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Descriptor-Constructor in Python</title>
+  <link rel="stylesheet" type="text/css" href="/brandon/styles.css" />
+</head>
+<body>
+
+<p class="byline">
+  by Brandon Rhodes
+  • <a title="Home Page" href="/brandon/">Home</a>
+</p>
+<h1>A Descriptor-Constructor in Python</h1>
+<!-- Date: 2022 January 26 -->
+<p>So here’s an API innovation that I just made a rough implementation of:
+taking a Python data descriptor and enhancing it so that,
+when it’s invoked on the class itself,
+it becomes a constructor and returns a new instance of the class.</p>
+<p>Does that sound like a good idea?</p>
+<!-- After you’ve read the saga below,
+feel free to reply to my tweet about this post:
+
+PUT TWEET HERE -->
+<p>The background is that my astronomy library Skyfield
+uses objects to represent measures like distance and velocity.
+I could have used two separate objects
+to represent a distance measured as <code>au</code> (astronomical units)
+and a distance measured as <code>km</code>,
+but I prefer not to have several objects represent one single thing.
+It seems cleaner to me to have but a single object
+for each particular distance that Skyfield needs to represent,
+and to have that object different offer units
+as different attributes
+(which also helps readability
+by making users name the unit they’re asking the <code>Distance</code> for):</p>
+<!--phmdoctest-share-names-->
+<div class="highlight"><pre><span class="n">AU_KM</span> <span class="o">=</span> <span class="mf">149597870.700</span>
+
+<span class="k">class</span> <span class="nc">Distance</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">au</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">km</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">au</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">au</span> <span class="o">=</span> <span class="n">au</span>
+        <span class="k">elif</span> <span class="n">km</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">au</span> <span class="o">=</span> <span class="n">km</span> <span class="o">/</span> <span class="n">AU_KM</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">km</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">au</span> <span class="o">*</span> <span class="n">AU_KM</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">Distance</span><span class="p">(</span><span class="n">km</span><span class="o">=</span><span class="mi">217</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;au:&#39;</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;km:&#39;</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">km</span><span class="p">)</span></pre></div>
+
+<pre><code>au: 1.4505554055322529e-06
+km: 217.00000000000003
+</code></pre>
+<p>At least that’s how I implemented it back in 2014.
+In retrospect I’m not happy with how <code>__init__()</code> works.
+To my eyes today it looks wasteful:
+only one of the several arguments is ever used,
+and the <code>if…elif</code> has to search through them every time,
+even though only one will ever be non-<code>None</code>.</p>
+<p>Side note —
+I felt so bad about this <code>__init__()</code> code
+that Skyfield’s <code>Distance</code> class
+provides a second, redundant constructor for <code>au</code>:</p>
+<div class="highlight"><pre>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_au</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">au</span><span class="p">):</span>
+        <span class="bp">self</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>  <span class="c"># avoid calling __init__()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">au</span> <span class="o">=</span> <span class="n">au</span>
+        <span class="k">return</span> <span class="bp">self</span></pre></div>
+
+<p>You’ll recognize this pivot as a
+<a href="https://python-patterns.guide/gang-of-four/composition-over-inheritance/#dodge-if-statements">modern design pattern that I discuss on my Python Patterns site</a>:
+instead of providing one huge method
+with a big <code>if…elif</code> inside that decides what it should do,
+simply have <em>n</em> smaller methods
+that each do one thing well.</p>
+<p>Anyway.</p>
+<p>Another problem with the example code above
+is that <code>.km</code> needs to be computed over and over again
+every time the user needs it.
+In a loop, that could become expensive:
+a Skyfield distance isn’t always a simple float,
+it can be a whole NumPy array of a million elements.</p>
+<p>At first I avoided recomputing it
+by using one of those unwieldy <code>if self._km is None:</code>
+caching checks inside of each unit’s property,
+but then I remembered that Python descriptors
+were very carefully designed
+so that you could write a descriptor
+that only gets called if there isn’t yet a <code>.km</code> attribute!
+Otherwise Python skips the whole method call.
+I never remember the formula,
+so I had to look it up (I got it from Pyramid’s source code):</p>
+<!--phmdoctest-share-names-->
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">update_wrapper</span>
+
+<span class="k">class</span> <span class="nc">reify</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">objtype</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">value</span></pre></div>
+
+<p>I never quite remember what all its code is doing,
+but it works great!</p>
+<!--phmdoctest-share-names-->
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Distance</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">au</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">km</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">au</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">au</span> <span class="o">=</span> <span class="n">au</span>
+        <span class="k">elif</span> <span class="n">km</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">km</span> <span class="o">=</span> <span class="n">km</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">au</span> <span class="o">=</span> <span class="n">km</span> <span class="o">/</span> <span class="n">AU_KM</span>
+
+    <span class="nd">@reify</span>
+    <span class="k">def</span> <span class="nf">km</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">au</span> <span class="o">*</span> <span class="n">AU_KM</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">Distance</span><span class="p">(</span><span class="n">au</span><span class="o">=</span><span class="mf">1.524</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;au:&#39;</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;km:&#39;</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+<span class="k">print</span><span class="p">()</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Distance</span><span class="p">(</span><span class="n">km</span><span class="o">=</span><span class="mi">217</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;au:&#39;</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;km:&#39;</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">km</span><span class="p">)</span></pre></div>
+
+<pre><code>au: 1.524
+km: 227987154.9468
+
+au: 1.4505554055322529e-06
+km: 217
+</code></pre>
+<p>When we use <code>@reify</code> to turn <code>.km</code> into a real attribute like this,
+that we can assign to,
+we get an extra benefit:
+when a distance is instantiated using <code>km</code>,
+we can cache the actual value that the user provided!
+Note that we are now returning the exact <code>km</code> value the user provided,
+instead of trying to re-convert the value from <code>au</code>
+and getting the slight rounding error we saw in the first example.</p>
+<p>But how can we avoid the ugly <code>if…elif</code> block,
+and the need to have <code>__init__()</code> accept as many parameters
+as there are units of measurement?</p>
+<p>I already illustrated, above,
+a <code>from_au()</code> method that does things the ‘right way’
+by multiplexing on method name rather than on combinations of arguments.
+Is that the way forward?
+That way forward still seems a little sad:
+if I need to support <em>n</em> units,
+then I need to write <em>n</em> constructors in addition to my <em>n</em> reified properties,
+and keep them all in sync with each other.</p>
+<p>Could there be a better way?</p>
+<p>Like a sudden blaze of light, a possible constructor syntax occurred to me:</p>
+<pre><code>d = Distance.km(217)
+</code></pre>
+<p>Wow!
+Could it work?
+Could a <code>@reify</code> descriptor
+be taught to respond to a class-method-like call
+and return a newly constructed instance?
+What even happens when that syntax is invoked?</p>
+<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="n">Distance</span><span class="o">.</span><span class="n">km</span><span class="p">(</span><span class="mi">217</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></pre></div>
+
+<pre><code>'reify' object is not callable
+</code></pre>
+<p>A bit of testing revealed
+that calling the <code>reify</code> descriptor like a function
+does something very Pythonic and obvious:
+it runs its <code>__call__()</code> method if it has one.
+Simple enough!
+Let’s write a better <code>reify</code>:</p>
+<!--phmdoctest-share-names-->
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">unit</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">objtype</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="c"># New code:</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;type(self):&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;args:&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Distance</span><span class="p">:</span>
+    <span class="c"># ...</span>
+    <span class="nd">@unit</span>
+    <span class="k">def</span> <span class="nf">km</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">au</span> <span class="o">*</span> <span class="n">AU_KM</span>
+
+<span class="n">Distance</span><span class="o">.</span><span class="n">km</span><span class="p">(</span><span class="mi">217</span><span class="p">)</span></pre></div>
+
+<pre><code>type(self): &lt;class 'tmp.test_code_221_output_249.&lt;locals&gt;.unit'&gt;
+args: (217,)
+</code></pre>
+<p>It worked!
+Our new extended descriptor is starting to gain a superpower
+beyond what <code>@reify</code> itself could do:
+it supports being called like a method of the class itself.
+Can we turn it into a constructor?</p>
+<p>Well, let’s see what else the constructor will need.</p>
+<p>It will need to know the name of the attribute to set
+on the new instance.
+That’s easy enough: it can ask for the <code>__name__</code> of the method,
+and it will learn that it’s named <code>km</code>.
+What about learning the conversation factor that it needs to use?
+We don’t currently have a way to provide it.
+Maybe the decorator should take an argument —
+which is conventionally accomplished in Python
+by turning the decorator into a closure that returns an inner function.</p>
+<p>Oh, dear, this is going to be a bit ugly, isn’t it?
+Let’s just get it working and maybe we can simplify later.</p>
+<!--phmdoctest-share-names-->
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="n">conversion_factor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">__name__</span>
+
+        <span class="k">class</span> <span class="nc">unit_descriptor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+            <span class="c"># These methods are the same as before:</span>
+
+            <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+                <span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">objtype</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+                <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">return</span> <span class="n">value</span>
+
+            <span class="c"># This is improved:</span>
+
+            <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&#39;name:&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&#39;conversion_factor:&#39;</span><span class="p">,</span> <span class="n">conversion_factor</span><span class="p">)</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&#39;value:&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">unit_descriptor</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrap</span>
+
+<span class="k">class</span> <span class="nc">Distance</span><span class="p">:</span>
+    <span class="c"># ...</span>
+    <span class="nd">@unit</span><span class="p">(</span><span class="n">AU_KM</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">km</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">au</span> <span class="o">*</span> <span class="n">AU_KM</span>
+
+<span class="n">Distance</span><span class="o">.</span><span class="n">km</span><span class="p">(</span><span class="mi">217</span><span class="p">)</span></pre></div>
+
+<pre><code>name: km
+conversion_factor: 149597870.7
+value: 217
+</code></pre>
+<p>Success!
+The <code>__call__()</code> now knows what attribute it should set
+and what conversion factor it should apply.
+Yes, I dislike creating classes inside of functions inside of other functions.
+But let’s see if we can get it working before we worry about elegance.
+It feels like time to write up some actual constructor code
+and see if we can get a <code>Distance</code> instance returned back to us.</p>
+<p>Well — drat.</p>
+<p>How will <code>__call__()</code> know what class to build?</p>
+<p>I could of course hard-code <code>Distance</code> as the class to build,
+but I was hoping that a single descriptor
+could support all of my classes,
+including <code>Velocity</code> and <code>Angle</code>.
+It would be better if <code>unit</code> could auto-discover
+that <code>Distance</code> was the class it was being asked to build.
+But, alas, it doesn’t know its class!
+Remember that the <code>self</code> argument to <code>__call__()</code>,
+as you might have noticed in the earlier example,
+is the <code>unit</code> descriptor instance itself —
+which makes sense,
+but doesn’t help me discover
+which class this <code>unit</code> descriptor is attached to.</p>
+<p>And here we run into a quirk of Python:
+methods don’t know which class they belong to.
+And decorators don’t have a way to get to the class either —
+the class object doesn’t even exist yet
+as the class’s namespace itself is running.</p>
+<p>One common solution is to do post-processing on the class.
+Then you can loop over its attributes,
+figure out which ones are <code>unit</code> descriptors,
+and give them each an extra attribute, like <code>_my_class</code>,
+that tells them what class they belong to.</p>
+<p>There are several well-known ways to post-process a Python class.</p>
+<ul>
+<li>We could pass the class to a simple function.</li>
+<li>We could use a class decorator (available since Python 2.6).</li>
+<li>We could go all unreadable-old-school and use a metaclass.</li>
+</ul>
+<p>But then there would be a subtle problem.
+Though it would probably never come up,
+it’s technically incorrect for <code>km()</code> to always return a <code>Distance</code>,
+because someone could subclass <code>Distance</code>
+and then the <code>km()</code> constructor, if called on their subclass,
+really ought to return an instance of that subclass instead.</p>
+<p>And — those approaches just feel <em>complicated</em>
+compared to what we’re trying to do.
+Is it really impossible for <code>__call__()</code> to learn its class?</p>
+<p>So I dug around a bit.
+I added <code>print()</code> statements in a variety of places.</p>
+<p>And discovered a solution!</p>
+<p>To my vast surprise,
+it turns out that the method call:</p>
+<pre><code>Distance.km()
+</code></pre>
+<p>— goes through, not one, but <em>two</em> of the methods
+defined on the <code>unit_descriptor</code>!
+The steps Python take turn out to be:</p>
+<ol>
+<li><code>Distance</code> — look up the object.</li>
+<li><code>.km</code> — Grab the <code>km</code> attribute.</li>
+<li>Oh, wait! It’s a descriptor! So Python auto-invokes
+<code>__get__(None, Distance)</code>
+and the resulting object is considered
+the actual value of the attribute.</li>
+<li><code>()</code> — Finally, Python invokes that object’s <code>__call__()</code> method.</li>
+</ol>
+<p>And while the knowledge ‘which class was this called on’ has evaporated
+by the time <code>__call__()</code> is invoked,
+<em>it’s available inside the ‘get’ dunder!</em></p>
+<p>Recall that at this point we’re still running with the <code>__get__()</code>
+method that I copied-and-pasted from the Internet
+without actually understanding the whole thing.
+Let’s look at it again —
+this time, pay attention to its first two lines:</p>
+<pre><code>            def __get__(self, instance, objtype=None):
+                if instance is None:
+                    return self
+                value = self.method(instance)
+                instance.__dict__[self.__name__] = value
+                return value
+</code></pre>
+<p>Yeah, I didn’t understand them at first either.
+Why would <code>instance</code> be <code>None</code>?
+Well, it turns out, that’s what tells the descriptor
+when you type <code>Distance.km</code>
+that it’s been invoked to look up the <code>km</code> attribute on a class —
+and it just so happens that in that case,
+<code>objtype</code> is <code>Distance</code>!</p>
+<p>So we can get rid of <code>__call__()</code> entirely!
+We didn’t know it,
+but it turns out that we were already intercepting
+the <code>Distance.km()</code> class method call —
+we just weren’t doing anything interesting yet.
+Let’s fix that:</p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="n">conversion_factor</span><span class="p">,</span> <span class="n">core_unit</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">__name__</span>
+
+        <span class="k">class</span> <span class="nc">unit_descriptor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span> <span class="c"># Same as before</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+                <span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">objtype</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>    <span class="c"># New behavior:</span>
+                    <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">constructor</span><span class="p">,</span> <span class="n">objtype</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+                <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">return</span> <span class="n">value</span>
+
+        <span class="c"># New way to build a Distance:</span>
+
+        <span class="k">def</span> <span class="nf">constructor</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>      <span class="c"># Make a new Distance</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>   <span class="c"># “Set .km to 217”</span>
+            <span class="k">if</span> <span class="n">conversion_factor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>  <span class="c"># And set “.au”</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="n">conversion_factor</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">core_unit</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">obj</span>
+
+        <span class="k">return</span> <span class="n">unit_descriptor</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrap</span>
+
+<span class="k">class</span> <span class="nc">Distance</span><span class="p">:</span>
+    <span class="c"># ...</span>
+    <span class="nd">@unit</span><span class="p">(</span><span class="n">AU_KM</span><span class="p">,</span> <span class="s">&#39;au&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">km</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">au</span> <span class="o">*</span> <span class="n">AU_KM</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">Distance</span><span class="o">.</span><span class="n">km</span><span class="p">(</span><span class="mi">217</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;au:&#39;</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;km:&#39;</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">km</span><span class="p">)</span></pre></div>
+
+<pre><code>au: 1.4505554055322529e-06
+km: 217
+</code></pre>
+<p>Amazing! It works!</p>
+<p>To avoid having to tell <code>constructor()</code> too many new facts,
+we go ahead and embed it inside the closure
+so that it can get values like <code>conversion_factor</code> and <code>core_unit</code>
+for free.
+The only thing it’s missing is the class it’s supposed to build,
+whether that’s <code>Distance</code> or <code>Velocity</code>,
+but we can provide that easily enough using a partial —
+creating, in essence, a little hand-made bound method
+that already knows its first argument.</p>
+<p>(Yes, I could have instead used some black magic from Stack Overflow
+to create a real bound method.
+No, I am not in the least tempted to do so.)</p>
+<p>The mission is now accomplished!</p>
+<p>But code is kind of ugly:
+we’re building an inner class, inside of a function,
+inside of another function.</p>
+<p>A final simplification fell out
+when I noticed that we were having to state twice,
+redundantly,
+the name of the unit and how to perform its conversion.
+Remember that the method we’re decorating still looks like this:</p>
+<pre><code>    @unit(AU_KM, 'au')
+    def km(self):
+        return self.au * AU_KM
+</code></pre>
+<p>Why mention <code>au</code> and <code>AU_KM</code> twice?
+That’s the kind of thing a descriptor is supposed to take care of for us!
+So let’s abandon the complexity of wrapping a method,
+abandon the need to have a closure,
+and refactor back to a plain descriptor:</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">unit</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">conversion_factor</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">core_unit</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conversion_factor</span> <span class="o">=</span> <span class="n">conversion_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core_unit</span> <span class="o">=</span> <span class="n">core_unit</span>
+
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">objtype</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>  <span class="c"># If called as a class method:</span>
+            <span class="k">def</span> <span class="nf">constructor</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>  <span class="c"># (same as above)</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">objtype</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">objtype</span><span class="p">)</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="n">conversion_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conversion_factor</span>
+                <span class="k">if</span> <span class="n">conversion_factor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="n">conversion_factor</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_unit</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">obj</span>
+            <span class="k">return</span> <span class="n">constructor</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_unit</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">conversion_factor</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+<span class="k">class</span> <span class="nc">Distance</span><span class="p">:</span>
+    <span class="n">au</span> <span class="o">=</span> <span class="n">unit</span><span class="p">(</span><span class="s">&#39;au&#39;</span><span class="p">)</span>
+    <span class="n">km</span> <span class="o">=</span> <span class="n">unit</span><span class="p">(</span><span class="s">&#39;km&#39;</span><span class="p">,</span> <span class="n">AU_KM</span><span class="p">,</span> <span class="s">&#39;au&#39;</span><span class="p">)</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">Distance</span><span class="o">.</span><span class="n">au</span><span class="p">(</span><span class="mf">1.524</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;au:&#39;</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;km:&#39;</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+<span class="k">print</span><span class="p">()</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Distance</span><span class="o">.</span><span class="n">km</span><span class="p">(</span><span class="mi">217</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;au:&#39;</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">au</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;km:&#39;</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">km</span><span class="p">)</span></pre></div>
+
+<pre><code>au: 1.524
+km: 227987154.9468
+
+au: 1.4505554055322529e-06
+km: 217
+</code></pre>
+<p>Well.
+What do you think?</p>
+<p>Will I regret this later if I push this to production?</p>
+<!-- Again, replies to my tweet are welcome!
+
+PUT TWEET HERE -->
+
+<p class="byline">©2021</p>
+
+</body>
+</html>
