@@ -92,7 +92,8 @@ but then I remembered that Python descriptors
 were very carefully designed
 so that you could write a descriptor
 that only gets called if there isn’t yet a <code>.km</code> attribute!
-Otherwise Python skips the whole method call.
+Otherwise Python skips the whole method call,
+which both makes the logic simpler and saves valuable time.
 I never remember the formula,
 so I had to look it up (I got it from Pyramid’s source code):</p>
 <!--phmdoctest-share-names-->
@@ -146,14 +147,17 @@ when a distance is instantiated using <code>km</code>,
 we can cache the actual value that the user provided!
 Note that we are now returning the exact <code>km</code> value the user provided,
 instead of trying to re-convert the value from <code>au</code>
-and getting the slight rounding error we saw in the first example.</p>
+and getting the slight rounding error we saw in the first example:
+<code>km</code> is now <code>217</code> instead of <code>217.00000000000003</code>.</p>
 <p>But how can we avoid the ugly <code>if…elif</code> block,
 and the need to have <code>__init__()</code> accept as many parameters
 as there are units of measurement?</p>
 <p>I already illustrated, above,
 a <code>from_au()</code> method that does things the ‘right way’
 by multiplexing on method name rather than on combinations of arguments.
-Is that the way forward?
+Is that the way forward,
+adding something like <code>from_km()</code>
+for each additional unit supported?
 That way forward still seems a little sad:
 if I need to support <em>n</em> units,
 then I need to write <em>n</em> constructors in addition to my <em>n</em> reified properties,
@@ -339,9 +343,9 @@ the actual value of the attribute.</li>
 <p>And while the knowledge ‘which class was this called on’ has evaporated
 by the time <code>__call__()</code> is invoked,
 <em>it’s available inside the ‘get’ dunder!</em></p>
-<p>Recall that at this point we’re still running with the <code>__get__()</code>
-method that I copied-and-pasted from the Internet
-without actually understanding the whole thing.
+<p>Recall that at this point we’re using a <code>__get__()</code> method
+that I copied-and-pasted from the Internet
+without actually understanding what it does.
 Let’s look at it again —
 this time, pay attention to its first two lines:</p>
 <pre><code>            def __get__(self, instance, objtype=None):
@@ -353,15 +357,15 @@ this time, pay attention to its first two lines:</p>
 </code></pre>
 <p>Yeah, I didn’t understand them at first either.
 Why would <code>instance</code> be <code>None</code>?
-Well, it turns out, that’s what tells the descriptor
-when you type <code>Distance.km</code>
-that it’s been invoked to look up the <code>km</code> attribute on a class —
-and it just so happens that in that case,
+Well, it turns out, that’s what tells the descriptor that you,
+instead of asking for an instance attribute <code>d.km</code>,
+have asked for a class attribute <code>Distance.km</code>.
+And it just so happens that in that case,
 <code>objtype</code> is <code>Distance</code>!</p>
 <p>So we can get rid of <code>__call__()</code> entirely!
 We didn’t know it,
 but it turns out that we were already intercepting
-the <code>Distance.km()</code> class method call —
+the <code>Distance.km()</code> class method —
 we just weren’t doing anything interesting yet.
 Let’s fix that:</p>
 <div class="highlight"><pre><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
