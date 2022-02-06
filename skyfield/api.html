@@ -292,6 +292,9 @@ The same time can be represented in several different time scales.</p>
 <tr class="row-even"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.precession_matrix" title="skyfield.timelib.Time.precession_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.precession_matrix</span></code></a>()</td>
 <td>Compute the 3×3 precession matrix P for this date.</td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-time.html#skyfield.timelib.Time.to_astropy" title="skyfield.timelib.Time.to_astropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time.to_astropy</span></code></a>()</td>
+<td>Return an AstroPy object representing this time.</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -426,12 +429,6 @@ observer, which can introduce an error of ±0.06&nbsp;magnitude.</li>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.phase_angle" title="skyfield.almanac.phase_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phase_angle</span></code></a>(ephemeris,&nbsp;body,&nbsp;t)</td>
-<td>Compute the phase angle of a body viewed from Earth.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.fraction_illuminated" title="skyfield.almanac.fraction_illuminated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fraction_illuminated</span></code></a>(ephemeris,&nbsp;body,&nbsp;t)</td>
-<td>Compute the illuminated fraction of a body viewed from Earth.</td>
-</tr>
 <tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.seasons" title="skyfield.almanac.seasons"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seasons</span></code></a>(ephemeris)</td>
 <td>Build a function of time that returns the quarter of the year.</td>
 </tr>
@@ -694,10 +691,19 @@ declination coordinates with
 <tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_time_and_frame_vectors" title="skyfield.positionlib.ICRF.from_time_and_frame_vectors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_time_and_frame_vectors</span></code></a>(t,&nbsp;frame,&nbsp;…)</td>
 <td>Constructor: build a position from two vectors in a reference frame.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_sunlit" title="skyfield.positionlib.ICRF.is_sunlit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.is_sunlit</span></code></a>(ephemeris)</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.to_skycoord" title="skyfield.positionlib.ICRF.to_skycoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.to_skycoord</span></code></a>([unit])</td>
+<td>Convert this distance to an AstroPy <code class="docutils literal notranslate"><span class="pre">SkyCoord</span></code> object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.phase_angle" title="skyfield.positionlib.ICRF.phase_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.phase_angle</span></code></a>(sun)</td>
+<td>Return this position’s phase angle: the angle Sun-target-observer.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.fraction_illuminated" title="skyfield.positionlib.ICRF.fraction_illuminated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.fraction_illuminated</span></code></a>(sun)</td>
+<td>Return the fraction of the target’s disc that is illuminated.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_sunlit" title="skyfield.positionlib.ICRF.is_sunlit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.is_sunlit</span></code></a>(ephemeris)</td>
 <td>Return whether a position in Earth orbit is in sunlight.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_altaz" title="skyfield.positionlib.ICRF.from_altaz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_altaz</span></code></a>([alt,&nbsp;az,&nbsp;alt_degrees,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_altaz" title="skyfield.positionlib.ICRF.from_altaz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_altaz</span></code></a>([alt,&nbsp;az,&nbsp;alt_degrees,&nbsp;…])</td>
 <td>Generate an Apparent position from an altitude and azimuth.</td>
 </tr>
 </tbody>

@@ -120,6 +120,26 @@ in this URL to match papers already using it as an identifier):
 </div>
 <div class="section" id="changelog">
 <span id="id2"></span><h2>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v1-42-2022-february-6">
+<h3>v1.42 — 2022 February 6<a class="headerlink" href="#v1-42-2022-february-6" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Added two new position methods
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.phase_angle" title="skyfield.positionlib.ICRF.phase_angle"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phase_angle()</span></code></a>
+and
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.fraction_illuminated" title="skyfield.positionlib.ICRF.fraction_illuminated"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fraction_illuminated()</span></code></a>
+that replace a pair of old functions in the almanac module.</li>
+<li>The almanac routine <a class="reference internal" href="api-almanac.html#skyfield.almanac.moon_nodes" title="skyfield.almanac.moon_nodes"><code class="xref py py-func docutils literal notranslate"><span class="pre">moon_nodes()</span></code></a> would
+sometimes skip nodes that were closer together than 14.0 days.  It has
+been tightened down and should now detect all lunar nodes.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/662">#662</a></li>
+<li>Time objects now feature a <a class="reference internal" href="api-time.html#skyfield.timelib.Time.to_astropy" title="skyfield.timelib.Time.to_astropy"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_astropy()</span></code></a>
+method.</li>
+<li>The position method <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.to_skycoord" title="skyfield.positionlib.ICRF.to_skycoord"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_skycoord()</span></code></a> now
+sets the <code class="docutils literal notranslate"><span class="pre">frame</span></code> attribute of the sky coordinate it returns, and for
+now only supports barycentric and geocentric positions.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/577">#577</a></li>
+</ul>
+</div>
 <div class="section" id="v1-41-2021-december-16">
 <h3>v1.41 — 2021 December 16<a class="headerlink" href="#v1-41-2021-december-16" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -268,7 +288,7 @@ where it couldn’t be used with positions of other classes
 that might be centered at the geocenter.
 (The old method will remain in place to support legacy code,
 but is discouraged in new applications.)</li>
-<li>The effects of <a class="reference internal" href="accuracy-efficiency.html#polar-motion"><span class="std std-ref">Polar Motion</span></a> — if configured — are now included
+<li>The effects of <a class="reference internal" href="accuracy-efficiency.html#polar-motion"><span class="std std-ref">Precession and Nutation</span></a> — if configured — are now included
 both when computing the position in space of an Earth latitude and longitude,
 and when determining the latitude and longitude beneath a celestial position.</li>
 <li>Added <a class="reference internal" href="api.html#skyfield.api.load_constellation_names" title="skyfield.api.load_constellation_names"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_constellation_names()</span></code></a>.</li>
@@ -292,7 +312,8 @@ for ecliptic and galactic coordinates,
 which are now deprecated (but will continue to be supported).
 See <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>.
 <a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/476">#476</a></li>
-<li>Added support for IERS <a class="reference internal" href="accuracy-efficiency.html#polar-motion"><span class="std std-ref">Polar Motion</span></a> 𝑥 and 𝑦.</li>
+<li>Added an official <a class="reference internal" href="api-framelib.html#skyfield.framelib.itrs" title="skyfield.framelib.itrs"><code class="xref py py-class docutils literal notranslate"><span class="pre">itrs</span></code></a> reference frame.</li>
+<li>Added support for IERS <a class="reference internal" href="accuracy-efficiency.html#polar-motion"><span class="std std-ref">Precession and Nutation</span></a> 𝑥 and 𝑦.</li>
 <li>Added a method <a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition.lst_hours_at" title="skyfield.toposlib.GeographicPosition.lst_hours_at"><code class="xref py py-meth docutils literal notranslate"><span class="pre">lst_hours_at()</span></code></a>
 that computes Local Sidereal Time.</li>
 <li>A new almanac routine <a class="reference internal" href="api-almanac.html#skyfield.almanac.moon_phase" title="skyfield.almanac.moon_phase"><code class="xref py py-func docutils literal notranslate"><span class="pre">moon_phase()</span></code></a> returns
@@ -747,8 +768,8 @@ end dates were very close together.
 <a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/240">#240</a></li>
 </ul>
 </div>
-<div class="section" id="id74">
-<h3>1.10 — 2019 February 2<a class="headerlink" href="#id74" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id76">
+<h3>1.10 — 2019 February 2<a class="headerlink" href="#id76" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fix: teach Skyfield the new format of the Naval Observatory ∆T data
 file <code class="docutils literal notranslate"><span class="pre">deltat.preds</span></code>, whose change in format caused Skyfield to start
@@ -927,8 +948,8 @@ time scale object instead of creating a new one each time.</li>
 apparent position.</li>
 </ul>
 </div>
-<div class="section" id="id96">
-<h3>0.9<a class="headerlink" href="#id96" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id98">
+<h3>0.9<a class="headerlink" href="#id98" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The <code class="docutils literal notranslate"><span class="pre">observe()</span></code> method of an observer on the Earth’s surface now
 correctly accounts for the way that the Earth’s gravity will deflect
@@ -944,8 +965,8 @@ if the user is running it under IDLE, which would try to accumulate
 the updates as a single long line that eventually hangs the window.</li>
 </ul>
 </div>
-<div class="section" id="id97">
-<h3>0.8<a class="headerlink" href="#id97" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id99">
+<h3>0.8<a class="headerlink" href="#id99" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added an <a class="reference internal" href="api.html"><span class="doc">API Reference</span></a> document to the project, in reverent imitation of the
 <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/api.html">Pandas API Reference</a> that I keep open in a browser tab every time I
@@ -956,8 +977,8 @@ between two positions.</li>
 that it no longer raises an exception.</li>
 </ul>
 </div>
-<div class="section" id="id98">
-<h3>0.7<a class="headerlink" href="#id98" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id100">
+<h3>0.7<a class="headerlink" href="#id100" title="Permalink to this headline">¶</a></h3>
 <ul>
 <li><p class="first">Introduced the <code class="docutils literal notranslate"><span class="pre">Timescale</span></code> object with methods <code class="docutils literal notranslate"><span class="pre">utc()</span></code>, <code class="docutils literal notranslate"><span class="pre">tai()</span></code>,
 <code class="docutils literal notranslate"><span class="pre">tt()</span></code>, and <code class="docutils literal notranslate"><span class="pre">tdb()</span></code> for building time objects, along with a
@@ -983,8 +1004,8 @@ a special keyword argument for every download:</p>
 </li>
 </ul>
 </div>
-<div class="section" id="id99">
-<h3>0.6.1<a class="headerlink" href="#id99" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id101">
+<h3>0.6.1<a class="headerlink" href="#id101" title="Permalink to this headline">¶</a></h3>
 <ul>
 <li><p class="first">Users can now supply a target <code class="docutils literal notranslate"><span class="pre">directory</span></code> when downloading a file:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="s1">&#39;~/ephemerides&#39;</span><span class="p">)</span>
@@ -998,8 +1019,8 @@ successful download when it tried to rename the new file.</p>
 </li>
 </ul>
 </div>
-<div class="section" id="id100">
-<h3>0.6<a class="headerlink" href="#id100" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id102">
+<h3>0.6<a class="headerlink" href="#id102" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Skyfield now generates its own estimate for <code class="docutils literal notranslate"><span class="pre">delta_t</span></code> if the user
 does not supply their own <code class="docutils literal notranslate"><span class="pre">delta_t=</span></code> keyword when specifying a date.
@@ -1008,8 +1029,8 @@ This should make altitude and azimuth angles much more precise.</li>
 <li>Both ecliptic and galactic coordinates are now supported.</li>
 </ul>
 </div>
-<div class="section" id="id101">
-<h3>0.5<a class="headerlink" href="#id101" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id103">
+<h3>0.5<a class="headerlink" href="#id103" title="Permalink to this headline">¶</a></h3>
 <ul>
 <li><p class="first">Skyfield has dropped the 16-megabyte JPL ephemeris DE421 as an install
 dependency, since users might choose another ephemeris, or might not
@@ -1035,8 +1056,8 @@ you have time to edit your code and turn <code class="docutils literal notransla
 </li>
 </ul>
 </div>
-<div class="section" id="id102">
-<h3>0.4<a class="headerlink" href="#id102" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id104">
+<h3>0.4<a class="headerlink" href="#id104" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>To prevent confusion, the <a class="reference internal" href="api-time.html#skyfield.timelib.Time.astimezone" title="skyfield.timelib.Time.astimezone"><code class="xref py py-meth docutils literal notranslate"><span class="pre">astimezone()</span></code></a>
 and <a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_datetime" title="skyfield.timelib.Time.utc_datetime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">utc_datetime()</span></code></a> methods
@@ -1047,8 +1068,8 @@ call the new methods
 and <a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_datetime_and_leap_second" title="skyfield.timelib.Time.utc_datetime_and_leap_second"><code class="xref py py-meth docutils literal notranslate"><span class="pre">utc_datetime_and_leap_second()</span></code></a>.</li>
 </ul>
 </div>
-<div class="section" id="id103">
-<h3>0.3<a class="headerlink" href="#id103" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id105">
+<h3>0.3<a class="headerlink" href="#id105" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The floating-point values of an angle
 <code class="docutils literal notranslate"><span class="pre">a.radians</span></code>, <code class="docutils literal notranslate"><span class="pre">a.degrees</span></code>, and <code class="docutils literal notranslate"><span class="pre">a.hours</span></code>

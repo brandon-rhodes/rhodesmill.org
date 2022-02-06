@@ -147,7 +147,7 @@ local meridian from which to measure the hour angle.</p>
 <p>Because this declination is measured from the plane of the
 Earth’s physical geographic equator, it will be slightly
 different than the declination returned by <code class="docutils literal notranslate"><span class="pre">radec()</span></code> if you
-have loaded a <a class="reference internal" href="accuracy-efficiency.html#polar-motion"><span class="std std-ref">Polar Motion</span></a> file.</p>
+have loaded a <a class="reference internal" href="accuracy-efficiency.html#polar-motion"><span class="std std-ref">Precession and Nutation</span></a> file.</p>
 <p>The coordinates are not adjusted for atmospheric refraction near
 the horizon.</p>
 </dd></dl>
@@ -252,6 +252,34 @@ the degrees that this routine will return.</p>
 <dt id="skyfield.positionlib.ICRF.to_skycoord">
 <code class="descname">to_skycoord</code><span class="sig-paren">(</span><em>unit=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.to_skycoord" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert this distance to an AstroPy <code class="docutils literal notranslate"><span class="pre">SkyCoord</span></code> object.</p>
+<p>Currently, this will only work with Skyfield positions whose
+center is the Solar System barycenter or else the geocenter.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.phase_angle">
+<code class="descname">phase_angle</code><span class="sig-paren">(</span><em>sun</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.phase_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return this position’s phase angle: the angle Sun-target-observer.</p>
+<p>Given a Sun object (which you can build by loading an ephemeris
+and looking up <code class="docutils literal notranslate"><span class="pre">eph['Sun']</span></code>), return the <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> between the
+light arriving at this position’s target from the Sun and the
+light traveling from this position’s target to the observer.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.42.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="skyfield.positionlib.ICRF.fraction_illuminated">
+<code class="descname">fraction_illuminated</code><span class="sig-paren">(</span><em>sun</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.fraction_illuminated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the fraction of the target’s disc that is illuminated.</p>
+<p>Given a Sun object (which you can build by loading an ephemeris
+and looking up <code class="docutils literal notranslate"><span class="pre">eph['Sun']</span></code>), compute what fraction from 0.0
+to 1.0 of this target’s disc is illuminated, under the
+assumption that the target is a sphere.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.42.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
