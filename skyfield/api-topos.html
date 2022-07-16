@@ -78,21 +78,28 @@ and −1:</p>
 <dl class="method">
 <dt id="skyfield.toposlib.Geoid.latlon_of">
 <code class="descname">latlon_of</code><span class="sig-paren">(</span><em>position</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.toposlib.Geoid.latlon_of" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the latitude and longitude of a geocentric <code class="docutils literal notranslate"><span class="pre">position</span></code>.</p>
+<dd><p>Return the latitude and longitude of a <code class="docutils literal notranslate"><span class="pre">position</span></code>.</p>
+<p>The position’s <code class="docutils literal notranslate"><span class="pre">.center</span></code> must be 399, the center of the Earth.
+Geodetic latitude and longitude are returned as a pair of
+<a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> objects.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="skyfield.toposlib.Geoid.height_of">
 <code class="descname">height_of</code><span class="sig-paren">(</span><em>position</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.toposlib.Geoid.height_of" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return height above the ellipsoid for a geocentric <code class="docutils literal notranslate"><span class="pre">position</span></code>.</p>
+<dd><p>Return the height above the Earth’s ellipsoid of a <code class="docutils literal notranslate"><span class="pre">position</span></code>.</p>
+<p>The position’s <code class="docutils literal notranslate"><span class="pre">.center</span></code> must be 399, the center of the Earth.
+A <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> is returned giving the
+position’s geodetic height above the Earth’s surface.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="skyfield.toposlib.Geoid.geographic_position_of">
 <code class="descname">geographic_position_of</code><span class="sig-paren">(</span><em>position</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.toposlib.Geoid.geographic_position_of" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the <a class="reference internal" href="#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref any py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a> of a geocentric <code class="docutils literal notranslate"><span class="pre">position</span></code>.</p>
-<p>Given a geocentric <code class="docutils literal notranslate"><span class="pre">position</span></code>, returns a <a class="reference internal" href="#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref any py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a>
-providing its <code class="docutils literal notranslate"><span class="pre">latitude</span></code>, <code class="docutils literal notranslate"><span class="pre">longitude</span></code>, and <code class="docutils literal notranslate"><span class="pre">elevation</span></code>
+<dd><p>Return the <a class="reference internal" href="#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref any py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a> of a <code class="docutils literal notranslate"><span class="pre">position</span></code>.</p>
+<p>The position’s <code class="docutils literal notranslate"><span class="pre">.center</span></code> must be 399, the center of the Earth.
+A <a class="reference internal" href="#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref any py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a> is returned giving the position’s
+geodetic <code class="docutils literal notranslate"><span class="pre">latitude</span></code> and <code class="docutils literal notranslate"><span class="pre">longitude</span></code>, and an <code class="docutils literal notranslate"><span class="pre">elevation</span></code>
 above or below the surface of the ellipsoid.</p>
 </dd></dl>
 
@@ -100,9 +107,10 @@ above or below the surface of the ellipsoid.</p>
 <dt id="skyfield.toposlib.Geoid.subpoint_of">
 <code class="descname">subpoint_of</code><span class="sig-paren">(</span><em>position</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.toposlib.Geoid.subpoint_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the point on the ellipsoid directly below a <code class="docutils literal notranslate"><span class="pre">position</span></code>.</p>
-<p>Given a geocentric <code class="docutils literal notranslate"><span class="pre">position</span></code>, returns a <a class="reference internal" href="#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref any py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a>
-whose <code class="docutils literal notranslate"><span class="pre">latitude</span></code> and <code class="docutils literal notranslate"><span class="pre">longitude</span></code> lie directly underneath the
-input position and whose <code class="docutils literal notranslate"><span class="pre">elevation</span></code> is zero.</p>
+<p>The position’s <code class="docutils literal notranslate"><span class="pre">.center</span></code> must be 399, the center of the Earth.
+Returns a <a class="reference internal" href="#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref any py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a> giving the geodetic <code class="docutils literal notranslate"><span class="pre">latitude</span></code>
+and <code class="docutils literal notranslate"><span class="pre">longitude</span></code> that lie directly below the input position,
+and an <code class="docutils literal notranslate"><span class="pre">elevation</span></code> above the ellipsoid of zero.</p>
 </dd></dl>
 
 </dd></dl>

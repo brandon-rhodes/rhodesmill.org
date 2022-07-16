@@ -755,8 +755,21 @@ will instead download <code class="docutils literal notranslate"><span class="pr
 </div>
 <p>As usual with data files,
 Skyfield will only download the file the first time you need it,
-then will keep using that same copy of the file that it finds on disk.
-If your script will always have Internet access
+then will keep using that same copy of the file that it finds on disk.</p>
+<p>Note that the international agencies responsible for the file’s distribution
+sometimes have trouble keeping their servers up.
+For example, as I write this in May of 2022,
+the file cannot be fetched from <code class="docutils literal notranslate"><span class="pre">ftp.iers.org</span></code>
+because of an
+<a class="reference external" href="https://www.iers.org/IERS/EN/NewsMeetings/News/news_001.html">Outage of iers.org data servers</a>
+reported on their website.
+At
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/730">Skyfield issue #730</a>
+and
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/732">Skyfield issue #732</a>
+you can find links to alternative data sources
+which various Skyfield users have been able to access in the meantime.</p>
+<p>If your script will always have Internet access
 and you worry about the file falling out of date
 (and if you can trust the “modify time” file attribute on your filesystem),
 then you can have Skyfield download a new copy

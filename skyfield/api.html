@@ -36,15 +36,16 @@
 <li><a class="reference internal" href="#almanac" id="id10">Almanac</a></li>
 <li><a class="reference internal" href="#geographic-locations" id="id11">Geographic locations</a></li>
 <li><a class="reference internal" href="#kepler-orbits" id="id12">Kepler orbits</a></li>
-<li><a class="reference internal" href="#earth-satellites" id="id13">Earth satellites</a></li>
-<li><a class="reference internal" href="#stars-and-other-distant-objects" id="id14">Stars and other distant objects</a></li>
-<li><a class="reference internal" href="#astronomical-positions" id="id15">Astronomical positions</a></li>
-<li><a class="reference internal" href="#reference-frames" id="id16">Reference frames</a></li>
-<li><a class="reference internal" href="#constellations" id="id17">Constellations</a></li>
-<li><a class="reference internal" href="#searching" id="id18">Searching</a></li>
-<li><a class="reference internal" href="#osculating-orbital-elements" id="id19">Osculating orbital elements</a></li>
-<li><a class="reference internal" href="#units" id="id20">Units</a></li>
-<li><a class="reference internal" href="#trigonometry" id="id21">Trigonometry</a></li>
+<li><a class="reference internal" href="#kepler-orbit-data" id="id13">Kepler orbit data</a></li>
+<li><a class="reference internal" href="#earth-satellites" id="id14">Earth satellites</a></li>
+<li><a class="reference internal" href="#stars-and-other-distant-objects" id="id15">Stars and other distant objects</a></li>
+<li><a class="reference internal" href="#astronomical-positions" id="id16">Astronomical positions</a></li>
+<li><a class="reference internal" href="#reference-frames" id="id17">Reference frames</a></li>
+<li><a class="reference internal" href="#constellations" id="id18">Constellations</a></li>
+<li><a class="reference internal" href="#searching" id="id19">Searching</a></li>
+<li><a class="reference internal" href="#osculating-orbital-elements" id="id20">Osculating orbital elements</a></li>
+<li><a class="reference internal" href="#units" id="id21">Units</a></li>
+<li><a class="reference internal" href="#trigonometry" id="id22">Trigonometry</a></li>
 </ul>
 </div>
 <div class="section" id="version">
@@ -503,13 +504,13 @@ into latitude, longitude, and height:</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.latlon_of" title="skyfield.toposlib.Geoid.latlon_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.latlon_of</span></code></a>(position)</td>
-<td>Return the latitude and longitude of a geocentric <code class="docutils literal notranslate"><span class="pre">position</span></code>.</td>
+<td>Return the latitude and longitude of a <code class="docutils literal notranslate"><span class="pre">position</span></code>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.height_of" title="skyfield.toposlib.Geoid.height_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.height_of</span></code></a>(position)</td>
-<td>Return height above the ellipsoid for a geocentric <code class="docutils literal notranslate"><span class="pre">position</span></code>.</td>
+<td>Return the height above the Earth’s ellipsoid of a <code class="docutils literal notranslate"><span class="pre">position</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.geographic_position_of" title="skyfield.toposlib.Geoid.geographic_position_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.geographic_position_of</span></code></a>(position)</td>
-<td>Return the <a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref any py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a> of a geocentric <code class="docutils literal notranslate"><span class="pre">position</span></code>.</td>
+<td>Return the <a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref any py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a> of a <code class="docutils literal notranslate"><span class="pre">position</span></code>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.subpoint_of" title="skyfield.toposlib.Geoid.subpoint_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geoid.subpoint_of</span></code></a>(position)</td>
 <td>Return the point on the ellipsoid directly below a <code class="docutils literal notranslate"><span class="pre">position</span></code>.</td>
@@ -545,8 +546,28 @@ it offers several methods:</p>
 <p>See <a class="reference internal" href="kepler-orbits.html"><span class="doc">Kepler Orbits</span></a>
 for computing the positions of comets, asteroids, and other minor planets.</p>
 </div>
+<div class="section" id="kepler-orbit-data">
+<h2><a class="toc-backref" href="#id13">Kepler orbit data</a><a class="headerlink" href="#kepler-orbit-data" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="api-kepler.html#skyfield.data.mpc.load_mpcorb_dataframe" title="skyfield.data.mpc.load_mpcorb_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_mpcorb_dataframe</span></code></a>(fobj)</td>
+<td>Parse a Minor Planet Center orbits file into a Pandas dataframe.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-kepler.html#skyfield.data.mpc.load_comets_dataframe" title="skyfield.data.mpc.load_comets_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_comets_dataframe</span></code></a>(fobj)</td>
+<td>Parse a Minor Planet Center comets file into a Pandas dataframe.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-kepler.html#skyfield.data.mpc.load_comets_dataframe_slow" title="skyfield.data.mpc.load_comets_dataframe_slow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_comets_dataframe_slow</span></code></a>(fobj)</td>
+<td>Parse a Minor Planet Center comets file into a Pandas dataframe.</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="earth-satellites">
-<h2><a class="toc-backref" href="#id13">Earth satellites</a><a class="headerlink" href="#earth-satellites" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id14">Earth satellites</a><a class="headerlink" href="#earth-satellites" title="Permalink to this headline">¶</a></h2>
 <p>By downloading TLE satellite element sets,
 Skyfield users can build vector functions
 that predict their positions.
@@ -570,7 +591,7 @@ See <a class="reference internal" href="earth-satellites.html"><span class="doc"
 </table>
 </div>
 <div class="section" id="stars-and-other-distant-objects">
-<h2><a class="toc-backref" href="#id14">Stars and other distant objects</a><a class="headerlink" href="#stars-and-other-distant-objects" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id15">Stars and other distant objects</a><a class="headerlink" href="#stars-and-other-distant-objects" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
@@ -584,7 +605,7 @@ See <a class="reference internal" href="earth-satellites.html"><span class="doc"
 </table>
 </div>
 <div class="section" id="astronomical-positions">
-<h2><a class="toc-backref" href="#id15">Astronomical positions</a><a class="headerlink" href="#astronomical-positions" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id16">Astronomical positions</a><a class="headerlink" href="#astronomical-positions" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a> three-dimensional position vector serves as the base class
 for all of the following position classes.  Each class represents an
 (<em>x,y,z</em>) <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> vector oriented to the axes of
@@ -730,7 +751,7 @@ provide unique methods of their own:</p>
 </table>
 </div>
 <div class="section" id="reference-frames">
-<h2><a class="toc-backref" href="#id16">Reference frames</a><a class="headerlink" href="#reference-frames" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id17">Reference frames</a><a class="headerlink" href="#reference-frames" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
@@ -756,7 +777,7 @@ provide unique methods of their own:</p>
 </table>
 </div>
 <div class="section" id="constellations">
-<h2><a class="toc-backref" href="#id17">Constellations</a><a class="headerlink" href="#constellations" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id18">Constellations</a><a class="headerlink" href="#constellations" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="skyfield.api.load_constellation_map">
 <code class="descclassname">skyfield.api.</code><code class="descname">load_constellation_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.api.load_constellation_map" title="Permalink to this definition">¶</a></dt>
@@ -826,7 +847,7 @@ two; additional fields may be added in the future.</p>
 
 </div>
 <div class="section" id="searching">
-<h2><a class="toc-backref" href="#id18">Searching</a><a class="headerlink" href="#searching" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id19">Searching</a><a class="headerlink" href="#searching" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="skyfield.searchlib.find_discrete">
 <code class="descclassname">skyfield.searchlib.</code><code class="descname">find_discrete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.searchlib.find_discrete" title="Permalink to this definition">¶</a></dt>
@@ -854,7 +875,7 @@ maximum elongation.  See <a class="reference internal" href="searches.html"><spa
 
 </div>
 <div class="section" id="osculating-orbital-elements">
-<h2><a class="toc-backref" href="#id19">Osculating orbital elements</a><a class="headerlink" href="#osculating-orbital-elements" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id20">Osculating orbital elements</a><a class="headerlink" href="#osculating-orbital-elements" title="Permalink to this headline">¶</a></h2>
 <p>This routine returns osculating orbital elements for an object’s
 instantaneous position and velocity.</p>
 <table border="1" class="longtable docutils">
@@ -938,7 +959,7 @@ instantaneous position and velocity.</p>
 </table>
 </div>
 <div class="section" id="units">
-<h2><a class="toc-backref" href="#id20">Units</a><a class="headerlink" href="#units" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id21">Units</a><a class="headerlink" href="#units" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
 <col width="30%" />
@@ -1066,7 +1087,7 @@ instantaneous position and velocity.</p>
 </table>
 </div>
 <div class="section" id="trigonometry">
-<h2><a class="toc-backref" href="#id21">Trigonometry</a><a class="headerlink" href="#trigonometry" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id22">Trigonometry</a><a class="headerlink" href="#trigonometry" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />

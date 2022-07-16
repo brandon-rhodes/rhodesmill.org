@@ -261,9 +261,12 @@ center is the Solar System barycenter or else the geocenter.</p>
 <code class="descname">phase_angle</code><span class="sig-paren">(</span><em>sun</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.phase_angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return this position’s phase angle: the angle Sun-target-observer.</p>
 <p>Given a Sun object (which you can build by loading an ephemeris
-and looking up <code class="docutils literal notranslate"><span class="pre">eph['Sun']</span></code>), return the <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> between the
-light arriving at this position’s target from the Sun and the
-light traveling from this position’s target to the observer.</p>
+and looking up <code class="docutils literal notranslate"><span class="pre">eph['Sun']</span></code>), return the <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> from the
+body’s point of view between light arriving from the Sun and the
+light departing toward the observer.  This angle is 0° if the
+observer is in the same direction as the Sun and sees the body
+as fully illuminated, and 180° if the observer is behind the
+body and sees only its dark side.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.42.</span></p>
 </div>

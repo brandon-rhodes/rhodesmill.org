@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — Kepler Orbits — Skyfield documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/style.css">
+  </head>
+  <body>
+    
+    <p class="motto">
+      <b>Skyfield:</b>
+      <a href=".">Home</a>
+      •
+      <a href="toc.html">Table of Contents</a>
+      •
+      <a href="installation.html#changelog">Changelog</a>
+      •
+      <a href="api.html">API Reference</a>
+    </p>
+    
+    <div class="section" id="api-reference-kepler-orbits">
+<h1>API Reference — Kepler Orbits<a class="headerlink" href="#api-reference-kepler-orbits" title="Permalink to this headline">¶</a></h1>
+<p>Skyfield includes some contributed code
+that can compute predicted positions for minor planets and comets
+given simple Kepler orbital elements.
+The computations are not yet very fast,
+and can’t yet compute multiple body positions efficiently
+using NumPy array operations—if you ask for ten comet positions,
+then Skyfield has to run an internal loop
+computing each of the ten positions separately.</p>
+<p>The library is not yet fully documented;
+see <a class="reference internal" href="kepler-orbits.html"><span class="doc">Kepler Orbits</span></a> for an introduction
+to the features it already supports.</p>
+<p>Here, we have only yet documented the routines for loading data,
+as they are the most stable.</p>
+<dl class="function">
+<dt id="skyfield.data.mpc.load_mpcorb_dataframe">
+<code class="descclassname">skyfield.data.mpc.</code><code class="descname">load_mpcorb_dataframe</code><span class="sig-paren">(</span><em>fobj</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.data.mpc.load_mpcorb_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a Minor Planet Center orbits file into a Pandas dataframe.</p>
+<p>See <a class="reference internal" href="kepler-orbits.html"><span class="doc">Kepler Orbits</span></a>.  The MPCORB file format is documented at:
+<a class="reference external" href="https://minorplanetcenter.net/iau/info/MPOrbitFormat.html">https://minorplanetcenter.net/iau/info/MPOrbitFormat.html</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.data.mpc.load_comets_dataframe">
+<code class="descclassname">skyfield.data.mpc.</code><code class="descname">load_comets_dataframe</code><span class="sig-paren">(</span><em>fobj</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.data.mpc.load_comets_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a Minor Planet Center comets file into a Pandas dataframe.</p>
+<p>This imports only the fields essential for computing comet orbits.
+See <a class="reference internal" href="#skyfield.data.mpc.load_comets_dataframe_slow" title="skyfield.data.mpc.load_comets_dataframe_slow"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_comets_dataframe_slow()</span></code></a> for a
+slower routine that includes every comet data field.</p>
+<p>See <a class="reference internal" href="kepler-orbits.html"><span class="doc">Kepler Orbits</span></a>.  The comet file format is documented at:
+<a class="reference external" href="https://www.minorplanetcenter.net/iau/info/CometOrbitFormat.html">https://www.minorplanetcenter.net/iau/info/CometOrbitFormat.html</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.data.mpc.load_comets_dataframe_slow">
+<code class="descclassname">skyfield.data.mpc.</code><code class="descname">load_comets_dataframe_slow</code><span class="sig-paren">(</span><em>fobj</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.data.mpc.load_comets_dataframe_slow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a Minor Planet Center comets file into a Pandas dataframe.</p>
+<p>This routine reads in every single field from the comets data file.
+See <a class="reference internal" href="#skyfield.data.mpc.load_comets_dataframe" title="skyfield.data.mpc.load_comets_dataframe"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_comets_dataframe()</span></code></a> for a faster
+routine that omits some of the more expensive comet fields.</p>
+<p>See <a class="reference internal" href="kepler-orbits.html"><span class="doc">Kepler Orbits</span></a>.  The comet file format is documented at:
+<a class="reference external" href="https://www.minorplanetcenter.net/iau/info/CometOrbitFormat.html">https://www.minorplanetcenter.net/iau/info/CometOrbitFormat.html</a></p>
+</dd></dl>
+
+</div>
+
+  </body>
+</html>

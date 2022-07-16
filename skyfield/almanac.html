@@ -103,10 +103,12 @@ so the <code class="docutils literal notranslate"><span class="pre">March</span>
 </div>
 <div class="section" id="phases-of-the-moon">
 <h2>Phases of the Moon<a class="headerlink" href="#phases-of-the-moon" title="Permalink to this headline">¶</a></h2>
-<p>The phases of the Moon are the same for everyone on Earth, so you don’t
-need to specify the longitude and latitude of your location.  Simply ask
-for the current phase of the Moon as an angle, where 0° is New Moon and
-180° is Full:</p>
+<p>The phases of the Moon are the same for everyone on Earth,
+so you don’t need to specify the longitude and latitude of your location.
+Simply ask for the current phase of the Moon.
+The return value is an angle
+where 0° is New Moon, 90° is First Quarter,
+180° is Full Moon, and 270° is Last Quarter:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
 <span class="n">phase</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">moon_phase</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Moon phase: </span><span class="si">{:.1f}</span><span class="s1"> degrees&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">degrees</span><span class="p">))</span>
@@ -116,7 +118,7 @@ for the current phase of the Moon as an angle, where 0° is New Moon and
 </pre></div>
 </div>
 <p>Or you can have Skyfield search over a range of dates for the moments
-when the Moon reaches First Quarter, Full, Last Quarter, and New:</p>
+when the Moon reaches First Quarter, Full Moon, Last Quarter, and New Moon:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">almanac</span><span class="o">.</span><span class="n">moon_phases</span><span class="p">(</span><span class="n">eph</span><span class="p">))</span>

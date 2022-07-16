@@ -31,12 +31,11 @@ the data produced by JPL’s HORIZONS system.</p>
 an <a class="reference internal" href="api-elements.html#skyfield.elementslib.OsculatingElements" title="skyfield.elementslib.OsculatingElements"><code class="xref py py-class docutils literal notranslate"><span class="pre">OsculatingElements</span></code></a> object.  For
 example, here is how to find the osculating elements of the moon
 orbiting earth:</p>
-<blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
 <span class="kn">from</span> <span class="nn">skyfield.elementslib</span> <span class="kn">import</span> <span class="n">osculating_elements_of</span>
 
 <span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">))</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
 
 <span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
 <span class="n">earth</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">]</span>
@@ -46,15 +45,45 @@ orbiting earth:</p>
 <span class="n">elements</span> <span class="o">=</span> <span class="n">osculating_elements_of</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
 </pre></div>
 </div>
-</div></blockquote>
 <p>The elements are then attributes of the Elements object:</p>
-<blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="n">elements</span><span class="o">.</span><span class="n">inclination</span><span class="o">.</span><span class="n">degrees</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="n">elements</span><span class="o">.</span><span class="n">inclination</span><span class="o">.</span><span class="n">degrees</span>
 <span class="n">e</span> <span class="o">=</span> <span class="n">elements</span><span class="o">.</span><span class="n">eccentricity</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">elements</span><span class="o">.</span><span class="n">semi_major_axis</span><span class="o">.</span><span class="n">km</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Inclination: </span><span class="si">{0:.2f}</span><span class="s1"> degrees&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Eccentricity: </span><span class="si">{0:.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Semimajor axis: </span><span class="si">{0:.0f}</span><span class="s1"> km&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
 </pre></div>
 </div>
-</div></blockquote>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Inclination: 20.46 degrees
+Eccentricity: 0.03104
+Semimajor axis: 380577 km
+</pre></div>
+</div>
+<p>Note that one element,
+the periapsis time,
+is not necessarily a unique value:
+if an orbit is periodic,
+then the body will reach periapsis repeatedly
+at a series of dates which are separated by <code class="docutils literal notranslate"><span class="pre">period_in_days</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Periapsis:&#39;</span><span class="p">,</span> <span class="n">elements</span><span class="o">.</span><span class="n">periapsis_time</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Period: </span><span class="si">{0:.2f}</span><span class="s1"> days&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elements</span><span class="o">.</span><span class="n">period_in_days</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Periapsis: 2018-04-20 16:09:42 UTC
+Period: 26.88 days
+</pre></div>
+</div>
+<p>You can add or subtract the period
+in order to produce a series of equally valid periapsis dates
+for that set of orbital elements.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">next</span> <span class="o">=</span> <span class="n">elements</span><span class="o">.</span><span class="n">periapsis_time</span> <span class="o">+</span> <span class="n">elements</span><span class="o">.</span><span class="n">period_in_days</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Next periapsis:&#39;</span><span class="p">,</span> <span class="nb">next</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Next periapsis: 2018-05-17 13:14:56 UTC
+</pre></div>
+</div>
 </div>
 <div class="section" id="attributes-of-osculatingelements-objects">
 <h2>Attributes of OsculatingElements objects<a class="headerlink" href="#attributes-of-osculatingelements-objects" title="Permalink to this headline">¶</a></h2>
