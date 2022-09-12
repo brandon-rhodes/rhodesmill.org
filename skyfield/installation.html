@@ -120,6 +120,20 @@ in this URL to match papers already using it as an identifier):
 </div>
 <div class="section" id="changelog">
 <span id="id2"></span><h2>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v1-44-2022-september-12">
+<h3>v1.44 — 2022 September 12<a class="headerlink" href="#v1-44-2022-september-12" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Skyfield’s internal table for the ∆T Earth orientation parameter has
+been updated, so that instead of including measurements only through
+December&nbsp;2021 it now knows Earth orientation through September&nbsp;2022.</li>
+<li>Distance and velocity objects can now be created by calling their unit
+names as constructors, like <code class="docutils literal notranslate"><span class="pre">d</span> <span class="pre">=</span> <span class="pre">Distance.km(5.0)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">=</span> <span class="pre">Velocity.km_per_s(0.343)</span></code>.</li>
+<li>Updated the URL from which the Hipparcos database <code class="docutils literal notranslate"><span class="pre">hip_main.dat</span></code> is
+downloaded, following a change in the domain for the University of
+Strasbourg from <code class="docutils literal notranslate"><span class="pre">u-strasbg.fr</span></code> to <code class="docutils literal notranslate"><span class="pre">unistra.fr</span></code>.</li>
+</ul>
+</div>
 <div class="section" id="v1-43-1-2022-july-6">
 <h3>v1.43.1 — 2022 July 6<a class="headerlink" href="#v1-43-1-2022-july-6" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">

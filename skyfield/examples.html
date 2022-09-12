@@ -354,6 +354,123 @@ Sun 20 14:23 MST sets
 </pre></div>
 </div>
 </div>
+<div class="section" id="at-what-rate-is-a-target-moving-across-the-sky">
+<h2>At what rate is a target moving across the sky?<a class="headerlink" href="#at-what-rate-is-a-target-moving-across-the-sky" title="Permalink to this headline">¶</a></h2>
+<p>Automatically-driven telescopes and antennas
+often need to know the rate at which an object is moving across the sky.
+Specifically,
+an instrument with a simple altazimuth mount
+will need to know the rates at which altitude and azimuth are changing,
+whereas a fancier equatorial mount
+will need the rates for right ascension and declination.</p>
+<p>The solution is the same in both cases:
+to call Skyfield’s
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_latlon_and_rates" title="skyfield.positionlib.ICRF.frame_latlon_and_rates"><code class="xref py py-meth docutils literal notranslate"><span class="pre">frame_latlon_and_rates()</span></code></a> position method
+and pass it the frame of reference
+in which you want the rates computed.
+In either case,
+you will want to start by asking Skyfield to compute an apparent position:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">wgs84</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">E</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">planets</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">earth</span><span class="p">,</span> <span class="n">mars</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">],</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;mars&#39;</span><span class="p">]</span>
+<span class="n">top</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">35.1844866</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="mf">248.347300</span> <span class="o">*</span> <span class="n">E</span><span class="p">,</span> <span class="n">elevation_m</span><span class="o">=</span><span class="mf">2106.9128</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">earth</span> <span class="o">+</span> <span class="n">top</span><span class="p">)</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Since every topocentric location in Skyfield
+is itself a reference frame representing the location’s horizon,
+we can simply pass <code class="docutils literal notranslate"><span class="pre">top</span></code> to the
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_latlon_and_rates" title="skyfield.positionlib.ICRF.frame_latlon_and_rates"><code class="xref py py-meth docutils literal notranslate"><span class="pre">frame_latlon_and_rates()</span></code></a> method
+to learn the rates at which the altitude and azimuth are changing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">alt_rate</span><span class="p">,</span> <span class="n">az_rate</span><span class="p">,</span> <span class="n">range_rate</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">frame_latlon_and_rates</span><span class="p">(</span><span class="n">top</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Alt: </span><span class="si">{:+.2f}</span><span class="s1"> asec/min&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alt_rate</span><span class="o">.</span><span class="n">arcseconds</span><span class="o">.</span><span class="n">per_minute</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Az:  </span><span class="si">{:+.2f}</span><span class="s1"> asec/min&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">az_rate</span><span class="o">.</span><span class="n">arcseconds</span><span class="o">.</span><span class="n">per_minute</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Alt: +548.66 asec/min
+Az:  +1586.48 asec/min
+</pre></div>
+</div>
+<p>But if our instrument is on an equatorial mount,
+it will need to know how fast
+the right ascension and declination are changing.
+In that case we import Skyfield’s reference frame
+that represents the Earth’s true orientation in space,
+and pass that object to the
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_latlon_and_rates" title="skyfield.positionlib.ICRF.frame_latlon_and_rates"><code class="xref py py-meth docutils literal notranslate"><span class="pre">frame_latlon_and_rates()</span></code></a> method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">framelib</span>
+
+<span class="n">eeod</span> <span class="o">=</span> <span class="n">framelib</span><span class="o">.</span><span class="n">true_equator_and_equinox_of_date</span>
+<span class="n">dec</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">dec_rate</span><span class="p">,</span> <span class="n">ra_rate</span><span class="p">,</span> <span class="n">range_rate</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">frame_latlon_and_rates</span><span class="p">(</span><span class="n">eeod</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;RA:  </span><span class="si">{</span><span class="n">ra_rate</span><span class="o">.</span><span class="n">arcseconds</span><span class="o">.</span><span class="n">per_hour</span><span class="si">:</span><span class="s1">+.2f</span><span class="si">}</span><span class="s1"> asec/hr&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Dec: </span><span class="si">{</span><span class="n">dec_rate</span><span class="o">.</span><span class="n">arcseconds</span><span class="o">.</span><span class="n">per_hour</span><span class="si">:</span><span class="s1">+.2f</span><span class="si">}</span><span class="s1"> asec/hr&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>RA:  +78.66 asec/hr
+Dec: +25.61 asec/hr
+</pre></div>
+</div>
+<p>Note that, contrary to Skyfield’s usual custom,
+declination is returned first.
+That’s why the
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_latlon_and_rates" title="skyfield.positionlib.ICRF.frame_latlon_and_rates"><code class="xref py py-meth docutils literal notranslate"><span class="pre">frame_latlon_and_rates()</span></code></a> method
+has <code class="docutils literal notranslate"><span class="pre">latlon</span></code> in its name:
+it always returns the latitude-like coordinate
+(angle above or below the plane) first,
+then the longitude-like coordinate
+(angle around the plane) second.</p>
+<p>Finally, in case you need it,
+you will notice that both of the calls above return a <code class="docutils literal notranslate"><span class="pre">range_rate</span></code>
+that is positive if the body is moving away from you
+and its range is increasing,
+or is negative if the target is moving closer and the range is falling.
+At the specific date and time we asked about above,
+Mars is moving away:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Range rate: </span><span class="si">{:+.2f}</span><span class="s1"> km/s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">range_rate</span><span class="o">.</span><span class="n">km_per_s</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Range rate: +16.79 km/s
+</pre></div>
+</div>
+<p>Finally,
+there’s the slight complication
+that some data sources and instruments
+want the rate of motion around-the-sky
+to be multiplied by the cosine of the body’s angle
+above or below the reference plane.
+By simply performing the math—and
+remembering that <code class="docutils literal notranslate"><span class="pre">sin()</span></code> and <code class="docutils literal notranslate"><span class="pre">cos()</span></code> in Python take radian arguments—you
+can produce these alternative measurements yourself:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">cos</span>
+
+<span class="n">rcos</span> <span class="o">=</span> <span class="n">az_rate</span><span class="o">.</span><span class="n">arcseconds</span><span class="o">.</span><span class="n">per_minute</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">radians</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s1">&#39;Azimuth rate × cos(altitude): </span><span class="si">{:.2f}</span><span class="s1"> arcseconds / minute&#39;</span>
+    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rcos</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">rcos</span> <span class="o">=</span> <span class="n">ra_rate</span><span class="o">.</span><span class="n">arcseconds</span><span class="o">.</span><span class="n">per_hour</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">radians</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s1">&#39;RA rate × cos(declination): </span><span class="si">{:.2f}</span><span class="s1"> arcseconds / hour&#39;</span>
+    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rcos</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Azimuth rate × cos(altitude): 663.55 arcseconds / minute
+RA rate × cos(declination): 75.16 arcseconds / hour
+</pre></div>
+</div>
+</div>
 <div class="section" id="what-is-the-right-ascension-and-declination-of-a-point-in-the-sky">
 <h2>What is the right ascension and declination of a point in the sky?<a class="headerlink" href="#what-is-the-right-ascension-and-declination-of-a-point-in-the-sky" title="Permalink to this headline">¶</a></h2>
 <p>An observer is often interested in the astronomical coordinates
