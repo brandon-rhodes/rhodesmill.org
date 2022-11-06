@@ -74,8 +74,7 @@ at the center of the chart,
 the first step is determining its spherical longitude and latitude —
 the angle $\phi$ of the vector around the $xy$ plane
 and its angle $\theta$ above or below the $xy$ plane:</p>
-<p>$$ \eqalign{ \phi &amp;= \tan^{-1}(y, x) \cr \theta &amp;= \sin^{-1}(z) } $$</p>
-<p>These two angles are then used to build two matrices.
+$$ \eqalign{ \phi &amp;= \tan^{-1}(y, x) \cr \theta &amp;= \sin^{-1}(z) } $$<p>These two angles are then used to build two matrices.
 The first rotates any star $-\phi$ around the $z$-axis.</p>
 
 <div class=" highlight hl-python3"><pre><span class="o">%</span><span class="n">pylab</span> <span class="n">inline</span>
@@ -198,13 +197,11 @@ especially given the fact that SymPy is a project whose
 <a href="http://docs.sympy.org/latest/tutorial/index.html">Tutorial</a>
 ominously puts the section “Gotchas” <em>ahead</em> of the section “Basic Operations”!</p>
 <h2 id="Second-mistake:-I-though-I-could-convince-SymPy-to-eliminate-variables">Second mistake: I though I could convince SymPy to eliminate variables<a class="anchor-link" href="#Second-mistake:-I-though-I-could-convince-SymPy-to-eliminate-variables">&#182;</a></h2><p>I prefer thinking about trigonometry in the "forwards" direction:</p>
-<p>$$ z = sin(\theta) $$</p>
-<p>It always feels backwards for the human,
+$$ z = sin(\theta) $$<p>It always feels backwards for the human,
 rather than the machine,
 to be in charge of flipping the equation around
 to unnatural arc-trigonometry:</p>
-<p>$$ \theta = sin^{-1}(z) $$</p>
-<p>SymPy was indeed willing to invert the trigonometry
+$$ \theta = sin^{-1}(z) $$<p>SymPy was indeed willing to invert the trigonometry
 when only two variables were involved:</p>
 
 <div class=" highlight hl-python3"><pre><span class="n">solve</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">sin</span><span class="p">(</span><span class="err">𝜃</span><span class="p">)),</span> <span class="err">𝜃</span><span class="p">)</span></pre></div>
