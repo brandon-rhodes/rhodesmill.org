@@ -72,17 +72,6 @@ In the end, the simplest solution seemed to be the creation of a little CherryPy
 Of course, I suspect that this problem was happening all along, even before we added extra logging and then integrated ØMQ into our application. But back then, with maybe only one or two stray file descriptors surviving each restart, it would have taken five hundred or a thousand CherryPy restarts for the problem to be noticed — and, apparently, none of us developers ever reached that impressive total. Now we know to be careful!
 </p>
 
-    <div id="disqus_thread"></div>
-    <script type="text/javascript">
-        var disqus_shortname = 'rhodesmill';
-        (function() {
-            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 <p class="byline">©2021</p>
 
 </body>
