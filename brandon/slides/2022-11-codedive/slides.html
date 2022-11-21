@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+
+<style>
+@font-face {
+  font-family: 'Local Gentium';
+  src: url('/fonts/gentium-basic-v11-latin-ext_latin-regular.woff');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Regular.ttf');
+}
+html {
+ background-color: #ddd; line-height: 1.2;
+ font-size: 48px; font-family: 'Local Gentium';
+}
+.slide {
+ display: table; margin-top: 12px; width: 1280px; min-height: 720px;
+}
+.slide > div {
+ display: table-cell; vertical-align: middle;
+}
+.slide:before {
+ position: absolute; left: 0; right: 0; width: 1280px; height: 720px;
+ background-color: white; content: " "; z-index: -1;
+ //border: 1px solid black;
+}
+.slide > div > p,
+.slide > div > pre {
+ padding-left: 36px; padding-right: 36px;
+}
+.slide > div > p {
+// margin-left: auto; margin-right: auto;
+ text-align: center;
+}
+//.slide > div > img {object-fit: contain; object-position: 50% 50%;}
+.slide p img {width: 100%; height: 600px; object-fit: contain}
+.slide > div > img {display: block; margin-left: auto; margin-right: auto}
+.patterns {font-size: 42px}
+.patterns td {width: 10em}
+pre {line-height: 1; text-align: center}
+code {
+ display: inline-block; text-align: left;
+ font-family: 'JetBrains Mono'; font-size: 80%;
+}
+
+.qmark {background-color: #FFDB58}
+.plus {font-weight: bold; background-color: #ADD8E6}
+.tilde {text-decoration: line-through}
+.one {background-color: #def}
+.two {background-color: #ADD8E6}
+.three {background-color: #efd}
+
+.timer {margin: 10px}
+.emergency {color: white; background-color: red}
+</style>
+
+<p><strong>The Classic Design Patterns:<br> Where Are They Now?</strong><br> <br> Brandon Rhodes<br> code::dive 2022<br> Wrocław, Poland</p>
+<p><em>Design Patterns</em> (1994)<br> <br> Book on Object Oriented programming by Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides<br> (the ‘Gang of Four’)<br> <br> It described 23 ‘patterns’ that had become common for solving problems with Object Oriented languages</p>
+<p>https://www.cs.unc.edu/~stotts/GOF/hires/contfso.htm</p>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=plain>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=plain>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=plain>Prototype<td class=plain>Decorator<td class=plain>Iterator
+<tr><td class=plain>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=plain>Strategy
+<tr><td><td><td class=plain>Template Method
+<tr><td><td><td class=plain>Visitor
+</table>
+
+<p>First, let’s cross off the patterns that aren’t relevant if your programming language offers first-class functions.</p>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=qmark>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=qmark>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=qmark>Prototype<td class=plain>Decorator<td class=plain>Iterator
+<tr><td class=qmark>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=qmark>Strategy
+<tr><td><td><td class=qmark>Template Method
+<tr><td><td><td class=plain>Visitor
+</table>
+
+<p>Factory Method — Subclass <code>Application</code>, override a method<br> <img src="fmeth049.gif"></p>
+<p>Not only does that sound hopelessly awkward <em>today,</em> but even <em>Design Patterns</em> itself, back in 1994, offered a better approach! Two chapters earlier: the Abstract Factory.</p>
+<pre><code># The Abstract Factory
+
+class MyDocumentFactory(DocumentFactory):
+    def build():
+        return MyDocument()
+
+f = MyDocumentFactory()
+a = Application(f)
+</code></pre>
+<p>Q: Why prefer the Abstract Factory over the Factory Method?<br> <br> A: Because of a fundamental design principle from the Introduction chapter of the <em>Design Patterns</em> book:<br> <br> <em>Favor object composition over class inheritance.</em><br></p>
+<pre><code># What is ‘composition’? You have ‘composed’
+# two objects when you give one of them
+# a reference to the other:
+
+class MyDocumentFactory(DocumentFactory):
+    def build():
+        return MyDocument()
+
+f = MyDocumentFactory()  # object 1
+a = Application(f)       # object 2
+</code></pre>
+<p><em>Favor object composition over class inheritance.</em><br> <br> Factory Method? Class inheritance.<br> Abstract Factory? Object composition.<br> <br> Abstract Factory &gt; Factory Method</p>
+<p>So, why did <em>Design Patterns</em> include<br> the Factory Method if a better<br> alternative already existed?</p>
+<p>Because they wanted the book to be a complete catalog<br> of all common Object Oriented patterns—<br> <br> they did <em>not</em> limit themselves to best practices.</p>
+<p>And the Factory Method,<br> despite its awkwardness,<br> was in <em>widespread</em> use.<br> <br> ‘Factory methods pervade toolkits and frameworks.<br> MacApp … ET++ … Unidraw … Smalltalk-80 … Orbix ORB’</p>
+<p>Abstract Factory &gt; Factory Method<br> <br> But neither one is a pattern we use in modern languages!</p>
+<pre><code># First-class functions? Write a function.
+
+def build_document():
+    return MyDocument()
+
+a = Application(build_document)
+
+# First-class types? Just pass the class!
+
+a = Application(MyDocument)
+</code></pre>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=qmark>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=qmark>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=qmark>Prototype<td class=plain>Decorator<td class=plain>Iterator
+<tr><td class=qmark>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=qmark>Strategy
+<tr><td><td><td class=qmark>Template Method
+<tr><td><td><td class=plain>Visitor
+</table>
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=qmark>Prototype<td class=plain>Decorator<td class=plain>Iterator
+<tr><td class=qmark>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=qmark>Strategy
+<tr><td><td><td class=qmark>Template Method
+<tr><td><td><td class=plain>Visitor
+</table>
+
+<p>Template Method — client code needs to provide three functions, so force it to subclass <code>Application</code><br> <img src="tmeth007.gif"></p>
+<p><em>Favor object composition over class inheritance.</em><br> These three methods should live on a separate class.<br> <img src="tmeth007.gif"></p>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=qmark>Prototype<td class=plain>Decorator<td class=plain>Iterator
+<tr><td class=qmark>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=qmark>Strategy
+<tr><td><td><td class=qmark>Template Method
+<tr><td><td><td class=plain>Visitor
+</table>
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=qmark>Prototype<td class=plain>Decorator<td class=plain>Iterator
+<tr><td class=qmark>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=qmark>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=plain>Visitor
+</table>
+
+<p>The Prototype Pattern<br> <br> Imagine we are writing a music composition app<br> that wants to let users create four kinds of object.</p>
+<pre><code># The objects are of different classes.
+# Some of their constructors need arguments.
+
+Rest()        # quarter rest
+Note(1)       # whole note
+Note(2)       # half note
+Note(4)       # quarter note
+</code></pre>
+<p>How could you explain to, say, a menu widget how it can create these objects when menu items are selected?</p>
+<pre><code># In a modern language, you would
+# just pass a data structure
+
+menu.add_actions([
+    (&#39;Rest&#39;, Rest),
+    (&#39;Whole note&#39;, Note, 1),
+    (&#39;Half note&#39;, Note, 2),
+    (&#39;Quarter note&#39;, Note, 4),
+])
+</code></pre>
+<p>Q: But what if a language didn’t allow<br> functions or classes inside data structures?<br> Won’t you need <em>n</em> constructors for <em>n</em> cases?<br> <br> A: No! Create all four kinds of object instance first,<br> and give them each a <code>clone()</code> method</p>
+<pre><code># The Prototype Pattern
+
+r = Rest()
+r.clone() → another Rest
+n = Note(1)
+n.clone() → another Note of length 1
+n = Note(2)
+n.clone() → another Note of length 1/2
+n = Note(4)
+n.clone() → another Note of length 1/4
+</code></pre>
+<pre><code># Thanks to the Prototype Pattern `.clone()`
+# method, we can give plain objects to the
+# menu instead of constructors.
+
+menu.add_action(&#39;Rest&#39;, Rest())
+menu.add_action(&#39;Whole note&#39;, Note(1))
+menu.add_action(&#39;Half note&#39;, Note(2))
+menu.add_action(&#39;Quarter note&#39;, Note(4))
+</code></pre>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=qmark>Prototype<td class=plain>Decorator<td class=plain>Iterator
+<tr><td class=qmark>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=qmark>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=plain>Visitor
+</table>
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=plain>Decorator<td class=plain>Iterator
+<tr><td class=qmark>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=qmark>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=plain>Visitor
+</table>
+
+<p><em>Singletons:</em> those annoying global objects that code needs access to but you don’t want to pass everywhere</p>
+<p>Do we need Singletons? <em>Sometimes. Maybe.</em><br> That’s a big topic of its own.</p>
+<p>But, do we need the Singleton Pattern, where the <em>class itself</em><br> is contorted to force its use as a Singleton? <br> <img src="singl014.gif"></p>
+<p>No!</p>
+<pre><code># Just build a single instance, and provide
+# a global name or a global function that
+# returns that instance.
+
+import logging
+
+root = logging.getLogger()
+</code></pre>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=plain>Decorator<td class=plain>Iterator
+<tr><td class=qmark>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=qmark>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=plain>Visitor
+</table>
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=plain>Decorator<td class=plain>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=qmark>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=plain>Visitor
+</table>
+
+<p>The Strategy Pattern<br> <br> Example: What if an object needs to be given a specific paragraph-breaking routine at runtime?</p>
+<p>Strategy Pattern — put the 3 versions of the routine<br> in 3 single-method classes, then pass<br> an instance of one of the classes<br> <img src="strat011.gif"></p>
+<p>In any modern language, you solve this problem by <em>just writing 3 functions,</em> and passing one in as an argument.</p>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=plain>Decorator<td class=plain>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=qmark>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=plain>Visitor
+</table>
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=plain>Decorator<td class=plain>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=plain>Visitor
+</table>
+
+<p>In powerful modern languages, those six patterns disappear because they aren’t needed.</p>
+<pre><code> 23
+- 6
+___
+ 17
+</code></pre>
+<p>There are two patterns that disappear from our code because they are <em>so</em> useful that they’re now built into our languages.</p>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=plain>Decorator<td class=qmark>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=qmark>Visitor
+</table>
+
+<p>Both of them involve a <em>producer</em> who<br> is going to build or retrieve <em>n</em> objects and<br> a <em>consumer</em> who wants to see them</p>
+<ul>
+<li>Iterator Pattern
+<ul>
+<li><em>producer</em> offers a callback method, like <code>next()</code></li>
+<li><em>consumer</em> loops, calling <code>next()</code> over and over</li>
+<li>so the consumer is in control<br><br></li>
+</ul></li>
+<li>Visitor Pattern
+<ul>
+<li><em>producer</em> iterates across a data structure</li>
+<li><em>consumer</em> offers one (or more) callback methods</li>
+<li>so the producer is in control</li>
+</ul></li>
+</ul>
+<p>In legacy languages, you have to choose one approach or the other. <br><br> Either way, <em>someone’s</em> class has to suffer callback-style programming.</p>
+<p>Solution: generators <br><br> (CLU 1975, Icon 1977, Python 2001, then C#, JS, Ruby)</p>
+<pre><code>class Ten:             # Before generators,
+    n = 0              # you had to write up the
+                       # Iterator Pattern yourself
+    def next(self):
+        self.n += 1
+        if self.n &gt; 10:
+            raise StopIteration
+        return self.n
+</code></pre>
+<pre><code>def ten():             # After generators
+    n = 0
+    while n &lt; 10:
+        n += 1
+        yield n
+</code></pre>
+<pre><code># So *both* the producer and consumer
+# can be written with normal control flow;
+# neither is forced to endure callbacks.
+
+def producer(...):
+    for item in ...:
+        yield item
+
+def consumer(...):
+    for item in producer(...):
+        ... # operate on `item`
+</code></pre>
+<p><em>except—</em></p>
+<p>Don’t <em>actually</em> let a consumer talk to a producer</p>
+<pre><code># If you have the consumer run the
+# producer directly, your main thread
+# loses control.
+
+p = producer()
+result = consumer(p)
+</code></pre>
+<img src="Toppledominos.jpg">
+
+<pre><code># Instead, run the producer to exhaustion
+# and save the output in a list.
+
+plain_list = []
+for item in producer():
+    plain_list.append(item)
+
+# Then, pass the list to the consumer.
+
+result = consumer(plain_list)
+</code></pre>
+<p>It’s a good day when you can draw a bright line<br> across your code and say, ‘everything above this<br> has <em>finished running</em> and the only things crossing<br> this line are simple inert data structures</p>
+<pre><code># Instead, run the producer to exhaustion
+# and save the output in a list.
+
+plain_list = []
+for item in producer():
+    plain_list.append(item)
+
+# -------- bright line --------
+
+result = consumer(plain_list)
+</code></pre>
+<p>Why?</p>
+<p>Because <strong>data</strong> is <em>easier</em> to<br> reason about than <strong>control flow</strong></p>
+<p><em>The Mythical Man-Month</em> by Fred Brooks (1975):<br> <br> “Show me your <em>flowchart</em><br> and conceal your tables,<br> and I shall continue to be mystified.<br> <br> Show me your <em>tables</em>,<br> and I won't usually need your flowchart;<br> it'll be obvious.”</p>
+<p>Data is simpler, so when possible<br> link the parts of your program with<br> <em>data</em> rather than <em>actions</em></p>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=plain>Decorator<td class=qmark>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=qmark>Visitor
+</table>
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=plain>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<pre><code> 23
+- 8
+___
+ 15
+</code></pre>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=plain>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=plain>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=qmark>Memento
+<tr><td><td class=qmark>Proxy<td class=qmark>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<p>Let’s look at their <em>sins</em></p>
+<p>Proxy Pattern — <em>hides</em> how data is passed across the network<br> Memento Pattern — <em>hides</em> how data is persisted to disk<br> Observer Pattern — <em>scatters</em> data rather than <em>unifying</em> it</p>
+<p>♥ Your Data</p>
+<p><s>Proxy Pattern</s><br> <br> Network requests should be in a data format <em>you</em> understand (JSON, Protobuf, CSV) and network APIs should be hand-crafted, not copied from object APIs</p>
+<!--
+TODO: double these to two slides each
+TODO: important vs details
+TODO: add builder/adapter/flyweight slides showing them added color
+TODO: change <p> to img so it has no children
+-->
+
+<p><s>Memento Pattern</s><br> <br> Data should be persisted in a format that’s independent of your programming language (JSON, Protobuf, CSV, MySQL, Postgres) and against which you can write tools directly</p>
+<p><s>Observer Pattern</s><br> <br> Behind your UX should be an inert generic data structure that is the <em>only</em> means of communication between user input and the views</p>
+<pre><code>    Object ← Clicks, Keystrokes, Messages
+    (data)
+   ↙      ↘
+Object → Object
+(data)   (data)
+  ↓         ↓
+ View     View
+</code></pre>
+<p>What’s the most popular JS library?<br> <br> React</p>
+<pre><code>          Clicks, Keystrokes, Messages
+       ↙
+State
+(data) ↘
+          View
+</code></pre>
+<p>It’s always easier to rebuild something from scratch<br> than to figure out the edits to bring an old thing up to date</p>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=plain>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=qmark>Memento
+<tr><td><td class=qmark>Proxy<td class=qmark>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=plain>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<p>♥ Your Data</p>
+<pre><code> 23
+-11
+___
+ 12
+</code></pre>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=plain>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=qmark>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=qmark>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=qmark>Mediator
+<tr><td><td class=plain>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=qmark>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<p>Bridge — one real-world object, but <em>two</em> classes<br> <img src="bridg100.gif"></p>
+<p>Decorator — a wrapper with the same interface as the object<br> <img src="decor066.gif"></p>
+<p>Decorator — a wrapper with the same interface as the object<br> <img src="decor065.gif"></p>
+<p>Mediator — extra class to take action when widgets update<br> <img src="media034.gif"></p>
+<p>State — replace if-else stacks with separate objects<br> <img src="state-eg.gif"></p>
+<p>Bridge Pattern<br> Decorator Pattern<br> Mediator Pattern<br> State Pattern<br> <br> Q: What do these have in common?</p>
+<p>Bridge Pattern<br> Decorator Pattern<br> Mediator Pattern<br> State Pattern<br> <br> A: They all <em>break</em> the Object Oriented assumption that <em>one</em> real-world object should become <em>one</em> object in your code.</p>
+<pre><code>                Bridge ← class
+ Decorator ← Decorator ← class
+              Mediator ← class
+                         class → State
+</code></pre>
+<p>Bridge Pattern<br> Decorator Pattern<br> Mediator Pattern<br> State Pattern<br> <br> These four classes all begin a <em>disassembly</em> of Object Orientation, in which classes become a way of organizing <em>procedures</em> rather than of representing <em>data</em></p>
+<p>actions ← → data</p>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=qmark>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=qmark>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=qmark>Mediator
+<tr><td><td class=plain>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=qmark>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=one>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=one>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=one>Mediator
+<tr><td><td class=plain>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=one>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<img src="Toppledominos.jpg">
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=one>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=one>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=one>Mediator
+<tr><td><td class=plain>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=one>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=qmark>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=qmark>Builder<td class=one>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=one>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=one>Mediator
+<tr><td><td class=qmark>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=one>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<p>Builder Pattern — provides a single object whose API builds and returns an object hierarchy for us</p>
+<pre><code># Example: the matplotlib ‘Axis’ object
+# provides methods for building Plot and
+# Annotation objects.
+
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots()
+ax.plot(x, y, c=&#39;red&#39;)
+ax.annotate(x[0], y[0], &#39;start&#39;)
+ax.annotate(x[1], y[1], &#39;end&#39;)
+</code></pre>
+<p>Adapter Pattern — build a wrapper class that wraps an object offering one interface and offers instead the methods of another interface.</p>
+<p>Example: Python’s <code>socket.makefile()</code> method, which returns an Adapter that looks like a file object but whose <code>read()</code> and <code>write()</code> methods really call the socket’s <code>recv()</code> and <code>send()</code> methods.<br> <br> <code>adapter.read() -&gt; socket.recv()</code><br> <code>adapter.write() -&gt; socket.send()</code></p>
+<p>Flyweight Pattern — small read-only data objects can be shared between object instances.</p>
+<pre><code> Glyph        Glyph
+
+ x 108        x 124
+ y 10         y 10
+
+   ↘          ↙
+
+     CharData
+
+     height  12
+     width    8
+     descent  2
+</code></pre>
+<p>Example: the integers −5 through 256 in Python are flyweight objects.<br> <br> Each time a calculation returns an integer in that range,<br> it’s the same object that gets returned each time.</p>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=qmark>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=qmark>Builder<td class=one>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=one>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=one>Mediator
+<tr><td><td class=qmark>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=one>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=two>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=two>Builder<td class=one>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=one>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=one>Mediator
+<tr><td><td class=two>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=one>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=two>Adapter<td class=qmark>Chain of Responsibility
+<tr><td class=two>Builder<td class=one>Bridge<td class=qmark>Command
+<tr><td class=tilde>Factory Method<td class=qmark>Composite<td class=qmark>Interpreter
+<tr><td class=tilde>Prototype<td class=one>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=one>Mediator
+<tr><td><td class=two>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=one>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<p>Composite Pattern <br>Chain of Responsibility Pattern <br>Command Pattern <br>Interpreter Pattern <br> <br>These are what I call the ‘Framework Patterns’</p>
+<p>Composite — give all nodes in a hierarchy the same interface<br> <img src="compo075.gif"></p>
+<p>Like, how every directory in Unix is <em>also</em> a file</p>
+<p>DOM = Document Object Model</p>
+<pre><code>HTML:
+
+&lt;div&gt;
+ &lt;p&gt;text&lt;/p&gt;
+&lt;/div&gt;
+
+JS:
+
+par = div.children[0]
+
+div.tagName  → &#39;DIV&#39;
+par.tagName  → &#39;P&#39;
+
+div.children.length  → 1
+par.children.length  → 0
+</code></pre>
+<p>Chain of Responsibility — in a Composite UX hierarchy, pass unprocessed clicks and keystrokes up to your parent<br> <br> This is <em>universal</em> and called ‘bubbling’ in the browser</p>
+<p>Command — represent user actions with classes, and have them offer both <code>do()</code> and <code>undo()</code> methods<br> <br> This is <em>universal</em> in browsers and GUI frameworks</p>
+<p>But it turns out the Command Pattern<br> is useful in other contexts!<br> <br> Example: the Django web framework’s migrations system</p>
+<pre><code># Django lets you define what your database
+# tables should look like using a declarative
+# syntax.
+
+from django.db import models
+
+class Question(models.Model):
+    text = models.CharField(max_length=200)
+    pub = models.DateTimeField(&#39;date published&#39;)
+</code></pre>
+<p>As your models change, Django saves those database migrations using the Command Pattern, so you can <em>both</em> apply each migration to move forward but also ‘undo’ a migration to recover and move back.</p>
+<pre><code>v1 CreateModel
+   CreateModel
+   AddIndex
+
+v2 AlterModelTable
+   AddField
+
+v3 RenameField
+</code></pre>
+<p>Interpreter — use the Composite Pattern to represent an Abstract Syntax Tree, then give each node an <code>eval()</code> or <code>run()</code> method that recursively descends the tree and applies the operations to your data.</p>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=two>Adapter<td class=qmark>Chain of Responsibility
+<tr><td class=two>Builder<td class=one>Bridge<td class=qmark>Command
+<tr><td class=tilde>Factory Method<td class=qmark>Composite<td class=qmark>Interpreter
+<tr><td class=tilde>Prototype<td class=one>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=one>Mediator
+<tr><td><td class=two>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=one>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=two>Adapter<td class=three>Chain of Responsibility
+<tr><td class=two>Builder<td class=one>Bridge<td class=three>Command
+<tr><td class=tilde>Factory Method<td class=three>Composite<td class=three>Interpreter
+<tr><td class=tilde>Prototype<td class=one>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=one>Mediator
+<tr><td><td class=two>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=one>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<p>Well — there’s just one left.</p>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=two>Adapter<td class=three>Chain of Responsibility
+<tr><td class=two>Builder<td class=one>Bridge<td class=three>Command
+<tr><td class=tilde>Factory Method<td class=three>Composite<td class=three>Interpreter
+<tr><td class=tilde>Prototype<td class=one>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=qmark>Facade<td class=one>Mediator
+<tr><td><td class=two>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=one>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<p>Facade—hide a complex system behind a single API class<br> <img src="facad057.gif"></p>
+<p>Problem: to qualify as a Facade Pattern,<br> an API must live on <em>only one object</em>, but<br> real-world APIs almost always use <em>several</em><br> <br> Examples: two real-world APIs, Pandas and jQuery.</p>
+<pre><code># Pandas: is its DataFrame a Facade?
+
+filename = &#39;transactions.csv&#39;
+df = pd.read_csv(filename)    # DataFrame
+print(df.size)
+print(df.columns)
+
+# No, because interacting with a
+# specific column returns a `Series`.
+
+name = df[&#39;Name&#39;]             # Series
+amount = df[&#39;Amount&#39;]         # Series
+</code></pre>
+<pre><code># jQuery: is it a Facade? No, because each
+# query returns a separate object.
+
+var paragraphs = $(&#39;p&#39;); // jQuery object
+paragraphs.find(&#39;b&#39;)     // another object
+</code></pre>
+<p>Facade: 1 object<br> Real APIs: <em>n</em> objects</p>
+<p>Also, the <em>Design Patterns</em> example of a Facade<br> provides no access to the underlying subsystem.<br> <br> But real-world APIs are usually happy<br> to let you access the lower level directly.</p>
+<pre><code># jQuery:
+
+paragraphs[0]  # raw browser `Element`!
+
+# Pandas:
+
+amount.values()  # raw NumPy array!
+</code></pre>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=two>Adapter<td class=three>Chain of Responsibility
+<tr><td class=two>Builder<td class=one>Bridge<td class=three>Command
+<tr><td class=tilde>Factory Method<td class=three>Composite<td class=three>Interpreter
+<tr><td class=tilde>Prototype<td class=one>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=qmark>Facade<td class=one>Mediator
+<tr><td><td class=two>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=one>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<p>So we’ve made it—we’ve completed our survey.</p>
+<ul>
+<li>8 patterns: useless if you have 1st-class functions</li>
+<li>2 patterns: language built-ins</li>
+<li>4 patterns: decompose big classes, but are obscure</li>
+<li>3 patterns: small but useful</li>
+<li>4 patterns: <em>huge</em> and dominate our frameworks</li>
+<li>1 pattern: ambitious but fatally limited</li>
+</ul>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=two>Adapter<td class=three>Chain of Responsibility
+<tr><td class=two>Builder<td class=one>Bridge<td class=three>Command
+<tr><td class=tilde>Factory Method<td class=three>Composite<td class=three>Interpreter
+<tr><td class=tilde>Prototype<td class=one>Decorator<td class=tilde>Iterator
+<tr><td class=tilde>Singleton<td class=qmark>Facade<td class=one>Mediator
+<tr><td><td class=two>Flyweight<td class=tilde>Memento
+<tr><td><td class=tilde>Proxy<td class=tilde>Observer
+<tr><td><td><td class=one>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=tilde>Visitor
+</table>
+
+<!--
+
+TODO: pattern matching to replace the N methods of Visitor pattern
+TODO: “structural” patterns ‘structure’ action, not data
+
+-->
+
+<script>
+(function() {
+ var body = document.querySelector('body');
+ var a = Array.from(body.children);
+ var i = 0;
+ a.forEach((item) => {
+  //console.log(item);
+  i++;
+  // var html = '<div class=slide><div><div>'
+  //  + item.outerHTML
+  //  + '</div></div></div>';
+  var html = '<div class=slide><div>' + item.outerHTML + '</div></div>'
+  //var html = '<div class=slide>' + item.outerHTML + '</div>'
+  item.outerHTML = html;
+ });
+ console.log('Slide count:', i);
+})();
+</script>
+
+<script src="../js/slides4.js"></script>
+
