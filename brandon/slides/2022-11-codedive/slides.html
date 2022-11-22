@@ -5,7 +5,12 @@
 <style>
 @font-face {
   font-family: 'Local Gentium';
-  src: url('/fonts/gentium-basic-v11-latin-ext_latin-regular.woff');
+  src: url('/fonts/GentiumPlus-Regular.ttf');
+}
+@font-face {
+  font-family: 'Local Gentium';
+  font-style: italic;
+  src: url('/fonts/GentiumPlus-Italic.ttf');
 }
 @font-face {
   font-family: 'JetBrains Mono';
@@ -15,8 +20,9 @@ html {
  background-color: #ddd; line-height: 1.2;
  font-size: 48px; font-family: 'Local Gentium';
 }
+body {margin: 0}
 .slide {
- display: table; margin-top: 12px; width: 1280px; min-height: 720px;
+ display: table; margin-bottom: 12px; width: 1280px; min-height: 720px;
 }
 .slide > div {
  display: table-cell; vertical-align: middle;
@@ -29,6 +35,9 @@ html {
 .slide > div > p,
 .slide > div > pre {
  padding-left: 36px; padding-right: 36px;
+}
+.slide > div > ul {
+ padding-left: 72px; padding-right: 36px;
 }
 .slide > div > p {
 // margin-left: auto; margin-right: auto;
@@ -57,8 +66,12 @@ code {
 </style>
 
 <p><strong>The Classic Design Patterns:<br> Where Are They Now?</strong><br> <br> Brandon Rhodes<br> code::dive 2022<br> Wrocław, Poland</p>
-<p><em>Design Patterns</em> (1994)<br> <br> Book on Object Oriented programming by Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides<br> (the ‘Gang of Four’)<br> <br> It described 23 ‘patterns’ that had become common for solving problems with Object Oriented languages</p>
+<img src="design-patterns-book-cover.jpg">
+
+<p><em>Design Patterns</em> (1994)<br> <br> Book on Object Oriented programming<br> <br> by Erich Gamma, Richard Helm,<br> Ralph Johnson, and John Vlissides<br> (the ‘Gang of Four’)</p>
+<p>It described 23 ‘patterns’ that had become common for solving problems with Object Oriented languages</p>
 <p>https://www.cs.unc.edu/~stotts/GOF/hires/contfso.htm</p>
+<p>Our goal in this talk:<br> <br> A brief survey of the patterns<br> to learn if any of them are still<br> relevant to programming today</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=plain>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
@@ -191,7 +204,7 @@ a = Application(MyDocument)
 <tr><td><td><td class=plain>Visitor
 </table>
 
-<p>The Prototype Pattern<br> <br> Imagine we are writing a music composition app<br> that wants to let users create four kinds of object.</p>
+<p>The Prototype Pattern<br> <br> Example: Imagine we are writing a music composition<br> app that wants to let users create four kinds of object.</p>
 <pre><code># The objects are of different classes.
 # Some of their constructors need arguments.
 
@@ -211,7 +224,8 @@ menu.add_actions([
     (&#39;Quarter note&#39;, Note, 4),
 ])
 </code></pre>
-<p>Q: But what if a language didn’t allow<br> functions or classes inside data structures?<br> Won’t you need <em>n</em> constructors for <em>n</em> cases?<br> <br> A: No! Create all four kinds of object instance first,<br> and give them each a <code>clone()</code> method</p>
+<p>Q: But what if your language isn’t that powerful?<br> Are you going to need as many factories<br> as instances you want to create?<br> <br> <code>build_rest()</code><br> <code>build_whole_note()</code><br> <code>build_half_note()</code><br> <code>build_quarter_note()</code></p>
+<p>A: No! Simply create examples of the four objects,<br> then give them each a <code>clone()</code> method</p>
 <pre><code># The Prototype Pattern
 
 r = Rest()
@@ -223,9 +237,9 @@ n.clone() → another Note of length 1/2
 n = Note(4)
 n.clone() → another Note of length 1/4
 </code></pre>
-<pre><code># Thanks to the Prototype Pattern `.clone()`
+<pre><code># Thanks to the Prototype Pattern’s `.clone()`
 # method, we can give plain objects to the
-# menu instead of constructors.
+# menu instead of factories.
 
 menu.add_action(&#39;Rest&#39;, Rest())
 menu.add_action(&#39;Whole note&#39;, Note(1))
@@ -274,6 +288,7 @@ import logging
 
 root = logging.getLogger()
 </code></pre>
+<p>(In particular, testing becomes <em>hard</em> and tests<br> of the singleton become <em>coupled</em> if you really<br> truly can’t create a fresh instance<br> of the singleton object)</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
@@ -305,8 +320,9 @@ root = logging.getLogger()
 </table>
 
 <p>The Strategy Pattern<br> <br> Example: What if an object needs to be given a specific paragraph-breaking routine at runtime?</p>
-<p>Strategy Pattern — put the 3 versions of the routine<br> in 3 single-method classes, then pass<br> an instance of one of the classes<br> <img src="strat011.gif"></p>
-<p>In any modern language, you solve this problem by <em>just writing 3 functions,</em> and passing one in as an argument.</p>
+<p>Strategy Pattern<br> <br> Put the 3 versions of the routine<br> in 3 single-method classes, then pass<br> an instance of one of the classes</p>
+<p>Strategy Pattern<br> <img src="strat011.gif"></p>
+<p>In any modern language, you solve this problem by <em>just writing 3 functions,</em> and passing one in as an argument.<br> <br> <em>Done</em></p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
@@ -343,7 +359,22 @@ root = logging.getLogger()
 ___
  17
 </code></pre>
-<p>There are two patterns that disappear from our code because they are <em>so</em> useful that they’re now built into our languages.</p>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=tilde>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=tilde>Prototype<td class=plain>Decorator<td class=plain>Iterator
+<tr><td class=tilde>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=tilde>Strategy
+<tr><td><td><td class=tilde>Template Method
+<tr><td><td><td class=plain>Visitor
+</table>
+
+<p>There are two patterns<br> that are also <em>disappearing</em><br> from our code, but it’s because<br> they are so useful that they’re now<br> getting <strong>built into</strong> our languages.</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
@@ -365,13 +396,15 @@ ___
 <ul>
 <li><em>producer</em> offers a callback method, like <code>next()</code></li>
 <li><em>consumer</em> loops, calling <code>next()</code> over and over</li>
-<li>so the consumer is in control<br><br></li>
+<li>consumer’s loop is <strong>explicit</strong></li>
+<li>producer’s loop is <em>implicit</em></li>
 </ul></li>
 <li>Visitor Pattern
 <ul>
 <li><em>producer</em> iterates across a data structure</li>
 <li><em>consumer</em> offers one (or more) callback methods</li>
-<li>so the producer is in control</li>
+<li>producer’s loop is <strong>explicit</strong></li>
+<li>consumer’s loop is <em>implicit</em></li>
 </ul></li>
 </ul>
 <p>In legacy languages, you have to choose one approach or the other. <br><br> Either way, <em>someone’s</em> class has to suffer callback-style programming.</p>
@@ -403,6 +436,14 @@ def consumer(...):
     for item in producer(...):
         ... # operate on `item`
 </code></pre>
+<pre><code># Passing a producer to a consumer works
+# exactly as though you had implemented
+# the Iterator Pattern by hand.
+
+p = producer()
+result = consumer(p)
+</code></pre>
+<p>Each time the consumer <em>asks</em> for an item,<br> the producer runs enough code to reach its<br> next ‘yield’ and <em>deliver</em> an item.<br> <br> So the consumer’s requests for more<br> items gradually cause the producer<br> to run all the way to completion.</p>
 <p><em>except—</em></p>
 <p>Don’t <em>actually</em> let a consumer talk to a producer</p>
 <pre><code># If you have the consumer run the
@@ -414,8 +455,12 @@ result = consumer(p)
 </code></pre>
 <img src="Toppledominos.jpg">
 
+<pre><code>p = producer()
+result = consumer(p)
+</code></pre>
 <pre><code># Instead, run the producer to exhaustion
-# and save the output in a list.
+# and save the output in a plain flat data
+# structure: a list.
 
 plain_list = []
 for item in producer():
@@ -425,11 +470,9 @@ for item in producer():
 
 result = consumer(plain_list)
 </code></pre>
-<p>It’s a good day when you can draw a bright line<br> across your code and say, ‘everything above this<br> has <em>finished running</em> and the only things crossing<br> this line are simple inert data structures</p>
-<pre><code># Instead, run the producer to exhaustion
-# and save the output in a list.
-
-plain_list = []
+<p>This sounds silly when we’re only talking<br> about one producer and one consumer, but as<br> an application grows, you should always prefer<br> shallow call stacks to deep ones</p>
+<p>It’s a good day when you can draw a bright line<br> across your code and say, ‘everything above this<br> has <em>finished running</em> and the only things crossing<br> this line are simple inert data structures’</p>
+<pre><code>plain_list = []
 for item in producer():
     plain_list.append(item)
 
@@ -440,7 +483,7 @@ result = consumer(plain_list)
 <p>Why?</p>
 <p>Because <strong>data</strong> is <em>easier</em> to<br> reason about than <strong>control flow</strong></p>
 <p><em>The Mythical Man-Month</em> by Fred Brooks (1975):<br> <br> “Show me your <em>flowchart</em><br> and conceal your tables,<br> and I shall continue to be mystified.<br> <br> Show me your <em>tables</em>,<br> and I won't usually need your flowchart;<br> it'll be obvious.”</p>
-<p>Data is simpler, so when possible<br> link the parts of your program with<br> <em>data</em> rather than <em>actions</em></p>
+<p>♥ Your Data</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
@@ -506,10 +549,11 @@ ___
 <tr><td><td><td class=tilde>Visitor
 </table>
 
+<p>Proxy — sends method calls across the network<br> Memento — saves object state as a binary string<br> Observer — object supports subscribers to changes</p>
 <p>Let’s look at their <em>sins</em></p>
 <p>Proxy Pattern — <em>hides</em> how data is passed across the network<br> Memento Pattern — <em>hides</em> how data is persisted to disk<br> Observer Pattern — <em>scatters</em> data rather than <em>unifying</em> it</p>
 <p>♥ Your Data</p>
-<p><s>Proxy Pattern</s><br> <br> Network requests should be in a data format <em>you</em> understand (JSON, Protobuf, CSV) and network APIs should be hand-crafted, not copied from object APIs</p>
+<p><s>Proxy Pattern</s><br> <br> Network APIs between your services should be <em>hand-crafted</em><br> and in a data format <em>you</em> understand (JSON, Protobuf, CSV) —<br> not copied from object APIs</p>
 <!--
 TODO: double these to two slides each
 TODO: important vs details
@@ -517,24 +561,17 @@ TODO: add builder/adapter/flyweight slides showing them added color
 TODO: change <p> to img so it has no children
 -->
 
-<p><s>Memento Pattern</s><br> <br> Data should be persisted in a format that’s independent of your programming language (JSON, Protobuf, CSV, MySQL, Postgres) and against which you can write tools directly</p>
-<p><s>Observer Pattern</s><br> <br> Behind your UX should be an inert generic data structure that is the <em>only</em> means of communication between user input and the views</p>
-<pre><code>    Object ← Clicks, Keystrokes, Messages
-    (data)
-   ↙      ↘
-Object → Object
-(data)   (data)
-  ↓         ↓
- View     View
-</code></pre>
-<p>What’s the most popular JS library?<br> <br> React</p>
+<p><s>Memento Pattern</s><br> <br> Data should be persisted in a format that’s<br> <em>independent</em> of your programming language and<br> that you can access directly using other tools<br> <br> (JSON, Protobuf, CSV, MySQL, Postgres)</p>
+<p><s>Observer Pattern</s><br> <br> What should lie behind your UI? A forest of<br> objects all subscribed to each other’s state changes?<br> <br> No! <br> Back your UI with a plain data structure.<br> Update it as application state changes<br> and then go update your views</p>
+<p>What’s the most popular JS library?<br> <br> <s>jQuery</s><br> React</p>
 <pre><code>          Clicks, Keystrokes, Messages
        ↙
 State
 (data) ↘
           View
 </code></pre>
-<p>It’s always easier to rebuild something from scratch<br> than to figure out the edits to bring an old thing up to date</p>
+<p>Proxy Pattern<br> Memento Pattern<br> Observer Pattern<br> <br> All three of these patterns<br> fail to put data <em>first</em></p>
+<p>♥ Your Data</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
@@ -565,7 +602,6 @@ State
 <tr><td><td><td class=tilde>Visitor
 </table>
 
-<p>♥ Your Data</p>
 <pre><code> 23
 -11
 ___
@@ -613,7 +649,7 @@ ___
               Mediator ← class
                          class → State
 </code></pre>
-<p>Bridge Pattern<br> Decorator Pattern<br> Mediator Pattern<br> State Pattern<br> <br> These four classes all begin a <em>disassembly</em> of Object Orientation, in which classes become a way of organizing <em>procedures</em> rather than of representing <em>data</em></p>
+<p>Bridge Pattern<br> Decorator Pattern<br> Mediator Pattern<br> State Pattern<br> <br> These four classes all begin a <em>disassembly</em> of Object Orientation, and start using classes to organize <em>procedures</em> rather than to represent <em>data</em></p>
 <p>actions ← → data</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
@@ -647,6 +683,11 @@ ___
 
 <img src="Toppledominos.jpg">
 
+<pre><code>                Bridge ← class
+ Decorator ← Decorator ← class
+              Mediator ← class
+                         class → State
+</code></pre>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
@@ -689,8 +730,8 @@ ax.plot(x, y, c=&#39;red&#39;)
 ax.annotate(x[0], y[0], &#39;start&#39;)
 ax.annotate(x[1], y[1], &#39;end&#39;)
 </code></pre>
-<p>Adapter Pattern — build a wrapper class that wraps an object offering one interface and offers instead the methods of another interface.</p>
-<p>Example: Python’s <code>socket.makefile()</code> method, which returns an Adapter that looks like a file object but whose <code>read()</code> and <code>write()</code> methods really call the socket’s <code>recv()</code> and <code>send()</code> methods.<br> <br> <code>adapter.read() -&gt; socket.recv()</code><br> <code>adapter.write() -&gt; socket.send()</code></p>
+<p>Adapter Pattern —<br> when a class doesn’t offer the interface you need,<br> write a <em>wrapper</em> class that does, and have its<br> methods call the underlying object</p>
+<p>Example: Python’s <code>socket.makefile()</code> method returns an Adapter that looks like a file object but whose <code>read()</code> and <code>write()</code> methods really call the socket’s <code>recv()</code> and <code>send()</code> methods.<br> <br> <code>adapter.read() -&gt; socket.recv()</code><br> <code>adapter.write() -&gt; socket.send()</code></p>
 <p>Flyweight Pattern — small read-only data objects can be shared between object instances.</p>
 <pre><code> Glyph        Glyph
 
@@ -705,7 +746,7 @@ ax.annotate(x[1], y[1], &#39;end&#39;)
      width    8
      descent  2
 </code></pre>
-<p>Example: the integers −5 through 256 in Python are flyweight objects.<br> <br> Each time a calculation returns an integer in that range,<br> it’s the same object that gets returned each time.</p>
+<p>Example: the integers −5 through 256<br> in Python are flyweight objects.<br> <br> Each time a calculation returns an integer in that range,<br> it’s the same object that gets returned each time.</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=tilde>Abstract Factory<td class=qmark>Adapter<td class=plain>Chain of Responsibility
@@ -753,12 +794,12 @@ ax.annotate(x[1], y[1], &#39;end&#39;)
 
 <p>Composite Pattern <br>Chain of Responsibility Pattern <br>Command Pattern <br>Interpreter Pattern <br> <br>These are what I call the ‘Framework Patterns’</p>
 <p>Composite — give all nodes in a hierarchy the same interface<br> <img src="compo075.gif"></p>
-<p>Like, how every directory in Unix is <em>also</em> a file</p>
+<p>Example: every directory in Unix is <em>also</em> a file</p>
 <p>DOM = Document Object Model</p>
 <pre><code>HTML:
 
 &lt;div&gt;
- &lt;p&gt;text&lt;/p&gt;
+ &lt;img src=&quot;example.jpg&quot;&gt;
 &lt;/div&gt;
 
 JS:
@@ -766,14 +807,14 @@ JS:
 par = div.children[0]
 
 div.tagName  → &#39;DIV&#39;
-par.tagName  → &#39;P&#39;
+par.tagName  → &#39;IMG&#39;
 
 div.children.length  → 1
 par.children.length  → 0
 </code></pre>
-<p>Chain of Responsibility — in a Composite UX hierarchy, pass unprocessed clicks and keystrokes up to your parent<br> <br> This is <em>universal</em> and called ‘bubbling’ in the browser</p>
-<p>Command — represent user actions with classes, and have them offer both <code>do()</code> and <code>undo()</code> methods<br> <br> This is <em>universal</em> in browsers and GUI frameworks</p>
-<p>But it turns out the Command Pattern<br> is useful in other contexts!<br> <br> Example: the Django web framework’s migrations system</p>
+<p>Chain of Responsibility — in a Composite UI hierarchy,<br> pass unprocessed clicks and keystrokes up to your parent<br> <br> This is <em>universal</em> and called ‘bubbling’ in the browser</p>
+<p>Command — represent user actions as a list of<br> objects that have both <code>do()</code> and <code>undo()</code> methods<br> <br> This is <em>universal</em> in browsers and GUI frameworks</p>
+<p>It turns out the Command Pattern<br> is useful in other contexts!<br> <br> Example: the Django web framework’s migrations system</p>
 <pre><code># Django lets you define what your database
 # tables should look like using a declarative
 # syntax.
