@@ -4,13 +4,17 @@
 
 <style>
 @font-face {
-  font-family: 'Local Gentium';
+  font-family: 'Gentium 1';
   src: url('/fonts/GentiumPlus-Regular.ttf');
 }
 @font-face {
-  font-family: 'Local Gentium';
+  font-family: 'Gentium 1';
   font-style: italic;
   src: url('/fonts/GentiumPlus-Italic.ttf');
+}
+@font-face {
+  font-family: 'Gentium 2';
+  src: url('/fonts/gentium-basic-v11-latin-ext_latin-regular.woff');
 }
 @font-face {
   font-family: 'JetBrains Mono';
@@ -18,7 +22,7 @@
 }
 html {
  background-color: #ddd; line-height: 1.2;
- font-size: 48px; font-family: 'Local Gentium';
+ font-size: 48px; font-family: 'Gentium 1', 'Gentium 2';
 }
 body {margin: 0}
 .slide {
@@ -69,9 +73,19 @@ code {
 <img src="design-patterns-book-cover.jpg">
 
 <p><em>Design Patterns</em> (1994)<br> <br> Book on Object Oriented programming<br> <br> by Erich Gamma, Richard Helm,<br> Ralph Johnson, and John Vlissides<br> (the ‘Gang of Four’)</p>
-<p>It described 23 ‘patterns’ that had become common for solving problems with Object Oriented languages</p>
-<p>https://www.cs.unc.edu/~stotts/GOF/hires/contfso.htm</p>
-<p>Our goal in this talk:<br> <br> A brief survey of the patterns<br> to learn if any of them are still<br> relevant to programming today</p>
+<p>It described 23 ‘design patterns’<br> that had become common solutions for<br> the problems with Object Oriented languages</p>
+<p>The goal for this talk:<br> <br> To make a brief survey of the 23 patterns<br> to learn which patterns from 1994 are<br> still relevant to programming today</p>
+<p><em>Limitations of this talk —</em></p>
+<ul>
+<li>It will have to cover 23 patterns in one hour</li>
+<li>It reflects my experience programming, not yours</li>
+<li>There will not be much time for nuance</li>
+<li>We will have to ignore several corner cases</li>
+<li>It won’t be entirely fair towards the Visitor Pattern</li>
+</ul>
+<p>But that’s okay!<br> <br> It’s fine if <em>your</em> list of relevant patterns<br> is different than mine by the time we finish the talk<br> <br> The goal is for these old patterns to help<br> us reflect on our own practices today</p>
+<p>Happily, the book is online,<br> so you can review the patterns yourself<br> later to develop your own opinions<br> if you don’t like mine<br> <br> https://www.cs.unc.edu/~stotts/GOF/hires/contfso.htm</p>
+<p>So here we go</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=plain>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
@@ -88,6 +102,22 @@ code {
 </table>
 
 <p>First, let’s cross off the patterns that aren’t relevant if your programming language offers first-class functions.</p>
+<p>What are first-class functions? <br>Functions that can be: <br> <br>• Passed as an argument <br>• Placed in a data structure</p>
+<table class=patterns>
+<tr><th>Creational<th>Structural<th>Behavioral
+<tr><td class=plain>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
+<tr><td class=plain>Builder<td class=plain>Bridge<td class=plain>Command
+<tr><td class=plain>Factory Method<td class=plain>Composite<td class=plain>Interpreter
+<tr><td class=plain>Prototype<td class=plain>Decorator<td class=plain>Iterator
+<tr><td class=plain>Singleton<td class=plain>Facade<td class=plain>Mediator
+<tr><td><td class=plain>Flyweight<td class=plain>Memento
+<tr><td><td class=plain>Proxy<td class=plain>Observer
+<tr><td><td><td class=plain>State
+<tr><td><td><td class=plain>Strategy
+<tr><td><td><td class=plain>Template Method
+<tr><td><td><td class=plain>Visitor
+</table>
+
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=qmark>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
@@ -114,7 +144,7 @@ class MyDocumentFactory(DocumentFactory):
 f = MyDocumentFactory()
 a = Application(f)
 </code></pre>
-<p>Q: Why prefer the Abstract Factory over the Factory Method?<br> <br> A: Because of a fundamental design principle from the Introduction chapter of the <em>Design Patterns</em> book:<br> <br> <em>Favor object composition over class inheritance.</em><br></p>
+<p>Q: Why prefer the Abstract Factory to the Factory Method?<br> <br> A: Because of a fundamental design principle from the Introduction chapter of the <em>Design Patterns</em> book:<br> <br> <em>Favor object composition over class inheritance.</em><br></p>
 <pre><code># What is ‘composition’? You have ‘composed’
 # two objects when you give one of them
 # a reference to the other:
@@ -126,12 +156,13 @@ class MyDocumentFactory(DocumentFactory):
 f = MyDocumentFactory()  # object 1
 a = Application(f)       # object 2
 </code></pre>
-<p><em>Favor object composition over class inheritance.</em><br> <br> Factory Method? Class inheritance.<br> Abstract Factory? Object composition.<br> <br> Abstract Factory &gt; Factory Method</p>
+<p><em>Favor object composition over class inheritance.</em><br> <br>Why? <br> <br>Because putting objects together dynamically <br>at <strong>runtime</strong> is more flexible than writing <br>extra classes at <strong>compile</strong> time</p>
+<p>Factory Method? Class inheritance.<br> Abstract Factory? Object composition.<br> <br> Abstract Factory &gt; Factory Method</p>
 <p>So, why did <em>Design Patterns</em> include<br> the Factory Method if a better<br> alternative already existed?</p>
 <p>Because they wanted the book to be a complete catalog<br> of all common Object Oriented patterns—<br> <br> they did <em>not</em> limit themselves to best practices.</p>
 <p>And the Factory Method,<br> despite its awkwardness,<br> was in <em>widespread</em> use.<br> <br> ‘Factory methods pervade toolkits and frameworks.<br> MacApp … ET++ … Unidraw … Smalltalk-80 … Orbix ORB’</p>
-<p>Abstract Factory &gt; Factory Method<br> <br> But neither one is a pattern we use in modern languages!</p>
-<pre><code># First-class functions? Write a function.
+<p>Abstract Factory <br>Factory Method<br> <br> But neither one is a pattern we use in modern languages</p>
+<pre><code># First-class functions? Pass a function.
 
 def build_document():
     return MyDocument()
@@ -172,7 +203,7 @@ a = Application(MyDocument)
 <tr><td><td><td class=plain>Visitor
 </table>
 
-<p>Template Method — client code needs to provide three functions, so force it to subclass <code>Application</code><br> <img src="tmeth007.gif"></p>
+<p>Template Method — if <code>Application</code> needs you to give it three procedures, it should force you to write a subclass<br> <img src="tmeth007.gif"></p>
 <p><em>Favor object composition over class inheritance.</em><br> These three methods should live on a separate class.<br> <img src="tmeth007.gif"></p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
@@ -213,7 +244,7 @@ Note(1)       # whole note
 Note(2)       # half note
 Note(4)       # quarter note
 </code></pre>
-<p>How could you explain to, say, a menu widget how it can create these objects when menu items are selected?</p>
+<p>How could you explain to, say, a menu widget<br> how to create these objects when menu items are selected?</p>
 <pre><code># In a modern language, you would
 # just pass a data structure
 
@@ -224,22 +255,25 @@ menu.add_actions([
     (&#39;Quarter note&#39;, Note, 4),
 ])
 </code></pre>
-<p>Q: But what if your language isn’t that powerful?<br> Are you going to need as many factories<br> as instances you want to create?<br> <br> <code>build_rest()</code><br> <code>build_whole_note()</code><br> <code>build_half_note()</code><br> <code>build_quarter_note()</code></p>
-<p>A: No! Simply create examples of the four objects,<br> then give them each a <code>clone()</code> method</p>
+<p>Q: But what if your language isn’t that powerful?<br> Are you going to need as many factories<br> as kinds of object you want to create?<br> <br> <code>build_rest()</code><br> <code>build_whole_note()</code><br> <code>build_half_note()</code><br> <code>build_quarter_note()</code></p>
+<p>A: The Prototype Pattern says, No! <br>Simply create examples of the four objects, <br>and give them each a <code>clone()</code> method</p>
 <pre><code># The Prototype Pattern
 
 r = Rest()
 r.clone() → another Rest
+
 n = Note(1)
 n.clone() → another Note of length 1
+
 n = Note(2)
 n.clone() → another Note of length 1/2
+
 n = Note(4)
 n.clone() → another Note of length 1/4
 </code></pre>
 <pre><code># Thanks to the Prototype Pattern’s `.clone()`
-# method, we can give plain objects to the
-# menu instead of factories.
+# method, we can give plain object instances
+# to the menu instead of factories.
 
 menu.add_action(&#39;Rest&#39;, Rest())
 menu.add_action(&#39;Whole note&#39;, Note(1))
@@ -280,15 +314,16 @@ menu.add_action(&#39;Quarter note&#39;, Note(4))
 <p>Do we need Singletons? <em>Sometimes. Maybe.</em><br> That’s a big topic of its own.</p>
 <p>But, do we need the Singleton Pattern, where the <em>class itself</em><br> is contorted to force its use as a Singleton? <br> <img src="singl014.gif"></p>
 <p>No!</p>
-<pre><code># Just build a single instance, and provide
-# a global name or a global function that
-# returns that instance.
+<pre><code># Just write the class normally,
+# build a single instance, and provide
+# a global name or a global function
+# that returns that instance.
 
 import logging
 
 root = logging.getLogger()
 </code></pre>
-<p>(In particular, testing becomes <em>hard</em> and tests<br> of the singleton become <em>coupled</em> if you really<br> truly can’t create a fresh instance<br> of the singleton object)</p>
+<p>Why avoid the Singleton Pattern?<br> <br> One reason: testing becomes <em>hard</em> and tests<br> of the singleton become <em>coupled</em> if you really<br> truly can’t create a fresh instance,<br> so the tests are having to share)</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
@@ -319,10 +354,10 @@ root = logging.getLogger()
 <tr><td><td><td class=plain>Visitor
 </table>
 
-<p>The Strategy Pattern<br> <br> Example: What if an object needs to be given a specific paragraph-breaking routine at runtime?</p>
-<p>Strategy Pattern<br> <br> Put the 3 versions of the routine<br> in 3 single-method classes, then pass<br> an instance of one of the classes</p>
+<p>The Strategy Pattern<br> <br> Example: What if an object needs to be given <br>a specific paragraph-breaking routine at <br>runtime, out of 3 that are available?</p>
+<p>Strategy Pattern<br> <br> Put the 3 versions of the routine<br> in 3 single-method classes, build an<br> instance of each, and pass them as<br> constructor arguments at runtime</p>
 <p>Strategy Pattern<br> <img src="strat011.gif"></p>
-<p>In any modern language, you solve this problem by <em>just writing 3 functions,</em> and passing one in as an argument.<br> <br> <em>Done</em></p>
+<p>We can solve this more simply <br> <br>In any modern language, you solve this problem by <em>just writing 3 functions,</em> and passing one in as an argument.<br> <br> <em>Done</em></p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
@@ -374,7 +409,7 @@ ___
 <tr><td><td><td class=plain>Visitor
 </table>
 
-<p>There are two patterns<br> that are also <em>disappearing</em><br> from our code, but it’s because<br> they are so useful that they’re now<br> getting <strong>built into</strong> our languages.</p>
+<p>There are two patterns<br> that are also <em>disappearing</em><br> from our code, but it’s because<br> they are so useful—they are now<br> getting <strong>built into</strong> our languages.</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
@@ -390,24 +425,20 @@ ___
 <tr><td><td><td class=qmark>Visitor
 </table>
 
-<p>Both of them involve a <em>producer</em> who<br> is going to build or retrieve <em>n</em> objects and<br> a <em>consumer</em> who wants to see them</p>
+<p>Both of them involve a <em>producer</em> object<br> which is going to build or retrieve items and<br> a <em>consumer</em> object that wants to iterate over them</p>
 <ul>
 <li>Iterator Pattern
 <ul>
 <li><em>producer</em> offers a callback method, like <code>next()</code></li>
-<li><em>consumer</em> loops, calling <code>next()</code> over and over</li>
-<li>consumer’s loop is <strong>explicit</strong></li>
-<li>producer’s loop is <em>implicit</em></li>
+<li><em>consumer</em> loops, calling <code>next()</code> over and over <br><br></li>
 </ul></li>
 <li>Visitor Pattern
 <ul>
 <li><em>producer</em> iterates across a data structure</li>
 <li><em>consumer</em> offers one (or more) callback methods</li>
-<li>producer’s loop is <strong>explicit</strong></li>
-<li>consumer’s loop is <em>implicit</em></li>
 </ul></li>
 </ul>
-<p>In legacy languages, you have to choose one approach or the other. <br><br> Either way, <em>someone’s</em> class has to suffer callback-style programming.</p>
+<p>In legacy languages,<br> you have to choose one approach or the other. <br><br> Either way, <em>someone’s</em> class has to<br>suffer callback-style programming.</p>
 <p>Solution: generators <br><br> (CLU 1975, Icon 1977, Python 2001, then C#, JS, Ruby)</p>
 <pre><code>class Ten:             # Before generators,
     n = 0              # you had to write up the
@@ -424,8 +455,10 @@ ___
         n += 1
         yield n
 </code></pre>
+<p>Each time the consumer <em>asks</em> for an item,<br> the producer runs enough code to reach its<br> next <code>yield</code> and <em>deliver</em> the item.<br> <br> So the consumer’s requests for more<br> items gradually cause the producer<br> to run all the way to completion.</p>
 <pre><code># So *both* the producer and consumer
-# can be written with normal control flow;
+# can be written with normal control flow
+# statements like `if` `for` and `while`;
 # neither is forced to endure callbacks.
 
 def producer(...):
@@ -443,10 +476,9 @@ def consumer(...):
 p = producer()
 result = consumer(p)
 </code></pre>
-<p>Each time the consumer <em>asks</em> for an item,<br> the producer runs enough code to reach its<br> next ‘yield’ and <em>deliver</em> an item.<br> <br> So the consumer’s requests for more<br> items gradually cause the producer<br> to run all the way to completion.</p>
 <p><em>except—</em></p>
 <p>Don’t <em>actually</em> let a consumer talk to a producer</p>
-<pre><code># If you have the consumer run the
+<pre><code># If you have the consumer drive the
 # producer directly, your main thread
 # loses control.
 
@@ -458,7 +490,7 @@ result = consumer(p)
 <pre><code>p = producer()
 result = consumer(p)
 </code></pre>
-<pre><code># Instead, run the producer to exhaustion
+<pre><code># Instead, run the producer to completion
 # and save the output in a plain flat data
 # structure: a list.
 
@@ -470,8 +502,8 @@ for item in producer():
 
 result = consumer(plain_list)
 </code></pre>
-<p>This sounds silly when we’re only talking<br> about one producer and one consumer, but as<br> an application grows, you should always prefer<br> shallow call stacks to deep ones</p>
-<p>It’s a good day when you can draw a bright line<br> across your code and say, ‘everything above this<br> has <em>finished running</em> and the only things crossing<br> this line are simple inert data structures’</p>
+<p>This idea sounds silly when we’re only talking<br> about one producer and one consumer, but as<br> an application grows, you should always prefer<br> shallow call stacks to deep ones</p>
+<p>It’s a good day when you can draw a<br> bright line across your code and say,<br> <br> ‘everything above this line has <em>finished</em><br> <em>running</em> and the only thing crossing this<br> line is a simple inert data structure’</p>
 <pre><code>plain_list = []
 for item in producer():
     plain_list.append(item)
@@ -482,7 +514,7 @@ result = consumer(plain_list)
 </code></pre>
 <p>Why?</p>
 <p>Because <strong>data</strong> is <em>easier</em> to<br> reason about than <strong>control flow</strong></p>
-<p><em>The Mythical Man-Month</em> by Fred Brooks (1975):<br> <br> “Show me your <em>flowchart</em><br> and conceal your tables,<br> and I shall continue to be mystified.<br> <br> Show me your <em>tables</em>,<br> and I won't usually need your flowchart;<br> it'll be obvious.”</p>
+<p><em>The Mythical Man-Month</em> by Fred Brooks (1975):<br> <br> “Show me your <em>flowchart</em><br> and conceal your tables,<br> and I shall continue to be mystified.<br> <br> Show me your <em>tables</em>,<br> and I won’t usually need your flowchart;<br> it’ll be obvious.”</p>
 <p>♥ Your Data</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
@@ -549,27 +581,23 @@ ___
 <tr><td><td><td class=tilde>Visitor
 </table>
 
-<p>Proxy — sends method calls across the network<br> Memento — saves object state as a binary string<br> Observer — object supports subscribers to changes</p>
+<p>Proxy — sends method calls across the network<br> Memento — saves object state as a binary string<br> Observer — object offer subscriptions to its changes</p>
 <p>Let’s look at their <em>sins</em></p>
 <p>Proxy Pattern — <em>hides</em> how data is passed across the network<br> Memento Pattern — <em>hides</em> how data is persisted to disk<br> Observer Pattern — <em>scatters</em> data rather than <em>unifying</em> it</p>
 <p>♥ Your Data</p>
-<p><s>Proxy Pattern</s><br> <br> Network APIs between your services should be <em>hand-crafted</em><br> and in a data format <em>you</em> understand (JSON, Protobuf, CSV) —<br> not copied from object APIs</p>
-<!--
-TODO: double these to two slides each
-TODO: important vs details
-TODO: add builder/adapter/flyweight slides showing them added color
-TODO: change <p> to img so it has no children
--->
-
+<p><s>Proxy Pattern</s> <br> <br> <br>Network APIs between your services should use <br>a data format <em>you</em> understand (JSON, Protobuf, CSV) <br>and be <em>hand-crafted</em> to make sense over <br>a high-latency channel</p>
+<p>Good object methods: small, orthogonal, numerous <br>Good remote procedures: comprehensive, aggregate, few</p>
+<p><br>Example: a class might offer getters and setters <br>for all of its 11 instance variables; but a network <br>call would probably return all 11 at once, <br>and set as many as you want to provide</p>
 <p><s>Memento Pattern</s><br> <br> Data should be persisted in a format that’s<br> <em>independent</em> of your programming language and<br> that you can access directly using other tools<br> <br> (JSON, Protobuf, CSV, MySQL, Postgres)</p>
-<p><s>Observer Pattern</s><br> <br> What should lie behind your UI? A forest of<br> objects all subscribed to each other’s state changes?<br> <br> No! <br> Back your UI with a plain data structure.<br> Update it as application state changes<br> and then go update your views</p>
-<p>What’s the most popular JS library?<br> <br> <s>jQuery</s><br> React</p>
-<pre><code>          Clicks, Keystrokes, Messages
+<p><s>Observer Pattern</s> <br> <br>Should we really be building forests of objects <br>that are subscribed to each other’s state changes? <br> <br>No! <br> <br>Look on YouTube for Facebook talks about React.</p>
+<p>React is the most popular JS library today <br> <br><s>jQuery</s> <br>React</p>
+<pre><code>          Clicks, Keystrokes, Server events
        ↙
 State
 (data) ↘
           View
 </code></pre>
+<p>So, React makes a <em>data structure</em> <br>the foundation of your application</p>
 <p>Proxy Pattern<br> Memento Pattern<br> Observer Pattern<br> <br> All three of these patterns<br> fail to put data <em>first</em></p>
 <p>♥ Your Data</p>
 <table class=patterns>
@@ -649,8 +677,8 @@ ___
               Mediator ← class
                          class → State
 </code></pre>
-<p>Bridge Pattern<br> Decorator Pattern<br> Mediator Pattern<br> State Pattern<br> <br> These four classes all begin a <em>disassembly</em> of Object Orientation, and start using classes to organize <em>procedures</em> rather than to represent <em>data</em></p>
-<p>actions ← → data</p>
+<p>Bridge Pattern<br> Decorator Pattern<br> Mediator Pattern<br> State Pattern<br> <br> These four classes all begin a <em>disassembly</em> of Object Orientation, and start using classes to organize <em>procedures</em> into <em>layers</em> rather than to represent <em>data</em></p>
+<p>data ← objects → actions</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
@@ -794,7 +822,6 @@ ax.annotate(x[1], y[1], &#39;end&#39;)
 
 <p>Composite Pattern <br>Chain of Responsibility Pattern <br>Command Pattern <br>Interpreter Pattern <br> <br>These are what I call the ‘Framework Patterns’</p>
 <p>Composite — give all nodes in a hierarchy the same interface<br> <img src="compo075.gif"></p>
-<p>Example: every directory in Unix is <em>also</em> a file</p>
 <p>DOM = Document Object Model</p>
 <pre><code>HTML:
 
@@ -804,13 +831,11 @@ ax.annotate(x[1], y[1], &#39;end&#39;)
 
 JS:
 
-par = div.children[0]
-
 div.tagName  → &#39;DIV&#39;
-par.tagName  → &#39;IMG&#39;
+img.tagName  → &#39;IMG&#39;
 
 div.children.length  → 1
-par.children.length  → 0
+img.children.length  → 0
 </code></pre>
 <p>Chain of Responsibility — in a Composite UI hierarchy,<br> pass unprocessed clicks and keystrokes up to your parent<br> <br> This is <em>universal</em> and called ‘bubbling’ in the browser</p>
 <p>Command — represent user actions as a list of<br> objects that have both <code>do()</code> and <code>undo()</code> methods<br> <br> This is <em>universal</em> in browsers and GUI frameworks</p>
@@ -835,7 +860,17 @@ v2 AlterModelTable
 
 v3 RenameField
 </code></pre>
-<p>Interpreter — use the Composite Pattern to represent an Abstract Syntax Tree, then give each node an <code>eval()</code> or <code>run()</code> method that recursively descends the tree and applies the operations to your data.</p>
+<p>Interpreter — uses the Composite Pattern to represent an Abstract Syntax Tree, and make it executable by giving each node a <code>run()</code> method.</p>
+<pre><code>      &quot;n + 1&quot;
+
+       ┌───┐
+       │add│
+       └───┘
+       ↗   ↖
+┌───────┐ ┌────────┐
+│get `n`│ │return 1│
+└───────┘ └────────┘
+</code></pre>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=tilde>Abstract Factory<td class=two>Adapter<td class=qmark>Chain of Responsibility
@@ -866,7 +901,6 @@ v3 RenameField
 <tr><td><td><td class=tilde>Visitor
 </table>
 
-<p>Well — there’s just one left.</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=tilde>Abstract Factory<td class=two>Adapter<td class=three>Chain of Responsibility
@@ -883,7 +917,13 @@ v3 RenameField
 </table>
 
 <p>Facade—hide a complex system behind a single API class<br> <img src="facad057.gif"></p>
-<p>Problem: to qualify as a Facade Pattern,<br> an API must live on <em>only one object</em>, but<br> real-world APIs almost always use <em>several</em><br> <br> Examples: two real-world APIs, Pandas and jQuery.</p>
+<p>Problem: to qualify as a Facade Pattern,<br> an API must live on <em>only one object</em>, but<br> real-world APIs almost always use <em>several</em><br> <br> Examples: two real-world APIs, jQuery and Pandas.</p>
+<pre><code># jQuery: is it a Facade? No, because each
+# query returns a separate object.
+
+var paragraphs = $(&#39;p&#39;); // jQuery object
+paragraphs.find(&#39;b&#39;)     // another object
+</code></pre>
 <pre><code># Pandas: is its DataFrame a Facade?
 
 filename = &#39;transactions.csv&#39;
@@ -896,12 +936,6 @@ print(df.columns)
 
 name = df[&#39;Name&#39;]             # Series
 amount = df[&#39;Amount&#39;]         # Series
-</code></pre>
-<pre><code># jQuery: is it a Facade? No, because each
-# query returns a separate object.
-
-var paragraphs = $(&#39;p&#39;); // jQuery object
-paragraphs.find(&#39;b&#39;)     // another object
 </code></pre>
 <p>Facade: 1 object<br> Real APIs: <em>n</em> objects</p>
 <p>Also, the <em>Design Patterns</em> example of a Facade<br> provides no access to the underlying subsystem.<br> <br> But real-world APIs are usually happy<br> to let you access the lower level directly.</p>
