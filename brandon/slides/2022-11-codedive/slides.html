@@ -74,17 +74,17 @@ code {
 
 <p><em>Design Patterns</em> (1994)<br> <br> Book on Object Oriented programming<br> <br> by Erich Gamma, Richard Helm,<br> Ralph Johnson, and John Vlissides<br> (the ‘Gang of Four’)</p>
 <p>It described 23 ‘design patterns’<br> that had become common solutions for<br> the problems with Object Oriented languages</p>
-<p>The goal for this talk:<br> <br> To make a brief survey of the 23 patterns<br> to learn which patterns from 1994 are<br> still relevant to programming today</p>
+<p>The goal for this talk: <br> <br>To make a brief survey of the 23 patterns <br> <br>Can we learn anything from the ones that survived? <br>Can we learn anything from the ones that didn’t?</p>
 <p><em>Limitations of this talk —</em></p>
 <ul>
 <li>It will have to cover 23 patterns in one hour</li>
+<li>There will not be much time for nuance or corner cases</li>
 <li>It reflects my experience programming, not yours</li>
-<li>There will not be much time for nuance</li>
-<li>We will have to ignore several corner cases</li>
 <li>It won’t be entirely fair towards the Visitor Pattern</li>
 </ul>
-<p>But that’s okay!<br> <br> It’s fine if <em>your</em> list of relevant patterns<br> is different than mine by the time we finish the talk<br> <br> The goal is for these old patterns to help<br> us reflect on our own practices today</p>
+<p>But that’s okay!<br> <br> It’s fine if <em>your</em> list of relevant patterns<br> is different than mine by the time we finish the talk<br> <br> The goal is for these old patterns to help<br> us reflect on how we program today</p>
 <p>Happily, the book is online,<br> so you can review the patterns yourself<br> later to develop your own opinions<br> if you don’t like mine<br> <br> https://www.cs.unc.edu/~stotts/GOF/hires/contfso.htm</p>
+<p>Some of my own ideas are also on the web <br> <br><code>python-patterns.guide</code></p>
 <p>So here we go</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
@@ -323,7 +323,7 @@ import logging
 
 root = logging.getLogger()
 </code></pre>
-<p>Why avoid the Singleton Pattern?<br> <br> One reason: testing becomes <em>hard</em> and tests<br> of the singleton become <em>coupled</em> if you really<br> truly can’t create a fresh instance,<br> so the tests are having to share)</p>
+<p>Why avoid the Singleton Pattern?<br> <br> One reason: testing becomes <em>hard</em> and tests<br> of the singleton become <em>coupled</em> if you really<br> truly can’t create a fresh instance,<br> so the tests are having to share.</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
 <tr><td class=tilde>Abstract Factory<td class=plain>Adapter<td class=plain>Chain of Responsibility
@@ -502,7 +502,7 @@ for item in producer():
 
 result = consumer(plain_list)
 </code></pre>
-<p>This idea sounds silly when we’re only talking<br> about one producer and one consumer, but as<br> an application grows, you should always prefer<br> shallow call stacks to deep ones</p>
+<p>This idea may sound silly when we’re only<br> talking about one producer and one consumer, but as<br> an application grows, you should always prefer<br> shallow call stacks to deep ones</p>
 <p>It’s a good day when you can draw a<br> bright line across your code and say,<br> <br> ‘everything above this line has <em>finished</em><br> <em>running</em> and the only thing crossing this<br> line is a simple inert data structure’</p>
 <pre><code>plain_list = []
 for item in producer():
@@ -582,15 +582,16 @@ ___
 </table>
 
 <p>Proxy — sends method calls across the network<br> Memento — saves object state as a binary string<br> Observer — object offer subscriptions to its changes</p>
-<p>Let’s look at their <em>sins</em></p>
+<p>So what are their <em>sins?</em></p>
 <p>Proxy Pattern — <em>hides</em> how data is passed across the network<br> Memento Pattern — <em>hides</em> how data is persisted to disk<br> Observer Pattern — <em>scatters</em> data rather than <em>unifying</em> it</p>
 <p>♥ Your Data</p>
-<p><s>Proxy Pattern</s> <br> <br> <br>Network APIs between your services should use <br>a data format <em>you</em> understand (JSON, Protobuf, CSV) <br>and be <em>hand-crafted</em> to make sense over <br>a high-latency channel</p>
+<p><s>Proxy Pattern</s> <br> <br>Network APIs between your services should use <br>a data format <em>you</em> understand (JSON, Protobuf, CSV) <br>and be <em>hand-crafted</em> to make sense over <br>a high-latency channel</p>
 <p>Good object methods: small, orthogonal, numerous <br>Good remote procedures: comprehensive, aggregate, few</p>
 <p><br>Example: a class might offer getters and setters <br>for all of its 11 instance variables; but a network <br>call would probably return all 11 at once, <br>and set as many as you want to provide</p>
 <p><s>Memento Pattern</s><br> <br> Data should be persisted in a format that’s<br> <em>independent</em> of your programming language and<br> that you can access directly using other tools<br> <br> (JSON, Protobuf, CSV, MySQL, Postgres)</p>
 <p><s>Observer Pattern</s> <br> <br>Should we really be building forests of objects <br>that are subscribed to each other’s state changes? <br> <br>No! <br> <br>Look on YouTube for Facebook talks about React.</p>
 <p>React is the most popular JS library today <br> <br><s>jQuery</s> <br>React</p>
+<p>What is the secret to React’s success?</p>
 <pre><code>          Clicks, Keystrokes, Server events
        ↙
 State
@@ -760,7 +761,15 @@ ax.annotate(x[1], y[1], &#39;end&#39;)
 </code></pre>
 <p>Adapter Pattern —<br> when a class doesn’t offer the interface you need,<br> write a <em>wrapper</em> class that does, and have its<br> methods call the underlying object</p>
 <p>Example: Python’s <code>socket.makefile()</code> method returns an Adapter that looks like a file object but whose <code>read()</code> and <code>write()</code> methods really call the socket’s <code>recv()</code> and <code>send()</code> methods.<br> <br> <code>adapter.read() -&gt; socket.recv()</code><br> <code>adapter.write() -&gt; socket.send()</code></p>
-<p>Flyweight Pattern — small read-only data objects can be shared between object instances.</p>
+<p>Flyweight Pattern — small read-only data can<br>be shared between object instances.</p>
+<pre><code> Glyph        Glyph
+
+ x      108   x      124
+ y       10   y       10
+ height  12   height  12
+ width    8   width    8
+ descent  2   descent  2
+</code></pre>
 <pre><code> Glyph        Glyph
 
  x 108        x 124
@@ -860,16 +869,28 @@ v2 AlterModelTable
 
 v3 RenameField
 </code></pre>
-<p>Interpreter — uses the Composite Pattern to represent an Abstract Syntax Tree, and make it executable by giving each node a <code>run()</code> method.</p>
+<p>Interpreter — uses the Composite Pattern to <br>represent an Abstract Syntax Tree, and make it <br>executable by giving each node a method.</p>
 <pre><code>      &quot;n + 1&quot;
 
        ┌───┐
        │add│
        └───┘
        ↗   ↖
-┌───────┐ ┌────────┐
-│get `n`│ │return 1│
-└───────┘ └────────┘
+┌───────┐ ┌───────┐
+│get `n`│ │value 1│
+└───────┘ └───────┘
+</code></pre>
+<pre><code>      &quot;n + 1&quot;
+
+      ┌──────┐
+      │ add  │
+      │eval()│
+      └──────┘
+       ↗   ↖
+┌───────┐ ┌───────┐
+│get `n`│ │value 1│
+│eval() │ │eval() │
+└───────┘ └───────┘
 </code></pre>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
