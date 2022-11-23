@@ -119,5 +119,5 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     /* Else. */
 
-    loadScript('../js/jquery-1.6.2.min.js', setup);
+    loadScript('/js/jquery-1.6.2.min.js', setup);
 });
