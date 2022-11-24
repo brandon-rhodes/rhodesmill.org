@@ -34,7 +34,6 @@ body {margin: 0}
 .slide:before {
  position: absolute; left: 0; right: 0; width: 1280px; height: 720px;
  background-color: white; content: " "; z-index: -1;
- //border: 1px solid black;
 }
 .slide > div > p,
 .slide > div > pre {
@@ -44,10 +43,8 @@ body {margin: 0}
  padding-left: 72px; padding-right: 36px;
 }
 .slide > div > p {
-// margin-left: auto; margin-right: auto;
  text-align: center;
 }
-//.slide > div > img {object-fit: contain; object-position: 50% 50%;}
 .slide p img {width: 100%; height: 600px; object-fit: contain}
 .slide > div > img {display: block; margin-left: auto; margin-right: auto}
 .patterns {font-size: 42px}
@@ -63,7 +60,7 @@ code {
 .tilde {text-decoration: line-through}
 .one {background-color: #def}
 .two {background-color: #ADD8E6}
-.three {background-color: #efd}
+.three {background-color: #ef7}
 
 .timer {margin: 10px}
 .emergency {color: white; background-color: red}
@@ -83,8 +80,8 @@ code {
 <li>It won’t be entirely fair towards the Visitor Pattern</li>
 </ul>
 <p>But that’s okay!<br> <br> It’s fine if <em>your</em> list of relevant patterns<br> is different than mine by the time we finish the talk<br> <br> The goal is for these old patterns to help<br> us reflect on how we program today</p>
-<p>Happily, the book is online,<br> so you can review the patterns yourself<br> later to develop your own opinions<br> if you don’t like mine<br> <br> https://www.cs.unc.edu/~stotts/GOF/hires/contfso.htm</p>
-<p>Some of my own ideas are also on the web <br> <br><code>python-patterns.guide</code></p>
+<p>Happily, the <em>Design Patterns</em> book is online,<br> so you can review the patterns yourself<br> later to develop your own opinions<br> if you don’t like mine<br> <br> https://www.cs.unc.edu/~stotts/GOF/hires/contfso.htm</p>
+<p>Some of my own ideas are also on the web <br> <br><code>https://python-patterns.guide/</code></p>
 <p>So here we go</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
@@ -678,7 +675,7 @@ ___
               Mediator ← class
                          class → State
 </code></pre>
-<p>Bridge Pattern<br> Decorator Pattern<br> Mediator Pattern<br> State Pattern<br> <br> These four classes all begin a <em>disassembly</em> of Object Orientation, and start using classes to organize <em>procedures</em> into <em>layers</em> rather than to represent <em>data</em></p>
+<p>Bridge Pattern<br> Decorator Pattern<br> Mediator Pattern<br> State Pattern<br> <br> These four patterns all begin a <em>disassembly</em> of Object Orientation, and start using classes to organize <em>procedures</em> into <em>layers</em> rather than to represent <em>data</em></p>
 <p>data ← objects → actions</p>
 <table class=patterns>
 <tr><th>Creational<th>Structural<th>Behavioral
@@ -848,7 +845,7 @@ img.children.length  → 0
 </code></pre>
 <p>Chain of Responsibility — in a Composite UI hierarchy,<br> pass unprocessed clicks and keystrokes up to your parent<br> <br> This is <em>universal</em> and called ‘bubbling’ in the browser</p>
 <p>Command — represent user actions as a list of<br> objects that have both <code>do()</code> and <code>undo()</code> methods<br> <br> This is <em>universal</em> in browsers and GUI frameworks</p>
-<p>It turns out the Command Pattern<br> is useful in other contexts!<br> <br> Example: the Django web framework’s migrations system</p>
+<p>It turns out the Command Pattern<br> is useful in other contexts!<br> <br> Example: the Django web framework’s<br> database migrations system</p>
 <pre><code># Django lets you define what your database
 # tables should look like using a declarative
 # syntax.
@@ -985,8 +982,9 @@ amount.values()  # raw NumPy array!
 
 <p>So we’ve made it—we’ve completed our survey.</p>
 <ul>
-<li>8 patterns: useless if you have 1st-class functions</li>
+<li>6 patterns: useless if you have 1st-class functions</li>
 <li>2 patterns: language built-ins</li>
+<li>3 patterns: are anti-patterns that obscure our data<br><br></li>
 <li>4 patterns: decompose big classes, but are obscure</li>
 <li>3 patterns: small but useful</li>
 <li>4 patterns: <em>huge</em> and dominate our frameworks</li>
