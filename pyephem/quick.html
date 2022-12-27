@@ -758,6 +758,11 @@ see the next section.</p>
 <li><p class="first">The <code class="docutils literal notranslate"><span class="pre">next_pass()</span></code> method takes an <code class="docutils literal notranslate"><span class="pre">EarthSatellite</span></code> body
 and determines when it will next cross above the horizon.</p>
 </li>
+<li><p class="first">The <code class="docutils literal notranslate"><span class="pre">next_pass()</span></code> method is implemented
+by the C library that’s wrapped by PyEphem,
+so it unfortunately ignores the <code class="docutils literal notranslate"><span class="pre">horizon</span></code> attribute
+that controls PyEphem’s own rising and setting routines.</p>
+</li>
 <li><p class="first">It returns a six-element tuple giving:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span>  <span class="n">Rise</span> <span class="n">time</span>
 <span class="mi">1</span>  <span class="n">Rise</span> <span class="n">azimuth</span>
