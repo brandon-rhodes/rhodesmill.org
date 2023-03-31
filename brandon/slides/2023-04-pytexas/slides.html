@@ -77,16 +77,26 @@ em b {color: #a34809}
 </pre></div>
 <div><pre>An example
  Let’s start writing a quick Python script.
-<em>  Given a sample program, consider editing it —
-  adding or deleting one character.  How many of
-  all the possible edits produce valid code?</em>
+<em>  Our script, given a sample Python program, will
+  consider ‘edits’ — adding or deleting one character.
+  Of all possible edits, how many produce valid code?</em>
 </pre></div>
 <div><pre>An example
-<em> Q: What sample program should the script edit?</em>
+ Let’s start writing a quick Python script.
+<em>  Our script, given a sample Python program, will
+  consider ‘edits’ — adding or deleting one character.
+  Of all possible edits, how many produce valid code?</em>
+<em>  
+  Q: <b>What</b> sample program should the script edit?</em>
 </pre></div>
 <div><pre>An example
-<em> Q: What sample program should the script edit?</em>
-<em> A: Have the program edit its own code!</em>
+ Let’s start writing a quick Python script.
+<em>  Our script, given a sample Python program, will
+  consider ‘edits’ — adding or deleting one character.
+  Of all possible edits, how many produce valid code?</em>
+<em>  
+  Q: <b>What</b> sample program should the script edit?</em>
+<em>  A: Let’s just have it edit its <i>own</i> source code!</em>
 </pre></div>
 <div><pre>An example
 <em> <pre style="line-height: 125%;"><span></span>text <span style="color: #666666">=</span> <span style="color: #008000">open</span>(<span style="color: #19177C">__file__</span>)<span style="color: #666666">.</span>read()
@@ -110,8 +120,10 @@ deletes <span style="color: #666666">=</span> [text[:i] <span style="color: #666
 r <span style="color: #666666">=</span> <span style="color: #008000">range</span>(<span style="color: #008000">len</span>(text))
 deletes <span style="color: #666666">=</span> [text[:i] <span style="color: #666666">+</span> text[i<span style="color: #666666">+1</span>:] <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> r]
 </pre>
-<em>  When I’m ready to move from one thought to the next,
-  I have a habit: quickly <b>checking</b> my code so far.</em>
+<em>  Then, I <b>stop</b>.</em>
+<em>  
+  When I’m ready to move from one thought to the next,
+  I have a habit: quickly <i>checking</i> my code so far.</em>
 </pre></div>
 <div><pre>An example
 <em> <pre style="line-height: 125%;"><span></span>text <span style="color: #666666">=</span> <span style="color: #008000">open</span>(<span style="color: #19177C">__file__</span>)<span style="color: #666666">.</span>read()
@@ -226,7 +238,8 @@ deletes <span style="color: #666666">=</span> [text[:i] <span style="color: #666
 </pre>
   So I hit <b>Save</b>.
 <em>   But today, Linux offers `inotify`.</em>
-<em>   It lets a process <i>sleep</i> waiting for changes to a file.</em>
+<em>   It lets a process <i>sleep</i> waiting for changes to a file,
+   then <b>wakes</b> the process the instant an edit is saved.</em>
 </pre></div>
 <div><pre>An example
  <pre style="line-height: 125%;"><span></span>text <span style="color: #666666">=</span> <span style="color: #008000">open</span>(<span style="color: #19177C">__file__</span>)<span style="color: #666666">.</span>read()
@@ -348,12 +361,18 @@ counts <span style="color: #666666">=</span> {<span style="color: #BA2121">&#39;
 <em> And, I hit Save.</em>
 </pre></div>
 <div><pre>An example
+<em> And, I hit Save.</em>
+<em> And, I looked over at my terminal</em>
+</pre></div>
+<div><pre>An example
  And, I hit Save.
+ And, I looked over at my terminal
 <em>  <pre style="line-height: 125%;"><span></span>{<span style="color: #BA2121">&#39;syntax&#39;</span>: <span style="color: #666666">811</span>, <span style="color: #BA2121">&#39;ok&#39;</span>: <span style="color: #666666">0</span>}
 </pre></em>
 </pre></div>
 <div><pre>An example
  And, I hit Save.
+ And, I looked over at my terminal
   <pre style="line-height: 125%;"><span></span>{<span style="color: #BA2121">&#39;syntax&#39;</span>: <span style="color: #666666">811</span>, <span style="color: #BA2121">&#39;ok&#39;</span>: <span style="color: #666666">0</span>}
 </pre>
 <em>   <b>Drat</b>.</em>
@@ -390,8 +409,8 @@ counts <span style="color: #666666">=</span> {<span style="color: #BA2121">&#39;
         <span style="color: #666666">^</span>
 <span style="color: #CB3F38; font-weight: bold">SyntaxError</span>: invalid syntax
 </pre>
-  Recall that the first line of the file is:
-<em>   <pre style="line-height: 125%;"><span></span>text <span style="color: #666666">=</span> <span style="color: #008000">open</span>(<span style="color: #19177C">__file__</span>)<span style="color: #666666">.</span>read()
+<em>  Recall that the first line of the file is:</em>
+<em>  <pre style="line-height: 125%;"><span></span>text <span style="color: #666666">=</span> <span style="color: #008000">open</span>(<span style="color: #19177C">__file__</span>)<span style="color: #666666">.</span>read()
 </pre></em>
 </pre></div>
 <div><pre>An example
@@ -457,18 +476,34 @@ counts <span style="color: #666666">=</span> {<span style="color: #BA2121">&#39;
 </pre>
 <em>   Success!</em>
 </pre></div>
+<div><pre>An example
+ And I hit Save.
+  <pre style="line-height: 125%;"><span></span>{<span style="color: #BA2121">&#39;syntax&#39;</span>: <span style="color: #666666">107</span>, <span style="color: #BA2121">&#39;ok&#39;</span>: <span style="color: #666666">191</span>}
+</pre>
+<em>   Success!</em>
+<em>   Let’s stop there — the example has served its purpose.</em>
+</pre></div>
 <div class=imgbox><img src="fig-ggrg.svg"></div>
 <div><pre>An example
-<em> Let’s improve that diagram.  My mistake with `eval()`</em>
+<em> Let’s now improve our diagram, to better correspond
+ with my <b>emotions</b>.</em>
 </pre></div>
 <div><pre>An example
-<em> didn’t feel like progress — it felt like a <b>detour</b>.</em>
+<em> Let’s now improve our diagram, to better correspond
+ with my <b>emotions</b>.</em>
+<em> 
+ My mistake with `eval()` didn’t feel
+ like progress <i>forward</i> — it felt like a <b>detour</b>.</em>
 </pre></div>
 <div><pre>An example
-<em> didn’t feel like progress — it felt like a <b>detour</b>.</em>
+<em> Let’s now improve our diagram, to better correspond
+ with my <b>emotions</b>.</em>
+<em> 
+ My mistake with `eval()` didn’t feel
+ like progress <i>forward</i> — it felt like a <b>detour</b>.</em>
 <em> 
  When my code breaks, I feel like I have
- <i>crossed</i> an invisible line that separates
+ <i>crossed</i> an <b>invisible line</b> that separates
  all working programs from all broken ones.</em>
 </pre></div>
 <div class=imgbox><img src="fig-ggrg.svg"></div>
@@ -479,8 +514,27 @@ counts <span style="color: #666666">=</span> {<span style="color: #BA2121">&#39;
 <div><pre><em>‘Walking the line’</em>
 </pre></div>
 <div><pre>‘Walking the line’
-<em> So let’s discuss the two states, <b>red</b> and <i>green</i>.</em>
+<em> This talk asks the question ‘How does it <i>feel</i>?’</em>
 </pre></div>
+<div><pre>‘Walking the line’
+<em> This talk asks the question ‘How does it <i>feel</i>?’</em>
+<em> So let’s discuss the two states, <i>green</i> and <b>red</b>.</em>
+</pre></div>
+<div><pre>‘Walking the line’
+ This talk asks the question ‘How does it <i>feel</i>?’
+ So let’s discuss the two states, <i>green</i> and <b>red</b>.
+<em>  
+  <i>Green</i> leaves us free to make more progress.</em>
+</pre></div>
+<div><pre>‘Walking the line’
+ This talk asks the question ‘How does it <i>feel</i>?’
+ So let’s discuss the two states, <i>green</i> and <b>red</b>.
+<em>  
+  <i>Green</i> leaves us free to make more progress.</em>
+<em>  
+  <b>Red</b> leaves us stuck until it’s fixed.</em>
+</pre></div>
+<div class=imgbox><img src="fig-crooked-with-line.svg"></div>
 <div><pre><em>Green.</em>
 </pre></div>
 <div><pre>Green.
@@ -489,71 +543,109 @@ counts <span style="color: #666666">=</span> {<span style="color: #BA2121">&#39;
 <div><pre>Green.
  Developers ♥ green.
 <em>  
-  <i>Green</i> leaves us free to make more progress.</em>
+  We won’t have too much to say about it here
+  in a talk on the <i>emotions</i> of walking the line.</em>
 </pre></div>
 <div><pre>Green.
  Developers ♥ green.
 <em>  
-  <i>Green</i> leaves us free to make more progress.</em>
+  We won’t have too much to say about it here
+  in a talk on the <i>emotions</i> of walking the line.</em>
 <em>  
-  <b>Red</b> leaves us stuck until it’s fixed.</em>
+  It’s the default starting point, and the happy end.</em>
 </pre></div>
 <div><pre>Green.
  Developers ♥ green.
 <em>  
-  <i>Green</i> leaves us free to make more progress.</em>
+  We won’t have too much to say about it here
+  in a talk on the <i>emotions</i> of walking the line.</em>
 <em>  
-  <b>Red</b> leaves us stuck until it’s fixed.</em>
+  It’s the default starting point, and the happy end.</em>
 <em>  
-  And coding for too long without stopping to detect
-  the difference can leave us stranded.</em>
+  Generally, our only problem is wanting <i>more</i> of it.</em>
 </pre></div>
-<div class=imgbox><img src="fig-deep-into-red.svg"></div>
+<div><pre>Green.
+ Developers ♥ green.
+<em>  
+  So: How could <i>green</i>, if it’s such a good thing,
+  wind up <b>manipulating</b> our emotions?</em>
+</pre></div>
+<div><pre>Green.
+ Developers ♥ green.
+<em>  
+  So: How could <i>green</i>, if it’s such a good thing,
+  wind up <b>manipulating</b> our emotions?</em>
+<em>  
+  How could desire for it <b>warp</b> how we write code?</em>
+</pre></div>
+<div><pre>Green.
+ Developers ♥ green.
+<em>  
+  So: How could <i>green</i>, if it’s such a good thing,
+  wind up <b>manipulating</b> our emotions?</em>
+<em>  
+  How could desire for it <b>warp</b> how we write code?</em>
+<em>  
+  For me, a big problem is driving <b>too hard</b>
+  and <b>too long</b> towards green, in the (mistaken) belief
+  that I’m <i>almost there</i> if only I just keep going.</em>
+</pre></div>
 <div class=imgbox><img src="fig-deep-into-red-2.svg"></div>
 <div class=imgbox><img src="fig-deep-into-red-3.svg"></div>
 <div><pre>Green.
-<em> All other things being equal, fixing code <i>early</i> is cheap,
+<em> All other things being equal, fixing code <i>early</i> —
+ when you’re still close to the line — is cheap,
  while fixing code <b>later</b> is expensive.</em>
 </pre></div>
 <div><pre>Green.
-<em> All other things being equal, fixing code <i>early</i> is cheap,
+<em> All other things being equal, fixing code <i>early</i> —
+ when you’re still close to the line — is cheap,
  while fixing code <b>later</b> is expensive.</em>
 <em> 
- Q: So, why would you write lots of code at once?</em>
+ Q: So, why would I write so much code at once?</em>
 </pre></div>
 <div><pre>Green.
-<em> All other things being equal, fixing code <i>early</i> is cheap,
+<em> All other things being equal, fixing code <i>early</i> —
+ when you’re still close to the line — is cheap,
  while fixing code <b>later</b> is expensive.</em>
 <em> 
- Q: So, why would you write lots of code at once?</em>
-<em> A: Side quests.</em>
+ Q: So, why would I write so much code at once?</em>
+<em> A: My <b>drive</b> to push harder and harder to make
+    it back across the line, to green, prevents me
+    from stopping to properly solve <i>side quests</i>.</em>
 </pre></div>
 <div><pre>Green.
-<em> All other things being equal, fixing code <i>early</i> is cheap,
- while fixing code <b>later</b> is expensive.</em>
-<em> 
- Q: So, why would you write lots of code at once?</em>
-<em> A: Side quests.</em>
-<em> 
- You discover the change you are making requires <b>other</b>
- changes, that themselves each require <i>further</i> changes.</em>
-</pre></div>
-<div class=imgbox><img src="fig-deep-into-red-2.svg"></div>
-<div><pre>Green.
-<em> 
- You can wind up laboring over a <i>huge</i> diff
- that tries to change <b>everything</b> at once.</em>
+<em> Side quests!</em>
 </pre></div>
 <div><pre>Green.
-<em> 
- You can wind up laboring over a <i>huge</i> diff
- that tries to change <b>everything</b> at once.</em>
-<em> 
- Instead, when I see a side quest, I `git stash` what
- I’m working on and solve the side quest <i>first</i>.</em>
+ Side quests!
+<em>  
+  When you discover the change you are making
+  requires <b>other</b> changes, that maybe themselves
+  each require <i>further</i> changes.</em>
 </pre></div>
-<div class=imgbox><img src="fig-deep-into-red-2.svg"></div>
-<div class=imgbox><img src="fig-refactoring.svg"></div>
+<div><pre>Green.
+ Side quests!
+<em>  
+  Two paths lie before you.</em>
+</pre></div>
+<div><pre>Green.
+ Side quests!
+  
+  Two paths lie before you.
+<em>   1. Solve every side quest right here, creating <b>one</b>
+       <b>single</b> <b>massive</b> change.</em>
+</pre></div>
+<div><pre>Green.
+ Side quests!
+  
+  Two paths lie before you.
+<em>   1. Solve every side quest right here, creating <b>one</b>
+       <b>single</b> <b>massive</b> change.</em>
+<em>   2. Or, <i>stop</i>, run `git stash` to put aside your
+       main goal, and make the side quest a <i>first-class</i>
+       <i>objective</i> that gets its own commit.</em>
+</pre></div>
 <div><pre>Green.
 <em> @KentBeck</em>
 </pre></div>
@@ -563,7 +655,8 @@ counts <span style="color: #666666">=</span> {<span style="color: #BA2121">&#39;
 </pre></div>
 <div><pre>Green.
  @KentBeck
-<em>  Few people remember: that’s <b>not</b> the full tweet.</em>
+<em>  ‘make the change easy, then make the easy change’</em>
+<em>  ↖ Few people remember: that’s <b>not</b> the full tweet.</em>
 </pre></div>
 <div><pre>Green.
  @KentBeck
@@ -571,54 +664,64 @@ counts <span style="color: #666666">=</span> {<span style="color: #BA2121">&#39;
    make the change easy (warning: this may be hard),
    then make the easy change’</em>
 </pre></div>
-<div><pre>Green.
-<em> The side quests will not necessarily be easy.</em>
-</pre></div>
+<div class=imgbox><img src="fig-refactoring.svg"></div>
 <div class=imgbox><img src="fig-back-and-forth.svg"></div>
 <div><pre>Green.
-<em> But at least you get to tackle <i>one</i> quest at a time,
- and get natural stopping points at which you
- can commit your work.</em>
+ @KentBeck
+<em>  The <i>side quests</i> themselves can be difficult—</em>
 </pre></div>
 <div><pre>Green.
-<em> But at least you get to tackle <i>one</i> quest at a time,
- and get natural stopping points at which you
- can commit your work.</em>
-<em> 
- But we always want green, yeah, TODO.</em>
+ @KentBeck
+<em>  The <i>side quests</i> themselves can be difficult—</em>
+<em>  but not as difficult as pulling the <b>whole world</b>
+  <b>apart</b> at once and then trying to repair it!</em>
 </pre></div>
 <div><pre><em>Green.</em>
 </pre></div>
 <div><pre><em>Red.</em>
 </pre></div>
 <div><pre>Red.
-<em> Do we programmers ever starting <b>wanting</b> to break things?</em>
+<em> Do we programmers ever <b>want</b> red?</em>
 </pre></div>
 <div><pre>Red.
-<em> Yes.</em>
+<em> Do we programmers ever <b>want</b> red?</em>
+<em> Do we ever <b>want</b> to break things?</em>
 </pre></div>
 <div><pre>Red.
-<em> One case is <b>TDD</b> — Test-Driven Development.
+<em> Do we programmers ever <b>want</b> red?</em>
+<em> Do we ever <b>want</b> to break things?</em>
+<em> 
+ Yes.</em>
+</pre></div>
+<div><pre>Red.
+<em> Do we programmers ever <b>want</b> red?</em>
+<em> Do we ever <b>want</b> to break things?</em>
+<em> 
+ Yes.</em>
+<em> Oh, <b>yes</b>.</em>
+</pre></div>
+<div><pre>Red.
+<em> One obvious case is <b>TDD</b> — Test-Driven Development.
 </em>
 </pre></div>
 <div><pre>Red.
- One case is <b>TDD</b> — Test-Driven Development.
+ One obvious case is <b>TDD</b> — Test-Driven Development.
 
 <em>  It would be a whole talk of its own.</em>
 </pre></div>
 <div><pre>Red.
- One case is <b>TDD</b> — Test-Driven Development.
+ One obvious case is <b>TDD</b> — Test-Driven Development.
 
 <em>  1. Start by writing a <b>failing</b> test of a new feature.</em>
 </pre></div>
 <div><pre>Red.
- One case is <b>TDD</b> — Test-Driven Development.
+ One obvious case is <b>TDD</b> — Test-Driven Development.
 
 <em>  1. Start by writing a <b>failing</b> test of a new feature.</em>
 <em>  2. Then write the code to turn the test <i>green</i>.</em>
 </pre></div>
 <div><pre>Red.
- One case is <b>TDD</b> — Test-Driven Development.
+ One obvious case is <b>TDD</b> — Test-Driven Development.
 
 <em>  1. Start by writing a <b>failing</b> test of a new feature.</em>
 <em>  2. Then write the code to turn the test <i>green</i>.</em>
@@ -626,7 +729,7 @@ counts <span style="color: #666666">=</span> {<span style="color: #BA2121">&#39;
   • Gets the worst thing, writing the test, over with <i>first</i>.</em>
 </pre></div>
 <div><pre>Red.
- One case is <b>TDD</b> — Test-Driven Development.
+ One obvious case is <b>TDD</b> — Test-Driven Development.
 
 <em>  1. Start by writing a <b>failing</b> test of a new feature.</em>
 <em>  2. Then write the code to turn the test <i>green</i>.</em>
@@ -635,7 +738,7 @@ counts <span style="color: #666666">=</span> {<span style="color: #BA2121">&#39;
 <em>  • Arranges a nice instant <i>reward</i> for when you finish.</em>
 </pre></div>
 <div><pre>Red.
- One case is <b>TDD</b> — Test-Driven Development.
+ One obvious case is <b>TDD</b> — Test-Driven Development.
 
 <em>  1. Start by writing a <b>failing</b> test of a new feature.</em>
 <em>  2. Then write the code to turn the test <i>green</i>.</em>
@@ -645,32 +748,42 @@ counts <span style="color: #666666">=</span> {<span style="color: #BA2121">&#39;
 <em>  • By its nature produces a decently well-tested codebase.</em>
 </pre></div>
 <div><pre>Red.
- One case is <b>TDD</b> — Test-Driven Development.
+ One obvious case is <b>TDD</b> — Test-Driven Development.
 
 <em>  For the purposes of this talk, let’s just note
-  that TDD leverages your usual <i>negative</i> emotions
-  about <b>Red</b>: you want the <b>Red</b> to go away, so you
+  that TDD leverages your <i>usual</i> negative emotions
+  about <b>Red</b>:</em>
+</pre></div>
+<div><pre>Red.
+ One obvious case is <b>TDD</b> — Test-Driven Development.
+
+<em>  For the purposes of this talk, let’s just note
+  that TDD leverages your <i>usual</i> negative emotions
+  about <b>Red</b>:</em>
+<em>  
+  You want the <b>Red</b> to go away, so you
   write code that satisfies the new test.</em>
 </pre></div>
 <div><pre>Red.
-<em> But it is the claim of <i>this</i> talk that
- emotions can also work the <b>other</b> way round —
+<em> But it’s the claim of <i>this</i> talk that emotions
+ can also work the <b>other</b> way round —
 </em>
 </pre></div>
 <div><pre>Red.
-<em> But it is the claim of <i>this</i> talk that
- emotions can also work the <b>other</b> way round —
+<em> But it’s the claim of <i>this</i> talk that emotions
+ can also work the <b>other</b> way round —
 </em>
-<em> it is the claim of <i>this</i> talk that there are
+<em> It is the claim of <i>this</i> talk that there are
  situations where you aren’t avoiding <b>Red</b>,</em>
 </pre></div>
 <div><pre>Red.
-<em> But it is the claim of <i>this</i> talk that
- emotions can also work the <b>other</b> way round —
+<em> But it’s the claim of <i>this</i> talk that emotions
+ can also work the <b>other</b> way round —
 </em>
-<em> it is the claim of <i>this</i> talk that there are
+<em> It is the claim of <i>this</i> talk that there are
  situations where you aren’t avoiding <b>Red</b>,</em>
-<em> you’re <i>seeking it out</i>.</em>
+<em> 
+ you’re <i>seeking it out</i>.</em>
 </pre></div>
 <div><pre><em><b>What</b> could lead to <i>that</i>?</em>
 </pre></div>
@@ -686,47 +799,61 @@ counts <span style="color: #666666">=</span> {<span style="color: #BA2121">&#39;
 <em> <i>Too much green</i>.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
+<em> <i>Too much green</i>.</em>
 <em> Imagine that you’re performing extensive <b>refactoring</b>.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
+<em> <i>Too much green</i>.</em>
 <em> Imagine that you’re performing extensive <b>refactoring</b>.</em>
 <em> Each time you Save, you’re thrilled the result is still <i>Green</i>.</em>
 </pre></div>
 <div class=imgbox><img src="fig-many-greens.svg"></div>
 <div><pre>Feelings of <b>insecurity</b>.
-<em> Your <b>streak</b> of <i>green</i> runs longer and longer.</em>
+<em> Your streak of <i>green</i> runs longer and longer.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
-<em> Your <b>streak</b> of <i>green</i> runs longer and longer.</em>
-<em> Until—</em>
-</pre></div>
-<div class=imgbox><img src="fig-many-greens.svg"></div>
-<div><pre>Feelings of <b>insecurity</b>.
-<em> Until—you become a tiny bit incredulous.</em>
-</pre></div>
-<div><pre>Feelings of <b>insecurity</b>.
-<em> Until—you become a tiny bit incredulous.</em>
-<em> ‘Am I <i>really</i> this good at refactoring?’</em>
-</pre></div>
-<div><pre>Feelings of <b>insecurity</b>.
-<em> Until—you become a tiny bit incredulous.</em>
-<em> ‘Am I <i>really</i> this good at refactoring?’</em>
+<em> Your streak of <i>green</i> runs longer and longer.</em>
 <em> 
- ‘Hey — wait — the tests <i>are</i> running, right? <b>Right</b>?’</em>
+ Until—</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
-<em> Until—you become a tiny bit incredulous.</em>
-<em> ‘Am I <i>really</i> this good at refactoring?’</em>
+<em> Your streak of <i>green</i> runs longer and longer.</em>
 <em> 
- ‘Hey — wait — the tests <i>are</i> running, right? <b>Right</b>?’</em>
+ Until—</em>
+<em> 
+ your spidey sense kicks in, and you
+ suddenly feel a tiny bit incredulous.</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+<em> Your streak of <i>green</i> runs longer and longer.</em>
+<em> 
+ Until—</em>
+<em> 
+ your spidey sense kicks in, and you
+ suddenly feel a tiny bit incredulous.</em>
+<em> 
+ ‘Am I <i>really</i> this good at refactoring?’</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+<em> 
+ ‘Hey — wait — the tests <i>are</i> running, right?</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+<em> 
+ ‘Hey — wait — the tests <i>are</i> running, right?</em>
+<em> <b>Right</b>?’</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+<em> 
+ ‘Hey — wait — the tests <i>are</i> running, right?</em>
+<em> <b>Right</b>?’</em>
 <em> 
  <b>taps mic</b></em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
-<em> Until—you become a tiny bit incredulous.</em>
-<em> ‘Am I <i>really</i> this good at refactoring?’</em>
 <em> 
- ‘Hey — wait — the tests <i>are</i> running, right? <b>Right</b>?’</em>
+ ‘Hey — wait — the tests <i>are</i> running, right?</em>
+<em> <b>Right</b>?’</em>
 <em> 
  <b>taps mic</b></em>
 <em> Is this on?</em>
@@ -775,129 +902,172 @@ counts <span style="color: #666666">=</span> {<span style="color: #BA2121">&#39;
 </pre>
 <em>    But what if I <b>don’t</b> see it?</em>
 </pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+ <pre style="line-height: 125%;"><span></span>asdf
+</pre>
+   <i>If all is well</i>, then I will see the happy result:
+   <pre style="line-height: 125%;"><span></span><span style="color: #CB3F38; font-weight: bold">NameError</span>: name <span style="color: #BA2121">&#39;asdf&#39;</span> <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #AA22FF; font-weight: bold">not</span> defined
+</pre>
+<em>    But what if I <b>don’t</b> see it?</em>
+<em>    What if I just see <b>more green</b>?</em>
+</pre></div>
+<div class=imgbox><img src="fig-many-greens.svg"></div>
 <div class=imgbox><img src="fig-too-many-greens.svg"></div>
 <div><pre>Feelings of <b>insecurity</b>.
-<em> But what could have gone wrong?</em>
+<em> Disaster.</em>
+</pre></div>
+<div class=imgbox><img src="fig-too-many-greens.svg"></div>
+<div class=imgbox><img src="fig-too-many-gray.svg"></div>
+<div><pre>Feelings of <b>insecurity</b>.
+<em> ‘What could have gone wrong?’</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
-<em>  <i>Among</i> the possibilities are —</em>
+<em> ‘What could have gone wrong?’ <b>Lots</b> of things—</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
+<em>  Shall we consider a <i>few</i>?</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
 <em>  1. You’ve been editing the wrong function!
-     Turns out? There are <i>two</i> named `user_delete()`.</em>
+     Turns out? You’re <i>editing</i> `user_delete()` but
+     the tests you’re running <b>call</b> `account_delete()`.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
 <em>  2. You need to hit Shift-Reload, not plain Reload, for
-     your browser to see that edit to the CSS.</em>
+     your browser to see that edit to your CSS.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
 <em>  3. The repository is checked out <b>twice</b> on your laptop
-     and you are editing one repo while running the other.</em>
+     and you are editing one repo while running the <i>other</i>.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
 <em>  4. Your editor’s <i>jump-to-definition</i> shortcut decided
-     to jump into `site-packages/` instead of the repository.</em>
+     to jump into `site-packages/` instead of a repository.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
   4. Your editor’s <i>jump-to-definition</i> shortcut decided
-     to jump into `site-packages/` instead of the repository.
-<em>   (So, you’re editing a pip-installed copy of the code)</em>
+     to jump into `site-packages/` instead of a repository.
+<em>   (So, you’re editing some pip-installed copy of the code)</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
   4. Your editor’s <i>jump-to-definition</i> shortcut decided
-     to jump into `site-packages/` instead of the repository.
+     to jump into `site-packages/` instead of a repository.
+<em>   (So, you’re editing some pip-installed copy of the code)</em>
 <em>   (Bonus points if you forget to remove `asdf` and, months
     later, you run some other Python application and see—)</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
   4. Your editor’s <i>jump-to-definition</i> shortcut decided
-     to jump into `site-packages/` instead of the repository.
+     to jump into `site-packages/` instead of a repository.
+   (So, you’re editing some pip-installed copy of the code)
    (Bonus points if you forget to remove `asdf` and, months
     later, you run some other Python application and see—)
 <em>    <pre style="line-height: 125%;"><span></span><span style="color: #CB3F38; font-weight: bold">NameError</span>: name <span style="color: #BA2121">&#39;asdf&#39;</span> <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #AA22FF; font-weight: bold">not</span> defined
 </pre></em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
 <em>  5. You are editing <i>local</i> code, on your laptop,
      but reloading a <b>remote</b> version of the site.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
   5. You are editing <i>local</i> code, on your laptop,
      but reloading a <b>remote</b> version of the site.
 <em>   <pre style="line-height: 125%;"><span></span>http:<span style="color: #666666">//</span>localhost<span style="color: #666666">/</span>shopping<span style="color: #666666">-</span>cart
 </pre></em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
   5. You are editing <i>local</i> code, on your laptop,
      but reloading a <b>remote</b> version of the site.
-<em>   <pre style="line-height: 125%;"><span></span>https:<span style="color: #666666">//</span>canary<span style="color: #666666">.</span>example<span style="color: #666666">.</span>com<span style="color: #666666">/</span>shopping<span style="color: #666666">-</span>cart
+<em>   <pre style="line-height: 125%;"><span></span>http:<span style="color: #666666">//</span>localhost<span style="color: #666666">/</span>shopping<span style="color: #666666">-</span>cart
+https:<span style="color: #666666">//</span>canary<span style="color: #666666">.</span>example<span style="color: #666666">.</span>com<span style="color: #666666">/</span>shopping<span style="color: #666666">-</span>cart
 </pre></em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
 <em>  6. You did open the remote copy of the file,
-     <i>but</i> your `sshfs` connection has gone down,
-     <b>and</b> your editor didn’t tell you.</em>
+     <b>but</b> your `sshfs` connection has gone down,
+     so you are now merely saving files <i>locally</i>.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
 <em>  7. A disk error forced your filesystem to remount
     read-only, <i>but</i> your editor isn’t telling you.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
-<em>  7. A disk error forced your filesystem to remount
-    read-only, <i>but</i> your editor isn’t telling you.</em>
-<em>  
-    Why? Because, the cool fancy new color-highlighted
-    error-report plugin you installed dies silently on a
-    read-only filesystem, and so can’t tell you about it.</em>
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
+  7. A disk error forced your filesystem to remount
+    read-only, <i>but</i> your editor isn’t telling you.
+<em>   
+   Why?</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
+  7. A disk error forced your filesystem to remount
+    read-only, <i>but</i> your editor isn’t telling you.
+<em>   
+   Why?</em>
+<em>   
+   Well, because, the cool fancy new color-highlighted
+   third-party error-reporting plugin <i>you</i> installed <b>dies</b>
+   <b>silently</b> on a read-only filesystem.</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
 <em>  Bonus Round!</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
 <em>  8. Remember the end of the day last Friday?</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
   8. Remember the end of the day last Friday?
-<em>   When your boss asked if the app works on leap day?</em>
+<em>   When your boss asked if the app works on <b>leap day</b>?</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
   8. Remember the end of the day last Friday?
-<em>   When your boss asked if the app works on leap day?</em>
-<em>   So you set your system clock briefly to next February 29,
+<em>   When your boss asked if the app works on <b>leap day</b>?</em>
+<em>   
+   So you set your system clock briefly to next February 29,
    hit Restart, and Reload to show that the app still worked.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
+  8. Remember the end of the day last Friday?
+<em>   When your boss asked if the app works on <b>leap day</b>?</em>
+<em>   
+   So you set your system clock briefly to next February 29,
+   hit Restart, and Reload to show that the app still worked.</em>
+<em>   
+   Then you fixed your system clock and headed out.
+   It’s now <i>Monday</i> morning.</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
   8. Remember the end of the day last Friday?
 <em>   <i>Turns out</i>?</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
   8. Remember the end of the day last Friday?
 <em>   <i>Turns out</i>?</em>
 <em>   All the `*.pyc` files written during those five minutes
    are dated 2024 February 29 — which is <b>in the future</b>.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
   8. Remember the end of the day last Friday?
 <em>   <i>Turns out</i>?</em>
 <em>   All the `*.pyc` files written during those five minutes
@@ -907,17 +1077,17 @@ counts <span style="color: #666666">=</span> {<span style="color: #BA2121">&#39;
    you save today, so Python is ignoring your new `*.py` edits.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
   8. Remember the end of the day last Friday?
 <em>   
-   Quick advice: turn off `*.pyc`.</em>
+   My blanket advice: turn off `*.pyc`.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- But what could have gone wrong?
+ ‘What could have gone wrong?’ <b>Lots</b> of things—
   8. Remember the end of the day last Friday?
-   
-   Quick advice: turn off `*.pyc`.
-<em>    <pre style="line-height: 125%;"><span></span><span style="color: #666666">/</span>home<span style="color: #666666">/</span>brandon<span style="color: #666666">/.</span>bashenv:
+<em>   
+   My blanket advice: turn off `*.pyc`.</em>
+<em>   <pre style="line-height: 125%;"><span></span><span style="color: #666666">/</span>home<span style="color: #666666">/</span>brandon<span style="color: #666666">/.</span>bashenv:
 export PYTHONDONTWRITEBYTECODE<span style="color: #666666">=</span>PLEASE
 </pre></em>
 </pre></div>
@@ -925,12 +1095,14 @@ export PYTHONDONTWRITEBYTECODE<span style="color: #666666">=</span>PLEASE
 <em> Any of these underlying causes
  will make you <i>want</i> to cross the line.</em>
 </pre></div>
-<div class=imgbox><img src="fig-single-step-over-line.svg"></div>
 <div><pre>Feelings of <b>insecurity</b>.
-<em> You will only be happy again once you’re assured
- that the <b>line</b> is back in place, and once again ready
- to hit you with <i>consequences</i> as you write code.</em>
+<em> Any of these underlying causes
+ will make you <i>want</i> to cross the line.</em>
+<em> 
+ They make you <i>want</i> to <b>break things</b>
+ and <b>see real consequences</b>.</em>
 </pre></div>
+<div class=imgbox><img src="fig-single-step-over-line.svg"></div>
 <div><pre><em>Feelings of <b>insecurity</b>.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
@@ -942,6 +1114,11 @@ export PYTHONDONTWRITEBYTECODE<span style="color: #666666">=</span>PLEASE
 <div><pre>Feelings of <b>insecurity</b>.
  My tests are running. But are they <i>protecting</i> me?
 <em>  <i>Especially</i> important question before a big refactor.</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+ My tests are running. But are they <i>protecting</i> me?
+  <i>Especially</i> important question before a big refactor.
+<em>   We see a line of code and think: ‘<b>is this tested</b>’?</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
  My tests are running. But are they <i>protecting</i> me?
@@ -984,30 +1161,20 @@ clip_lower <span style="color: #666666">=</span> <span style="color: #008000">ma
  My tests are running. But are they <i>protecting</i> me?
   <pre style="line-height: 125%;"><span></span>capital_gain <span style="color: #666666">=</span> <span style="color: #008000">max</span>(line_16, <span style="color: #666666">-3000</span>)
 </pre>
-<em>   Let’s do quick edits to remove `max()`.</em>
+<em>   Let’s do quick edits to disable `max()`.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
  My tests are running. But are they <i>protecting</i> me?
   <pre style="line-height: 125%;"><span></span>capital_gain <span style="color: #666666">=</span> <span style="color: #008000">max</span>(line_16, <span style="color: #666666">-3000</span>)
 </pre>
-   Let’s do quick edits to remove `max()`.
-<em>    <pre style="line-height: 125%;"><span></span>capital_gain <span style="color: #666666">=</span> line_16
-<span style="color: #3D7B7B; font-style: italic"># or</span>
-capital_gain <span style="color: #666666">=</span> <span style="color: #666666">-3000</span>
-</pre></em>
-</pre></div>
-<div><pre>Feelings of <b>insecurity</b>.
- My tests are running. But are they <i>protecting</i> me?
-  <pre style="line-height: 125%;"><span></span>capital_gain <span style="color: #666666">=</span> <span style="color: #008000">max</span>(line_16, <span style="color: #666666">-3000</span>)
-</pre>
-   Let’s do quick edits to remove `max()`.
+   Let’s do quick edits to disable `max()`.
 <em>    Hint: don’t experiment on the line itself!</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
  My tests are running. But are they <i>protecting</i> me?
   <pre style="line-height: 125%;"><span></span>capital_gain <span style="color: #666666">=</span> <span style="color: #008000">max</span>(line_16, <span style="color: #666666">-3000</span>)
 </pre>
-   Let’s do quick edits to remove `max()`.
+   Let’s do quick edits to disable `max()`.
 <em>    Hint: don’t experiment on the line itself!</em>
 <em>    Make a copy.</em>
 </pre></div>
@@ -1041,7 +1208,15 @@ capital_gain <span style="color: #666666">=</span> <span style="color: #008000">
   <pre style="line-height: 125%;"><span></span><span style="color: #3D7B7B; font-style: italic">#capital_gain = max(line_16, -3000)</span>
 capital_gain <span style="color: #666666">=</span> <span style="color: #008000">max</span>(line_16, <span style="color: #666666">-3000</span>)
 </pre>
-<em>   No we’re free to break the code.</em>
+<em>   <i>Now</i> we’re free to break the code.</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+ My tests are running. But are they <i>protecting</i> me?
+  <pre style="line-height: 125%;"><span></span><span style="color: #3D7B7B; font-style: italic">#capital_gain = max(line_16, -3000)</span>
+capital_gain <span style="color: #666666">=</span> <span style="color: #008000">max</span>(line_16, <span style="color: #666666">-3000</span>)
+</pre>
+<em>   <i>Now</i> we’re free to break the code.</em>
+<em>   We can start editing!</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
  My tests are running. But are they <i>protecting</i> me?
@@ -1054,6 +1229,13 @@ capital_gain <span style="color: #666666">=</span> line_16
 <em>  <pre style="line-height: 125%;"><span></span><span style="color: #3D7B7B; font-style: italic">#capital_gain = max(line_16, -3000)</span>
 capital_gain <span style="color: #666666">=</span> <span style="color: #666666">-3000</span>
 </pre></em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+ My tests are running. But are they <i>protecting</i> me?
+  <pre style="line-height: 125%;"><span></span><span style="color: #3D7B7B; font-style: italic">#capital_gain = max(line_16, -3000)</span>
+capital_gain <span style="color: #666666">=</span> <span style="color: #666666">-3000</span>
+</pre>
+<em>    In both cases, you <i>want</i> the result to be <b>Red</b>.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
  My tests are running. But are they <i>protecting</i> me?
@@ -1122,42 +1304,61 @@ capital_gain <span style="color: #666666">=</span> <span style="color: #666666">
    that you are <i>safely</i> fenced in by your tests.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- My tests are running. But are they <i>protecting</i> me?
-<em>  Breaking things.</em>
+<em> Breaking things.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- My tests are running. But are they <i>protecting</i> me?
-<em>  Breaking things.</em>
-<em>  
-  In <i>real life</i> — in a workplace, in a relationship — crossing
-  a line just to see if it’s really there is an <b>anti-pattern</b>.</em>
+<em> Breaking things.</em>
+<em> 
+ In <i>real life</i> — in a workplace, in a relationship — crossing
+ a line just to see if it’s really there is an <b>anti-pattern</b>.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- My tests are running. But are they <i>protecting</i> me?
-<em>  So we must balance two philosophies.</em>
+<em> Breaking things.</em>
+<em> 
+ In <i>real life</i> — in a workplace, in a relationship — crossing
+ a line just to see if it’s really there is an <b>anti-pattern</b>.</em>
+<em> 
+ Arguably, it’s <b>abuse</b>.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- My tests are running. But are they <i>protecting</i> me?
-<em>  
-  <i>Gandalf</i>: ‘He that breaks a thing to find out what it is
-  has left the path of wisdom.’</em>
+<em> So we must balance two philosophies.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- My tests are running. But are they <i>protecting</i> me?
-<em>  
-  <i>Gandalf</i>: ‘He that breaks a thing to find out what it is
-  has left the path of wisdom.’</em>
-<em>  
-  <b>Blake</b>: ‘You never know what is enough</em>
+<em> 
+ <i>Gandalf</i>:</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- My tests are running. But are they <i>protecting</i> me?
-<em>  
-  <i>Gandalf</i>: ‘He that breaks a thing to find out what it is
-  has left the path of wisdom.’</em>
-<em>  
-  <b>Blake</b>: ‘You never know what is enough</em>
-<em>  unless you know what is more than enough.’</em>
+<em> 
+ <i>Gandalf</i>:</em>
+<em> ‘He that breaks a thing to find out what it is
+ has left the path of wisdom.’</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+<em> 
+ <i>Gandalf</i>:</em>
+<em> ‘He that breaks a thing to find out what it is
+ has left the path of wisdom.’</em>
+<em> 
+ <b>Blake</b>:</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+<em> 
+ <i>Gandalf</i>:</em>
+<em> ‘He that breaks a thing to find out what it is
+ has left the path of wisdom.’</em>
+<em> 
+ <b>Blake</b>:</em>
+<em> ‘You never know what is enough</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+<em> 
+ <i>Gandalf</i>:</em>
+<em> ‘He that breaks a thing to find out what it is
+ has left the path of wisdom.’</em>
+<em> 
+ <b>Blake</b>:</em>
+<em> ‘You never know what is enough</em>
+<em> unless you know what is more than enough.’</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
 <em> </em>
@@ -1169,16 +1370,19 @@ capital_gain <span style="color: #666666">=</span> <span style="color: #666666">
 <em> Some of us are haunted by an insecurity—</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
-<em> ‘Wait! Maybe this code could be <i>even simpler</i>.’</em>
+<em> ‘Wait! Maybe this code —</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- ‘Wait! Maybe this code could be <i>even simpler</i>.’
+<em> ‘Wait! Maybe this code — could be <i>even simpler</i>.’</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+ ‘Wait! Maybe this code — could be <i>even simpler</i>.’
 <em>  
   Some of us suffer from a <b>nagging fear</b> that we might have
   written slightly more code than is strictly necessary.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
- ‘Wait! Maybe this code could be <i>even simpler</i>.’
+ ‘Wait! Maybe this code — could be <i>even simpler</i>.’
 <em>  
   Some of us suffer from a <b>nagging fear</b> that we might have
   written slightly more code than is strictly necessary.</em>
@@ -1253,16 +1457,36 @@ capital_gain <span style="color: #666666">=</span> <span style="color: #666666">
 <em> Right?</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
-<em> Well, we were then called into a <b>meeting</b>.</em>
+<em> 
+ What did we developers do?</em>
+<em> We read some docs, did some tests, and switched
+ from `scp` to `rsync`.</em>
+<em> Done! <i>Problem solved</i>!</em>
+<em> Right?</em>
+<em> 
+ Well, we were then called into a <b>meeting</b>.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
+ 
+ What did we developers do?
+ We read some docs, did some tests, and switched
+ from `scp` to `rsync`.
+ Done! <i>Problem solved</i>!
+ Right?
+ 
  Well, we were then called into a <b>meeting</b>.
 <em>  With a VP.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
+ 
+ What did we developers do?
+ We read some docs, did some tests, and switched
+ from `scp` to `rsync`.
+ Done! <i>Problem solved</i>!
+ Right?
+ 
  Well, we were then called into a <b>meeting</b>.
-<em>  With a VP.</em>
-<em>  He <b>ordered</b> that HR append an `--END--` line to the file
+<em>  He <b>ordered</b> that HR append a line `--END--` to the file
   and that we must check for it before using it.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
@@ -1297,11 +1521,36 @@ capital_gain <span style="color: #666666">=</span> <span style="color: #666666">
      the same number of commas, every line, the same number
      of fields — is <b>ruined</b> by adding the extra line.</em>
 <em> 
- So we wound up arguing — unsuccessfully — <b>against</b>
- what strikes me today as an <i>eminently</i> sensible idea.</em>
+ So we wound up arguing — unsuccessfully — <b>against</b></em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+<em> Of course, we were enraged.</em>
+<em> 
+ 1. We had already solved the problem. <b>Ourselves</b>!</em>
+<em> 2. The design of `rsync` made an extra check illogical.</em>
+<em> 3. The beautiful <i>symmetry</i> of the CSV file — every line,
+     the same number of commas, every line, the same number
+     of fields — is <b>ruined</b> by adding the extra line.</em>
+<em> 
+ So we wound up arguing — unsuccessfully — <b>against</b></em>
+<em> what strikes me today as an <i>eminently</i> sensible idea.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
 <em> What went wrong?</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+ What went wrong?
+<em>  
+  <b>Several things</b>, but we’ll focus on one:</em>
+</pre></div>
+<div><pre>Feelings of <b>insecurity</b>.
+ What went wrong?
+<em>  
+  <b>Several things</b>, but we’ll focus on one:</em>
+<em>  
+  When a team lacks the expertise to <b>control complexity</b>
+  through good <i>architecture</i>, they tend to fall back on
+  an <b>obsession</b> with writing the least code possible.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
 <em> What went wrong?</em>
@@ -1322,19 +1571,19 @@ capital_gain <span style="color: #666666">=</span> <span style="color: #666666">
 <em> when our role demanded the maturity of an <b>engineer</b>.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
-<em> Do engineers walk <b>right against</b> the line
- between success and failure?</em>
+<em> Do engineers <i>walk the line</i> between success and failure
+ by hewing as <b>close to failure</b> as possible?</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
-<em> Do engineers walk <b>right against</b> the line
- between success and failure?</em>
+<em> Do engineers <i>walk the line</i> between success and failure
+ by hewing as <b>close to failure</b> as possible?</em>
 <em> 
  Do they build bridges that can support the rated
  limit but not a <i>single ton more</i>?</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
-<em> Do engineers walk <b>right against</b> the line
- between success and failure?</em>
+<em> Do engineers <i>walk the line</i> between success and failure
+ by hewing as <b>close to failure</b> as possible?</em>
 <em> 
  Do they build bridges that can support the rated
  limit but not a <i>single ton more</i>?</em>
@@ -1342,8 +1591,8 @@ capital_gain <span style="color: #666666">=</span> <span style="color: #666666">
  No.</em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
-<em> Do engineers walk <b>right against</b> the line
- between success and failure?</em>
+<em> Do engineers <i>walk the line</i> between success and failure
+ by hewing as <b>close to failure</b> as possible?</em>
 <em> 
  Do they build bridges that can support the rated
  limit but not a <i>single ton more</i>?</em>
@@ -1353,8 +1602,8 @@ capital_gain <span style="color: #666666">=</span> <span style="color: #666666">
  Systems that are <i>robust</i></em>
 </pre></div>
 <div><pre>Feelings of <b>insecurity</b>.
-<em> Do engineers walk <b>right against</b> the line
- between success and failure?</em>
+<em> Do engineers <i>walk the line</i> between success and failure
+ by hewing as <b>close to failure</b> as possible?</em>
 <em> 
  Do they build bridges that can support the rated
  limit but not a <i>single ton more</i>?</em>
@@ -1376,8 +1625,8 @@ capital_gain <span style="color: #666666">=</span> <span style="color: #666666">
  machine <b>two reasons</b> to not disable 3k employee
  accounts on a Monday morning.</em>
 <em> 
- I ought to have been happy to take a deep breath and
- <i>step away from the line</i> for once.</em>
+ I ought to have been happy to take a deep breath and,
+ for once, to <i>step away from the line</i>.</em>
 </pre></div>
 <div class=imgbox><img src="fig-two-steps-into-green.svg"></div>
 <div><pre><em>In conclusion—</em>
@@ -1426,9 +1675,6 @@ capital_gain <span style="color: #666666">=</span> <span style="color: #666666">
  between code that <b>fails</b> or <i>runs</i>,</em>
 <em> tests that are <b>spotty</b> or <i>thorough</i>,</em>
 <em> systems that are <b>fragile</b> or <i>robust</i>.</em>
-</pre></div>
-<div><pre>In conclusion—
-<em> </em>
 </pre></div>
 <div><pre>In conclusion—
 <em> 
