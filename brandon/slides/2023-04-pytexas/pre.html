@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style>
+@font-face {
+  font-family: 'Body Text';
+  src: url('/fonts/GentiumPlus-Regular.ttf');
+}
+@font-face {
+  font-family: 'Body Text';
+  font-style: italic;
+  src: url('/fonts/GentiumPlus-Italic.ttf');
+}
+@font-face {
+  font-family: 'Program Text';
+  src: url('/fonts/FiraCode-Bold.woff2');
+}
+html {
+ background-color: #ddd; line-height: 1.2;
+ font-size: 24px; font-family: 'Roman';
+ color: #ccc;
+}
+html.presentation-is-running {
+ /* Fit my screen better during development: */
+ transform: scale(0.5) translate(-50%, -50%);
+}
+.slide {
+ position: absolute; left: 0; top: 0;
+ display: table; width: 1280px; height: 720px;
+ font-size: 48px;
+}
+.slide:before {
+ position: absolute; left: 0; top: 0; width: 1280px; height: 720px;
+ background-color: white; content: " "; z-index: -1;
+}
+.slide > div {
+ padding-left: 1em;
+}
+.imgbox {
+ display: flex;
+ width: 1280px; height: 720px;
+ align-items: center;
+ justify-content: center;
+}
+.imgbox img {
+ transform: scale(2);
+}
+pre {
+ font-family: 'Body Text'; background-color: white;
+}
+pre pre {
+ display: inline-block; color: #555;
+ font-family: 'Program Text'; font-size: 0.75em;
+}
+em {color: black; font-style: normal;}
+em i {color: #0a3b00; font-weight: bold}
+em b {color: #a34809}
+.title {color: black;}
+.timer {
+    position: absolute; left: 1290px; top: 10px; width: 5em;
+    color: black; background-color: white;
+}
+.emergency {color: white; background-color: red}
+</style>
+
+<div class="title">
+  <h1>Walking the Line</h1>
+  <pre>
+    Brandon Rhodes
+    Opening Keynote
+    PyTexas 2023 • Austin
+</div>

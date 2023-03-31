@@ -1,0 +1,20 @@
+<script>
+(function() {
+ var url_params = new URLSearchParams(window.location.search);
+ end_param = url_params.get('end');
+ if (!end_param)
+        return;
+
+ var body = document.querySelector('body');
+ var a = Array.from(body.children);
+ var i = 0;
+ a.forEach((item) => {
+  i++;
+  var html = '<div class=slide>' + item.outerHTML + '</div>'
+  item.outerHTML = html;
+ });
+ console.log('Slide count:', i);
+})();
+</script>
+
+<script src="../js/slides4.js"></script>
