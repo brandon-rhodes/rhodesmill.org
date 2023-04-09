@@ -153,6 +153,27 @@ the horizon.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="skyfield.positionlib.ICRF.altaz">
+<code class="descname">altaz</code><span class="sig-paren">(</span><em>temperature_C=None</em>, <em>pressure_mbar='standard'</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.altaz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute (alt, az, distance) relative to the observer’s horizon</p>
+<p>The altitude returned is an <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a>
+measured in degrees above the horizon, while the azimuth
+<a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> measures east along the horizon
+from geographic north (so 0 degrees means north, 90 is east, 180
+is south, and 270 is west).</p>
+<p>By default, Skyfield does not adjust the altitude for
+atmospheric refraction.  If you want Skyfield to estimate how
+high the atmosphere might lift the body’s image, give the
+argument <code class="docutils literal notranslate"><span class="pre">temperature_C</span></code> either the temperature in degrees
+centigrade, or the string <code class="docutils literal notranslate"><span class="pre">'standard'</span></code> (in which case 10°C is
+used).</p>
+<p>When calculating refraction, Skyfield uses the observer’s
+elevation above sea level to estimate the atmospheric pressure.
+If you want to override that value, simply provide a number
+through the <code class="docutils literal notranslate"><span class="pre">pressure_mbar</span></code> parameter.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="skyfield.positionlib.ICRF.separation_from">
 <code class="descname">separation_from</code><span class="sig-paren">(</span><em>another_icrf</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.ICRF.separation_from" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the angle between this position and another.</p>
@@ -388,6 +409,27 @@ call <code class="docutils literal notranslate"><span class="pre">.apparent()</s
 <p>This class inherits the methods of is parent class <a class="reference internal" href="#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a> as
 well as the orientation of its axes in space.</p>
 <dl class="method">
+<dt id="skyfield.positionlib.Astrometric.altaz">
+<code class="descname">altaz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Astrometric.altaz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute (alt, az, distance) relative to the observer’s horizon</p>
+<p>The altitude returned is an <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a>
+measured in degrees above the horizon, while the azimuth
+<a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> measures east along the horizon
+from geographic north (so 0 degrees means north, 90 is east, 180
+is south, and 270 is west).</p>
+<p>By default, Skyfield does not adjust the altitude for
+atmospheric refraction.  If you want Skyfield to estimate how
+high the atmosphere might lift the body’s image, give the
+argument <code class="docutils literal notranslate"><span class="pre">temperature_C</span></code> either the temperature in degrees
+centigrade, or the string <code class="docutils literal notranslate"><span class="pre">'standard'</span></code> (in which case 10°C is
+used).</p>
+<p>When calculating refraction, Skyfield uses the observer’s
+elevation above sea level to estimate the atmospheric pressure.
+If you want to override that value, simply provide a number
+through the <code class="docutils literal notranslate"><span class="pre">pressure_mbar</span></code> parameter.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="skyfield.positionlib.Astrometric.apparent">
 <code class="descname">apparent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Astrometric.apparent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute an <a class="reference internal" href="#skyfield.positionlib.Apparent" title="skyfield.positionlib.Apparent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Apparent</span></code></a> position for this body.</p>
@@ -445,27 +487,6 @@ equator and equinox of date.</li>
 </ul>
 <p>This class inherits the methods of is parent class <a class="reference internal" href="#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a> as
 well as the orientation of its axes in space.</p>
-<dl class="method">
-<dt id="skyfield.positionlib.Apparent.altaz">
-<code class="descname">altaz</code><span class="sig-paren">(</span><em>temperature_C=None</em>, <em>pressure_mbar='standard'</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Apparent.altaz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute (alt, az, distance) relative to the observer’s horizon</p>
-<p>The altitude returned is an <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a>
-measured in degrees above the horizon, while the azimuth
-<a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> measures east along the horizon
-from geographic north (so 0 degrees means north, 90 is east, 180
-is south, and 270 is west).</p>
-<p>By default, Skyfield does not adjust the altitude for
-atmospheric refraction.  If you want Skyfield to estimate how
-high the atmosphere might lift the body’s image, give the
-argument <code class="docutils literal notranslate"><span class="pre">temperature_C</span></code> either the temperature in degrees
-centigrade, or the string <code class="docutils literal notranslate"><span class="pre">'standard'</span></code> (in which case 10°C is
-used).</p>
-<p>When calculating refraction, Skyfield uses the observer’s
-elevation above sea level to estimate the atmospheric pressure.
-If you want to override that value, simply provide a number
-through the <code class="docutils literal notranslate"><span class="pre">pressure_mbar</span></code> parameter.</p>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -515,27 +536,6 @@ oriented along the axes of the International Celestial Reference
 System (ICRS), the modern replacement for J2000 coordinates.</p>
 <p>This class inherits the methods of is parent class <a class="reference internal" href="#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a> as
 well as the orientation of its axes in space.</p>
-<dl class="method">
-<dt id="skyfield.positionlib.Geometric.altaz">
-<code class="descname">altaz</code><span class="sig-paren">(</span><em>temperature_C=None</em>, <em>pressure_mbar='standard'</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Geometric.altaz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute (alt, az, distance) relative to the observer’s horizon</p>
-<p>The altitude returned is an <a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a>
-measured in degrees above the horizon, while the azimuth
-<a class="reference internal" href="api-units.html#skyfield.units.Angle" title="skyfield.units.Angle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a> measures east along the horizon
-from geographic north (so 0 degrees means north, 90 is east, 180
-is south, and 270 is west).</p>
-<p>By default, Skyfield does not adjust the altitude for
-atmospheric refraction.  If you want Skyfield to estimate how
-high the atmosphere might lift the body’s image, give the
-argument <code class="docutils literal notranslate"><span class="pre">temperature_C</span></code> either the temperature in degrees
-centigrade, or the string <code class="docutils literal notranslate"><span class="pre">'standard'</span></code> (in which case 10°C is
-used).</p>
-<p>When calculating refraction, Skyfield uses the observer’s
-elevation above sea level to estimate the atmospheric pressure.
-If you want to override that value, simply provide a number
-through the <code class="docutils literal notranslate"><span class="pre">pressure_mbar</span></code> parameter.</p>
-</dd></dl>
-
 </dd></dl>
 
 </div>

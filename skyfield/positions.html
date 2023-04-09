@@ -429,7 +429,7 @@ and the nadir beneath your feet is at&nbsp;−90°.</li>
 0° means exactly north, 90° is east, 180° is south, and 270° is west.</li>
 </ul>
 <p>Altitude and azimuth are computed
-by calling the <a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent.altaz" title="skyfield.positionlib.Apparent.altaz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">altaz()</span></code></a> method on an apparent position.
+by calling the <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.altaz" title="skyfield.positionlib.ICRF.altaz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">altaz()</span></code></a> method on an apparent position.
 But because the method needs to know which local horizon to use,
 it does not work
 on the plain geocentric (“Earth centered”) positions
@@ -477,7 +477,7 @@ in case you don’t want to remember which directions are positive.</p>
 </div>
 <p>So Mars was more than 24° above the horizon for Bostonians
 on 1980&nbsp;March&nbsp;1 at midnight&nbsp;UTC.</p>
-<p>The altitude returned from a plain <a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent.altaz" title="skyfield.positionlib.Apparent.altaz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">altaz()</span></code></a> call
+<p>The altitude returned from a plain <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.altaz" title="skyfield.positionlib.ICRF.altaz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">altaz()</span></code></a> call
 is the ideal position
 that you would observe if the Earth had no atmosphere.
 You can also ask Skyfield to estimate

@@ -28,7 +28,7 @@ Right now it covers only one topic.</p>
 <span id="polar-motion"></span><h2>Precession and Nutation<a class="headerlink" href="#precession-and-nutation" title="Permalink to this headline">¶</a></h2>
 <p>As explained in the section on
 <a class="reference internal" href="positions.html#apparent-right-ascension-and-declination"><span class="std std-ref">Apparent right ascension and declination</span></a>,
-Skyfield uses the IAU2000A precession-nutation model
+Skyfield uses the IAU&nbsp;2000A precession-nutation model
 to determine the orientation of the Earth’s axes on any given date.
 This is used in:</p>
 <ul class="simple">
@@ -62,7 +62,7 @@ In Skyfield you can see the size of the effect
 by loading an official data file
 from the International Earth Rotation Service (IERS)
 and measuring the maximum excursions
-of the polar motion parameters 𝑥 and 𝑦:</p>
+of the polar motion parameters <em>x</em> and <em>y</em>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
 <span class="kn">from</span> <span class="nn">skyfield.data</span> <span class="kn">import</span> <span class="n">iers</span>
 
@@ -84,15 +84,22 @@ y: 0.596732 arcseconds
 </div>
 <p>In what kinds of Skyfield calculations
 does the exact position of the Earth’s crust come into play?</p>
+<p>At the most basic level,
+the two polar motion rotations
+are applied directly to the ITRS reference frame
+in <a class="reference internal" href="api-framelib.html#skyfield.framelib.itrs" title="skyfield.framelib.itrs"><code class="xref py py-data docutils literal notranslate"><span class="pre">skyfield.framelib.itrs</span></code></a>,
+supplementing the changes in the Earth’s orientation
+that Skyfield was already expecting
+thanks to its IAU&nbsp;2000A precession and nutation models.
+This, in turn, slightly affects:</p>
 <ul class="simple">
-<li>Polar motion affects the position of an observer on the Earth’s surface.</li>
-<li>Polar motion therefore also affects the relative position
-of a target with respect to an observer on the Earth’s surface.</li>
-<li>Polar motion directly affects altazimuth coordinates,
-since the polar angles 𝑥 and 𝑦 tilt the zenith and local horizon
+<li>The position of an observer on the Earth’s surface.</li>
+<li>The relative position of a target with
+respect to an observer on the Earth’s surface.</li>
+<li>All alt-azimuth coordinates,
+since the polar angles <em>x</em> and <em>y</em> tilt the zenith and local horizon
 against which altitude and azimuth are measured for a particular observer.</li>
-<li>Finally,
-polar motion affects the position of any observation target
+<li>The position of any observation target
 that’s located on the Earth’s surface —
 for example, if you are calculating the position of a ground station
 from the perspective of a space probe.</li>

@@ -694,6 +694,12 @@ declination coordinates with
 <tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.hadec" title="skyfield.positionlib.ICRF.hadec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.hadec</span></code></a>()</td>
 <td>Compute hour angle, declination, and distance.</td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.altaz" title="skyfield.positionlib.ICRF.altaz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.altaz</span></code></a>([temperature_C,&nbsp;pressure_mbar])</td>
+<td>Compute (alt, az, distance) relative to the observer’s horizon</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_altaz" title="skyfield.positionlib.ICRF.from_altaz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_altaz</span></code></a>([alt,&nbsp;az,&nbsp;alt_degrees,&nbsp;…])</td>
+<td>Generate an Apparent position from an altitude and azimuth.</td>
+</tr>
 <tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.separation_from" title="skyfield.positionlib.ICRF.separation_from"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.separation_from</span></code></a>(another_icrf)</td>
 <td>Return the angle between this position and another.</td>
 </tr>
@@ -724,9 +730,6 @@ declination coordinates with
 <tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_sunlit" title="skyfield.positionlib.ICRF.is_sunlit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.is_sunlit</span></code></a>(ephemeris)</td>
 <td>Return whether a position in Earth orbit is in sunlight.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.from_altaz" title="skyfield.positionlib.ICRF.from_altaz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRF.from_altaz</span></code></a>([alt,&nbsp;az,&nbsp;alt_degrees,&nbsp;…])</td>
-<td>Generate an Apparent position from an altitude and azimuth.</td>
-</tr>
 </tbody>
 </table>
 <p>In addition to the methods above,
@@ -743,9 +746,6 @@ provide unique methods of their own:</p>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric.apparent" title="skyfield.positionlib.Astrometric.apparent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Astrometric.apparent</span></code></a>()</td>
 <td>Compute an <a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent" title="skyfield.positionlib.Apparent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Apparent</span></code></a> position for this body.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-position.html#skyfield.positionlib.Apparent.altaz" title="skyfield.positionlib.Apparent.altaz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Apparent.altaz</span></code></a>([temperature_C,&nbsp;pressure_mbar])</td>
-<td>Compute (alt, az, distance) relative to the observer’s horizon</td>
 </tr>
 </tbody>
 </table>

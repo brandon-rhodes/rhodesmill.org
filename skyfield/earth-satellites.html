@@ -24,7 +24,7 @@
 <p>Skyfield is able to predict the positions of Earth satellites
 by loading satellite orbital elements
 from Two-Line Element (TLE) files —
-published by organizations like <a class="reference external" href="https://celestrak.com/">CelesTrak</a> —
+published by organizations like <a class="reference external" href="https://celestrak.org/">CelesTrak</a> —
 and running them through the SGP4 satellite propagation routine.
 But there several limitations to be aware of
 when using Skyfield to generate positions
@@ -34,7 +34,7 @@ for artificial satellites in Earth orbit:</p>
 any two pieces of software that are trying to predict
 satellite positions from TLE data files.
 As Vallado, Crawford, and Hujsak document
-in their crucial paper <a class="reference external" href="https://celestrak.com/publications/AIAA/2006-6753/">Revisiting Spacetrack Report #3</a>,
+in their crucial paper <a class="reference external" href="https://celestrak.org/publications/AIAA/2006-6753/">Revisiting Spacetrack Report #3</a>,
 there are many slightly different versions
 of the basic satellite prediction algorithm circulating in the wild.
 (Happily, Skyfield does use
@@ -42,7 +42,7 @@ the corrected and updated version of the algorithm
 that they created as part of writing that report!)</p>
 </li>
 <li><p class="first">The accuracy of the satellite positions is not perfect.
-To quote directly from <a class="reference external" href="https://celestrak.com/publications/AIAA/2006-6753/">Revisiting Spacetrack Report #3</a>
+To quote directly from <a class="reference external" href="https://celestrak.org/publications/AIAA/2006-6753/">Revisiting Spacetrack Report #3</a>
 Appendix&nbsp;B:</p>
 <blockquote>
 <div><p>“The maximum accuracy for a TLE is
@@ -52,7 +52,8 @@ at epoch and it quickly degrades.”</p>
 </div></blockquote>
 </li>
 <li><p class="first">Satellite elements go rapidly out of date.
-You will want to pay attention to the “epoch” —
+As explained below in <a class="reference internal" href="#checking-a-tles-epoch">Checking a TLE’s epoch</a>,
+you will want to pay attention to the “epoch” —
 the date on which an element set is most accurate —
 of every TLE element set you use.
 Elements are only useful for a week or two
@@ -82,10 +83,18 @@ and not worth the added expense of re-computing the position
 several times in a row.</p>
 </li>
 </ol>
+<p>Note that even though TLE elements have names
+like <em>inclination</em> and <em>eccentricity</em>
+that might remind you of the simple Kepler elements
+used for the orbits of comets and asteroids,
+the SGP4 propagation routine
+knows that a satellite orbit is not a simple ellipse
+and includes effects like the Moon’s gravity and atmospheric drag
+in its calculations.</p>
 <div class="section" id="loading-a-tle-file">
 <h2>Loading a TLE file<a class="headerlink" href="#loading-a-tle-file" title="Permalink to this headline">¶</a></h2>
 <p>You can find satellite element sets at the
-<a class="reference external" href="http://celestrak.com/NORAD/elements/">NORAD Two-Line Element Sets</a>
+<a class="reference external" href="http://celestrak.org/NORAD/elements/">NORAD Two-Line Element Sets</a>
 page of the Celestrak web site.</p>
 <p>Beware that the two-line element (TLE) format is very rigid.
 The meaning of each character
@@ -100,7 +109,7 @@ is the International Space Station,
 which is listed in Celestrak’s <code class="docutils literal notranslate"><span class="pre">stations.txt</span></code> file:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">wgs84</span>
 
-<span class="n">stations_url</span> <span class="o">=</span> <span class="s1">&#39;http://celestrak.com/NORAD/elements/stations.txt&#39;</span>
+<span class="n">stations_url</span> <span class="o">=</span> <span class="s1">&#39;http://celestrak.org/NORAD/elements/stations.txt&#39;</span>
 <span class="n">satellites</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">tle_file</span><span class="p">(</span><span class="n">stations_url</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loaded&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">satellites</span><span class="p">),</span> <span class="s1">&#39;satellites&#39;</span><span class="p">)</span>
 </pre></div>
@@ -158,7 +167,7 @@ Each query result will be saved to disk with its own filename.</li>
 code that requests one specific satellite,
 saving the result to a file specific to the query:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">25544</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://celestrak.com/satcat/tle.php?CATNR=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://celestrak.org/satcat/tle.php?CATNR=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;tle-CATNR-</span><span class="si">{}</span><span class="s1">.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="n">satellites</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">tle_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">satellites</span><span class="p">)</span>
@@ -270,8 +279,9 @@ over the span of a single day:</p>
 <span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">23</span><span class="p">)</span>
 <span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">events</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">find_events</span><span class="p">(</span><span class="n">bluffton</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">altitude_degrees</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
+<span class="n">event_names</span> <span class="o">=</span> <span class="s1">&#39;rise above 30°&#39;</span><span class="p">,</span> <span class="s1">&#39;culminate&#39;</span><span class="p">,</span> <span class="s1">&#39;set below 30°&#39;</span>
 <span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">events</span><span class="p">):</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;rise above 30°&#39;</span><span class="p">,</span> <span class="s1">&#39;culminate&#39;</span><span class="p">,</span> <span class="s1">&#39;set below 30°&#39;</span><span class="p">)[</span><span class="n">event</span><span class="p">]</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">event_names</span><span class="p">[</span><span class="n">event</span><span class="p">]</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y %b </span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">),</span> <span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -292,6 +302,35 @@ but also the time at which the satellite first crested 30°
 and the moment at which it dipped below it.</p>
 <p>Beware that events might not always be in the order rise-culminate-set.
 Some satellites culminate several times between rising and setting.</p>
+<p>By combining these results
+with the result of the <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_sunlit" title="skyfield.positionlib.ICRF.is_sunlit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_sunlit()</span></code></a> method
+(as described below in <a class="reference internal" href="#satellite-is-sunlit"><span class="std std-ref">Find when a satellite is in sunlight</span></a>),
+you can determine whether the satellite is in sunlight
+during these passes,
+or is eclipsed within the Earth’s shadow.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">sunlit</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">is_sunlit</span><span class="p">(</span><span class="n">eph</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">sunlit_flag</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">sunlit</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">event_names</span><span class="p">[</span><span class="n">event</span><span class="p">]</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;in shadow&#39;</span><span class="p">,</span> <span class="s1">&#39;in sunlight&#39;</span><span class="p">)[</span><span class="n">sunlit_flag</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:22}</span><span class="s1"> </span><span class="si">{:15}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">ti</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y %b </span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">),</span> <span class="n">name</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span>
+    <span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2014 Jan 23 06:25:37   rise above 30°  in shadow
+2014 Jan 23 06:26:58   culminate       in shadow
+2014 Jan 23 06:28:19   set below 30°   in shadow
+2014 Jan 23 12:54:56   rise above 30°  in sunlight
+2014 Jan 23 12:56:27   culminate       in sunlight
+2014 Jan 23 12:57:58   set below 30°   in sunlight
+</pre></div>
+</div>
+<p>Finally, you will probably want to check the altitude of the Sun,
+so that you can ignore passes that happen during the daytime —
+unless you have some means of observing the satellite
+(by radio, for example) before it gets dark outside.</p>
 </div>
 <div class="section" id="generating-a-satellite-position">
 <h2>Generating a satellite position<a class="headerlink" href="#generating-a-satellite-position" title="Permalink to this headline">¶</a></h2>
@@ -454,7 +493,7 @@ and whose sixth return value will be the range’s rate of change.</p>
 at around 20° above the horizon
 just after 11:20pm&nbsp;UTC.
 As expected,
-is range reaches a minimum during that minute
+its range reaches a minimum during that minute
 and its range rate swaps from negative (drawing closer)
 to positive (moving away).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">23</span><span class="p">))</span>
@@ -483,7 +522,7 @@ of the orientation of the spherical coordinate system we choose.</p>
 when there is still sunlight up at its altitude.
 The satellite will visually disappear
 when it enters the Earth’s shadow
-and reappear when it comes out of eclipse.
+and reappear when it emerges back into the sunlight.
 If you are planning to observe a satellite visually,
 rather than with radar or radio,
 you will want to know which satellite passes are in sunlight.

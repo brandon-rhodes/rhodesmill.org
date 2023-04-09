@@ -120,6 +120,30 @@ in this URL to match papers already using it as an identifier):
 </div>
 <div class="section" id="changelog">
 <span id="id2"></span><h2>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v1-46-2023-april-9">
+<h3>v1.46 — 2023 April 9<a class="headerlink" href="#v1-46-2023-april-9" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <a class="reference internal" href="api-almanac.html#skyfield.almanac.oppositions_conjunctions" title="skyfield.almanac.oppositions_conjunctions"><code class="xref py py-func docutils literal notranslate"><span class="pre">oppositions_conjunctions()</span></code></a> routine now
+measures ecliptic longitude using the ecliptic of each specific date,
+rather than always using the J2000 ecliptic, which should improve its
+accuracy by several seconds.</li>
+<li>Skyfield’s internal table for the ∆T Earth orientation parameter has
+been updated, so that its predictions now extend to 2024-04-13.</li>
+<li>Bugfix: Skyfield was giving values several kilometers off when
+computing the elevation above ground level of a target that was
+positioned directly above the Earth’s north or south pole.</li>
+<li>Bugfix: the <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_behind_earth" title="skyfield.positionlib.ICRF.is_behind_earth"><code class="xref py py-func docutils literal notranslate"><span class="pre">is_behind_earth()</span></code></a>
+method was incorrectly returning <code class="docutils literal notranslate"><span class="pre">True</span></code> if the Earth was on the line
+that joins the two satellites, but over on the far side of the other
+satellite where it wasn’t really in the way.</li>
+<li>Internals: the <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.altaz" title="skyfield.positionlib.ICRF.altaz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">altaz()</span></code></a> method now
+lives on the main position class instead of in two specific
+subclasses.  If the user mistakenly tries to call <code class="docutils literal notranslate"><span class="pre">.altaz()</span></code> on an
+instance of the <a class="reference internal" href="api-position.html#skyfield.positionlib.Astrometric" title="skyfield.positionlib.Astrometric"><code class="xref py py-class docutils literal notranslate"><span class="pre">Astrometric</span></code></a> position
+subclass — which previously lacked the method — then a friendly
+exception is raised explaining their error.</li>
+</ul>
+</div>
 <div class="section" id="v1-45-2022-september-15">
 <h3>v1.45 — 2022 September 15<a class="headerlink" href="#v1-45-2022-september-15" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">

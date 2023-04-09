@@ -172,7 +172,7 @@ conjunction with the Sun is when their ecliptic longitudes are at 0° or
 <span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;2019-09-02T10:42:14Z&#39;, &#39;2020-10-13T23:25:47Z&#39;]
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;2019-09-02T10:42:26Z&#39;, &#39;2020-10-13T23:25:55Z&#39;]
 [0 1]
 </pre></div>
 </div>
@@ -530,44 +530,63 @@ is forced to make arbitrary distinctions
 when eclipses fall very close to the boundary
 between the categories “partial”, “penumbral”, and “total”.
 Skyfield searches for lunar eclipses using the techniques described
-in the <em>Explanatory Supplement to the Astronomical Almanac.</em></p>
+in the <em>Explanatory Supplement to the Astronomical Almanac.</em>
+Here is its current behavior:</p>
 <ul class="simple">
-<li>Some disagreement is inevitable —
-for example,
-because Skyfield uses a modern ephemeris
-while the <em>Supplement</em> used the old VSOP87 theory.</li>
-<li>However,
-Skyfield does currently find every one of the 7,238 lunar eclipses
-between the years 1 and 2999
-that are listed in NASA’s
+<li>Skyfield currently finds every one of the 3,642 lunar eclipses
+listed for the years AD&nbsp;1000–2500
+in NASA’s
 <a class="reference external" href="https://eclipse.gsfc.nasa.gov/SEpubs/5MCLE.html">Five Millennium Canon of Lunar Eclipses</a>
-by Espenak and Meeus.
-While tweaks might be made to Skyfield’s routine in the future,
-it is expected to always at least return every eclipse
-listed in the <em>Canon</em>.</li>
+by Espenak and Meeus.</li>
+<li>But some slight disagreements are inevitable,
+because Skyfield uses a modern ephemeris for Earth and Moon positions,
+while the <em>Supplement</em> used the old VSOP87 theory.
+In 8&nbsp;cases over the years AD&nbsp;1000–2500 (around 0.2% of the eclipses listed),
+Skyfield disagrees with the <em>Canon</em>
+about whether an eclipse was partial or total.
+And on 1571&nbsp;July&nbsp;7 Skyfield finds an eclipse,
+but the <em>Canon</em> judges the Moon to have narrowly missed our shadow
+on that occasion.</li>
 <li>Skyfield tends to return eclipse times
 that are a few seconds earlier than those given by the <em>Canon</em>.
 For decades near the present the disagreement
 rarely exceeds 2&nbsp;seconds,
 but for eclipses 2,000 years ago the difference
 can be as large as 20&nbsp;seconds.</li>
-<li>Skyfield also finds 71 barely partial eclipses
-beyond those listed in the <em>Canon</em>.</li>
-<li>Skyfield agrees with the <em>Canon</em>’s category
-(partial, penumbral, total) for more than 99.6% of the eclipses.</li>
+<li>Over the full five millennia covered by the <em>Canon</em>,
+Skyfield misses only four eclipses, finds two extra eclipses,
+and agrees with the <em>Canon</em>’s category
+(partial, penumbral, total)
+more than 99.8% of the time.
+Of the two missing eclipses that are closest to the modern day,
+the <em>Canon</em> gives the April&nbsp;859 eclipse
+a penumbral magnitude of only 0.0007,
+and the February&nbsp;2791 eclipse
+a penumbral magnitude of only 0.0006 —
+so the missing eclipses were not exactly major celestial events.</li>
 </ul>
 <p>To help you study each eclipse in greater detail,
 Skyfield returns a <code class="docutils literal notranslate"><span class="pre">details</span></code> dictionary of extra arrays
-that provide the dimensions of the Moon and Earth’s shadow
+that provide the dimensions of the Moon and of the Earth’s shadow
 at the height of the eclipse.
-The dictionary currently offers the following arrays,
-whose meanings are hopefully self-explanatory:</p>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">closest_approach_radians</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">moon_radius_radians</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">penumbra_radius_radians</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">umbra_radius_radians</span></code></li>
-</ul>
+The means of each field is hopefully self-explanatory;
+if any of the terms is unfamiliar,
+try looking it up online.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">details</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s1">24</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">values</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>closest_approach_radians  [0.00657921 0.01029097]
+moon_radius_radians       [0.00485608 0.00435481]
+penumbra_radius_radians   [0.02278213 0.02077108]
+penumbral_magnitude       [2.16831186 1.70327942]
+umbra_radius_radians      [0.01332129 0.01161176]
+umbral_magnitude          [1.19418911 0.65164729]
+</pre></div>
+</div>
+<p>The first element in each of these sequences
+corresponds to the first eclipse we discovered above, on 2019-01-21,
+while the second element belongs to the eclipse on&nbsp;2019-07-16.</p>
 <p>By combining these dimensions
 with the position of the Moon at the height of the eclipse
 (which you can generate using Skyfield’s usual approach
