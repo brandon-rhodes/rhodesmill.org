@@ -45,11 +45,9 @@
   from fetching web pages, to understanding HTML,
   to querying for specific elements in the document.<br>
   <br>
-  Program listings are available for this chapter in both
-  <a href="https://bitbucket.org/brandon/foundations-of-python-network-programming/src/f4b1736ba300/python2/10/"
-       >Python 2</a> and also in
-  <a href="https://bitbucket.org/brandon/foundations-of-python-network-programming/src/f4b1736ba300/python3/10/"
-       >Python 3</a>.
+  Program listings are available for this chapter in
+  <a href="https://github.com/brandon-rhodes/fopnp/tree/m/py2/chapter10"
+       >Python 2</a>.
   Let me know if you have any questions!
 </blockquote>
 <p class="normal">Most web sites are designed first and foremost for human eyes. While well-designed sites offer formal APIs by which you can construct Google maps, upload Flickr photos, or browse YouTube videos, many sites offer nothing but HTML pages formatted for humans. If you need a program to be able to fetch its data, then you will need the ability to dive into densely formatted markup and retrieve the information you need&#8212;a process known affectionately as screen scraping.</p>
@@ -86,7 +84,7 @@
 <p class="indent">These last two options both require third-party components or Python modules that are built against large libraries, and so we will not cover them here, in favor of techniques that require only pure Python.</p>
 <p class="indent">For our examples in this chapter, we will use the site of the United States National Weather Service, which lives at <code><a href="http://www.weather.gov/">www.weather.gov</a></code>.</p>
 <p class="indent">Among the better features of the United States government is its having long ago decreed that all publications produced by their agencies are public domain. This means, happily, that I can pull all sorts of data from their web site and not worry about the fact that copies of the data are working their way into this book.</p>
-<p class="indent">Of course, web sites change, so the <a href="https://bitbucket.org/brandon/foundations-of-python-network-programming/src/f4b1736ba300/python2/10">online source code</a> for this chapter includes the <a href="https://bitbucket.org/brandon/foundations-of-python-network-programming/src/f4b1736ba300/python2/10/phoenix.html">downloaded web page</a> on which the scripts in this chapter are designed to work. That way, even if their site undergoes a major redesign, you will still be able to try out the code examples in the future. And, anyway&#8212;as I recommended previously&#8212;you should be kind to web sites by always developing your scraping code against a downloaded copy of a web page to help reduce their load.</p>
+<p class="indent">Of course, web sites change, so the <a href="https://github.com/brandon-rhodes/fopnp/tree/m/py2/chapter10">online source code</a> for this chapter includes the <a href="https://github.com/brandon-rhodes/fopnp/blob/m/py2/chapter10/phoenix.html">downloaded web page</a> on which the scripts in this chapter are designed to work. That way, even if their site undergoes a major redesign, you will still be able to try out the code examples in the future. And, anyway&#8212;as I recommended previously&#8212;you should be kind to web sites by always developing your scraping code against a downloaded copy of a web page to help reduce their load.</p>
 <h3 class="h3"><a id="downloading_pages_through_form_submission" />Downloading Pages Through Form Submission</h3>
 <p class="normal">The task of grabbing information from a web site usually starts by reading it carefully with a web browser and finding a route to the information you need. <a href="#fig_10_1">Figure 10&#8211;1</a> shows the site of the National Weather Service; for our first example, we will write a program that takes a city and state as arguments and prints out the current conditions, temperature, and humidity. If you will explore the site a bit, you will find that city-specific forecasts can be visited by typing the city name into the small &#8220;Local forecast&#8221; form in the left margin.</p>
 <div id="fig_10_1" class="figure-contents">
@@ -212,13 +210,13 @@
 
 <p class="indent">And beyond this implicit understanding of HTML that a parser must possess are the twin problems that, first, various browsers over the years have varied wildly in how well they can reconstruct the document structure when given very concise or even deeply broken HTML; and, second, most web page authors judge the quality of their HTML by whether their browser of choice renders it correctly. This has resulted not only in a World Wide Web that is full of sites with invalid and broken HTML markup, but also in the fact that the permissiveness built into browsers has encouraged different flavors of broken HTML among their different user groups.</p>
 <p class="indent">If HTML is a new concept to you, you can find abundant resources online. Here are a few documents that have been longstanding resources in helping programmers learn the format:</p>
-<ul><tt><a href="http://www.w3.org/MarkUp/Guide/">http://www.w3.org/MarkUp/Guide/</a></tt><br><tt><a href="http://www.w3.org/MarkUp/Guide/Advanced.html">http://www.w3.org/MarkUp/Guide/Advanced.html</a></tt><br><tt><a href="http://www.w3.org/MarkUp/Guide/Style">http://www.w3.org/MarkUp/Guide/Style</a></tt></ul>
+<ul><tt><a href="https://www.w3.org/MarkUp/Guide/">https://www.w3.org/MarkUp/Guide/</a></tt><br><tt><a href="https://www.w3.org/MarkUp/Guide/Advanced.html">https://www.w3.org/MarkUp/Guide/Advanced.html</a></tt><br><tt><a href="https://www.w3.org/MarkUp/Guide/Style">https://www.w3.org/MarkUp/Guide/Style</a></tt></ul>
 <p class="indent">The brief Bare Bones Guide, and the long and verbose HTML standard itself, are good resources to have when trying to remember an element name or the name of a particular attribute value:</p>
-<ul><tt><a href="http://werbach.com/barebones/barebones.html">http://werbach.com/barebones/barebones.html</a></tt><br><tt><a href="http://www.w3.org/TR/REC-html40/">http://www.w3.org/TR/REC-html40/</a></tt></ul>
+<ul><tt><a href="https://werbach.com/barebones/barebones.html">https://werbach.com/barebones/barebones.html</a></tt><br><tt><a href="https://www.w3.org/TR/REC-html40/">https://www.w3.org/TR/REC-html40/</a></tt></ul>
 <p class="indent">When building your own web pages, try to install a real HTML validator in your editor, IDE, or build process, or test your web site once it is online by submitting it to</p>
-<ul><tt><a href="http://validator.w3.org/">http://validator.w3.org/</a></tt></ul>
+<ul><tt><a href="https://validator.w3.org/">https://validator.w3.org/</a></tt></ul>
 <p class="indent">You might also want to consider using the tidy tool, which can also be integrated into an editor or build process:</p>
-<ul><tt><a href="http://tidy.sourceforge.net/">http://tidy.sourceforge.net/</a></tt></ul>
+<ul><tt><a href="https://tidy.sourceforge.net/">https://tidy.sourceforge.net/</a></tt></ul>
 <p class="indent">We will now turn to that weather forecast for Phoenix, Arizona, that we downloaded earlier using our scripts (note that we will avoid creating extra traffic for the NWS by running our experiments against this local file), and we will learn how to extract actual data from HTML.</p>
 <h3 class="h3"><a id="three_axes" />Three Axes</h3>
 <p class="normal">Parsing HTML with Python requires three choices:</p>
@@ -263,12 +261,12 @@
   <p class="admonition-title">From the Future</p>
   <p>
     The
-    <a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a>
+    <a href="https://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a>
     project has recovered!
     While the text below — written in late 2010 —
     has to carefully avoid the broken 3.2 release in favor of 3.0,
     BeautifulSoup has now released a rewrite named
-    <a href="http://pypi.python.org/pypi/beautifulsoup4">beautifulsoup4</a>
+    <a href="https://pypi.python.org/pypi/beautifulsoup4">beautifulsoup4</a>
     on the Python Package Index that works with both Python 2 and 3.
     Once installed, simply import it like this:
   </p>
@@ -283,7 +281,7 @@
 
 <h3 class="h3"><a id="diving_into_an_html_document" />Diving into an HTML Document</h3>
 <p class="normal">The tree of objects that a parser creates from an HTML file is often called a Document Object Model, or DOM, even though this is officially the name of one particular API defined by the standards bodies and implemented by browsers for the use of JavaScript running on a web page.</p>
-<p class="indent">The task we have set for ourselves, you will recall, is to find the current conditions, temperature, and humidity in the <code><a href="https://bitbucket.org/brandon/foundations-of-python-network-programming/src/f4b1736ba300/python2/10/phoenix.html">phoenix.html</a></code> page that we have downloaded. Here is an excerpt: <a href="#list_10_3">Listing 10&#8211;3</a>, which focuses on the pane that we are interested in.</p>
+<p class="indent">The task we have set for ourselves, you will recall, is to find the current conditions, temperature, and humidity in the <code><a href="https://github.com/brandon-rhodes/fopnp/blob/m/py2/chapter10/phoenix.html">phoenix.html</a></code> page that we have downloaded. Here is an excerpt: <a href="#list_10_3">Listing 10&#8211;3</a>, which focuses on the pane that we are interested in.</p>
 <div id="list_10_3" class="listing">
 <p class="normal"><i><b>Listing 10&#8211;3.</b> Excerpt from the Phoenix Forecast Page</i></p>
 </div>
@@ -341,7 +339,7 @@ A Few Clouds<span class="nt">&lt;br&gt;</span>
 <p class="normal"><i><b>Figure 10&#8211;2.</b> Examining Document Elements in the Browser<br>(click to enlarge)</i></p>
 <p class="indent">Note that Google Chrome does have an annoying habit of filling in &#8220;conceptual&#8221; tags that are not actually present in the source code, like the <code>&lt;tbody&gt;</code> tags that you can see in every one of the tables shown here. For that reason, I look at the actual HTML source before writing my Python code; I mainly use Chrome to help me find the right places in the HTML.</p>
 <p class="indent">We will want to grab the text &#8220;A Few Clouds&#8221; as well as the temperature before turning our attention to the table that sits to this element&#39;s right, which contains the humidity.</p>
-<p class="indent">A properly indented version of the HTML page that you are scraping is good to have at your elbow while writing code. I have included <code><a href="https://bitbucket.org/brandon/foundations-of-python-network-programming/src/f4b1736ba300/python2/10/phoenix-tidied.html">phoenix-tidied.html</a></code> with the source code bundle for this chapter so that you can take a look at how much easier it is to read!</p>
+<p class="indent">A properly indented version of the HTML page that you are scraping is good to have at your elbow while writing code. I have included <code><a href="https://github.com/brandon-rhodes/fopnp/blob/m/py2/chapter10/phoenix-tidied.html">phoenix-tidied.html</a></code> with the source code bundle for this chapter so that you can take a look at how much easier it is to read!</p>
 <p class="indent">You can see that the element displaying the current conditions in Phoenix sits very deep within the document hierarchy. Deep nesting is a very common feature of complicated page designs, and that is why simply walking a document object model can be a very verbose way to select part of a document&#8212;and, of course, a brittle one, because it will be sensitive to changes in any of the target element&#39;s parent. This will break your screen-scraping program not only if the target web site does a redesign, but also simply because changes in the time of day or the need for the site to host different kinds of ads can change the layout subtly and ruin your selector logic.</p>
 <p class="indent">To see how direct document-object manipulation would work in this case, we can load the raw page directly into both the <code>lxml</code> and <code>BeautifulSoup</code> systems.</p>
 
@@ -365,7 +363,7 @@ A Few Clouds<span class="nt">&lt;br&gt;</span>
 
 
 
-<p class="indent">What on earth? Well, look, the National Weather Service does not check or tidy its HTML! I might have chosen a different example for this book if I had known, but since this is a good illustration of the way the real world works, let&#39;s press on. Jumping to line 96, column 720 of <code><a href="https://bitbucket.org/brandon/foundations-of-python-network-programming/src/f4b1736ba300/python2/10/phoenix.html#cl-96">phoenix.html</a></code>, we see that there does indeed appear to be some broken HTML:</p>
+<p class="indent">What on earth? Well, look, the National Weather Service does not check or tidy its HTML! I might have chosen a different example for this book if I had known, but since this is a good illustration of the way the real world works, let&#39;s press on. Jumping to line 96, column 720 of <code><a href="https://github.com/brandon-rhodes/fopnp/blob/m/py2/chapter10/phoenix.html#L96">phoenix.html</a></code>, we see that there does indeed appear to be some broken HTML:</p>
 
 
 <div class="pygments_murphy"><pre><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://www.weather.gov&quot;</span><span class="err">&lt;</span><span class="na">u</span><span class="nt">&gt;</span>www.weather.gov<span class="nt">&lt;/u&gt;&lt;/a&gt;</span>
@@ -459,11 +457,11 @@ A Few Clouds<span class="nt">&lt;br&gt;</span>
 <li>Both <code>lxml</code> and BeautifulSoup, as we have seen, provide a smattering of their own methods for finding document elements.</li>
 </ul>
 <p class="indent">Here are standards and descriptions for each of the selector styles just described&#8212; first, XPath:</p>
-<ul><tt><a href="http://www.w3.org/TR/xpath/">http://www.w3.org/TR/xpath/</a></tt><br><tt><a href="http://codespeak.net/lxml/tutorial.html#using-xpath-to-find-text">http://codespeak.net/lxml/tutorial.html#using-xpath-to-find-text</a></tt><br><tt><a href="http://codespeak.net/lxml/xpathxslt.html">http://codespeak.net/lxml/xpathxslt.html</a></tt></ul>
+<ul><tt><a href="https://www.w3.org/TR/xpath/">https://www.w3.org/TR/xpath/</a></tt><br><tt><a href="https://lxml.de/tutorial.html#using-xpath-to-find-text">https://lxml.de/tutorial.html#using-xpath-to-find-text</a></tt><br><tt><a href="https://lxml.de/xpathxslt.html">https://lxml.de/xpathxslt.html</a></tt></ul>
 <p class="indent">And here are some CSS selector resources:</p>
-<ul><tt><a href="http://www.w3.org/TR/CSS2/selector.html">http://www.w3.org/TR/CSS2/selector.html</a></tt><br><tt><a href="http://codespeak.net/lxml/cssselect.html">http://codespeak.net/lxml/cssselect.html</a></tt></ul>
+<ul><tt><a href="https://www.w3.org/TR/CSS2/selector.html">https://www.w3.org/TR/CSS2/selector.html</a></tt><br><tt><a href="https://lxml.de/cssselect.html">https://lxml.de/cssselect.html</a></tt></ul>
 <p class="indent">And, finally, here are links to documentation that looks at selector methods peculiar to <code>lxml</code> and BeautifulSoup:</p>
-<ul><tt><a href="http://codespeak.net/lxml/tutorial.html#elementpath">http://codespeak.net/lxml/tutorial.html#elementpath</a></tt><br><tt><a href="http://www.crummy.com/software/BeautifulSoup/documentation.html#Searching the Parse Tree">http://www.crummy.com/software/BeautifulSoup/documentation.html#Searching the Parse Tree</a></tt></ul>
+<ul><tt><a href="https://lxml.de/tutorial.html#elementpath">https://lxml.de/tutorial.html#elementpath</a></tt><br><tt><a href="https://www.crummy.com/software/BeautifulSoup/bs3/documentation.html#Searching%20the%20Parse%20Tree">https://www.crummy.com/software/BeautifulSoup/bs3/documentation.html#Searching%20the%20Parse%20Tree</a></tt></ul>
 <p class="indent">The National Weather Service has not been kind to us in constructing this web page. The area that contains the current conditions seems to be constructed entirely of generic untagged elements; none of them have <code>id</code> or <code>class</code> values like <code>currentConditions</code> or <code>temperature</code> that might help guide us to them.</p>
 <p class="indent">Well, what are the features of the elements that contain the current weather conditions in <a href="#list_10_3">Listing 10&#8211;3</a>? The first thing I notice is that the enclosing <code>&lt;td&gt;</code> element has the class <code>"big"</code>. Looking at the page visually, I see that nothing else seems to be of exactly that font size; could it be so simple as to search the document for every <code>&lt;td&gt;</code> with this CSS class? Let us try, using a CSS selector to begin with:</p>
 
@@ -653,7 +651,7 @@ Humidity: NA
 <p class="indent">To prepare to screen scrape, download a copy of the page, and use HTML tidy, or else your screen-scraping library of choice, to create a copy of the file that your eyes can more easily read. Always run your program against the ugly original copy, however, lest HTML tidy fixes something in the markup that your program will need to repair!</p>
 <p class="indent">Once you find the data you want in the web page, look around at the nearby elements for tags, classes, and text that are unique to that spot on the screen. Then, construct a Python command using your scraping library that looks for the pattern you have discovered and retrieves the element in question. By looking at its children, parents, or enclosed text, you should be able to pull out the data that you need from the web page intact.</p>
 <p class="indent">When you have a basic script working, continue testing it; you will probably find many edge cases that have to be handled correctly before it becomes generally useful. Remember: when possible, always use true APIs, and treat screen scraping as a technique of last resort!</p>
-<img src="http://www.assoc-amazon.com/e/ir?t=letsdisthemat-20&l=as2&o=1&a=1430230037" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+<img src="https://www.assoc-amazon.com/e/ir?t=letsdisthemat-20&l=as2&o=1&a=1430230037" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
 <blockquote><i>©2010 by Brandon Rhodes and John Goerzen</i></blockquote>
 </article>
 
@@ -664,13 +662,11 @@ Humidity: NA
     <span class="author">Brandon Rhodes</span>
   </a>
   <span>
-    <a href="http://feeds.feedburner.com/LetsDiscussTheMatterFurther"
+    <a href="https://feeds.feedburner.com/LetsDiscussTheMatterFurther"
        ><img title="Feed" src="/brandon/feed24.png"></a>
-    <a href="http://twitter.com/#!/brandon_rhodes/"
+    <a href="https://twitter.com/brandon_rhodes/"
        ><img title="Twitter" src="/brandon/twitter24.png"></a>
-    <a href="http://brandon-rhodes.yelp.com/"
-       ><img title="Yelp" src="/brandon/yelp24.png"></a>
-    <a href="http://www.flickr.com/photos/brandonrhodes/"
+    <a href="https://www.flickr.com/photos/brandonrhodes/"
        ><img title="Flickr" src="/brandon/flickr24.png"></a>
   </span>
 </header>
@@ -679,7 +675,3 @@ Humidity: NA
 </footer>
 </body>
 </html>
-
-
-
-
