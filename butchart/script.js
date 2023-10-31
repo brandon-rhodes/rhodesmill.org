@@ -4,17 +4,13 @@
   var map = L.map('map');
   map.fitBounds([[d['lat1'], d['lon1']], [d['lat2'], d['lon2']]]);
 
-  var Stamen_Terrain = L.tileLayer(
-    'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}',
+  var Esri_WorldTopoMap = L.tileLayer(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
     {
-      attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      subdomains: 'abcd',
-      minZoom: 0,
-      maxZoom: 15,
-      ext: 'png'
+      attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
     }
   );
-  map.addLayer(Stamen_Terrain);
+  map.addLayer(Esri_WorldTopoMap);
 
   for (var i = 0; i < quad_data['quads'].length; i++) {
     var q = quad_data['quads'][i];
