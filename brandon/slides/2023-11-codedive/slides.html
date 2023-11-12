@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/pygments.css">
+
+<style>
+@font-face {
+  font-family: 'Gentium 1';
+  src: url('/fonts/GentiumPlus-Regular.ttf');
+}
+@font-face {
+  font-family: 'Gentium 1';
+  font-style: italic;
+  src: url('/fonts/GentiumPlus-Italic.ttf');
+}
+@font-face {
+  font-family: 'Gentium 2';
+  src: url('/fonts/gentium-basic-v11-latin-ext_latin-regular.woff');
+}
+@font-face {
+  font-family: Typewriter;
+  src: url('/fonts/FiraCode-Bold.woff2');
+}
+html {
+ background-color: #ddd; line-height: 1.2;
+ font-size: 48px; font-family: 'Gentium 1', 'Gentium 2';
+}
+body {margin: 0}
+.slide {
+ display: table; margin-bottom: 12px; width: 1280px; min-height: 720px;
+}
+.slide:before {
+ position: absolute; left: 0; right: 0; width: 1280px; height: 720px;
+ background-color: white; content: " "; z-index: -1;
+}
+.slide > div {
+ display: table-cell; vertical-align: middle; text-align: center;
+}
+.slide > div > * {text-align: left;}
+.slide > div > div.highlight {width: 100%;}
+.slide > div > div,
+.slide > div > ul,
+.slide > div > ol {
+ padding-left: 72px; display: inline-block;
+}
+.slide > div > p {
+ text-align: center;
+}
+.slide > div > img {width: 100%; height: 700px; object-fit: contain}
+.slide > div > img.off {display: block; margin-left: auto; margin-right: auto}
+pre {
+ /* padding-left: 1em; */
+ padding-right: 1em;
+ /* line-height: 1.1; */
+ font-family: Typewriter; font-size: 80%;
+}
+pre .n {color: #625003}
+code {
+ font-family: Typewriter; font-size: 80%;
+}
+td {padding-left: 0.6em; padding-right: 0.6em}
+b, strong {color: #a34809}
+i, em {color: #095358}
+
+.timer {margin: 10px}
+.emergency {color: white; background-color: red}
+</style>
+
+<p><strong>The History Of A Science <br>Hidden in Astronomy Code</strong> <br> <br>Brandon Rhodes <br>code::dive 2023 <br>Wrocław, Poland</p>
+<div>
+
+<p>I’ll talk about:</p>
+<ol>
+<li>Skyfield library</li>
+<li>History of astronomy</li>
+<li>Software design</li>
+</ol>
+</div>
+
+<div>
+
+<p>Skyfield</p>
+<ul>
+<li>Open-source</li>
+<li>Python</li>
+<li>Positional astronomy</li>
+</ul>
+</div>
+
+<div>
+
+<p>Positional astronomy is <em>not</em> <br>what most astronomers do!</p>
+<p>(Just like most programmers <br>don’t write compilers)</p>
+</div>
+
+<div>
+
+<p>The usual astronomer routine:</p>
+<ol>
+<li>Your project gets funded</li>
+<li>You sign up for observatory time</li>
+<li>The <em>observatory</em> uses positional astronomy<br>to compute angles and aim the instrument</li>
+<li>Then they send you the data</li>
+</ol>
+</div>
+
+<div>
+
+<p>Thus, astronomy libraries <br>for <em>actual</em> astronomers are <br>mostly ‘science photoshop’</p>
+<ul>
+<li>Image processing</li>
+<li>Spectral analysis</li>
+<li>Radio signal processing</li>
+</ul>
+<p> </p>
+</div>
+
+<div>
+
+<p>Thus, astronomy libraries <br>for <em>actual</em> astronomers are <br>mostly ‘science photoshop’</p>
+<ul>
+<li>Image processing</li>
+<li>Spectral analysis</li>
+<li>Radio signal processing</li>
+</ul>
+<p>‘Zoom in. Now—enhance!’</p>
+</div>
+
+<p>But Skyfield’s job is <strong>positional astronomy</strong> itself:<br> give it a <em>time</em>, and it will tell you the <em>position</em><br> of a star, planet, or satellite</p>
+<div>
+
+<p>Think of the bigger questions you can answer <br>if your program can generate positions:</p>
+<ul>
+<li>What time will the Sun set this evening?</li>
+<li>What is the date of the next New Moon?</li>
+<li>What month in 2024 will be best for seeing Jupiter?</li>
+<li>When will the Space Station pass overhead?</li>
+</ul>
+</div>
+
+<p>The answers to questions like these help <br>astronomers, both amateur and professional, <br><em>plan their observations</em></p>
+<p>And, of course, you can use <br>coordinates to draw pictures</p>
+<img src="neowise_star_chart.png">
+
+<img src="venus_evening_chart.png">
+
+<p>So Skyfield is useful for anyone <br>who wants to use Python to plan <br>their <em>own observations</em></p>
+<p>So — how would you use math <br>to compute the position of Jupiter?</p>
+<div class="highlight"><pre><span></span><span class="c1"># Q: Can you just subtract vectors?</span>
+
+<span class="err">earth_xyz = earth.at(t)</span>
+<span class="err">jupiter_xyz = jupiter.at(t)</span>
+<span class="err">return jupiter_xyz - earth_xyz</span>
+
+<span class="c1"># </span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Q: Can you just subtract vectors?</span>
+
+<span class="err">earth_xyz = earth.at(t)</span>
+<span class="err">jupiter_xyz = jupiter.at(t)</span>
+<span class="err">return jupiter_xyz - earth_xyz</span>
+
+<span class="c1"># A: No, it takes more work</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Here’s how to generate a position.</span>
+
+<span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">planet</span><span class="p">):</span>
+    <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">earth_velocity</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">light_time_correct</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">planet</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">deflect</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="p">[</span><span class="n">sun</span><span class="p">,</span> <span class="n">jupiter</span><span class="p">,</span> <span class="n">saturn</span><span class="p">])</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">aberrate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_velocity</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># This code includes a short history of astronomy!</span>
+
+<span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">planet</span><span class="p">):</span>
+    <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">earth_velocity</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">light_time_correct</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">planet</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">deflect</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="p">[</span><span class="n">sun</span><span class="p">,</span> <span class="n">jupiter</span><span class="p">,</span> <span class="n">saturn</span><span class="p">])</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">aberrate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_velocity</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+</pre></div>
+
+<table>
+<tr><td>Light-time correction <td>
+<tr><td>Aberration
+<tr><td>Deflection
+</table>
+
+<table>
+<tr><td>Light-time correction <td><i>Jupiter: 33.4 light-minutes away</i>
+<tr><td>Aberration
+<tr><td>Deflection
+</table>
+
+<table>
+<tr><td>Light-time correction <td>1676 Ole Rømer (Denmark)
+<tr><td>Aberration
+<tr><td>Deflection
+</table>
+
+<table>
+<tr><td>Light-time correction <td>1676 Ole Rømer (Denmark)
+<tr><td>Aberration            <td>(1687 Newton’s <i>Principia</i>)
+<tr><td>Deflection
+</table>
+
+<table>
+<tr><td>Light-time correction <td>1676 Ole Rømer     <td>40.6″
+<tr><td>Aberration
+<tr><td>Deflection
+</table>
+
+<p>&lt;aside&gt;<br> Units</p>
+<p>Q: <br>If you were going to <em>design</em> a unit of measure, <br>how many units would make a whole?</p>
+<p>A: <br>Humans love numbers with <em>divisors!</em></p>
+<div class="highlight"><pre><span></span><span class="err"> 1</span>
+<span class="err"> 2</span>
+<span class="err"> 3</span>
+<span class="err"> 4    2</span>
+<span class="err"> 5</span>
+<span class="err"> 6    2 3</span>
+<span class="err"> 7</span>
+<span class="err"> 8    2 4</span>
+<span class="err"> 9    3</span>
+<span class="err">10    2 5</span>
+<span class="err">11</span>
+<span class="err">12    2 3 4 6</span>
+<span class="err">13</span>
+<span class="err"> ⋮   ⋮</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err"> 1</span>
+<span class="err"> 2</span>
+<span class="err"> 3</span>
+<span class="err"> 4    2         ←</span>
+<span class="err"> 5</span>
+<span class="err"> 6    2 3       ←</span>
+<span class="err"> 7</span>
+<span class="err"> 8    2 4</span>
+<span class="err"> 9    3</span>
+<span class="err">10    2 5</span>
+<span class="err">11</span>
+<span class="err">12    2 3 4 6   ←</span>
+<span class="err">13</span>
+<span class="err"> ⋮   ⋮</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err"> 1</span>
+<span class="err"> 2</span>
+<span class="err"> 3</span>
+<span class="err"> 4    2         ← &quot;highly composite&quot;</span>
+<span class="err"> 5</span>
+<span class="err"> 6    2 3       ← &quot;highly composite&quot;</span>
+<span class="err"> 7</span>
+<span class="err"> 8    2 4</span>
+<span class="err"> 9    3</span>
+<span class="err">10    2 5</span>
+<span class="err">11</span>
+<span class="err">12    2 3 4 6   ← &quot;highly composite&quot;</span>
+<span class="err">13</span>
+<span class="err"> ⋮   ⋮</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err"> 1</span>
+<span class="err"> 2</span>
+<span class="err"> 3</span>
+<span class="err"> 4    2</span>
+<span class="err"> 5</span>
+<span class="err"> 6    2 3       ← winner all the way to 2×6 = 12</span>
+<span class="err"> 7</span>
+<span class="err"> 8    2 4</span>
+<span class="err"> 9    3</span>
+<span class="err">10    2 5</span>
+<span class="err">11</span>
+<span class="err">12    2 3 4 6   ← winner all the way to 2×12 = 24</span>
+<span class="err">13</span>
+<span class="err"> ⋮   ⋮</span>
+</pre></div>
+
+<p>https://oeis.org/A072938 <br> <br>‘Highly composite numbers that are half <br>of the next highly composite number’</p>
+<div class="highlight"><pre><span></span><span class="err">A072938 - A very exclusive club of only 7 numbers</span>
+
+<span class="err">1</span>
+<span class="err">2</span>
+<span class="err">6</span>
+<span class="err">12</span>
+<span class="err">60</span>
+<span class="err">360</span>
+<span class="err">2520</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err">A072938</span>
+
+<span class="err">1</span>
+<span class="err">2</span>
+<span class="err">6</span>
+<span class="err">12   Hours of daylight</span>
+<span class="err">60</span>
+<span class="err">360</span>
+<span class="err">2520</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err">A072938</span>
+
+<span class="err">1</span>
+<span class="err">2</span>
+<span class="err">6</span>
+<span class="err">12   Hours of daylight, Months/year</span>
+<span class="err">60</span>
+<span class="err">360</span>
+<span class="err">2520</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err">A072938</span>
+
+<span class="err">1</span>
+<span class="err">2</span>
+<span class="err">6</span>
+<span class="err">12   Hours of daylight, Months/year</span>
+<span class="err">60</span>
+<span class="err">360  Degrees in a circle</span>
+<span class="err">2520</span>
+</pre></div>
+
+<p>12.37 - 3.0% = 12 <br>365¼ - 1.4% = 360</p>
+<p>Q: When we need more precision, <br>into how many pieces should we <br><em>divide</em> hours and degrees?</p>
+<div class="highlight"><pre><span></span><span class="err">1</span>
+<span class="err">2</span>
+<span class="err">6</span>
+<span class="err">12   Hours of daylight, Months/year</span>
+<span class="err">60</span>
+<span class="err">360  Degrees in a circle</span>
+<span class="err">2520</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err">1</span>
+<span class="err">2</span>
+<span class="err">6</span>
+<span class="err">12   Hours of daylight, Months/year</span>
+<span class="err">60   ‘Minutes’ and ‘second minutes’ (or ‘seconds’)</span>
+<span class="err">360  Degrees in a circle</span>
+<span class="err">2520</span>
+</pre></div>
+
+<p><em>Both</em> times and angles<br> <br> Hours → 60 minutes → 60 seconds<br> Degrees → 60 minutes → 60 seconds <br> <br> </p>
+<p><em>‘arc-’</em><br> <br> Hours → 60 minutes → 60 seconds<br> Degrees → 60 arcminutes → 60 arcseconds <br> <br>12°34′56″</p>
+<table>
+<tr><td>Width of full Moon<td>0.5° = 30′
+<tr><td>Naked-eye resolution <td>1–2′
+<tr><td>10×50 binoculars <td>10″
+<tr><td>Atmospheric blur <td>1–2″
+</table>
+
+<p>Binoculars!</p>
+<div>
+
+<p>10×50 Binoculars</p>
+<ul>
+<li>Jupiter’s moons, Saturn’s rings, Moon’s craters</li>
+<li>Star clusters, brighter galaxies</li>
+<li>Images right-side-up</li>
+<li>Uses both eyes</li>
+<li>Portable</li>
+<li>€129</li>
+</ul>
+</div>
+
+<p><em>NightWatch: A Practical Guide</em> <br><em>to Viewing the Universe</em> <br> <br>by Terence Dickinson</p>
+<p>&lt;/aside&gt;</p>
+<table>
+<tr><td>Light-time correction <td>1676 Ole Rømer     <td>40.6″
+<tr><td>Aberration
+<tr><td>Deflection
+</table>
+
+<table>
+<tr><td>Light-time correction <td>1676 Ole Rømer     <td>40.6″
+<tr><td>Aberration            <td>1729 James Bradley
+<tr><td>Deflection
+</table>
+
+<table>
+<tr><td>Light-time correction <td>1676 Ole Rømer     <td>40.6″
+<tr><td>Aberration            <td>1729 James Bradley <td>20.4″
+<tr><td>Deflection
+</table>
+
+<table>
+<tr><td>Light-time correction <td>1676 Ole Rømer     <td>40.6″
+<tr><td>Aberration            <td>1729 James Bradley <td>20.4″
+<tr><td>Deflection            <td>1915 Einstein
+</table>
+
+<table>
+<tr><td>Light-time correction <td>1676 Ole Rømer     <td>40.6″
+<tr><td>Aberration            <td>1729 James Bradley <td>20.4″
+<tr><td>Deflection            <td>1915 Einstein      <td>1.7″
+</table>
+
+<div class="highlight"><pre><span></span><span class="c1"># So, our `get_position()` function</span>
+<span class="c1"># is a fun short history of astronomy</span>
+
+<span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">planet</span><span class="p">):</span>
+    <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">earth_velocity</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">light_time_correct</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">planet</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">deflect</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="p">[</span><span class="n">sun</span><span class="p">,</span> <span class="n">jupiter</span><span class="p">,</span> <span class="n">saturn</span><span class="p">])</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">aberrate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_velocity</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># But, as code?</span>
+<span class="c1"># It’s terrible!</span>
+
+<span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">planet</span><span class="p">):</span>
+    <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">earth_velocity</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">light_time_correct</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">planet</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">deflect</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="p">[</span><span class="n">sun</span><span class="p">,</span> <span class="n">jupiter</span><span class="p">,</span> <span class="n">saturn</span><span class="p">])</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">aberrate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_velocity</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+</pre></div>
+
+<p>Q: Why? <br> <br>A: Because it traps us in a<br><strong>Parameter Treadmill</strong></p>
+<p>User<br> </p>
+<p>User<br>‘But I need astrometric coordinates’</p>
+<div class="highlight"><pre><span></span><span class="c1"># How can we let the user get astrometric</span>
+<span class="c1"># coordinates without breaking existing calls?</span>
+
+<span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">planet</span><span class="p">):</span>
+    <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">earth_velocity</span> <span class="o">=</span> <span class="n">earth_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">light_time_correct</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">planet</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">deflect</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="p">[</span><span class="n">sun</span><span class="p">,</span> <span class="n">jupiter</span><span class="p">,</span> <span class="n">saturn</span><span class="p">])</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">aberrate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_velocity</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Python allows *optional* arguments. Choose</span>
+<span class="c1"># a default that keeps the *original* behavior!</span>
+
+<span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">planet</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;apparent&#39;</span><span class="p">):</span>
+    <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">earth_velocity</span> <span class="o">=</span> <span class="n">earth_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">light_time_correct</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">planet</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;apparent&#39;</span><span class="p">:</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">deflect</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="p">[</span><span class="n">sun</span><span class="p">,</span><span class="n">jupiter</span><span class="p">,</span><span class="n">saturn</span><span class="p">])</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">aberrate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_velocity</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+</pre></div>
+
+<p>Another User<br> </p>
+<p>Another User<br>‘But I need x,y,z coordinates’</p>
+<div class="highlight"><pre><span></span><span class="c1"># Let’s add another optional argument.</span>
+
+<span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">planet</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;apparent&#39;</span><span class="p">,</span>
+                 <span class="n">angles</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">earth_velocity</span> <span class="o">=</span> <span class="n">earth_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">light_time_correct</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">planet</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;apparent&#39;</span><span class="p">:</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">deflect</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="p">[</span><span class="n">sun</span><span class="p">,</span><span class="n">jupiter</span><span class="p">,</span><span class="n">saturn</span><span class="p">])</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">aberrate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_velocity</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">angles</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xyz</span>
+    <span class="k">return</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+</pre></div>
+
+<p>Another User<br> </p>
+<p>Another User<br>‘I need to adjust the list of deflectors’</p>
+<div class="highlight"><pre><span></span><span class="c1"># Another optional parameter.</span>
+
+<span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">planet</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;apparent&#39;</span><span class="p">,</span>
+                 <span class="n">angles</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                 <span class="n">deflectors</span><span class="o">=</span><span class="p">[</span><span class="n">sun</span><span class="p">,</span><span class="n">jupiter</span><span class="p">,</span><span class="n">saturn</span><span class="p">]):</span>
+    <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">earth_velocity</span> <span class="o">=</span> <span class="n">earth_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">light_time_correct</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">planet</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;apparent&#39;</span><span class="p">:</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">deflect</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">deflectors</span><span class="p">)</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">aberrate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_velocity</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">angles</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xyz</span>
+    <span class="k">return</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+</pre></div>
+
+<p>‘Parameter Treadmill’</p>
+<div class="highlight"><pre><span></span><span class="c1"># Eventually:</span>
+
+<span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span>
+        <span class="n">t</span><span class="p">,</span> <span class="n">planet</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;apparent&#39;</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">deflectors</span><span class="o">=</span><span class="p">[</span><span class="n">sun</span><span class="p">,</span> <span class="n">jupiter</span><span class="p">,</span> <span class="n">saturn</span><span class="p">],</span>
+        <span class="n">center</span><span class="o">=</span><span class="s1">&#39;Earth&#39;</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="s1">&#39;ecliptic&#39;</span><span class="p">,</span>
+        <span class="n">lat</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Python Standard Library has functions like:</span>
+
+<span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">skipkeys</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+           <span class="n">check_circular</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">allow_nan</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+           <span class="bp">cls</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+           <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="c1"># Yet you can still:</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+<p>What’s the alternative software design? <br> <br> Parameter Treadmill ← → LEGO bricks</p>
+<p>LEGO bricks — small interchangeable routines, <br>which the caller assembles into a solution</p>
+<div class="highlight"><pre><span></span><span class="c1"># LEGO bricks</span>
+
+<span class="kn">from</span> <span class="nn">astro</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">light_time_correct</span><span class="p">,</span> <span class="n">deflect</span><span class="p">,</span> <span class="n">aberrate</span>
+<span class="p">)</span>
+
+<span class="n">earth_xyz</span><span class="p">,</span> <span class="n">earth_velocity</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">xyz</span> <span class="o">=</span> <span class="n">light_time_correct</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">mars</span><span class="p">)</span>
+<span class="n">xyz</span> <span class="o">=</span> <span class="n">deflect</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="p">[</span><span class="n">sun</span><span class="p">,</span> <span class="n">jupiter</span><span class="p">,</span> <span class="n">saturn</span><span class="p">])</span>
+<span class="n">xyz</span> <span class="o">=</span> <span class="n">aberrate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_velocity</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+<span class="n">coordinates</span> <span class="o">=</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Benefit: user has full control!</span>
+<span class="c1">#</span>
+<span class="c1"># ‘But I need astrometric coordinates’</span>
+<span class="c1"># ‘But I need x,y,z coordinates’</span>
+<span class="c1"># ‘I need to adjust the list of deflectors’</span>
+
+<span class="n">earth_xyz</span><span class="p">,</span> <span class="n">earth_velocity</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">xyz</span> <span class="o">=</span> <span class="n">light_time_correct</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">mars</span><span class="p">)</span>
+<span class="n">xyz</span> <span class="o">=</span> <span class="n">deflect</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="p">[</span><span class="n">sun</span><span class="p">,</span> <span class="n">jupiter</span><span class="p">,</span> <span class="n">saturn</span><span class="p">])</span>
+<span class="n">xyz</span> <span class="o">=</span> <span class="n">aberrate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_velocity</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+<span class="n">coordinates</span> <span class="o">=</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Problems:</span>
+<span class="c1">#</span>
+<span class="c1">#  • User has to maintain correctness</span>
+<span class="c1">#  • Library can’t make further tweaks</span>
+<span class="c1">#  • Wrong level of abstraction: ‘apparent’?</span>
+
+<span class="n">earth_xyz</span><span class="p">,</span> <span class="n">earth_velocity</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">xyz</span> <span class="o">=</span> <span class="n">light_time_correct</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">mars</span><span class="p">)</span>
+<span class="n">xyz</span> <span class="o">=</span> <span class="n">deflect</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="p">[</span><span class="n">sun</span><span class="p">,</span> <span class="n">jupiter</span><span class="p">,</span> <span class="n">saturn</span><span class="p">])</span>
+<span class="n">xyz</span> <span class="o">=</span> <span class="n">aberrate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_velocity</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+<span class="n">coordinates</span> <span class="o">=</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+</pre></div>
+
+<p>Q: Is there a medium? <br>Parameter Treadmill ← → LEGO bricks <br> <br> </p>
+<p>Q: Is there a medium? <br>Parameter Treadmill ← → LEGO bricks <br> <br>A: Method chaining!</p>
+<div class="highlight"><pre><span></span><span class="c1"># Method chain</span>
+
+
+<span class="err">            ┌─ light travel time</span>
+<span class="err">            │</span>
+<span class="err">            │             ┌─ aberration,deflection</span>
+<span class="err">            │             │</span>
+
+<span class="err">earth.at(t).observe(mars).apparent().coordinates()</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># ‘Coming up for air’:</span>
+<span class="c1"># frequently returning control to the caller</span>
+
+<span class="err">            ┌─ light travel time</span>
+<span class="err">            │</span>
+<span class="err">            │             ┌─ aberration,deflection</span>
+<span class="err">            │             │</span>
+
+<span class="err">earth.at(t).observe(mars).apparent().coordinates()</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Method chain</span>
+
+<span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
+
+<span class="c1"># ‘But I need astrometric coordinates’</span>
+
+<span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
+
+<span class="c1"># ‘But I need x,y,z coordinates’</span>
+
+<span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">xyz</span>
+<span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">xyz</span>
+</pre></div>
+
+<p>Now, the user controls the computation <br><em>directly</em> by calling a series of methods, <br>rather than <strong>indirectly</strong> by setting flags</p>
+<div class="highlight"><pre><span></span><span class="c1"># Method chain</span>
+
+<span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">xyz</span>
+
+<span class="c1"># ‘I need to adjust the list of deflectors’</span>
+<span class="c1">#</span>
+<span class="c1"># Well, drat, we still might need a parameter</span>
+
+<span class="n">deflectors</span> <span class="o">=</span> <span class="p">[</span><span class="n">sun</span><span class="p">,</span> <span class="n">jupiter</span><span class="p">,</span> <span class="n">saturn</span><span class="p">]</span>
+<span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">(</span><span class="n">deflectors</span><span class="p">)</span><span class="o">.</span><span class="n">xyz</span>
+
+<span class="c1"># But only one!</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Method chain</span>
+
+<span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
+
+<span class="c1"># Benefits:</span>
+<span class="c1">#  High level of abstraction (‘apparent’)</span>
+<span class="c1">#  Makes sure methods are called in right order</span>
+<span class="c1">#  Exposes intermediate results</span>
+<span class="c1">#  Lets user stop early</span>
+</pre></div>
+
+<p>Habit #1: Method chain <br> <br>Parameter Treadmill ←→ LEGO bricks</p>
+<p>Habit #2: Configuration objects</p>
+<div class="highlight"><pre><span></span><span class="c1"># First version of Skyfield always used</span>
+<span class="c1"># the WGS84 geoid to turn lat/lon into x,y,z</span>
+<span class="c1">#</span>
+<span class="c1"># radius = 6378137.0 m</span>
+<span class="c1"># flattening = 1/298.257223563</span>
+
+<span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">)</span>
+</pre></div>
+
+<p>User<br> </p>
+<p>User <br>‘My data set is older, and uses WGS72’</p>
+<div class="highlight"><pre><span></span><span class="c1"># Worst idea: global configuration</span>
+
+<span class="n">set_geoid_shape</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">6378135.0</span><span class="p">,</span>
+                <span class="n">flattening</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mf">298.26</span><span class="p">)</span>
+
+<span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">)</span>
+
+<span class="c1"># Problems:</span>
+<span class="c1">#  Invisible action-at-a-distance</span>
+<span class="c1">#  Ruins thread safety</span>
+<span class="c1">#  Tightly couples tests</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Slightly better: Parameter Treadmill</span>
+<span class="c1"># with a global registry of geoids</span>
+
+<span class="n">register_earth_geoid</span><span class="p">(</span>
+    <span class="s1">&#39;wgs72&#39;</span><span class="p">,</span>
+    <span class="n">radius</span><span class="o">=</span><span class="mf">6378135.0</span><span class="p">,</span>
+    <span class="n">flattening</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mf">298.26</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">,</span>
+             <span class="n">geoid</span><span class="o">=</span><span class="s1">&#39;wgs72&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Better: a parameter that, instead of</span>
+<span class="c1"># a name, accepts a struct — no globals!</span>
+
+<span class="n">wgs72</span> <span class="o">=</span> <span class="n">Geoid</span><span class="p">(</span><span class="n">radius_m</span><span class="o">=</span><span class="mf">6378135.0</span><span class="p">,</span>
+              <span class="n">flattening</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mf">298.26</span><span class="p">)</span>
+
+<span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">,</span>
+             <span class="n">geoid</span><span class="o">=</span><span class="n">wgs72</span><span class="p">)</span>
+</pre></div>
+
+<p>User<br> <br> </p>
+<p>User<br>‘What if I already have<br>the x,y,z for a Place?’</p>
+<div class="highlight"><pre><span></span><span class="c1"># Then we’re in trouble: the constructor</span>
+<span class="c1"># insists on doing a lat/lon conversion</span>
+
+<span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">,</span>
+             <span class="n">geoid</span><span class="o">=</span><span class="n">wgs72</span><span class="p">)</span>
+
+<span class="c1"># (Lesson: don’t do work in constructors!)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Best: give Place() a simple x,y,z constructor</span>
+
+<span class="n">kraków</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">3856.2</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1399.3</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">4867.4</span><span class="p">)</span>
+
+<span class="c1"># Then, give the Geoid the job of</span>
+<span class="c1"># building the Place for a lat/lon</span>
+
+<span class="n">wroc</span> <span class="o">=</span> <span class="n">wgs72</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="o">+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="mf">17.0385</span><span class="p">)</span>
+
+<span class="c1"># The geoid= parameter disappears!</span>
+<span class="c1"># We’ve escaped the Parameter Treadmill!</span>
+</pre></div>
+
+<p>This approach also worked for Earth orientation</p>
+<table>
+<tr><td>Precession         <td>200 BC Hipparchus <td>46.8°
+<tr><td>Nutation           <td>1747 Bradley <td>18.6″
+<tr><td>Polar motion xp,yp <td>1884 Chandler <td>0.4″
+</table>
+
+<ul>
+<li>Precession: long-term formula</li>
+<li>Nutation: long-term formula</li>
+<li>Polar motion: daily updates!</li>
+</ul>
+<img src="FinalsDataIAU2000A-X_Y_PLAN-BULA.png">
+
+<div class="highlight"><pre><span></span><span class="c1"># A terrible idea would have been</span>
+<span class="c1"># to make polar motion global.</span>
+
+<span class="n">load_polar_motion</span><span class="p">(</span><span class="s1">&#39;finals2000A.all&#39;</span><span class="p">)</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Instead, Skyfield has you build a</span>
+<span class="c1"># ‘Timescale’ that loads IERS data and</span>
+<span class="c1"># serves as a factory for ‘Time’ objects:</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+
+<span class="c1"># Thus:</span>
+<span class="c1">#  No global settings</span>
+<span class="c1">#  No invisible action-at-a-difference</span>
+<span class="c1">#  Multiple Timescale objects can coexist</span>
+</pre></div>
+
+<p>Habit #2: Configuration objects</p>
+<p>Habit #3: Healthy Boundaries</p>
+<p>Example: star chart</p>
+<img src="neowise_star_chart.png">
+
+<p>Temptation: give users a <code>star_chart()</code> function!</p>
+<p>User<br> </p>
+<p>User<br>‘How do I…</p>
+<p><br>‘…adjust the scale?’ <br>‘…include more stars?’ <br>‘…make the font bigger?’ <br>‘…make the font smaller?’ <br>‘…produce PDF instead of PNG?’ <br>⋮</p>
+<div class="highlight"><pre><span></span><span class="c1"># Result? A never-ending Parameter Treadmill</span>
+
+<span class="k">def</span> <span class="nf">star_chart</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">width_degrees</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
+               <span class="n">limiting_mag</span><span class="o">=</span><span class="mf">6.5</span><span class="p">,</span> <span class="n">label_fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+               <span class="n">grid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">grid_system</span><span class="o">=</span><span class="s1">&#39;ecliptic&#39;</span><span class="p">,</span>
+               <span class="n">step_days</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">marker_symbol</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span>
+               <span class="n">marker_color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="s1">&#39;%m/</span><span class="si">%02d</span><span class="s1">&#39;</span><span class="p">,</span>
+               <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="n">etc</span><span class="o">=...</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+
+<p>Solution: <br>I went <strong>full LEGO</strong> <br> <br>Because this isn’t about the relationship <br>between different parts of <em>my</em> library <br> <br>It’s about ‘foreign affairs’ <br>with <em>another</em> library</p>
+<p>So, Skyfield’s docs provide a <strong>full example</strong> <br>of how to (a) ask Skyfield for coordinates, then <br>(b) go plot a star chart <em>yourself</em> with matplotlib</p>
+<img src="plot-example-code.png">
+
+<p>The user can cut-and-paste the example into their <br>own project, then change <em>anything they want</em> <br><strong>without having to ask me</strong></p>
+<p>So, whenever possible, <em>avoid</em> getting in the way <br>of a conversation between the user’s code <br>and <strong>another complicated library</strong></p>
+<div class="highlight"><pre><span></span><span class="c1"># The philosophy of ‘getting out of the way’</span>
+<span class="c1"># even works for simple things like I/O.</span>
+<span class="c1"># Bad:</span>
+
+<span class="n">compute_data</span><span class="p">(</span><span class="n">out</span><span class="o">=</span><span class="s1">&#39;table.csv&#39;</span><span class="p">)</span>
+</pre></div>
+
+<p>User<br> <br> </p>
+<p>User <br>‘But I need to save it to a database’ <br>‘But I need to send it over a socket’</p>
+<div class="highlight"><pre><span></span><span class="c1"># When possible, leave I/O to the user!</span>
+<span class="c1"># Make the user open the file:</span>
+
+<span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;table.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>  <span class="c1"># user</span>
+<span class="n">compute_data</span><span class="p">(</span><span class="n">out</span><span class="o">=</span><span class="nb">file</span><span class="p">)</span>         <span class="c1"># your routine</span>
+
+<span class="c1"># Then the user is free to provide an</span>
+<span class="c1"># alternative I/O object that writes to</span>
+<span class="c1"># a database, or sends over a socket —</span>
+<span class="c1"># and you avoid the Parameter Treadmill!</span>
+</pre></div>
+
+<p>Resist the temptation <br>to go the extra mile for the user <br>—to be <em>too convenient</em></p>
+<p>Habit #3: Healthy Boundaries <br> <br>Return control <em>as soon as possible</em> <br>and let the <strong>caller</strong> decide what happens next</p>
+<div>
+
+<p>Habits</p>
+<ol>
+<li>Get off the Parameter Treadmill</li>
+<li>Store configuration in objects</li>
+<li>Set healthy boundaries</li>
+<li><span style="color:white">On a dark night, try looking at the sky</span></li>
+</ol>
+<p>  </p>
+</div>
+
+<div>
+
+<p>Habits</p>
+<ol>
+<li>Get off the Parameter Treadmill</li>
+<li>Store configuration in objects</li>
+<li>Set healthy boundaries</li>
+<li>On a dark night, try looking at the sky</li>
+</ol>
+<p>Thank you! I’m @brandon_rhodes</p>
+</div>
+
+<p>TODO meteors hit front of Earth, because Earth moves TODO Wanting a library to win the least-lines competition</p>
+<script>
+(function() {
+ var body = document.querySelector('body');
+ var a = Array.from(body.children);
+ var i = 0;
+ a.forEach((item) => {
+  i++;
+  var html = '<div class=slide><div>' + item.outerHTML + '</div></div>'
+  item.outerHTML = html;
+ });
+ console.log('Slide count:', i);
+ console.log('Seconds per slide:', 45 * 60 / i);
+})();
+</script>
+
+<script src="/js/slides4.js"></script>
+
