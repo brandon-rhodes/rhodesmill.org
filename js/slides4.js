@@ -19,6 +19,8 @@ function setup() {
     current_slide_n = -1;
     last_slide_change = null;
 
+    $('html').addClass('presentation-is-running')
+
     var select_slide = function(n) {
         window.location = '#' + n + '';
     }
@@ -69,6 +71,7 @@ function setup() {
             var lefts = left % 60;
             readout = ('' + current_slide_n + '/' + ($slides.length - 1) +
                        '<br>' + leftm + 'm' + lefts + 's');
+
             if (last_slide_change) {
                 var til_end = endtime - last_slide_change;
                 var slides_left = $slides.length - current_slide_n;
@@ -77,6 +80,24 @@ function setup() {
                 readout += ('<br>' + Math.floor(ss / 1000) + 's');
                 if (ss < 0)
                     timer_div.addClass('emergency');
+            }
+
+            if (typeof talk_length_minutes !== 'undefined') {
+                var talk_length = 1000 * 60 * talk_length_minutes
+                var start_of_talk = endtime - talk_length;
+                var seconds_into_talk = (now - start_of_talk) / 1000;
+                var seconds_per_slide = talk_length / $slides.length / 1000;
+                var seconds_at_end_of_this_slide = (
+                    (current_slide_n + 1) * seconds_per_slide
+                );
+                n = seconds_at_end_of_this_slide - seconds_into_talk;
+                readout += '<br><br>';
+                readout += 'Offset: ';
+                readout += Math.floor(n);
+                if (n < 0)
+                    timer_div.addClass('emergency');
+                else
+                    timer_div.removeClass('emergency');
             }
         }
         timer_div.html(readout);

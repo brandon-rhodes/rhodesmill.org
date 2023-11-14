@@ -59,14 +59,28 @@ code {
  font-family: Typewriter; font-size: 80%;
 }
 td {padding-left: 0.6em; padding-right: 0.6em}
-b, strong {color: #a34809}
-i, em {color: #095358}
-
+strong {color: #a34809}
+em {color: #095358}
 .timer {margin: 10px}
 .emergency {color: white; background-color: red}
+@media print{
+    @page {
+        size: 1280px 720px;
+    }
+    body.reading-mode {
+        background-color: white;
+    }
+    body > * {
+        page-break-after: always;
+        font-size: 36pt;
+    }
+    tt {
+        font-size: 28pt;
+    }
+}
 </style>
 
-<p><strong>The History Of A Science <br>Hidden in Astronomy Code</strong> <br> <br>Brandon Rhodes <br>code::dive 2023 <br>Wrocław, Poland</p>
+<p><b>The History Of A Science <br>Hidden in Astronomy Code</b> <br> <br>Brandon Rhodes <br>code::dive <br>Wrocław, Poland <br>2023 November 16</p>
 <div>
 
 <p>I’ll talk about:</p>
@@ -82,70 +96,59 @@ i, em {color: #095358}
 <p>Skyfield</p>
 <ul>
 <li>Open-source</li>
-<li>Python</li>
+<li>Python using NumPy</li>
 <li>Positional astronomy</li>
 </ul>
 </div>
 
 <div>
 
-<p>Positional astronomy is <em>not</em> <br>what most astronomers do!</p>
+<p><strong>Positional astronomy</strong> is the art <br>of generating <em>coordinates</em> for <br>stars, planets, and comets</p>
+<p>—<em>not</em> what most astronomers do!</p>
 <p>(Just like most programmers <br>don’t write compilers)</p>
 </div>
 
 <div>
 
-<p>The usual astronomer routine:</p>
+<p>Normal astronomers:</p>
 <ol>
-<li>Your project gets funded</li>
-<li>You sign up for observatory time</li>
-<li>The <em>observatory</em> uses positional astronomy<br>to compute angles and aim the instrument</li>
-<li>Then they send you the data</li>
+<li>Get funding</li>
+<li>Sign up for observatory time</li>
+<li>Then the <em>observatory</em> uses positional<br>astronomy to compute angles<br>and observe your target</li>
 </ol>
 </div>
 
 <div>
 
-<p>Thus, astronomy libraries <br>for <em>actual</em> astronomers are <br>mostly ‘science photoshop’</p>
+<p>So, astronomy libraries for <em>actual</em> <br>astronomers are mostly ‘science Photoshop’ <br>for the data they get back</p>
 <ul>
 <li>Image processing</li>
 <li>Spectral analysis</li>
 <li>Radio signal processing</li>
 </ul>
-<p> </p>
 </div>
 
+<p>But Skyfield’s job is <strong>positional astronomy</strong> itself:<br> give it a <em>time</em>, and it will tell you the <em>position</em><br> of a star, a planet, or a satellite</p>
 <div>
 
-<p>Thus, astronomy libraries <br>for <em>actual</em> astronomers are <br>mostly ‘science photoshop’</p>
+<p>A <strong>single</strong> position might not sound very useful, <br>but by generating a <em>series</em> of positions <br>a script can answer:</p>
 <ul>
-<li>Image processing</li>
-<li>Spectral analysis</li>
-<li>Radio signal processing</li>
-</ul>
-<p>‘Zoom in. Now—enhance!’</p>
-</div>
-
-<p>But Skyfield’s job is <strong>positional astronomy</strong> itself:<br> give it a <em>time</em>, and it will tell you the <em>position</em><br> of a star, planet, or satellite</p>
-<div>
-
-<p>Think of the bigger questions you can answer <br>if your program can generate positions:</p>
-<ul>
-<li>What time will the Sun set this evening?</li>
-<li>What is the date of the next New Moon?</li>
-<li>What month in 2024 will be best for seeing Jupiter?</li>
+<li>What time does Sun set this evening?</li>
+<li>When is the next New Moon?</li>
+<li>What month will Jupiter be brightest?</li>
 <li>When will the Space Station pass overhead?</li>
 </ul>
 </div>
 
-<p>The answers to questions like these help <br>astronomers, both amateur and professional, <br><em>plan their observations</em></p>
-<p>And, of course, you can use <br>coordinates to draw pictures</p>
+<p>And, of course, you can also use <br>coordinates to draw <em>pretty pictures</em></p>
 <img src="neowise_star_chart.png">
 
 <img src="venus_evening_chart.png">
 
+<img src="solar_system.png">
+
 <p>So Skyfield is useful for anyone <br>who wants to use Python to plan <br>their <em>own observations</em></p>
-<p>So — how would you use math <br>to compute the position of Jupiter?</p>
+<p>So—how does Skyfield work? <br> <br>It reads <strong>NASA</strong> tables <br>of <em>x,y,z</em> planet positions then <br>turns those vectors into angles</p>
 <div class="highlight"><pre><span></span><span class="c1"># Q: Can you just subtract vectors?</span>
 
 <span class="err">earth_xyz = earth.at(t)</span>
@@ -184,27 +187,36 @@ i, em {color: #095358}
     <span class="k">return</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
 </pre></div>
 
+<p>Light-time correction — Ole Rømer (Denmark) <br> <br>He was observing <strong>Jupiter</strong> <br>over the 13 months between <br>conjunctions with the Sun</p>
+<div class="highlight"><pre><span></span><span class="err">                midnight</span>
+
+<span class="err">                   o →</span>
+
+
+<span class="err">            ↗</span>
+<span class="err"> Jupiter  o                 o</span>
+<span class="err">                              ↘</span>
+
+<span class="err">─────────────             ─────────────</span>
+<span class="err"> morning sky               evening sky</span>
+</pre></div>
+
+<p>Rømer’s Observation: the moon <strong>Io</strong> <br>revolves <em>faster</em> in the morning sky <br>than it does in the evening sky! <br> <br>Why would it change speed?</p>
+<div>
+
+<p>Hypotheses:</p>
+<ul>
+<li>Copernicus and Galileo were <strong>right</strong>, the Earth moves</li>
+<li>And, light <em>takes time to travel</em></li>
+<li>And, the Earth moves <strong>towards</strong> the morning sky</li>
+</ul>
+</div>
+
+<p>Thus, the light-time delay to Jupiter <br><strong>shortens</strong> each day it’s in the morning sky <br>then <strong>stretchs back out</strong> in the evening sky <br> <br>This is what makes Io <em>appear</em> to change speed.</p>
+<p>Right now, Jupiter is <strong>33.4 light-minutes</strong> <br>away, so Skyfield needs to use Jupiter’s <br>position from <strong>33.4 minutes ago</strong> <br>to generate coordinates</p>
 <table>
 <tr><td>Light-time correction <td>
 <tr><td>Aberration
-<tr><td>Deflection
-</table>
-
-<table>
-<tr><td>Light-time correction <td><i>Jupiter: 33.4 light-minutes away</i>
-<tr><td>Aberration
-<tr><td>Deflection
-</table>
-
-<table>
-<tr><td>Light-time correction <td>1676 Ole Rømer (Denmark)
-<tr><td>Aberration
-<tr><td>Deflection
-</table>
-
-<table>
-<tr><td>Light-time correction <td>1676 Ole Rømer (Denmark)
-<tr><td>Aberration            <td>(1687 Newton’s <i>Principia</i>)
 <tr><td>Deflection
 </table>
 
@@ -214,7 +226,7 @@ i, em {color: #095358}
 <tr><td>Deflection
 </table>
 
-<p>&lt;aside&gt;<br> Units</p>
+<p>&lt;aside&gt;<br> Units of Measure</p>
 <p>Q: <br>If you were going to <em>design</em> a unit of measure, <br>how many units would make a whole?</p>
 <p>A: <br>Humans love numbers with <em>divisors!</em></p>
 <div class="highlight"><pre><span></span><span class="err"> 1</span>
@@ -327,7 +339,7 @@ i, em {color: #095358}
 </pre></div>
 
 <p>12.37 - 3.0% = 12 <br>365¼ - 1.4% = 360</p>
-<p>Q: When we need more precision, <br>into how many pieces should we <br><em>divide</em> hours and degrees?</p>
+<p>A <em>question</em> then arose — <br> <br>An hour is pretty long; <br>a degree of sky is pretty big; <br>how should we <strong>divide</strong> them?</p>
 <div class="highlight"><pre><span></span><span class="err">1</span>
 <span class="err">2</span>
 <span class="err">6</span>
@@ -341,7 +353,25 @@ i, em {color: #095358}
 <span class="err">2</span>
 <span class="err">6</span>
 <span class="err">12   Hours of daylight, Months/year</span>
-<span class="err">60   ‘Minutes’ and ‘second minutes’ (or ‘seconds’)</span>
+<span class="err">60   Pars minuta</span>
+<span class="err">360  Degrees in a circle</span>
+<span class="err">2520</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err">1</span>
+<span class="err">2</span>
+<span class="err">6</span>
+<span class="err">12   Hours of daylight, Months/year</span>
+<span class="err">60   Pars minuta prima, pars minuta secunda</span>
+<span class="err">360  Degrees in a circle</span>
+<span class="err">2520</span>
+</pre></div>
+
+<div class="highlight"><pre><span></span><span class="err">1</span>
+<span class="err">2</span>
+<span class="err">6</span>
+<span class="err">12   Hours of daylight, Months/year</span>
+<span class="err">60   ‘Minute’ and ‘second’</span>
 <span class="err">360  Degrees in a circle</span>
 <span class="err">2520</span>
 </pre></div>
@@ -360,7 +390,7 @@ i, em {color: #095358}
 
 <p>10×50 Binoculars</p>
 <ul>
-<li>Jupiter’s moons, Saturn’s rings, Moon’s craters</li>
+<li>Jupiter’s moons, RM Saturn’s rings, Moon’s craters</li>
 <li>Star clusters, brighter galaxies</li>
 <li>Images right-side-up</li>
 <li>Uses both eyes</li>
@@ -451,6 +481,18 @@ i, em {color: #095358}
 
 <p>Another User<br> </p>
 <p>Another User<br>‘But I need x,y,z coordinates’</p>
+<div class="highlight"><pre><span></span><span class="c1"># Python allows *optional* arguments. Choose</span>
+<span class="c1"># a default that keeps the *original* behavior!</span>
+
+<span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">planet</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;apparent&#39;</span><span class="p">):</span>
+    <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">earth_velocity</span> <span class="o">=</span> <span class="n">earth_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">light_time_correct</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">planet</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;apparent&#39;</span><span class="p">:</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">deflect</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="p">[</span><span class="n">sun</span><span class="p">,</span><span class="n">jupiter</span><span class="p">,</span><span class="n">saturn</span><span class="p">])</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">aberrate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_velocity</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+</pre></div>
+
 <div class="highlight"><pre><span></span><span class="c1"># Let’s add another optional argument.</span>
 
 <span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">planet</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;apparent&#39;</span><span class="p">,</span>
@@ -467,6 +509,20 @@ i, em {color: #095358}
 
 <p>Another User<br> </p>
 <p>Another User<br>‘I need to adjust the list of deflectors’</p>
+<div class="highlight"><pre><span></span><span class="c1"># Let’s add another optional argument.</span>
+
+<span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">planet</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;apparent&#39;</span><span class="p">,</span>
+                 <span class="n">angles</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">earth_velocity</span> <span class="o">=</span> <span class="n">earth_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">light_time_correct</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">planet</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;apparent&#39;</span><span class="p">:</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">deflect</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="p">[</span><span class="n">sun</span><span class="p">,</span><span class="n">jupiter</span><span class="p">,</span><span class="n">saturn</span><span class="p">])</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">aberrate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_velocity</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">angles</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xyz</span>
+    <span class="k">return</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+</pre></div>
+
 <div class="highlight"><pre><span></span><span class="c1"># Another optional parameter.</span>
 
 <span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">planet</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;apparent&#39;</span><span class="p">,</span>
@@ -492,21 +548,25 @@ i, em {color: #095358}
         <span class="n">lat</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
     <span class="p">):</span>
     <span class="o">...</span>
+
+<span class="c1"># Code becomes littered with `if` statements.</span>
+<span class="c1"># Hard to test all possible code paths.</span>
 </pre></div>
 
-<div class="highlight"><pre><span></span><span class="c1"># Python Standard Library has functions like:</span>
+<div class="highlight"><pre><span></span><span class="c1"># Python Standard Library itself has functions—</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># —that have obviously gotten caught on the</span>
+<span class="c1"># Parameter Treadmill:</span>
 
 <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">skipkeys</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
            <span class="n">check_circular</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">allow_nan</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
            <span class="bp">cls</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
            <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-
-<span class="c1"># Yet you can still:</span>
-
-<span class="n">s</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 
-<p>What’s the alternative software design? <br> <br> Parameter Treadmill ← → LEGO bricks</p>
+<p>Q: So what’s the alternative <br>to the <strong>Parameter Treadmill?</strong> <br> <br>A: <em>LEGO bricks!</em></p>
 <p>LEGO bricks — small interchangeable routines, <br>which the caller assembles into a solution</p>
 <div class="highlight"><pre><span></span><span class="c1"># LEGO bricks</span>
 
@@ -624,6 +684,12 @@ i, em {color: #095358}
 
 <p>User<br> </p>
 <p>User <br>‘My data set is older, and uses WGS72’</p>
+<div class="highlight"><pre><span></span><span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">)</span>
+
+<span class="c1"># Drat. WGS84 is currently hard-coded,</span>
+<span class="c1"># there’s no way to specify WGS72.</span>
+</pre></div>
+
 <div class="highlight"><pre><span></span><span class="c1"># Worst idea: global configuration</span>
 
 <span class="n">set_geoid_shape</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">6378135.0</span><span class="p">,</span>
@@ -638,37 +704,40 @@ i, em {color: #095358}
 </pre></div>
 
 <div class="highlight"><pre><span></span><span class="c1"># Slightly better: Parameter Treadmill</span>
-<span class="c1"># with a global registry of geoids</span>
+
+<span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">,</span>
+             <span class="n">geoid</span><span class="o">=</span><span class="s1">&#39;wgs72&#39;</span><span class="p">)</span>
+
+<span class="c1"># Needs a global registry of geoids</span>
 
 <span class="n">register_earth_geoid</span><span class="p">(</span>
     <span class="s1">&#39;wgs72&#39;</span><span class="p">,</span>
     <span class="n">radius</span><span class="o">=</span><span class="mf">6378135.0</span><span class="p">,</span>
     <span class="n">flattening</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mf">298.26</span><span class="p">,</span>
 <span class="p">)</span>
-
-<span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">,</span>
-             <span class="n">geoid</span><span class="o">=</span><span class="s1">&#39;wgs72&#39;</span><span class="p">)</span>
 </pre></div>
 
-<div class="highlight"><pre><span></span><span class="c1"># Better: a parameter that, instead of</span>
-<span class="c1"># a name, accepts a struct — no globals!</span>
-
-<span class="n">wgs72</span> <span class="o">=</span> <span class="n">Geoid</span><span class="p">(</span><span class="n">radius_m</span><span class="o">=</span><span class="mf">6378135.0</span><span class="p">,</span>
-              <span class="n">flattening</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mf">298.26</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="c1"># Better: instead of accepting a name,</span>
+<span class="c1"># accept a Geoid object itself!</span>
 
 <span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">,</span>
              <span class="n">geoid</span><span class="o">=</span><span class="n">wgs72</span><span class="p">)</span>
+
+<span class="c1"># This lets callers create Geoid objects</span>
+<span class="c1"># without needing any global registry:</span>
+
+<span class="n">wgs72</span> <span class="o">=</span> <span class="n">Geoid</span><span class="p">(</span><span class="n">radius_m</span><span class="o">=</span><span class="mf">6378135.0</span><span class="p">,</span>
+              <span class="n">flattening</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mf">298.26</span><span class="p">)</span>
 </pre></div>
 
 <p>User<br> <br> </p>
 <p>User<br>‘What if I already have<br>the x,y,z for a Place?’</p>
-<div class="highlight"><pre><span></span><span class="c1"># Then we’re in trouble: the constructor</span>
-<span class="c1"># insists on doing a lat/lon conversion</span>
+<div class="highlight"><pre><span></span><span class="c1"># Then we’re in trouble!  The constructor</span>
+<span class="c1"># doesn’t accept x,y,z, but insists on</span>
+<span class="c1"># computing x,y,z itself from lat/lon:</span>
 
 <span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">,</span>
              <span class="n">geoid</span><span class="o">=</span><span class="n">wgs72</span><span class="p">)</span>
-
-<span class="c1"># (Lesson: don’t do work in constructors!)</span>
 </pre></div>
 
 <div class="highlight"><pre><span></span><span class="c1"># Best: give Place() a simple x,y,z constructor</span>
@@ -679,9 +748,11 @@ i, em {color: #095358}
 <span class="c1"># building the Place for a lat/lon</span>
 
 <span class="n">wroc</span> <span class="o">=</span> <span class="n">wgs72</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="o">+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="mf">17.0385</span><span class="p">)</span>
+<span class="n">wroc</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="o">+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="mf">17.0385</span><span class="p">)</span>
 
 <span class="c1"># The geoid= parameter disappears!</span>
 <span class="c1"># We’ve escaped the Parameter Treadmill!</span>
+<span class="c1"># Choice of geoid is now always explicit!</span>
 </pre></div>
 
 <p>This approach also worked for Earth orientation</p>
@@ -696,6 +767,8 @@ i, em {color: #095358}
 <li>Nutation: long-term formula</li>
 <li>Polar motion: daily updates!</li>
 </ul>
+<img src="iers-homepage.png">
+
 <img src="FinalsDataIAU2000A-X_Y_PLAN-BULA.png">
 
 <div class="highlight"><pre><span></span><span class="c1"># A terrible idea would have been</span>
@@ -717,15 +790,20 @@ i, em {color: #095358}
 <span class="c1">#  Multiple Timescale objects can coexist</span>
 </pre></div>
 
-<p>Habit #2: Configuration objects</p>
-<p>Habit #3: Healthy Boundaries</p>
+<p><br>Habit #2: Configuration objects</p>
+<p>Habit #3: Healthy Boundaries<br></p>
 <p>Example: star chart</p>
 <img src="neowise_star_chart.png">
 
 <p>Temptation: give users a <code>star_chart()</code> function!</p>
 <p>User<br> </p>
-<p>User<br>‘How do I…</p>
-<p><br>‘…adjust the scale?’ <br>‘…include more stars?’ <br>‘…make the font bigger?’ <br>‘…make the font smaller?’ <br>‘…produce PDF instead of PNG?’ <br>⋮</p>
+<p>User<br>‘How do I…’</p>
+<p>User<br>‘How do I change the scale?’</p>
+<p>User<br>‘How do I change the colors?’</p>
+<p>User<br>‘How do I change the font size?’</p>
+<p>User<br>‘How do I change the stars?’</p>
+<p>User<br>‘How do I change the date format?’</p>
+<p>User<br>‘How do I change the marker color?’</p>
 <div class="highlight"><pre><span></span><span class="c1"># Result? A never-ending Parameter Treadmill</span>
 
 <span class="k">def</span> <span class="nf">star_chart</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">width_degrees</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
@@ -738,32 +816,37 @@ i, em {color: #095358}
 </pre></div>
 
 <p>Solution: <br>I went <strong>full LEGO</strong> <br> <br>Because this isn’t about the relationship <br>between different parts of <em>my</em> library <br> <br>It’s about ‘foreign affairs’ <br>with <em>another</em> library</p>
-<p>So, Skyfield’s docs provide a <strong>full example</strong> <br>of how to (a) ask Skyfield for coordinates, then <br>(b) go plot a star chart <em>yourself</em> with matplotlib</p>
+<p>So, Skyfield’s docs provide a <strong>full working example</strong> <br>of how to (a) ask Skyfield for coordinates, then <br>(b) go plot a star chart <em>yourself</em> with matplotlib</p>
 <img src="plot-example-code.png">
 
+<p>The magic of <em>example code</em> is—</p>
+<p>The user can cut-and-paste the example into their <br>own project, then change <em>anything they want</em> <br> </p>
 <p>The user can cut-and-paste the example into their <br>own project, then change <em>anything they want</em> <br><strong>without having to ask me</strong></p>
 <p>So, whenever possible, <em>avoid</em> getting in the way <br>of a conversation between the user’s code <br>and <strong>another complicated library</strong></p>
 <div class="highlight"><pre><span></span><span class="c1"># The philosophy of ‘getting out of the way’</span>
 <span class="c1"># even works for simple things like I/O.</span>
-<span class="c1"># Bad:</span>
+
+<span class="c1"># It’s tempting to do the user a favor</span>
+<span class="c1"># by creating an output file for them:</span>
 
 <span class="n">compute_data</span><span class="p">(</span><span class="n">out</span><span class="o">=</span><span class="s1">&#39;table.csv&#39;</span><span class="p">)</span>
 </pre></div>
 
-<p>User<br> <br> </p>
-<p>User <br>‘But I need to save it to a database’ <br>‘But I need to send it over a socket’</p>
+<p>User<br> </p>
+<p>User <br>‘But I need to save it to a database, not a file’</p>
+<p>User <br>‘But I need to send it over a socket’</p>
+<p>User <br>‘I just need to compute its checksum’</p>
 <div class="highlight"><pre><span></span><span class="c1"># When possible, leave I/O to the user!</span>
-<span class="c1"># Make the user open the file:</span>
+<span class="c1"># Let the user open the file:</span>
 
 <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;table.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>  <span class="c1"># user</span>
-<span class="n">compute_data</span><span class="p">(</span><span class="n">out</span><span class="o">=</span><span class="nb">file</span><span class="p">)</span>         <span class="c1"># your routine</span>
 
-<span class="c1"># Then the user is free to provide an</span>
-<span class="c1"># alternative I/O object that writes to</span>
-<span class="c1"># a database, or sends over a socket —</span>
-<span class="c1"># and you avoid the Parameter Treadmill!</span>
+<span class="c1"># Then have them pass it to you:</span>
+
+<span class="n">compute_data</span><span class="p">(</span><span class="n">out</span><span class="o">=</span><span class="nb">file</span><span class="p">)</span>         <span class="c1"># your routine</span>
 </pre></div>
 
+<p>Writing to a <em>file object</em> lets the user <br>swap in another object that writes to <br>a database, a socket, or wherever <br> <br><strong>They</strong> get full control, <br>and <em>you</em> escape the Parameter Treadmill!</p>
 <p>Resist the temptation <br>to go the extra mile for the user <br>—to be <em>too convenient</em></p>
 <p>Habit #3: Healthy Boundaries <br> <br>Return control <em>as soon as possible</em> <br>and let the <strong>caller</strong> decide what happens next</p>
 <div>
@@ -773,7 +856,7 @@ i, em {color: #095358}
 <li>Get off the Parameter Treadmill</li>
 <li>Store configuration in objects</li>
 <li>Set healthy boundaries</li>
-<li><span style="color:white">On a dark night, try looking at the sky</span></li>
+<li><span style="opacity:0">On a dark night, try looking at the sky</span></li>
 </ol>
 <p>  </p>
 </div>
@@ -788,9 +871,16 @@ i, em {color: #095358}
 <li>On a dark night, try looking at the sky</li>
 </ol>
 <p>Thank you! I’m @brandon_rhodes</p>
+<!--
+TODO light-time etc story rewrite; ‘jumped right to size of effect, I did’
+TODO meteors hit front of Earth, because Earth moves
+TODO Wanting a library to win the least-lines competition
+TODO Turn off font ligatures
+TODO Make red less aggressive
+-->
+
 </div>
 
-<p>TODO meteors hit front of Earth, because Earth moves TODO Wanting a library to win the least-lines competition</p>
 <script>
 (function() {
  var body = document.querySelector('body');
