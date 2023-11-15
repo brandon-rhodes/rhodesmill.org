@@ -102,7 +102,7 @@ em {color: #095358}
 </ul>
 </div>
 
-<p><strong>Positional astronomy</strong> is the art <br>of generating <em>coordinates</em> for <br>stars, planets, and comets</p>
+<p><strong>Positional astronomy</strong> is the art <br>of generating <em>coordinates</em> <br>for stars and planets</p>
 <div>
 
 <p>But positional astronomy is<br> <em>not</em> what most astronomers do!</p>
@@ -234,7 +234,7 @@ em {color: #095358}
 
 <p>&lt;aside&gt;<br> Units of Measure</p>
 <p>Q: <br>If you were going to <em>design</em> a unit of measure, <br>how many units would make a whole?</p>
-<p>A: <br>Humans love numbers with <em>divisors!</em></p>
+<p>A: <br>Our ancestors loved numbers with <em>divisors!</em></p>
 <div class="highlight"><pre><span></span><span class="err"> 1</span>
 <span class="err"> 2</span>
 <span class="err"> 3</span>
@@ -687,8 +687,11 @@ em {color: #095358}
 
 <p>Habit #1: Method chain <br> <br>Parameter Treadmill ←→ LEGO bricks</p>
 <p>Habit #2: Configuration objects</p>
-<div class="highlight"><pre><span></span><span class="c1"># First version of Skyfield always used</span>
-<span class="c1"># the WGS84 geoid to turn lat/lon into x,y,z</span>
+<p>The Earth is an <em>oblate spheroid</em> <br> <br>The centrifugal force of our rotation <br>makes Earth’s radius at the equator <strong>larger</strong> <br>than Earth’s radius at the poles</p>
+<p>So an <em>x,y,z</em> vector from Earth’s center <br>to a city or observatory on its surface will <br>have a different radius depending on <strong>latitude</strong></p>
+<div class="highlight"><pre><span></span><span class="c1"># First version of Skyfield hard-coded</span>
+<span class="c1"># the standard WGS84 geoid as the way</span>
+<span class="c1"># to turn lat/lon into x,y,z</span>
 <span class="c1">#</span>
 <span class="c1"># radius = 6378137.0 m</span>
 <span class="c1"># flattening = 1/298.257223563</span>
@@ -746,12 +749,12 @@ em {color: #095358}
 
 <p>User<br> <br> </p>
 <p>User<br>‘What if I already have<br>the x,y,z for a Place?’</p>
-<div class="highlight"><pre><span></span><span class="c1"># Then we’re in trouble!  The constructor</span>
-<span class="c1"># doesn’t accept x,y,z, but insists on</span>
-<span class="c1"># computing x,y,z itself from lat/lon:</span>
-
-<span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">,</span>
+<div class="highlight"><pre><span></span><span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">,</span>
              <span class="n">geoid</span><span class="o">=</span><span class="n">wgs72</span><span class="p">)</span>
+
+<span class="c1"># Then we’re in trouble!  The constructor</span>
+<span class="c1"># doesn’t accept x,y,z, but insists on</span>
+<span class="c1"># computing x,y,z itself from lat/lon.</span>
 </pre></div>
 
 <div class="highlight"><pre><span></span><span class="c1"># Best: give Place() a simple x,y,z constructor</span>
