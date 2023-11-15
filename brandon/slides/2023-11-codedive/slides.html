@@ -113,9 +113,9 @@ em {color: #095358}
 
 <p>Normal astronomers:</p>
 <ol>
-<li>Get funding</li>
+<li>Get <strong>funding</strong></li>
 <li>Sign up for observatory time</li>
-<li>Then the <em>observatory</em> uses positional<br>astronomy to compute angles<br>and observe the target</li>
+<li>Then the <em>observatory</em> uses positional <br>astronomy to compute angles and point <br>their instrument at the target</li>
 </ol>
 </div>
 
@@ -132,7 +132,7 @@ em {color: #095358}
 <p>But Skyfield’s job is <strong>positional astronomy</strong> itself:<br> give it a <em>time</em>, and it will tell you the <em>position</em><br> of a star, a planet, or a satellite</p>
 <div>
 
-<p>A <strong>single</strong> position is enough to aim a telescope, <br>and a script that examines a whole <em>series</em> <br>of positions can answer:</p>
+<p>A <strong>single</strong> position is enough to aim a telescope, <br>while a script that examines a whole <em>series</em> <br>of positions can answer:</p>
 <ul>
 <li>What time does Sun set this evening?</li>
 <li>When is the next New Moon?</li>
@@ -157,8 +157,8 @@ em {color: #095358}
 <p>But—how does Skyfield <em>work?</em> <br> <br>It reads NASA tables <br>of <em>x,y,z</em> planet positions then <br>turns those vectors into angles</p>
 <div class="highlight"><pre><span></span><span class="c1"># Q: Can you just subtract vectors?</span>
 
-<span class="err">earth_xyz = earth.at(t)</span>
 <span class="err">jupiter_xyz = jupiter.at(t)</span>
+<span class="err">earth_xyz = earth.at(t)</span>
 <span class="err">return jupiter_xyz - earth_xyz</span>
 
 <span class="c1"># </span>
@@ -166,8 +166,8 @@ em {color: #095358}
 
 <div class="highlight"><pre><span></span><span class="c1"># Q: Can you just subtract vectors?</span>
 
-<span class="err">earth_xyz = earth.at(t)</span>
 <span class="err">jupiter_xyz = jupiter.at(t)</span>
+<span class="err">earth_xyz = earth.at(t)</span>
 <span class="err">return jupiter_xyz - earth_xyz</span>
 
 <span class="c1"># A: No, it takes more work</span>
@@ -193,7 +193,7 @@ em {color: #095358}
     <span class="k">return</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
 </pre></div>
 
-<p>Light-time correction — Ole Rømer (Denmark) 1676 <br> <br>He was observing <strong>Jupiter</strong> <br>over the 13 months between <br>each conjunction with the Sun</p>
+<p>Light-time correction — Ole Rømer (Denmark) 1676 <br> <br>He was observing <strong>Jupiter</strong> <br>and its newly discovered moons</p>
 <div class="highlight"><pre><span></span><span class="err">                midnight</span>
 
 <span class="err">                   o →</span>
@@ -213,12 +213,13 @@ em {color: #095358}
 <p>Hypothesis:</p>
 <ul>
 <li>Copernicus and Galileo were <strong>right</strong>, the Earth moves</li>
-<li>Light <em>takes time to travel</em></li>
 <li>The Earth moves <strong>towards</strong> the morning sky</li>
+<li>Light <em>takes time to travel</em></li>
 </ul>
 </div>
 
-<p>Thus, the light-time delay to Jupiter <br>is getting <strong>shorter</strong> when it’s in the <br>morning sky and <em>longer</em> as it fades <br>into the evening sky <br> <br>Which makes <strong>Io</strong> look faster and slower</p>
+<p>Consequence: <br> <br>The light-time delay to Jupiter <br>is getting <em>shorter</em> when Juptier is in the <br>morning sky and we’re catching up, <br>so <strong>Io</strong> looks faster</p>
+<p>The light-time delay gets <em>longer</em> again <br>once we’ve passed Jupiter and left it behind <br>and it’s fading into the evening sky <br> <br>As the light-time delay stretches <br>longer, <strong>Io</strong> looks slower</p>
 <p>‘Light-time correction’ <br> <br>Right now, Jupiter is <strong>33.4 light-minutes</strong> away, <br>so Skyfield needs to use Jupiter’s position from <br><strong>33.4 minutes ago</strong> to generate coordinates</p>
 <table>
 <tr><td>Light-time correction <td>1676 Ole Rømer
@@ -481,8 +482,20 @@ em {color: #095358}
 </pre></div>
 
 <p>Q: Why? <br> <br>A: Because it traps us on a<br><strong>Parameter Treadmill</strong></p>
-<p>User<br> </p>
-<p>User<br>‘How do I ask for astrometric coordinates?’</p>
+<p>User<br> <br> </p>
+<p>User<br>‘How do I ask for <strong>astrometric</strong> coordinates?’ <br>(that skip <em>aberration</em> and <em>deflection</em>)</p>
+<div class="highlight"><pre><span></span><span class="c1">#</span>
+<span class="c1">#</span>
+
+<span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">planet</span><span class="p">):</span>
+    <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">earth_velocity</span> <span class="o">=</span> <span class="n">earth_at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">light_time_correct</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_xyz</span><span class="p">,</span> <span class="n">planet</span><span class="p">)</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">deflect</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="p">[</span><span class="n">sun</span><span class="p">,</span> <span class="n">jupiter</span><span class="p">,</span> <span class="n">saturn</span><span class="p">])</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">aberrate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">earth_velocity</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xyz_to_coordinates</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+<span class="c1">#</span>
+</pre></div>
+
 <div class="highlight"><pre><span></span><span class="c1"># How can we let the user skip aberration and</span>
 <span class="c1"># deflection, without breaking existing calls?</span>
 
@@ -687,16 +700,15 @@ em {color: #095358}
 
 <p>Habit #1: Method chain <br> <br>Parameter Treadmill ←→ LEGO bricks</p>
 <p>Habit #2: Configuration objects</p>
-<p>The Earth is an <em>oblate spheroid</em> <br> <br>The centrifugal force of our rotation <br>makes Earth’s radius at the equator <strong>larger</strong> <br>than Earth’s radius at the poles</p>
-<p>So an <em>x,y,z</em> vector from Earth’s center <br>to a city or observatory on its surface will <br>have a different radius depending on <strong>latitude</strong></p>
-<div class="highlight"><pre><span></span><span class="c1"># First version of Skyfield hard-coded</span>
-<span class="c1"># the standard WGS84 geoid as the way</span>
-<span class="c1"># to turn lat/lon into x,y,z</span>
-<span class="c1">#</span>
-<span class="c1"># radius = 6378137.0 m</span>
-<span class="c1"># flattening = 1/298.257223563</span>
+<p>The Earth is an <em>oblate spheroid</em> <br> <br>The centrifugal force of our rotation <br>makes the Earth’s equator bulge <strong>larger</strong> <br>than Earth’s radius at the poles</p>
+<p>So an <em>x,y,z</em> vector from Earth’s <br>center to a city or observatory will have a <br>different radius depending on <strong>latitude</strong></p>
+<p>Skyfield at first hard-coded the <br>standard WGS84 geoid parameters <br>for turning lat/lon into x,y,z <br> <br><em>radius</em> = 6378137.0 m <br><em>flattening</em> = 1/298.257223563</p>
+<div class="highlight"><pre><span></span><span class="c1"># But WGS84’s role was invisible.</span>
 
 <span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">wroc</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">wroc</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">wroc</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span>
+<span class="c1"># -&gt; 3856.2 1399.3 4867.4 km</span>
 </pre></div>
 
 <p>User<br> </p>
@@ -715,6 +727,7 @@ em {color: #095358}
 <span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">)</span>
 
 <span class="c1"># Problems:</span>
+<span class="c1">#</span>
 <span class="c1">#  Invisible action-at-a-distance</span>
 <span class="c1">#  Ruins thread safety</span>
 <span class="c1">#  Tightly couples tests</span>
@@ -734,14 +747,15 @@ em {color: #095358}
 <span class="p">)</span>
 </pre></div>
 
-<div class="highlight"><pre><span></span><span class="c1"># Better: instead of accepting a name,</span>
+<div class="highlight"><pre><span></span><span class="c1"># Even better: instead of accepting a name,</span>
 <span class="c1"># accept a Geoid object itself!</span>
 
 <span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">,</span>
              <span class="n">geoid</span><span class="o">=</span><span class="n">wgs72</span><span class="p">)</span>
 
-<span class="c1"># This lets callers create Geoid objects</span>
-<span class="c1"># without needing any global registry:</span>
+<span class="c1"># Have the caller simply build and pass in</span>
+<span class="c1"># their own Geoid struct, and we won’t even</span>
+<span class="c1"># need a global registry:</span>
 
 <span class="n">wgs72</span> <span class="o">=</span> <span class="n">Geoid</span><span class="p">(</span><span class="n">radius_m</span><span class="o">=</span><span class="mf">6378135.0</span><span class="p">,</span>
               <span class="n">flattening</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mf">298.26</span><span class="p">)</span>
@@ -749,8 +763,10 @@ em {color: #095358}
 
 <p>User<br> <br> </p>
 <p>User<br>‘What if I already have<br>the x,y,z for a Place?’</p>
-<div class="highlight"><pre><span></span><span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">,</span>
-             <span class="n">geoid</span><span class="o">=</span><span class="n">wgs72</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="n">wroc</span> <span class="o">=</span> <span class="n">Place</span><span class="p">(</span><span class="n">lat</span><span class="o">=+</span><span class="mf">51.1079</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">17.0385</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">wroc</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">wroc</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">wroc</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span>
+<span class="c1"># -&gt; 3856.2 1399.3 4867.4 km</span>
 
 <span class="c1"># Then we’re in trouble!  The constructor</span>
 <span class="c1"># doesn’t accept x,y,z, but insists on</span>
@@ -792,11 +808,17 @@ em {color: #095358}
 <span class="c1"># to make polar motion global.</span>
 
 <span class="n">load_polar_motion</span><span class="p">(</span><span class="s1">&#39;finals2000A.all&#39;</span><span class="p">)</span>
+
+<span class="c1"># Or, I could have gotten on</span>
+<span class="c1"># the Parameter Treadmill.</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">load_file</span><span class="p">(</span><span class="s1">&#39;finals2000A.all&#39;</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s1">&#39;utc&#39;</span><span class="p">,</span> <span class="mi">2023</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">xp_yp</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 
-<div class="highlight"><pre><span></span><span class="c1"># Instead, Skyfield has you build a</span>
-<span class="c1"># ‘Timescale’ that loads IERS data and</span>
-<span class="c1"># serves as a factory for ‘Time’ objects:</span>
+<div class="highlight"><pre><span></span><span class="c1"># Instead, Skyfield code uses a ‘configuration</span>
+<span class="c1"># object’ — a ‘Timescale’ that loads IERS data</span>
+<span class="c1"># and serves as a factory for ‘Time’ objects:</span>
 
 <span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
@@ -837,14 +859,12 @@ em {color: #095358}
     <span class="o">...</span>
 </pre></div>
 
-<p>Solution: <br>I went <strong>full LEGO</strong> <br> <br>Because this isn’t about the relationship <br>between different parts of <em>my</em> library <br> <br>It’s about ‘foreign affairs’ <br>with <em>another</em> library, <strong>matplotlib</strong></p>
-<p>So, Skyfield’s docs provide a <strong>full working example</strong> <br>of how to (a) ask Skyfield for coordinates, <br>then (b) go plot the star chart <em>yourself</em></p>
+<p>Solution: <br>I went <strong>full LEGO</strong> <br> <br>Because this isn’t about the relationship <br>between different parts of <em>my</em> library <br> <br>This is about ‘foreign affairs’ <br>with <em>another</em> library, <strong>matplotlib</strong></p>
+<p>So, instead, Skyfield’s docs <br>provide a <strong>full working example</strong> of <br>how to (a) ask Skyfield for coordinates, <br>then (b) go plot the star chart <em>yourself</em></p>
 <img src="plot-example-code.png">
 
-<img src="neowise_star_chart.png">
-
 <p>The magic of <em>example code</em> is—</p>
-<p>The user can cut-and-paste the example into their <br>own project, then change <em>anything they want</em> <br> </p>
+<p>The user can cut-and-paste the example into their <br>own project, then change <em>anything they want</em> <br>•</p>
 <p>The user can cut-and-paste the example into their <br>own project, then change <em>anything they want</em> <br><strong>without having to ask me</strong></p>
 <p>So, whenever possible, <em>avoid</em> getting in the way <br>of a conversation between the user’s code <br>and <strong>another complicated library</strong></p>
 <div class="highlight"><pre><span></span><span class="c1"># The philosophy of ‘getting out of the way’</span>
@@ -859,15 +879,14 @@ em {color: #095358}
 <p>User<br> </p>
 <p>User <br>‘But I need to save it to a database, not a file’</p>
 <p>User <br>‘But I need to send it over a socket’</p>
-<div class="highlight"><pre><span></span><span class="c1"># Those are impossible if we</span>
-<span class="c1"># hard-coded the decision that we</span>
-<span class="c1"># always write to a file.</span>
+<div class="highlight"><pre><span></span><span class="c1"># The user can’t skip saving to a file if</span>
+<span class="c1"># we hard-coded that inside the function.</span>
 
 <span class="n">compute_data</span><span class="p">(</span><span class="n">out</span><span class="o">=</span><span class="s1">&#39;table.csv&#39;</span><span class="p">)</span>
 </pre></div>
 
 <div class="highlight"><pre><span></span><span class="c1"># Instead, leave I/O to the user!</span>
-<span class="c1"># Let the user open the file:</span>
+<span class="c1"># Let the user go open the file:</span>
 
 <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;table.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>  <span class="c1"># user</span>
 
@@ -876,7 +895,7 @@ em {color: #095358}
 <span class="n">compute_data</span><span class="p">(</span><span class="n">out</span><span class="o">=</span><span class="nb">file</span><span class="p">)</span>         <span class="c1"># your routine</span>
 </pre></div>
 
-<p>Accepting a <em>file object</em> argument lets the user <br>swap in another object that writes to <br>a database, a socket, or wherever <br> <br><strong>They</strong> get full control, <br>and <em>you</em> escape the Parameter Treadmill!</p>
+<p>A <em>file object</em> argument always leaves <br>the user <strong>free</strong> to swap in another object <br>that writes to a database/socket/whatever <br> <br><strong>They</strong> get full control, and <br><em>you</em> escape the Parameter Treadmill!</p>
 <p>Habit #3: Healthy Boundaries <br> <br>Return control <em>as soon as possible</em> <br>and let the <strong>caller</strong> decide what happens next</p>
 <div>
 
