@@ -24,6 +24,56 @@
 <p>See <a class="reference internal" href="almanac.html"><span class="doc">Almanac Computation</span></a> for a guide to using these routines to search for the
 times of sunrise, sunset, and the phases of the moon.</p>
 <dl class="function">
+<dt id="skyfield.almanac.find_risings">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">find_risings</code><span class="sig-paren">(</span><em>observer</em>, <em>target</em>, <em>start_time</em>, <em>end_time</em>, <em>horizon_degrees=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.find_risings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the times at which a target rises above the eastern horizon.</p>
+<p>Given an observer on the Earth’s surface, a target like the Sun or
+Moon or a planet, and start and stop <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a>
+objects, this returns two arrays that have the same length.  The
+first is a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> listing the moments at
+which the target rises.  The second array has <code class="docutils literal notranslate"><span class="pre">True</span></code> for each time
+the target really crosses the horizon, and <code class="docutils literal notranslate"><span class="pre">False</span></code> when the target
+merely transits without actually touching the horizon.</p>
+<p>See <a class="reference internal" href="almanac.html#horizon-degrees"><span class="std std-ref">Computing your own refraction angle</span></a> for how to use the <code class="docutils literal notranslate"><span class="pre">horizon_degrees</span></code>
+argument.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.47.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.almanac.find_settings">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">find_settings</code><span class="sig-paren">(</span><em>observer</em>, <em>target</em>, <em>start_time</em>, <em>end_time</em>, <em>horizon_degrees=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.find_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the times at which a target sets below the western horizon.</p>
+<p>Given an observer on the Earth’s surface, a target like the Sun or
+Moon or a planet, and start and stop <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a>
+objects, this returns two arrays that have the same length.  The
+first is a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> listing the moments at
+which the target sets.  The second array has <code class="docutils literal notranslate"><span class="pre">True</span></code> for each time
+the target really crosses the horizon, and <code class="docutils literal notranslate"><span class="pre">False</span></code> when the target
+merely transits without actually touching the horizon.</p>
+<p>See <a class="reference internal" href="almanac.html#horizon-degrees"><span class="std std-ref">Computing your own refraction angle</span></a> for how to use the <code class="docutils literal notranslate"><span class="pre">horizon_degrees</span></code>
+argument.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.47.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.almanac.find_transits">
+<code class="descclassname">skyfield.almanac.</code><code class="descname">find_transits</code><span class="sig-paren">(</span><em>observer</em>, <em>target</em>, <em>start_time</em>, <em>end_time</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.find_transits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the times at which a target transits across the meridian.</p>
+<p>Given an observer on the Earth’s surface, a target like the Sun or
+Moon or a planet, and start and stop <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a>
+objects, this returns a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> array
+listing the moments at which the target transits across the
+meridian.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.47.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="skyfield.almanac.find_discrete">
 <code class="descclassname">skyfield.almanac.</code><code class="descname">find_discrete</code><span class="sig-paren">(</span><em>start_time</em>, <em>end_time</em>, <em>f</em>, <em>epsilon=1.1574074074074074e-08</em>, <em>num=12</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.almanac.find_discrete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the times at which a discrete function of time changes value.</p>
@@ -103,7 +153,7 @@ the horizon, which accounts for both its apparent radius of around
 refraction on average lifts the image of the Sun.</p>
 <p>If you need to provide a custom value for refraction, adjust the
 estimate of the Sun’s radius, or account for a vantage point above
-the Earth’s surface, see <a class="reference internal" href="almanac.html#risings-and-settings"><span class="std std-ref">Risings and Settings</span></a> to learn about
+the Earth’s surface, see <a class="reference internal" href="almanac.html#risings-and-settings"><span class="std std-ref">Risings and settings</span></a> to learn about
 the more versatile <a class="reference internal" href="#skyfield.almanac.risings_and_settings" title="skyfield.almanac.risings_and_settings"><code class="xref py py-func docutils literal notranslate"><span class="pre">risings_and_settings()</span></code></a>
 routine.</p>
 </dd></dl>
@@ -130,7 +180,7 @@ a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title
 <p>This returns a function taking a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a>
 argument returning <code class="docutils literal notranslate"><span class="pre">True</span></code> if the body’s altazimuth altitude angle
 plus <code class="docutils literal notranslate"><span class="pre">radius_degrees</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">horizon_degrees</span></code>, else
-<code class="docutils literal notranslate"><span class="pre">False</span></code>.  See <a class="reference internal" href="almanac.html#risings-and-settings"><span class="std std-ref">Risings and Settings</span></a> to learn about how to
+<code class="docutils literal notranslate"><span class="pre">False</span></code>.  See <a class="reference internal" href="almanac.html#risings-and-settings"><span class="std std-ref">Risings and settings</span></a> to learn about how to
 search for risings and settings, and to see more about using the
 parameters <code class="docutils literal notranslate"><span class="pre">horizon_degrees</span></code> and <code class="docutils literal notranslate"><span class="pre">radius_degrees</span></code>.</p>
 </dd></dl>

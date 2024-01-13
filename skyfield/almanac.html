@@ -21,46 +21,100 @@
     
     <div class="section" id="almanac-computation">
 <h1>Almanac Computation<a class="headerlink" href="#almanac-computation" title="Permalink to this headline">¶</a></h1>
-<p>The highest-level routines in Skyfield let you search back and forward
-through time for the exact moments when the Earth, Sun, and Moon are in
-special configurations.</p>
-<p>They all require you to start by loading up a timescale object and also
-an ephemeris file that provides positions from the planets:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">api</span>
-
-<span class="n">ts</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
-<span class="n">eph</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
-</pre></div>
+<p>To help you navigate, here are the topics covered on this page:</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#rounding-time-to-the-nearest-minute" id="id4">Rounding time to the nearest minute</a></li>
+<li><a class="reference internal" href="#risings-and-settings" id="id5">Risings and settings</a><ul>
+<li><a class="reference internal" href="#sunrise-and-sunset" id="id6">Sunrise and Sunset</a></li>
+<li><a class="reference internal" href="#detecting-polar-day-and-polar-night" id="id7">Detecting polar day and polar night</a></li>
+<li><a class="reference internal" href="#moonrise-and-moonset" id="id8">Moonrise and moonset</a></li>
+<li><a class="reference internal" href="#planet-rising-and-setting" id="id9">Planet rising and setting</a></li>
+<li><a class="reference internal" href="#computing-your-own-refraction-angle" id="id10">Computing your own refraction angle</a></li>
+<li><a class="reference internal" href="#elevated-vantage-points" id="id11">Elevated vantage points</a></li>
+<li><a class="reference internal" href="#when-a-right-ascension-and-declination-rises-and-sets" id="id12">When a right ascension and declination rises and sets</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#the-seasons" id="id13">The Seasons</a></li>
+<li><a class="reference internal" href="#phases-of-the-moon" id="id14">Phases of the Moon</a></li>
+<li><a class="reference internal" href="#lunar-nodes" id="id15">Lunar Nodes</a></li>
+<li><a class="reference internal" href="#opposition-and-conjunction" id="id16">Opposition and Conjunction</a></li>
+<li><a class="reference internal" href="#meridian-transits" id="id17">Meridian Transits</a></li>
+<li><a class="reference internal" href="#legacy-transit-routine" id="id18">Legacy transit routine</a></li>
+<li><a class="reference internal" href="#legacy-rising-and-setting-routines" id="id19">Legacy rising and setting routines</a></li>
+<li><a class="reference internal" href="#twilight" id="id20">Twilight</a></li>
+<li><a class="reference internal" href="#solar-terms" id="id21">Solar terms</a></li>
+<li><a class="reference internal" href="#lunar-eclipses" id="id22">Lunar eclipses</a></li>
+</ul>
 </div>
-<p>Then, load the “almanac” module.</p>
+<p>Here are the imports and objects that will drive the examples below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">almanac</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">N</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">wgs84</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">sun</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Sun&#39;</span><span class="p">]</span>
+<span class="n">bluffton</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">40.8939</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="mf">83.8917</span> <span class="o">*</span> <span class="n">W</span><span class="p">)</span>
+<span class="n">observer</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Earth&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">bluffton</span>
 </pre></div>
 </div>
-<p>Note that almanac computation can be slow and expensive.  To determine
-the moment of sunrise, for example, Skyfield has to search back and
-forth through time asking for the altitude of the Sun over and over
-until it finally works out the moment at which it crests the horizon.</p>
+<p>Note a distinction:</p>
+<ul>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">bluffton</span></code> — this <a class="reference internal" href="api-topos.html#skyfield.toposlib.GeographicPosition" title="skyfield.toposlib.GeographicPosition"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeographicPosition</span></code></a>
+computes the vector from the Earth’s center
+to a specific geographic location.
+Unless an elevation is specified,
+the vector’s length will be the Earth’s radius,
+which varies from 6,357&nbsp;km at the pole to 6,378&nbsp;km at the equator.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">observer</span></code> — this computes the much larger vector
+from the center of the Solar System to the geographic position.</p>
+<p>Almanac routines typically need to be passed this full vector,
+not merely a geographic position.
+Depending on the season (Earth is closest to the Sun in early January),
+it will be somewhere close to 1&nbsp;au in length.</p>
+</li>
+</ul>
+<p>Beware that almanac computation can be expensive.
+As almanac routines search backwards and forwards through time
+for particular circumstances,
+they have to repeatedly recompute
+the positions of the Earth and other bodies.</p>
 <div class="section" id="rounding-time-to-the-nearest-minute">
-<h2>Rounding time to the nearest minute<a class="headerlink" href="#rounding-time-to-the-nearest-minute" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Rounding time to the nearest minute</a><a class="headerlink" href="#rounding-time-to-the-nearest-minute" title="Permalink to this headline">¶</a></h2>
 <p>If you compare almanac results to official sources like the <a class="reference external" href="https://aa.usno.navy.mil/data/index">United
 States Naval Observatory</a>, the
 printed time will often differ because the Naval Observatory results are
 rounded to the nearest minute — any time with <code class="docutils literal notranslate"><span class="pre">:30</span></code> or more seconds at
-the end gets named as the next minute.</p>
-<p>If you try to display a date that needs to be rounded to the nearest
-minute by simply stopping at <code class="docutils literal notranslate"><span class="pre">%M</span></code> and leaving off the <code class="docutils literal notranslate"><span class="pre">%S</span></code> seconds,
-the output will be one minute too early.  For example, the Naval
-Observatory would round <code class="docutils literal notranslate"><span class="pre">14:59</span></code> up to <code class="docutils literal notranslate"><span class="pre">:15</span></code> in the following date.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">59</span><span class="p">)</span>
-<span class="n">dt</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_datetime</span><span class="p">()</span>
+the end gets rounded up to the next minute.</p>
+<p>The Skyfield method <a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_strftime" title="skyfield.timelib.Time.utc_strftime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">utc_strftime()</span></code></a>
+performs this rounding automatically if you don’t ask for the seconds to
+be displayed:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mf">45.9</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Microseconds:&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Nearest second:&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Nearest minute:&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Microseconds: 2023-08-10 06:21:45.900000
+Nearest second: 2023-08-10 06:21:46
+Nearest minute: 2023-08-10 06:22
+</pre></div>
+</div>
+<p>But beware that the rounding won’t happen automatically if you are doing
+your own formatting using Python’s built-in <code class="docutils literal notranslate"><span class="pre">datetime</span></code> objects.  For
+example, if you stop with <code class="docutils literal notranslate"><span class="pre">%M</span></code>, then the seconds are simply ignored,
+instead of being used for rounding:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dt</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_datetime</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2018-09-10 05:14
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2023-08-10 06:21
 </pre></div>
 </div>
-<p>To do the same rounding yourself, simply add 30 seconds to the time
-before truncating the seconds.</p>
+<p>To fix the problem and round a Python <code class="docutils literal notranslate"><span class="pre">datetime</span></code> to the nearest
+minute, try manually adding 30&nbsp;seconds to the time before displaying it:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
 
 <span class="k">def</span> <span class="nf">nearest_minute</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
@@ -70,13 +124,273 @@ before truncating the seconds.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2018-09-10 05:15
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2023-08-10 06:22
 </pre></div>
 </div>
 <p>The results should then agree with the tables produced by the USNO.</p>
 </div>
+<div class="section" id="risings-and-settings">
+<span id="id1"></span><h2><a class="toc-backref" href="#id5">Risings and settings</a><a class="headerlink" href="#risings-and-settings" title="Permalink to this headline">¶</a></h2>
+<p>Skyfield can compute when a given body rises and sets
+for an observer at the Earth’s surface.
+The routines are designed for bodies
+at least as far away as Moon,
+that rise and set about once a day,
+so it will be caught off-guard
+if you pass it something fast like an Earth satellite.
+For that case, see <a class="reference internal" href="earth-satellites.html#satellite-rising-and-setting"><span class="std std-ref">Finding when a satellite rises and sets</span></a>.</p>
+<div class="section" id="sunrise-and-sunset">
+<h3><a class="toc-backref" href="#id6">Sunrise and Sunset</a><a class="headerlink" href="#sunrise-and-sunset" title="Permalink to this headline">¶</a></h3>
+<p>Skyfield uses the
+<a class="reference external" href="https://aa.usno.navy.mil/faq/RST_defs">official definition of sunrise and sunset</a>
+from the United States Naval Observatory,
+which defines them as the moment when the center
+of the sun is 50&nbsp;arcminutes below the horizon,
+to account for both the average solar radius of 16&nbsp;arcminutes
+and for roughly 34&nbsp;arcminutes of atmospheric refraction at the horizon.
+Here’s how to ask for the sunrises between a given start and end time:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_risings</span><span class="p">(</span><span class="n">observer</span><span class="p">,</span> <span class="n">sun</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;2018-09-12 11:13:12Z&#39;, &#39;2018-09-13 11:14:12Z&#39;]
+[ True  True]
+</pre></div>
+</div>
+<p>And here’s how to ask for the sunsets:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_settings</span><span class="p">(</span><span class="n">observer</span><span class="p">,</span> <span class="n">sun</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;2018-09-12 23:49:38Z&#39;, &#39;2018-09-13 23:47:56Z&#39;]
+[ True  True]
+</pre></div>
+</div>
+<p>Normally every value in the second array will be <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+indicating that a rising or setting was successfully detected.
+See the next section for an example where the value is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+<div class="section" id="detecting-polar-day-and-polar-night">
+<span id="polar-day-and-night"></span><h3><a class="toc-backref" href="#id7">Detecting polar day and polar night</a><a class="headerlink" href="#detecting-polar-day-and-polar-night" title="Permalink to this headline">¶</a></h3>
+<p>In the Arctic and Antarctic,
+there will be summer days when the sun never sets,
+and winter days when the sun never rises.
+On such days the second array returned by the rising and setting routines
+will have the value <code class="docutils literal notranslate"><span class="pre">False</span></code> instead of <code class="docutils literal notranslate"><span class="pre">True</span></code>.
+The time returned will instead be that of transit,
+whether that takes place above or below the horizon.
+For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">harra_sweden</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">67.4066</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="mf">20.0997</span> <span class="o">*</span> <span class="n">E</span><span class="p">)</span>
+<span class="n">harra_observer</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Earth&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">harra_sweden</span>
+
+<span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">26</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_risings</span><span class="p">(</span><span class="n">harra_observer</span><span class="p">,</span> <span class="n">sun</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
+
+<span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">harra_observer</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">altaz</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">alti</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="n">alt</span><span class="o">.</span><span class="n">degrees</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{:5}</span><span class="s1"> </span><span class="si">{:.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ti</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">yi</span><span class="p">),</span> <span class="n">alti</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2022-12-18 10:22:54Z True  -0.8333
+2022-12-19 10:29:21Z True  -0.8333
+2022-12-20 10:37:06Z False -0.8387
+2022-12-21 10:37:36Z False -0.8464
+2022-12-22 10:38:06Z False -0.8461
+2022-12-23 10:38:36Z False -0.8380
+2022-12-24 10:31:28Z True  -0.8333
+2022-12-25 10:26:08Z True  -0.8333
+</pre></div>
+</div>
+<p>This output shows that right around the winter solstice,
+there are four days on which the Sun never quite reaches the horizon,
+but is at least a few fractions of a degree below the altitude of -0.8333°
+that would qualify for the USNO definition of sunrise.
+So Skyfield instead returns the moment when the Sun is closest to the horizon,
+with the accompanying value <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+<div class="section" id="moonrise-and-moonset">
+<h3><a class="toc-backref" href="#id8">Moonrise and moonset</a><a class="headerlink" href="#moonrise-and-moonset" title="Permalink to this headline">¶</a></h3>
+<p>Skyfield uses the
+<a class="reference external" href="https://aa.usno.navy.mil/faq/RST_defs">official definition of moonrise and moonset</a>
+from the United States Naval Observatory:
+the moment when the top edge of the Moon
+is exactly 34&nbsp;arcminutes below the horizon,
+to correct for atmospheric refraction.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">moon</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Moon&#39;</span><span class="p">]</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">27</span><span class="p">)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">29</span><span class="p">)</span>
+
+<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_risings</span><span class="p">(</span><span class="n">observer</span><span class="p">,</span> <span class="n">moon</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Moonrises (UTC):&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+
+<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_settings</span><span class="p">(</span><span class="n">observer</span><span class="p">,</span> <span class="n">moon</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Moonsets (UTC):&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Moonrises (UTC): [&#39;2023-12-27 22:40:11Z&#39;, &#39;2023-12-28 23:43:48Z&#39;]
+Moonsets (UTC): [&#39;2023-12-27 13:54:47Z&#39;, &#39;2023-12-28 14:39:33Z&#39;]
+</pre></div>
+</div>
+<p>Read the previous section to learn about the Boolean array <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
+</div>
+<div class="section" id="planet-rising-and-setting">
+<h3><a class="toc-backref" href="#id9">Planet rising and setting</a><a class="headerlink" href="#planet-rising-and-setting" title="Permalink to this headline">¶</a></h3>
+<p>The rising and setting routines also work for planets.
+To account for atmospheric refraction under typical conditions,
+Skyfield will look for the moment
+when the center of the planet’s disc
+is exactly 34&nbsp;arcminutes below the horizon.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_risings</span><span class="p">(</span><span class="n">observer</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Mars&#39;</span><span class="p">],</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mars rises:&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+
+<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_settings</span><span class="p">(</span><span class="n">observer</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Mars&#39;</span><span class="p">],</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mars sets: &#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Mars rises: [&#39;2020-02-01 09:29:16Z&#39;, &#39;2020-02-02 09:28:34Z&#39;]
+Mars sets:  [&#39;2020-02-01 18:42:57Z&#39;, &#39;2020-02-02 18:41:41Z&#39;]
+</pre></div>
+</div>
+<p>Read the previous section <a class="reference internal" href="#polar-day-and-night"><span class="std std-ref">Detecting polar day and polar night</span></a>
+to learn about the Boolean array <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
+</div>
+<div class="section" id="computing-your-own-refraction-angle">
+<span id="horizon-degrees"></span><h3><a class="toc-backref" href="#id10">Computing your own refraction angle</a><a class="headerlink" href="#computing-your-own-refraction-angle" title="Permalink to this headline">¶</a></h3>
+<p>Atmospheric refraction makes bodies at the horizon
+appear slightly higher than they would be otherwise.
+That’s why Skyfield doesn’t wait until a body’s altazimuth coordinates
+have reached 0.0° altitude
+to proclaim that it has risen.
+Instead, as explained in the previous sections,
+Skyfield goes ahead and counts a body as risen
+as soon as it has reached −0°34′ altitude.</p>
+<p>But refraction varies with atmospheric conditions.
+To supply your own estimate
+of the altitude of the visible horizon,
+pass the optional <code class="docutils literal notranslate"><span class="pre">horizon_degrees</span></code> argument
+to <a class="reference internal" href="api-almanac.html#skyfield.almanac.find_risings" title="skyfield.almanac.find_risings"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_risings()</span></code></a>
+and <a class="reference internal" href="api-almanac.html#skyfield.almanac.find_settings" title="skyfield.almanac.find_settings"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_settings()</span></code></a>
+with the target altitude angle you want to use instead.</p>
+<p>To help you build an estimate,
+Skyfield provides a small function
+that takes an altitude angle, the temperature, and the pressure,
+and returns a standard United States Naval Observatory estimate
+for the angle of atmospheric refraction.
+Here’s an example of how to use it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.earthlib</span> <span class="kn">import</span> <span class="n">refraction</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">refraction</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">temperature_C</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">pressure_mbar</span><span class="o">=</span><span class="mf">1030.0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Refraction at the horizon: </span><span class="si">%.2f</span><span class="s1"> arcminutes</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="mf">60.0</span><span class="p">))</span>
+
+<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_risings</span><span class="p">(</span><span class="n">observer</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Mars&#39;</span><span class="p">],</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span>
+                            <span class="n">horizon_degrees</span><span class="o">=-</span><span class="n">r</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mars rises:&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+
+<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_settings</span><span class="p">(</span><span class="n">observer</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Mars&#39;</span><span class="p">],</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span>
+                             <span class="n">horizon_degrees</span><span class="o">=-</span><span class="n">r</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mars sets: &#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Refraction at the horizon: 34.53 arcminutes
+
+Mars rises: [&#39;2020-02-01 09:29:13Z&#39;, &#39;2020-02-02 09:28:30Z&#39;]
+Mars sets:  [&#39;2020-02-01 18:43:00Z&#39;, &#39;2020-02-02 18:41:45Z&#39;]
+</pre></div>
+</div>
+<p>If you want to account for both atmospheric refraction
+and also the radius of the target body,
+then simply supply an even more negative value for <code class="docutils literal notranslate"><span class="pre">horizon_degrees</span></code>
+that combines the correction for refraction
+with the radius of the body’s visible disc in the sky.</p>
+</div>
+<div class="section" id="elevated-vantage-points">
+<h3><a class="toc-backref" href="#id11">Elevated vantage points</a><a class="headerlink" href="#elevated-vantage-points" title="Permalink to this headline">¶</a></h3>
+<p>Rising and setting predictions usually assume a flat local horizon
+that does not vary with elevation.
+Yes, Denver is the Mile High City,
+but it sees the sun rise against a local horizon that’s also a mile high.
+Since the city’s high elevation
+is matched by the high elevation of the terrain around it,
+the horizon winds up in the same place it would be for a city at sea level.</p>
+<p>But sometimes you need to account for a viewpoint’s
+local prominence above the surrounding terrain.
+Some observatories, for example, are located on mountaintops
+that are much higher than the terrain that forms their horizon.
+And Earth satellites can be hundreds of kilometers
+above the surface of the Earth that produces their sunrises and sunsets.</p>
+<p>You can account for an observer’s prominence above their horizon’s terrain
+by setting an artificially negative value for <code class="docutils literal notranslate"><span class="pre">horizon_degrees</span></code>.
+If we consider the Earth to be approximately a sphere,
+then we can use a bit of trigonometry
+to estimate the position of the horizon for an observer at altitude:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">arccos</span>
+<span class="kn">from</span> <span class="nn">skyfield.units</span> <span class="kn">import</span> <span class="n">Angle</span>
+
+<span class="c1"># When does the Sun rise in the ionosphere’s F-layer, 300km up?</span>
+
+<span class="n">altitude_m</span> <span class="o">=</span> <span class="mf">300e3</span>
+<span class="n">earth_radius_m</span> <span class="o">=</span> <span class="mf">6378136.6</span>
+<span class="n">side_over_hypotenuse</span> <span class="o">=</span> <span class="n">earth_radius_m</span> <span class="o">/</span> <span class="p">(</span><span class="n">earth_radius_m</span> <span class="o">+</span> <span class="n">altitude_m</span><span class="p">)</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="n">radians</span> <span class="o">=</span> <span class="o">-</span><span class="n">arccos</span><span class="p">(</span><span class="n">side_over_hypotenuse</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The horizon from 300km up is at </span><span class="si">%.2f</span><span class="s1"> degrees&#39;</span> <span class="o">%</span> <span class="n">h</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span>
+
+<span class="n">solar_radius_degrees</span> <span class="o">=</span> <span class="mf">0.25</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_risings</span><span class="p">(</span>
+    <span class="n">observer</span><span class="p">,</span> <span class="n">sun</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span>
+    <span class="n">horizon_degrees</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">degrees</span> <span class="o">-</span> <span class="n">solar_radius_degrees</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;At&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="s1">&#39;the limb of the Sun crests the horizon&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>The horizon from 300km up is at -17.24 degrees
+At 2020-02-01 11:14:57Z the limb of the Sun crests the horizon
+</pre></div>
+</div>
+<p>Beware a possible source of confusion:
+some people use the word <em>altitude</em>
+for a geographic site’s elevation in meters above sea level.
+And other people — primarily Earth satellite folks —
+use the term <em>elevation</em>
+for degrees above or below the horizon,
+which Skyfield instead calls <em>altitude</em>
+(because that’s what the syllable <em>alt-</em> stands for
+in the name <em>altazimuth coordinate system</em>).</p>
+</div>
+<div class="section" id="when-a-right-ascension-and-declination-rises-and-sets">
+<h3><a class="toc-backref" href="#id12">When a right ascension and declination rises and sets</a><a class="headerlink" href="#when-a-right-ascension-and-declination-rises-and-sets" title="Permalink to this headline">¶</a></h3>
+<p>If you are interested in finding the times
+when a fixed point in the sky rises and sets,
+simply create a star object with the coordinates
+of the position you are interested in
+(see <a class="reference internal" href="stars.html"><span class="doc">Stars and Distant Objects</span></a>)
+and then call the routines described above.
+Here, for example, is the rising time for the Galactic Center:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">Star</span>
+
+<span class="n">galactic_center</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">ra_hours</span><span class="o">=</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mf">40.04</span><span class="p">),</span>
+                       <span class="n">dec_degrees</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">29</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">28.1</span><span class="p">))</span>
+
+<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_risings</span><span class="p">(</span><span class="n">observer</span><span class="p">,</span> <span class="n">galactic_center</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The Galactic Center rises at&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>The Galactic Center rises at 2020-02-01 10:29:00Z
+</pre></div>
+</div>
+</div>
+</div>
 <div class="section" id="the-seasons">
-<h2>The Seasons<a class="headerlink" href="#the-seasons" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id13">The Seasons</a><a class="headerlink" href="#the-seasons" title="Permalink to this headline">¶</a></h2>
 <p>Create a start time and an end time to ask for all of the equinoxes and
 solstices that fall in between.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -102,7 +416,7 @@ it names the equinoxes and solstices by the month in which they occur —
 so the <code class="docutils literal notranslate"><span class="pre">March</span> <span class="pre">Equinox</span></code>, for example, is followed by the <code class="docutils literal notranslate"><span class="pre">June</span> <span class="pre">Solstice</span></code>.</p>
 </div>
 <div class="section" id="phases-of-the-moon">
-<h2>Phases of the Moon<a class="headerlink" href="#phases-of-the-moon" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id14">Phases of the Moon</a><a class="headerlink" href="#phases-of-the-moon" title="Permalink to this headline">¶</a></h2>
 <p>The phases of the Moon are the same for everyone on Earth,
 so you don’t need to specify the longitude and latitude of your location.
 Simply ask for the current phase of the Moon.
@@ -139,7 +453,7 @@ Quarter.  You can use the array <code class="docutils literal notranslate"><span
 each phase.</p>
 </div>
 <div class="section" id="lunar-nodes">
-<span id="id1"></span><h2>Lunar Nodes<a class="headerlink" href="#lunar-nodes" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2><a class="toc-backref" href="#id15">Lunar Nodes</a><a class="headerlink" href="#lunar-nodes" title="Permalink to this headline">¶</a></h2>
 <p>The Moon’s ascending node and descending node are the moments each lunar
 month when the Moon crosses the plane of Earth’s orbit and eclipses are
 possible.</p>
@@ -159,7 +473,7 @@ possible.</p>
 </div>
 </div>
 <div class="section" id="opposition-and-conjunction">
-<span id="oppositions-conjunctions"></span><h2>Opposition and Conjunction<a class="headerlink" href="#opposition-and-conjunction" title="Permalink to this headline">¶</a></h2>
+<span id="oppositions-conjunctions"></span><h2><a class="toc-backref" href="#id16">Opposition and Conjunction</a><a class="headerlink" href="#opposition-and-conjunction" title="Permalink to this headline">¶</a></h2>
 <p>The moment at which a planet is in opposition with the Sun or in
 conjunction with the Sun is when their ecliptic longitudes are at 0° or
 180° difference.</p>
@@ -195,21 +509,48 @@ indicating an inferior conjunction and 1 a superior conjunction.</li>
 </ul>
 </div>
 <div class="section" id="meridian-transits">
-<span id="transits"></span><h2>Meridian Transits<a class="headerlink" href="#meridian-transits" title="Permalink to this headline">¶</a></h2>
+<span id="transits"></span><h2><a class="toc-backref" href="#id17">Meridian Transits</a><a class="headerlink" href="#meridian-transits" title="Permalink to this headline">¶</a></h2>
 <p>Every day the Earth’s rotation
 swings the sky through nearly 360°,
 leaving the celestial poles stationary
 while bringing each star and planet in turn
 across your <em>meridian</em> —
-the “line of longitude” in the sky above you
-that runs from the South Pole to the North Pole
-through the zenith point directly above your location on Earth.
-You can ask Skyfield for the times at which a body
-crosses your meridian,
-and then the antimeridian on the opposite side of the celestial globe:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bluffton</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="o">+</span><span class="mf">40.8939</span><span class="p">,</span> <span class="o">-</span><span class="mf">83.8917</span><span class="p">)</span>
+the line of right ascension in the sky above you
+that runs from the South Pole to the North Pole through your local zenith.</p>
+<p>You can ask Skyfield for the times at which a body
+crosses your meridian:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_transits</span><span class="p">(</span><span class="n">observer</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Mars&#39;</span><span class="p">],</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
 
-<span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;2020-11-06 03:32&#39;, &#39;2020-11-07 03:28&#39;]
+</pre></div>
+</div>
+<p>Observers often think of transit as the moment
+when an object is highest in the sky,
+but that’s only roughly true.
+At very high precision,
+if the body has any north or south velocity
+then its moment of highest altitude will be slightly earlier or later.</p>
+<p>Bodies near the poles are exceptions to the general rule
+that a body is visible at transit but below the horizon at antitransit.
+For a body that’s circumpolar from your location,
+transit and antitransit are both moments of visibility,
+when it stands above and below the pole.
+And objects close to the opposite pole will always be below the horizon,
+even as they invisibly transit your line of longitude
+down below your horizon.</p>
+</div>
+<div class="section" id="legacy-transit-routine">
+<h2><a class="toc-backref" href="#id18">Legacy transit routine</a><a class="headerlink" href="#legacy-transit-routine" title="Permalink to this headline">¶</a></h2>
+<p>Skyfield has an older mechanism for detecting transits
+that isn’t as fast as the function described in the previous section,
+but it also returns the moments of anti-transit,
+when a body crosses the line of right ascension that crosses your local nadir:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
 <span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
 <span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">meridian_transits</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Mars&#39;</span><span class="p">],</span> <span class="n">bluffton</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
@@ -226,76 +567,45 @@ and then the antimeridian on the opposite side of the celestial globe:</p>
 </div>
 <p>Some astronomers call these moments
 “upper culmination” and “lower culmination” instead.</p>
-<p>Observers often think of transit as the moment
-when an object is highest in the sky,
-which is roughly true.
-But at very high precision,
-if the body has any north or south velocity
-then its moment of highest altitude will be slightly earlier or later.</p>
-<p>Bodies near the poles are exceptions to the general rule
-that a body is visible at transit but below the horizon at antitransit.
-For a body that’s circumpolar from your location,
-transit and antitransit are both moments of visibility,
-when it stands above and below the pole;
-and objects close to the opposite pole will always be below the horizon,
-even as they invisibly transit your line of longitude
-down below your horizon.</p>
 </div>
-<div class="section" id="sunrise-and-sunset">
-<h2>Sunrise and Sunset<a class="headerlink" href="#sunrise-and-sunset" title="Permalink to this headline">¶</a></h2>
-<p>Because sunrise and sunset differ depending on your location on the
-Earth’s surface, you will need to specify a latitude and longitude.</p>
-<p>Then you can create a start time and an end time and ask for all of the
-sunrises and sunsets in between.
-Skyfield uses the
-<a class="reference external" href="https://aa.usno.navy.mil/faq/RST_defs">official definition of sunrise and sunset</a>
-from the United States Naval Observatory,
-which defines them as the moment when the center — not the limb —
-of the sun is 0.8333 degrees below the horizon,
-to account for both the average radius of the Sun itself
-and for the average refraction of the atmosphere at the horizon.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">almanac</span><span class="o">.</span><span class="n">sunrise_sunset</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">bluffton</span><span class="p">))</span>
+<div class="section" id="legacy-rising-and-setting-routines">
+<h2><a class="toc-backref" href="#id19">Legacy rising and setting routines</a><a class="headerlink" href="#legacy-rising-and-setting-routines" title="Permalink to this headline">¶</a></h2>
+<p>In case you are maintaining older code,
+versions of Skyfield before&nbsp;1.47
+could only compute sunrises and sunsets
+with a routine that was much slower than the functions described above.
+It also tended to miss sunrises and sunsets in the Arctic and Antarctic.
+Here’s how it was called:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">sunrise_sunset</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">bluffton</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">())</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;2018-09-12T11:13:13Z&#39;, &#39;2018-09-12T23:49:38Z&#39;]
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;2020-11-06T12:12:46Z&#39;, &#39;2020-11-06T22:25:10Z&#39;]
 [1 0]
 </pre></div>
 </div>
 <p>The result <code class="docutils literal notranslate"><span class="pre">t</span></code> will be an array of times, and <code class="docutils literal notranslate"><span class="pre">y</span></code> will be <code class="docutils literal notranslate"><span class="pre">1</span></code> if
 the sun rises at the corresponding time and <code class="docutils literal notranslate"><span class="pre">0</span></code> if it sets.</p>
-<p>If you need to provide your own custom value for refraction, adjust the
-estimate of the Sun’s radius, or account for a vantage point above the
-Earth’s surface, see <a class="reference internal" href="#risings-and-settings"><span class="std std-ref">Risings and Settings</span></a> to learn about the more
-versatile <a class="reference internal" href="api-almanac.html#skyfield.almanac.risings_and_settings" title="skyfield.almanac.risings_and_settings"><code class="xref py py-func docutils literal notranslate"><span class="pre">risings_and_settings()</span></code></a> routine.</p>
-<p>Note that a location near one of the poles during polar summer or polar
-winter will not experience sunrise and sunset.  To learn whether the sun
-is up or down, call the sunrise-sunset function at the time that
-interests you, and the return value will indicate whether the sun is up.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">far_north</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mi">89</span><span class="p">,</span> <span class="o">-</span><span class="mi">80</span><span class="p">)</span>
-<span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">sunrise_sunset</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">far_north</span><span class="p">)</span>
+<p>Another old routine <a class="reference internal" href="api-almanac.html#skyfield.almanac.risings_and_settings" title="skyfield.almanac.risings_and_settings"><code class="xref py py-func docutils literal notranslate"><span class="pre">risings_and_settings()</span></code></a>
+worked the same way, but for general targets like planets.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">risings_and_settings</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Mars&#39;</span><span class="p">],</span> <span class="n">bluffton</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">())</span>  <span class="c1"># Empty list: no sunrise or sunset</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">t0</span><span class="p">))</span>        <span class="c1"># But we can ask if the sun is up</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;polar day&#39;</span> <span class="k">if</span> <span class="n">f</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;polar night&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[]
-True
-polar day
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;2020-11-06T09:50:55Z&#39;, &#39;2020-11-06T21:08:55Z&#39;]
+[0 1]
 </pre></div>
 </div>
 </div>
 <div class="section" id="twilight">
-<h2>Twilight<a class="headerlink" href="#twilight" title="Permalink to this headline">¶</a></h2>
-<p>An expanded version of the sunrise-sunset routine
-named <a class="reference internal" href="api-almanac.html#skyfield.almanac.dark_twilight_day" title="skyfield.almanac.dark_twilight_day"><code class="xref py py-func docutils literal notranslate"><span class="pre">dark_twilight_day()</span></code></a>
+<h2><a class="toc-backref" href="#id20">Twilight</a><a class="headerlink" href="#twilight" title="Permalink to this headline">¶</a></h2>
+<p>The routine <a class="reference internal" href="api-almanac.html#skyfield.almanac.dark_twilight_day" title="skyfield.almanac.dark_twilight_day"><code class="xref py py-func docutils literal notranslate"><span class="pre">dark_twilight_day()</span></code></a>
 returns a separate code for each of the phases of twilight:</p>
 <ol class="arabic simple" start="0">
 <li>Dark of night.</li>
@@ -307,183 +617,8 @@ returns a separate code for each of the phases of twilight:</p>
 <p>You can find a full example of its use
 at the <a class="reference internal" href="examples.html#dark-twilight-day-example"><span class="std std-ref">When will it get dark tonight?</span></a>.</p>
 </div>
-<div class="section" id="risings-and-settings">
-<span id="id2"></span><h2>Risings and Settings<a class="headerlink" href="#risings-and-settings" title="Permalink to this headline">¶</a></h2>
-<p>Skyfield can compute when a given body rises and sets.
-The routine is designed for bodies at the Moon’s distance or farther,
-that tend to rise and set about once a day.
-But it might be caught off guard
-if you pass it an Earth satellite
-that rises several times a day;
-for that case, see <a class="reference internal" href="earth-satellites.html#satellite-rising-and-setting"><span class="std std-ref">Historical satellite element sets</span></a>.</p>
-<p>Rising and setting predictions can be generated
-using the <a class="reference internal" href="api-almanac.html#skyfield.almanac.risings_and_settings" title="skyfield.almanac.risings_and_settings"><code class="xref py py-func docutils literal notranslate"><span class="pre">risings_and_settings()</span></code></a> routine:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">risings_and_settings</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Mars&#39;</span><span class="p">],</span> <span class="n">bluffton</span><span class="p">)</span>
-<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(),</span> <span class="s1">&#39;Rise&#39;</span> <span class="k">if</span> <span class="n">yi</span> <span class="k">else</span> <span class="s1">&#39;Set&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2020-02-01T09:29:16Z Rise
-2020-02-01T18:42:57Z Set
-</pre></div>
-</div>
-<p>As with sunrise and sunset above,
-<code class="docutils literal notranslate"><span class="pre">1</span></code> means the moment of rising and <code class="docutils literal notranslate"><span class="pre">0</span></code> means the moment of setting.</p>
-<p>The routine also offers some optional parameters,
-whose several uses are covered in the following sections.</p>
-<div class="section" id="computing-your-own-refraction-angle">
-<h3>Computing your own refraction angle<a class="headerlink" href="#computing-your-own-refraction-angle" title="Permalink to this headline">¶</a></h3>
-<p>Instead of accepting the standard estimate of 34&nbsp;arcminutes
-for the angle by which refraction will raise the image
-of a body at the horizon,
-you can compute atmospheric refraction yourself
-and supply the resulting angle to <code class="docutils literal notranslate"><span class="pre">horizon_degrees</span></code>.
-Note that the value passed should be a small negative angle.
-In this example it makes a 3&nbsp;second difference
-in both the rising and setting time:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.earthlib</span> <span class="kn">import</span> <span class="n">refraction</span>
-
-<span class="n">r</span> <span class="o">=</span> <span class="n">refraction</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">temperature_C</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">pressure_mbar</span><span class="o">=</span><span class="mf">1030.0</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Arcminutes refraction for body seen at horizon: </span><span class="si">%.2f</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="mf">60.0</span><span class="p">))</span>
-
-<span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">risings_and_settings</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Mars&#39;</span><span class="p">],</span> <span class="n">bluffton</span><span class="p">,</span> <span class="n">horizon_degrees</span><span class="o">=-</span><span class="n">r</span><span class="p">)</span>
-<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(),</span> <span class="s1">&#39;Rise&#39;</span> <span class="k">if</span> <span class="n">yi</span> <span class="k">else</span> <span class="s1">&#39;Set&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Arcminutes refraction for body seen at horizon: 34.53
-
-2020-02-01T09:29:13Z Rise
-2020-02-01T18:43:00Z Set
-</pre></div>
-</div>
-</div>
-<div class="section" id="adjusting-for-apparent-radius">
-<h3>Adjusting for apparent radius<a class="headerlink" href="#adjusting-for-apparent-radius" title="Permalink to this headline">¶</a></h3>
-<p>Planets and especially the Sun and Moon have an appreciable radius,
-and we usually consider the moment of sunrise
-to be the moment when its bright limb crests the horizon —
-not the later moment when its center finally rises into view.
-Set the parameter <code class="docutils literal notranslate"><span class="pre">radius_degrees</span></code> to the body’s apparent radius
-to generate an earlier rising and later setting;
-the value <code class="docutils literal notranslate"><span class="pre">0.25</span></code>, for example,
-would be a rough estimate for the Sun or Moon.</p>
-<p>The difference in rising time can be a minute or more:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">risings_and_settings</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Sun&#39;</span><span class="p">],</span> <span class="n">bluffton</span><span class="p">,</span> <span class="n">radius_degrees</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
-<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="s1">&#39;Limb of the Sun crests the horizon&#39;</span><span class="p">)</span>
-
-<span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">risings_and_settings</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Sun&#39;</span><span class="p">],</span> <span class="n">bluffton</span><span class="p">)</span>
-<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="s1">&#39;Center of the Sun reaches the horizon&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2020-02-01 12:46:27Z Limb of the Sun crests the horizon
-2020-02-01 12:47:53Z Center of the Sun reaches the horizon
-</pre></div>
-</div>
-</div>
-<div class="section" id="elevated-vantage-points">
-<h3>Elevated vantage points<a class="headerlink" href="#elevated-vantage-points" title="Permalink to this headline">¶</a></h3>
-<p>Rising and setting predictions usually assume a flat local horizon
-that does not vary with elevation.
-Yes, Denver is the Mile High City,
-but it sees the sun rise against a local horizon that’s also a mile high.
-Since the city’s high altitude
-is matched by the high altitude of the terrain around it,
-the horizon winds up in the same place it would be for a city at sea level.</p>
-<p>But sometimes you need to account not only for local elevation,
-but for <em>altitude</em> above the surrounding terrain.
-Some observatories, for example, are located on mountaintops
-that are much higher than the elevation of the terrain
-that forms their horizon.
-And Earth satellites can be hundreds of kilometers
-above the surface of the Earth that produces their sunrises and sunsets.</p>
-<p>You can account for high altitude above the horizon’s terrain
-by setting an artificially negative value for <code class="docutils literal notranslate"><span class="pre">horizon_degrees</span></code>.
-If we consider the Earth to be approximately a sphere,
-then we can use a bit of trigonometry
-to estimate the position of the horizon for an observer at altitude:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">arccos</span>
-<span class="kn">from</span> <span class="nn">skyfield.units</span> <span class="kn">import</span> <span class="n">Angle</span>
-
-<span class="c1"># When does the Sun rise in the ionosphere’s F-layer, 300km up?</span>
-<span class="n">altitude_m</span> <span class="o">=</span> <span class="mf">300e3</span>
-
-<span class="n">earth_radius_m</span> <span class="o">=</span> <span class="mf">6378136.6</span>
-<span class="n">side_over_hypotenuse</span> <span class="o">=</span> <span class="n">earth_radius_m</span> <span class="o">/</span> <span class="p">(</span><span class="n">earth_radius_m</span> <span class="o">+</span> <span class="n">altitude_m</span><span class="p">)</span>
-<span class="n">h</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="n">radians</span> <span class="o">=</span> <span class="o">-</span><span class="n">arccos</span><span class="p">(</span><span class="n">side_over_hypotenuse</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The horizon from 300km up is at </span><span class="si">%.2f</span><span class="s1"> degrees&#39;</span> <span class="o">%</span> <span class="n">h</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span>
-
-<span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">risings_and_settings</span><span class="p">(</span>
-    <span class="n">eph</span><span class="p">,</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Sun&#39;</span><span class="p">],</span> <span class="n">bluffton</span><span class="p">,</span> <span class="n">horizon_degrees</span><span class="o">=</span><span class="n">h</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span>
-    <span class="n">radius_degrees</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="s1">&#39;Limb of the Sun crests the horizon&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>The horizon from 300km up is at -17.24 degrees
-2020-02-01 00:22:42Z Limb of the Sun crests the horizon
-</pre></div>
-</div>
-<p>When writing code for this situation,
-we need to be very careful to keep straight
-the two different meanings of <em>altitude</em>.</p>
-<ol class="arabic simple">
-<li>The <em>altitude above sea level</em> is a linear distance measured in meters
-between the ground and the location at which
-we want to compute rises and settings.</li>
-<li>The <em>altitude of the horizon</em> names a quite different measure.
-It’s an angle measured in degrees
-that is one of the two angles
-of the altitude-azimuth (“altazimuth”) system
-oriented around an observer on a planet’s surface.
-While azimuth measures horizontally around the horizon
-from north through east, south, and west,
-the altitude angle measures up towards the zenith (positive)
-and down towards the nadir (negative).
-The altitude is zero all along the great circle between zenith and nadir.</li>
-</ol>
-<p>The problem of an elevated observer
-unfortunately involves both kinds of altitude at the same time:
-for each extra meter of “altitude” above the ground,
-there is a slight additional depression in the angular “altitude”
-of the horizon on the altazimuth globe.</p>
-</div>
-<div class="section" id="when-a-right-ascension-and-declination-rises-and-sets">
-<h3>When a right ascension and declination rises and sets<a class="headerlink" href="#when-a-right-ascension-and-declination-rises-and-sets" title="Permalink to this headline">¶</a></h3>
-<p>If you are interested in finding the times
-when a fixed point in the sky rises and sets,
-simply create a star object with the coordinates
-of the position you are interested in
-(see <a class="reference internal" href="stars.html"><span class="doc">Stars and Distant Objects</span></a>).
-Here, for example, are rising and setting times for the Galactic Center:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">galactic_center</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Star</span><span class="p">(</span><span class="n">ra_hours</span><span class="o">=</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mf">40.04</span><span class="p">),</span>
-                           <span class="n">dec_degrees</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">29</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">28.1</span><span class="p">))</span>
-
-<span class="n">f</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">risings_and_settings</span><span class="p">(</span><span class="n">eph</span><span class="p">,</span> <span class="n">galactic_center</span><span class="p">,</span> <span class="n">bluffton</span><span class="p">)</span>
-<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_discrete</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="n">verb</span> <span class="o">=</span> <span class="s1">&#39;rises above&#39;</span> <span class="k">if</span> <span class="n">yi</span> <span class="k">else</span> <span class="s1">&#39;sets below&#39;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="s1">&#39;- Galactic Center&#39;</span><span class="p">,</span> <span class="n">verb</span><span class="p">,</span> <span class="s1">&#39;the horizon&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2020-02-01 10:29:00Z - Galactic Center rises above the horizon
-2020-02-01 18:45:46Z - Galactic Center sets below the horizon
-</pre></div>
-</div>
-</div>
-</div>
 <div class="section" id="solar-terms">
-<h2>Solar terms<a class="headerlink" href="#solar-terms" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id21">Solar terms</a><a class="headerlink" href="#solar-terms" title="Permalink to this headline">¶</a></h2>
 <p>The solar terms are widely used in East Asian calendars.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">almanac_east_asia</span> <span class="k">as</span> <span class="n">almanac_ea</span>
 
@@ -507,7 +642,7 @@ as <code class="docutils literal notranslate"><span class="pre">SOLAR_TERMS_JP</
 <code class="docutils literal notranslate"><span class="pre">SOLAR_TERMS_ZHS</span></code> for Simplified Chinese.</p>
 </div>
 <div class="section" id="lunar-eclipses">
-<span id="id3"></span><h2>Lunar eclipses<a class="headerlink" href="#lunar-eclipses" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2><a class="toc-backref" href="#id22">Lunar eclipses</a><a class="headerlink" href="#lunar-eclipses" title="Permalink to this headline">¶</a></h2>
 <p>Skyfield can find the dates of lunar eclipses.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">eclipselib</span>
 

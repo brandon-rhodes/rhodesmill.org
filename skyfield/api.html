@@ -430,31 +430,40 @@ observer, which can introduce an error of ±0.06&nbsp;magnitude.</li>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.seasons" title="skyfield.almanac.seasons"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seasons</span></code></a>(ephemeris)</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.find_risings" title="skyfield.almanac.find_risings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_risings</span></code></a>(observer,&nbsp;target,&nbsp;start_time,&nbsp;…)</td>
+<td>Return the times at which a target rises above the eastern horizon.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.find_settings" title="skyfield.almanac.find_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_settings</span></code></a>(observer,&nbsp;target,&nbsp;start_time,&nbsp;…)</td>
+<td>Return the times at which a target sets below the western horizon.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.find_transits" title="skyfield.almanac.find_transits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_transits</span></code></a>(observer,&nbsp;target,&nbsp;start_time,&nbsp;…)</td>
+<td>Return the times at which a target transits across the meridian.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.seasons" title="skyfield.almanac.seasons"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seasons</span></code></a>(ephemeris)</td>
 <td>Build a function of time that returns the quarter of the year.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.moon_phase" title="skyfield.almanac.moon_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moon_phase</span></code></a>(ephemeris,&nbsp;t)</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.moon_phase" title="skyfield.almanac.moon_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moon_phase</span></code></a>(ephemeris,&nbsp;t)</td>
 <td>Return the Moon phase 0°–360° at time <code class="docutils literal notranslate"><span class="pre">t</span></code>, where 180° is Full Moon.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.moon_phases" title="skyfield.almanac.moon_phases"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moon_phases</span></code></a>(ephemeris)</td>
+<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.moon_phases" title="skyfield.almanac.moon_phases"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moon_phases</span></code></a>(ephemeris)</td>
 <td>Build a function of time that returns the moon phase 0 through 3.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.moon_nodes" title="skyfield.almanac.moon_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moon_nodes</span></code></a>(ephemeris)</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.moon_nodes" title="skyfield.almanac.moon_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moon_nodes</span></code></a>(ephemeris)</td>
 <td>Build a function of time that identifies lunar nodes.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.oppositions_conjunctions" title="skyfield.almanac.oppositions_conjunctions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oppositions_conjunctions</span></code></a>(ephemeris,&nbsp;target)</td>
+<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.oppositions_conjunctions" title="skyfield.almanac.oppositions_conjunctions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oppositions_conjunctions</span></code></a>(ephemeris,&nbsp;target)</td>
 <td>Build a function to find oppositions and conjunctions with the Sun.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.meridian_transits" title="skyfield.almanac.meridian_transits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meridian_transits</span></code></a>(ephemeris,&nbsp;target,&nbsp;topos)</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.meridian_transits" title="skyfield.almanac.meridian_transits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meridian_transits</span></code></a>(ephemeris,&nbsp;target,&nbsp;topos)</td>
 <td>Build a function of time for finding when a body transits the meridian.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.sunrise_sunset" title="skyfield.almanac.sunrise_sunset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sunrise_sunset</span></code></a>(ephemeris,&nbsp;topos)</td>
+<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.sunrise_sunset" title="skyfield.almanac.sunrise_sunset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sunrise_sunset</span></code></a>(ephemeris,&nbsp;topos)</td>
 <td>Build a function of time that returns whether the Sun is up.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.dark_twilight_day" title="skyfield.almanac.dark_twilight_day"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dark_twilight_day</span></code></a>(ephemeris,&nbsp;topos)</td>
+<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.dark_twilight_day" title="skyfield.almanac.dark_twilight_day"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dark_twilight_day</span></code></a>(ephemeris,&nbsp;topos)</td>
 <td>Build a function of time returning whether it is dark, twilight, or day.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.risings_and_settings" title="skyfield.almanac.risings_and_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">risings_and_settings</span></code></a>(ephemeris,&nbsp;target,&nbsp;topos)</td>
+<tr class="row-even"><td><a class="reference internal" href="api-almanac.html#skyfield.almanac.risings_and_settings" title="skyfield.almanac.risings_and_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">risings_and_settings</span></code></a>(ephemeris,&nbsp;target,&nbsp;topos)</td>
 <td>Build a function of time that returns whether a body is up.</td>
 </tr>
 </tbody>

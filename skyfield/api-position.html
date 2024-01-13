@@ -521,24 +521,6 @@ well as the orientation of its axes in space.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="geometric-instantaneous-position-between-two-objects">
-<h2>Geometric instantaneous position between two objects<a class="headerlink" href="#geometric-instantaneous-position-between-two-objects" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="skyfield.positionlib.Geometric">
-<em class="property">class </em><code class="descclassname">skyfield.positionlib.</code><code class="descname">Geometric</code><span class="sig-paren">(</span><em>position_au</em>, <em>velocity_au_per_d=None</em>, <em>t=None</em>, <em>center=None</em>, <em>target=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Geometric" title="Permalink to this definition">¶</a></dt>
-<dd><p>An (<em>x,y,z</em>) vector between two instantaneous position.</p>
-<p>A geometric position is the difference between the Solar System
-positions of two bodies at exactly the same instant.  It is <em>not</em>
-corrected for the fact that, in real physics, it will take time for
-light to travel from one position to the other.</p>
-<p>Both the <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> are (<em>x,y,z</em>) vectors
-oriented along the axes of the International Celestial Reference
-System (ICRS), the modern replacement for J2000 coordinates.</p>
-<p>This class inherits the methods of is parent class <a class="reference internal" href="#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a> as
-well as the orientation of its axes in space.</p>
-</dd></dl>
-
-</div>
 <div class="section" id="building-a-position-from-right-ascension-and-declination">
 <h2>Building a position from right ascension and declination<a class="headerlink" href="#building-a-position-from-right-ascension-and-declination" title="Permalink to this headline">¶</a></h2>
 <dl class="function">

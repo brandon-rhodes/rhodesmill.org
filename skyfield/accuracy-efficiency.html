@@ -127,6 +127,21 @@ was deciding to run a vector operation in parallel across all the CPUs.
 the user reported that they were able to force single-threaded behavior
 by setting this environment variable:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">OPENBLAS_NUM_THREADS</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">export</span> <span class="n">MKL_NUM_THREADS</span><span class="o">=</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>If you want to apply these settings right in your Python code,
+then you must modify these environment settings
+<em>before</em> importing NumPy:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># First set up the environment.</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OPENBLAS_NUM_THREADS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_NUM_THREADS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+
+<span class="c1"># And only then import NumPy.</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
 </pre></div>
 </div>
 <p>The same solution might work on your system.</p>
