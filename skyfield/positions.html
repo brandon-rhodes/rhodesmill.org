@@ -477,6 +477,8 @@ in case you don’t want to remember which directions are positive.</p>
 </div>
 <p>So Mars was more than 24° above the horizon for Bostonians
 on 1980&nbsp;March&nbsp;1 at midnight&nbsp;UTC.</p>
+<div class="section" id="adjusting-altitude-for-atmospheric-refraction">
+<h3>Adjusting altitude for atmospheric refraction<a class="headerlink" href="#adjusting-altitude-for-atmospheric-refraction" title="Permalink to this headline">¶</a></h3>
 <p>The altitude returned from a plain <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.altaz" title="skyfield.positionlib.ICRF.altaz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">altaz()</span></code></a> call
 is the ideal position
 that you would observe if the Earth had no atmosphere.
@@ -508,6 +510,7 @@ with its many layers of heat and cold and wind and weather,
 cannot be predicted to high precision.
 And note that refraction is only applied to objects above the horizon.
 Objects below −1.0° altitude are not adjusted for refraction.</p>
+</div>
 </div>
 <div class="section" id="comparing-positions">
 <h2>Comparing positions<a class="headerlink" href="#comparing-positions" title="Permalink to this headline">¶</a></h2>
