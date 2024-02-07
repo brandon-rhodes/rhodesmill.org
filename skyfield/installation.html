@@ -122,6 +122,21 @@ in this URL to match papers already using it as an identifier):
 <span id="id2"></span><h2>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="released-versions">
 <h3>Released versions<a class="headerlink" href="#released-versions" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="v1-48-2024-february-7">
+<h4>v1.48 — 2024 February 7<a class="headerlink" href="#v1-48-2024-february-7" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Times now support the <code class="docutils literal notranslate"><span class="pre">&lt;</span></code> operator, so Python can sort them.</li>
+<li>For convenience, geoids like <a class="reference internal" href="api-topos.html#skyfield.toposlib.wgs84" title="skyfield.toposlib.wgs84"><code class="xref py py-data docutils literal notranslate"><span class="pre">wgs84</span></code></a> have a
+new attribute <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.polar_radius" title="skyfield.toposlib.Geoid.polar_radius"><code class="xref py py-data docutils literal notranslate"><span class="pre">polar_radius</span></code></a>.</li>
+<li>You can no longer subtract two positions unless they have the same
+<code class="docutils literal notranslate"><span class="pre">.center</span></code>.  Otherwise, a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> is raised.  This check has
+always been performed when you subtract vector functions, but it was
+missing from the position subtraction routine.</li>
+<li>On days that the Sun fails to rise and set in the Arctic and
+Antarctic, the new rising and setting routines now correctly set the
+value <code class="docutils literal notranslate"><span class="pre">False</span></code> not only for sunrise but also for sunset.</li>
+</ul>
+</div>
 <div class="section" id="v1-47-2024-january-13">
 <h4>v1.47 — 2024 January 13<a class="headerlink" href="#v1-47-2024-january-13" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">

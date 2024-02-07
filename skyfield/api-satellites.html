@@ -129,8 +129,15 @@ after descending partway down the sky from the first one.</p>
 <dl class="class">
 <dt id="skyfield.sgp4lib.TEME">
 <em class="property">class </em><code class="descclassname">skyfield.sgp4lib.</code><code class="descname">TEME</code><a class="headerlink" href="#skyfield.sgp4lib.TEME" title="Permalink to this definition">¶</a></dt>
-<dd><p>The SGP4-specific True Equator Mean Equinox frame of reference.</p>
-<p>Described in AIAA 2006-6753 Appendix&nbsp;C.  See <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>
+<dd><p>The satellite-specific True Equator Mean Equinox frame of reference.</p>
+<p>This TEME frame is used to measure right ascension and declination,
+and is the reference frame of the SGP4 Earth satellite orbit model.
+It is a bit quirky.  Instead measuring right ascension from the true
+vernal equinox point, it uses the ‘mean’ equniox that considers only
+precession but not nutation (the same equinox used for Greenwich
+Mean Sidereal Time).  This made the reference frame more tractable
+for the 1970s computers that first implemented SGP4.</p>
+<p>Defined in AIAA 2006-6753 Appendix&nbsp;C.  See <a class="reference internal" href="positions.html#reference-frames"><span class="std std-ref">Coordinates in other reference frames</span></a>
 for a guide to using Skyfield reference frames like this one.</p>
 </dd></dl>
 

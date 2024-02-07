@@ -81,7 +81,7 @@ for particular circumstances,
 they have to repeatedly recompute
 the positions of the Earth and other bodies.</p>
 <div class="section" id="rounding-time-to-the-nearest-minute">
-<h2><a class="toc-backref" href="#id4">Rounding time to the nearest minute</a><a class="headerlink" href="#rounding-time-to-the-nearest-minute" title="Permalink to this headline">¶</a></h2>
+<h2>Rounding time to the nearest minute<a class="headerlink" href="#rounding-time-to-the-nearest-minute" title="Permalink to this headline">¶</a></h2>
 <p>If you compare almanac results to official sources like the <a class="reference external" href="https://aa.usno.navy.mil/data/index">United
 States Naval Observatory</a>, the
 printed time will often differ because the Naval Observatory results are
@@ -130,7 +130,7 @@ minute, try manually adding 30&nbsp;seconds to the time before displaying it:</p
 <p>The results should then agree with the tables produced by the USNO.</p>
 </div>
 <div class="section" id="risings-and-settings">
-<span id="id1"></span><h2><a class="toc-backref" href="#id5">Risings and settings</a><a class="headerlink" href="#risings-and-settings" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>Risings and settings<a class="headerlink" href="#risings-and-settings" title="Permalink to this headline">¶</a></h2>
 <p>Skyfield can compute when a given body rises and sets
 for an observer at the Earth’s surface.
 The routines are designed for bodies
@@ -140,7 +140,7 @@ so it will be caught off-guard
 if you pass it something fast like an Earth satellite.
 For that case, see <a class="reference internal" href="earth-satellites.html#satellite-rising-and-setting"><span class="std std-ref">Finding when a satellite rises and sets</span></a>.</p>
 <div class="section" id="sunrise-and-sunset">
-<h3><a class="toc-backref" href="#id6">Sunrise and Sunset</a><a class="headerlink" href="#sunrise-and-sunset" title="Permalink to this headline">¶</a></h3>
+<h3>Sunrise and Sunset<a class="headerlink" href="#sunrise-and-sunset" title="Permalink to this headline">¶</a></h3>
 <p>Skyfield uses the
 <a class="reference external" href="https://aa.usno.navy.mil/faq/RST_defs">official definition of sunrise and sunset</a>
 from the United States Naval Observatory,
@@ -176,7 +176,7 @@ indicating that a rising or setting was successfully detected.
 See the next section for an example where the value is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </div>
 <div class="section" id="detecting-polar-day-and-polar-night">
-<span id="polar-day-and-night"></span><h3><a class="toc-backref" href="#id7">Detecting polar day and polar night</a><a class="headerlink" href="#detecting-polar-day-and-polar-night" title="Permalink to this headline">¶</a></h3>
+<span id="polar-day-and-night"></span><h3>Detecting polar day and polar night<a class="headerlink" href="#detecting-polar-day-and-polar-night" title="Permalink to this headline">¶</a></h3>
 <p>In the Arctic and Antarctic,
 there will be summer days when the sun never sets,
 and winter days when the sun never rises.
@@ -195,17 +195,17 @@ For example:</p>
 <span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">harra_observer</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">altaz</span><span class="p">()</span>
 
 <span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">alti</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="n">alt</span><span class="o">.</span><span class="n">degrees</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{:5}</span><span class="s1"> </span><span class="si">{:.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ti</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">yi</span><span class="p">),</span> <span class="n">alti</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{:5}</span><span class="s1"> </span><span class="si">{:.4f}</span><span class="s1">°&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ti</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">yi</span><span class="p">),</span> <span class="n">alti</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2022-12-18 10:22:54Z True  -0.8333
-2022-12-19 10:29:21Z True  -0.8333
-2022-12-20 10:37:06Z False -0.8387
-2022-12-21 10:37:36Z False -0.8464
-2022-12-22 10:38:06Z False -0.8461
-2022-12-23 10:38:36Z False -0.8380
-2022-12-24 10:31:28Z True  -0.8333
-2022-12-25 10:26:08Z True  -0.8333
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2022-12-18 10:22:54Z True  -0.8333°
+2022-12-19 10:29:21Z True  -0.8333°
+2022-12-20 10:37:06Z False -0.8387°
+2022-12-21 10:37:36Z False -0.8464°
+2022-12-22 10:38:06Z False -0.8461°
+2022-12-23 10:38:36Z False -0.8380°
+2022-12-24 10:31:28Z True  -0.8333°
+2022-12-25 10:26:08Z True  -0.8333°
 </pre></div>
 </div>
 <p>This output shows that right around the winter solstice,
@@ -214,9 +214,34 @@ but is at least a few fractions of a degree below the altitude of -0.8333°
 that would qualify for the USNO definition of sunrise.
 So Skyfield instead returns the moment when the Sun is closest to the horizon,
 with the accompanying value <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>The value <code class="docutils literal notranslate"><span class="pre">False</span></code> also accompanies a lower transit
+when the sun is up for an entire 24-hour day
+and never touches the horizon and sets.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">utqiagvik_alaska</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="mf">71.2906</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="mf">156.7886</span> <span class="o">*</span> <span class="n">W</span><span class="p">)</span>
+<span class="n">utqiagvik_observer</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;Earth&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">utqiagvik_alaska</span>
+
+<span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">21</span><span class="p">)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">almanac</span><span class="o">.</span><span class="n">find_settings</span><span class="p">(</span><span class="n">utqiagvik_observer</span><span class="p">,</span> <span class="n">sun</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
+
+<span class="n">alt</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">utqiagvik_observer</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span><span class="o">.</span><span class="n">altaz</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">alti</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">utc_iso</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="n">alt</span><span class="o">.</span><span class="n">degrees</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{:5}</span><span class="s1"> </span><span class="si">{:.4f}</span><span class="s1">°&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ti</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">yi</span><span class="p">),</span> <span class="n">alti</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2023-06-21 10:28:55Z False 4.7265°
+</pre></div>
+</div>
+<p>The Sun at this Alaska location doesn’t reach the horizon on June&nbsp;21,
+and so instead of triumphantly returning
+the time at which the sun reached -0.8333°,
+Skyfield returns the moment of anti-transit
+when the Sun was at its lowest and furthest north —
+standing a full 4.7° above the horizon.</p>
 </div>
 <div class="section" id="moonrise-and-moonset">
-<h3><a class="toc-backref" href="#id8">Moonrise and moonset</a><a class="headerlink" href="#moonrise-and-moonset" title="Permalink to this headline">¶</a></h3>
+<h3>Moonrise and moonset<a class="headerlink" href="#moonrise-and-moonset" title="Permalink to this headline">¶</a></h3>
 <p>Skyfield uses the
 <a class="reference external" href="https://aa.usno.navy.mil/faq/RST_defs">official definition of moonrise and moonset</a>
 from the United States Naval Observatory:
@@ -241,7 +266,7 @@ Moonsets (UTC): [&#39;2023-12-27 13:54:47Z&#39;, &#39;2023-12-28 14:39:33Z&#39;]
 <p>Read the previous section to learn about the Boolean array <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
 </div>
 <div class="section" id="planet-rising-and-setting">
-<h3><a class="toc-backref" href="#id9">Planet rising and setting</a><a class="headerlink" href="#planet-rising-and-setting" title="Permalink to this headline">¶</a></h3>
+<h3>Planet rising and setting<a class="headerlink" href="#planet-rising-and-setting" title="Permalink to this headline">¶</a></h3>
 <p>The rising and setting routines also work for planets.
 To account for atmospheric refraction under typical conditions,
 Skyfield will look for the moment
@@ -265,7 +290,7 @@ Mars sets:  [&#39;2020-02-01 18:42:57Z&#39;, &#39;2020-02-02 18:41:41Z&#39;]
 to learn about the Boolean array <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
 </div>
 <div class="section" id="computing-your-own-refraction-angle">
-<span id="horizon-degrees"></span><h3><a class="toc-backref" href="#id10">Computing your own refraction angle</a><a class="headerlink" href="#computing-your-own-refraction-angle" title="Permalink to this headline">¶</a></h3>
+<span id="horizon-degrees"></span><h3>Computing your own refraction angle<a class="headerlink" href="#computing-your-own-refraction-angle" title="Permalink to this headline">¶</a></h3>
 <p>Atmospheric refraction makes bodies at the horizon
 appear slightly higher than they would be otherwise.
 That’s why Skyfield doesn’t wait until a body’s altazimuth coordinates
@@ -314,7 +339,7 @@ that combines the correction for refraction
 with the radius of the body’s visible disc in the sky.</p>
 </div>
 <div class="section" id="elevated-vantage-points">
-<h3><a class="toc-backref" href="#id11">Elevated vantage points</a><a class="headerlink" href="#elevated-vantage-points" title="Permalink to this headline">¶</a></h3>
+<h3>Elevated vantage points<a class="headerlink" href="#elevated-vantage-points" title="Permalink to this headline">¶</a></h3>
 <p>Rising and setting predictions usually assume a flat local horizon
 that does not vary with elevation.
 Yes, Denver is the Mile High City,
@@ -367,7 +392,7 @@ which Skyfield instead calls <em>altitude</em>
 in the name <em>altazimuth coordinate system</em>).</p>
 </div>
 <div class="section" id="when-a-right-ascension-and-declination-rises-and-sets">
-<h3><a class="toc-backref" href="#id12">When a right ascension and declination rises and sets</a><a class="headerlink" href="#when-a-right-ascension-and-declination-rises-and-sets" title="Permalink to this headline">¶</a></h3>
+<h3>When a right ascension and declination rises and sets<a class="headerlink" href="#when-a-right-ascension-and-declination-rises-and-sets" title="Permalink to this headline">¶</a></h3>
 <p>If you are interested in finding the times
 when a fixed point in the sky rises and sets,
 simply create a star object with the coordinates
@@ -390,7 +415,7 @@ Here, for example, is the rising time for the Galactic Center:</p>
 </div>
 </div>
 <div class="section" id="the-seasons">
-<h2><a class="toc-backref" href="#id13">The Seasons</a><a class="headerlink" href="#the-seasons" title="Permalink to this headline">¶</a></h2>
+<h2>The Seasons<a class="headerlink" href="#the-seasons" title="Permalink to this headline">¶</a></h2>
 <p>Create a start time and an end time to ask for all of the equinoxes and
 solstices that fall in between.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -416,7 +441,7 @@ it names the equinoxes and solstices by the month in which they occur —
 so the <code class="docutils literal notranslate"><span class="pre">March</span> <span class="pre">Equinox</span></code>, for example, is followed by the <code class="docutils literal notranslate"><span class="pre">June</span> <span class="pre">Solstice</span></code>.</p>
 </div>
 <div class="section" id="phases-of-the-moon">
-<h2><a class="toc-backref" href="#id14">Phases of the Moon</a><a class="headerlink" href="#phases-of-the-moon" title="Permalink to this headline">¶</a></h2>
+<h2>Phases of the Moon<a class="headerlink" href="#phases-of-the-moon" title="Permalink to this headline">¶</a></h2>
 <p>The phases of the Moon are the same for everyone on Earth,
 so you don’t need to specify the longitude and latitude of your location.
 Simply ask for the current phase of the Moon.
@@ -453,7 +478,7 @@ Quarter.  You can use the array <code class="docutils literal notranslate"><span
 each phase.</p>
 </div>
 <div class="section" id="lunar-nodes">
-<span id="id2"></span><h2><a class="toc-backref" href="#id15">Lunar Nodes</a><a class="headerlink" href="#lunar-nodes" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>Lunar Nodes<a class="headerlink" href="#lunar-nodes" title="Permalink to this headline">¶</a></h2>
 <p>The Moon’s ascending node and descending node are the moments each lunar
 month when the Moon crosses the plane of Earth’s orbit and eclipses are
 possible.</p>
@@ -473,7 +498,7 @@ possible.</p>
 </div>
 </div>
 <div class="section" id="opposition-and-conjunction">
-<span id="oppositions-conjunctions"></span><h2><a class="toc-backref" href="#id16">Opposition and Conjunction</a><a class="headerlink" href="#opposition-and-conjunction" title="Permalink to this headline">¶</a></h2>
+<span id="oppositions-conjunctions"></span><h2>Opposition and Conjunction<a class="headerlink" href="#opposition-and-conjunction" title="Permalink to this headline">¶</a></h2>
 <p>The moment at which a planet is in opposition with the Sun or in
 conjunction with the Sun is when their ecliptic longitudes are at 0° or
 180° difference.</p>
@@ -509,7 +534,7 @@ indicating an inferior conjunction and 1 a superior conjunction.</li>
 </ul>
 </div>
 <div class="section" id="meridian-transits">
-<span id="transits"></span><h2><a class="toc-backref" href="#id17">Meridian Transits</a><a class="headerlink" href="#meridian-transits" title="Permalink to this headline">¶</a></h2>
+<span id="transits"></span><h2>Meridian Transits<a class="headerlink" href="#meridian-transits" title="Permalink to this headline">¶</a></h2>
 <p>Every day the Earth’s rotation
 swings the sky through nearly 360°,
 leaving the celestial poles stationary
@@ -545,7 +570,7 @@ even as they invisibly transit your line of longitude
 down below your horizon.</p>
 </div>
 <div class="section" id="legacy-transit-routine">
-<h2><a class="toc-backref" href="#id18">Legacy transit routine</a><a class="headerlink" href="#legacy-transit-routine" title="Permalink to this headline">¶</a></h2>
+<h2>Legacy transit routine<a class="headerlink" href="#legacy-transit-routine" title="Permalink to this headline">¶</a></h2>
 <p>Skyfield has an older mechanism for detecting transits
 that isn’t as fast as the function described in the previous section,
 but it also returns the moments of anti-transit,
@@ -569,7 +594,7 @@ when a body crosses the line of right ascension that crosses your local nadir:</
 “upper culmination” and “lower culmination” instead.</p>
 </div>
 <div class="section" id="legacy-rising-and-setting-routines">
-<h2><a class="toc-backref" href="#id19">Legacy rising and setting routines</a><a class="headerlink" href="#legacy-rising-and-setting-routines" title="Permalink to this headline">¶</a></h2>
+<h2>Legacy rising and setting routines<a class="headerlink" href="#legacy-rising-and-setting-routines" title="Permalink to this headline">¶</a></h2>
 <p>In case you are maintaining older code,
 versions of Skyfield before&nbsp;1.47
 could only compute sunrises and sunsets
@@ -604,7 +629,7 @@ worked the same way, but for general targets like planets.</p>
 </div>
 </div>
 <div class="section" id="twilight">
-<h2><a class="toc-backref" href="#id20">Twilight</a><a class="headerlink" href="#twilight" title="Permalink to this headline">¶</a></h2>
+<h2>Twilight<a class="headerlink" href="#twilight" title="Permalink to this headline">¶</a></h2>
 <p>The routine <a class="reference internal" href="api-almanac.html#skyfield.almanac.dark_twilight_day" title="skyfield.almanac.dark_twilight_day"><code class="xref py py-func docutils literal notranslate"><span class="pre">dark_twilight_day()</span></code></a>
 returns a separate code for each of the phases of twilight:</p>
 <ol class="arabic simple" start="0">
@@ -618,7 +643,7 @@ returns a separate code for each of the phases of twilight:</p>
 at the <a class="reference internal" href="examples.html#dark-twilight-day-example"><span class="std std-ref">When will it get dark tonight?</span></a>.</p>
 </div>
 <div class="section" id="solar-terms">
-<h2><a class="toc-backref" href="#id21">Solar terms</a><a class="headerlink" href="#solar-terms" title="Permalink to this headline">¶</a></h2>
+<h2>Solar terms<a class="headerlink" href="#solar-terms" title="Permalink to this headline">¶</a></h2>
 <p>The solar terms are widely used in East Asian calendars.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">almanac_east_asia</span> <span class="k">as</span> <span class="n">almanac_ea</span>
 
@@ -642,7 +667,7 @@ as <code class="docutils literal notranslate"><span class="pre">SOLAR_TERMS_JP</
 <code class="docutils literal notranslate"><span class="pre">SOLAR_TERMS_ZHS</span></code> for Simplified Chinese.</p>
 </div>
 <div class="section" id="lunar-eclipses">
-<span id="id3"></span><h2><a class="toc-backref" href="#id22">Lunar eclipses</a><a class="headerlink" href="#lunar-eclipses" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2>Lunar eclipses<a class="headerlink" href="#lunar-eclipses" title="Permalink to this headline">¶</a></h2>
 <p>Skyfield can find the dates of lunar eclipses.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">eclipselib</span>
 

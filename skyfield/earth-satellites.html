@@ -37,13 +37,12 @@ As Vallado, Crawford, and Hujsak document
 in their crucial paper <a class="reference external" href="https://celestrak.org/publications/AIAA/2006-6753/">Revisiting Spacetrack Report #3</a>,
 there are many slightly different versions
 of the basic satellite prediction algorithm circulating in the wild.
-(Happily, Skyfield does use
-the corrected and updated version of the algorithm
-that they created as part of writing that report!)</p>
+Happily,
+Skyfield uses the corrected and updated version of the algorithm
+that they created as part of writing that report.</p>
 </li>
-<li><p class="first">The accuracy of the satellite positions is not perfect.
-To quote directly from <a class="reference external" href="https://celestrak.org/publications/AIAA/2006-6753/">Revisiting Spacetrack Report #3</a>
-Appendix&nbsp;B:</p>
+<li><p class="first">Satellite positions have limited precision.
+Here’s what <a class="reference external" href="https://celestrak.org/publications/AIAA/2006-6753/">Revisiting Spacetrack Report #3</a> says in Appendix&nbsp;B:</p>
 <blockquote>
 <div><p>“The maximum accuracy for a TLE is
 limited by the number of decimal places in each field.
@@ -63,9 +62,9 @@ you will want to download a fresh set of elements.
 For earlier dates,
 you will want to pull an old TLE from the archives.</p>
 </li>
-<li><p class="first">Expect a satellite’s orbit to constantly change
-as the SGP4 propagation routine models effects
-like atmospheric drag and the Moon’s gravity.
+<li><p class="first">A satellite’s orbital elements are in constant flux
+from effects like atmospheric drag, the Moon’s gravity,
+and its own propulsion.
 In particular, the true anomaly parameter can swing wildly
 for satellites with nearly circular orbits,
 because the reference point from which true anomaly is measured —
@@ -83,16 +82,16 @@ and not worth the added expense of re-computing the position
 several times in a row.</p>
 </li>
 </ol>
-<p>Note that even though TLE elements have names
-like <em>inclination</em> and <em>eccentricity</em>
-that might remind you of the simple Kepler elements
-used for the orbits of comets and asteroids,
-the SGP4 propagation routine
-knows that a satellite orbit is not a simple ellipse
-and includes effects like the Moon’s gravity and atmospheric drag
-in its calculations.</p>
-<div class="section" id="loading-a-tle-file">
-<h2>Loading a TLE file<a class="headerlink" href="#loading-a-tle-file" title="Permalink to this headline">¶</a></h2>
+<p>Note that even though several TLE elements
+have names that might remind you of Kepler orbital elements,
+like <em>inclination</em> and <em>eccentricity</em>,
+the SGP4 routine does not treat a satellite’s orbit as a simple ellipse,
+and will produce a different position than a Kepler orbit would.</p>
+<div class="section" id="loading-tle-element-sets">
+<h2>Loading TLE element sets<a class="headerlink" href="#loading-tle-element-sets" title="Permalink to this headline">¶</a></h2>
+<p>Skyfield supports several approaches to loading TLE data.</p>
+<div class="section" id="downloading-a-tle-file">
+<h3>Downloading a TLE file<a class="headerlink" href="#downloading-a-tle-file" title="Permalink to this headline">¶</a></h3>
 <p>You can find satellite element sets at the
 <a class="reference external" href="http://celestrak.org/NORAD/elements/">NORAD Two-Line Element Sets</a>
 page of the Celestrak web site.</p>
@@ -117,10 +116,13 @@ which is listed in Celestrak’s <code class="docutils literal notranslate"><spa
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Loaded 60 satellites
 </pre></div>
 </div>
-<p>If you want to operate on every satellite in the list,
-simply loop over the list with a <code class="docutils literal notranslate"><span class="pre">for</span></code> loop.
-If you instead want to be able
-to select individual satellites by name or number,
+</div>
+<div class="section" id="indexing-satellites-by-name-or-number">
+<h3>Indexing satellites by name or number<a class="headerlink" href="#indexing-satellites-by-name-or-number" title="Permalink to this headline">¶</a></h3>
+<p>If you want to operate on every satellite
+in the list that you have loaded from a file,
+you can use Python’s <code class="docutils literal notranslate"><span class="pre">for</span></code> loop.
+But if you instead want to select individual satellites by name or number,
 try building a lookup dictionary
 using Python’s dictionary comprehension syntax:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">sat</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">sat</span> <span class="k">for</span> <span class="n">sat</span> <span class="ow">in</span> <span class="n">satellites</span><span class="p">}</span>
@@ -141,7 +143,7 @@ using Python’s dictionary comprehension syntax:</p>
 </div>
 </div>
 <div class="section" id="performing-a-tle-query">
-<h2>Performing a TLE query<a class="headerlink" href="#performing-a-tle-query" title="Permalink to this headline">¶</a></h2>
+<h3>Performing a TLE query<a class="headerlink" href="#performing-a-tle-query" title="Permalink to this headline">¶</a></h3>
 <p>In addition to offering traditional text files
 like <code class="docutils literal notranslate"><span class="pre">stations.txt</span></code> and <code class="docutils literal notranslate"><span class="pre">active.txt</span></code>,
 Celestrak supports queries that return TLE elements.</p>
@@ -182,8 +184,28 @@ But note that when asked again for the same satellite,
 it will simply reload the existing file from disk
 unless <code class="docutils literal notranslate"><span class="pre">reload=True</span></code> is specified.</p>
 </div>
-<div class="section" id="loading-a-tle-set-from-strings">
-<h2>Loading a TLE set from strings<a class="headerlink" href="#loading-a-tle-set-from-strings" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="loading-a-tle-file-from-a-string">
+<h3>Loading a TLE file from a string<a class="headerlink" href="#loading-a-tle-file-from-a-string" title="Permalink to this headline">¶</a></h3>
+<p>If your program has already loaded the text of a TLE file,
+and you don’t need Skyfield to handle the download for you,
+then you can turn it into a list of Skyfield satellites
+with the <a class="reference internal" href="api-iokit.html#skyfield.iokit.parse_tle_file" title="skyfield.iokit.parse_tle_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_tle_file()</span></code></a> function.
+The function is a Python generator,
+so we use Python’s <code class="docutils literal notranslate"><span class="pre">list()</span></code> constructor
+to load all the satellites:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span> <span class="nn">skyfield.iokit</span> <span class="kn">import</span> <span class="n">parse_tle_file</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">(</span><span class="n">stations_txt_bytes</span><span class="p">)</span>
+<span class="n">satellites</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parse_tle_file</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>If it’s simpler in your case,
+you can instead pass <a class="reference internal" href="api-iokit.html#skyfield.iokit.parse_tle_file" title="skyfield.iokit.parse_tle_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_tle_file()</span></code></a>
+a simple list of lines.</p>
+</div>
+<div class="section" id="loading-a-single-tle-set-from-strings">
+<h3>Loading a single TLE set from strings<a class="headerlink" href="#loading-a-single-tle-set-from-strings" title="Permalink to this headline">¶</a></h3>
 <p>If your program already has the two lines of TLE data for a satellite
 and doesn’t need Skyfield to download and parse a Celestrak file,
 you can instantiate an <a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite" title="skyfield.sgp4lib.EarthSatellite"><code class="xref py py-class docutils literal notranslate"><span class="pre">EarthSatellite</span></code></a> directly.</p>
@@ -198,6 +220,7 @@ you can instantiate an <a class="reference internal" href="api-satellites.html#s
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ISS (ZARYA) catalog #25544 epoch 2014-01-20 22:23:04 UTC
 </pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="checking-a-tles-epoch">
@@ -776,8 +799,8 @@ that builds a satellite model directly from numeric orbital parameters:</p>
     <span class="mi">5</span><span class="p">,</span>               <span class="c1"># satnum: Satellite number</span>
     <span class="mf">18441.785</span><span class="p">,</span>       <span class="c1"># epoch: days since 1949 December 31 00:00 UT</span>
     <span class="mf">2.8098e-05</span><span class="p">,</span>      <span class="c1"># bstar: drag coefficient (/earth radii)</span>
-    <span class="mf">6.969196665e-13</span><span class="p">,</span> <span class="c1"># ndot: ballistic coefficient (revs/day)</span>
-    <span class="mf">0.0</span><span class="p">,</span>             <span class="c1"># nddot: second derivative of mean motion (revs/day^3)</span>
+    <span class="mf">6.969196665e-13</span><span class="p">,</span> <span class="c1"># ndot: ballistic coefficient (radians/minute^2)</span>
+    <span class="mf">0.0</span><span class="p">,</span>             <span class="c1"># nddot: second derivative of mean motion (radians/minute^3)</span>
     <span class="mf">0.1859667</span><span class="p">,</span>       <span class="c1"># ecco: eccentricity</span>
     <span class="mf">5.7904160274885</span><span class="p">,</span> <span class="c1"># argpo: argument of perigee (radians)</span>
     <span class="mf">0.5980929187319</span><span class="p">,</span> <span class="c1"># inclo: inclination (radians)</span>

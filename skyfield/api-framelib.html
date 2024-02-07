@@ -27,7 +27,12 @@ whose use is described in <a class="reference internal" href="positions.html#ref
 <dl class="data">
 <dt id="skyfield.framelib.true_equator_and_equinox_of_date">
 <code class="descclassname">skyfield.framelib.</code><code class="descname">true_equator_and_equinox_of_date</code><em class="property"> = &lt;skyfield.framelib.true_equator_and_equinox_of_date object&gt;</em><a class="headerlink" href="#skyfield.framelib.true_equator_and_equinox_of_date" title="Permalink to this definition">¶</a></dt>
-<dd><p>The dynamical frame of the Earth’s true equator and equinox of date.</p>
+<dd><p>The dynamical frame of Earth’s true equator and true equinox of date.</p>
+<p>This frame is used for measuring right ascension and declination.
+Unlike the fixed reference frames J2000 and the ICRS, this ‘TETE’
+frame rotates slowly as the Earth’s precession and nutation shift
+the equinox point.  Unlike the <a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.TEME" title="skyfield.sgp4lib.TEME"><code class="xref py py-class docutils literal notranslate"><span class="pre">TEME</span></code></a>
+frame, this frame doesn’t ignore nutation.</p>
 <p>This is supplied as an explicit reference frame in case you want
 (<em>x,y,z</em>) coordinates; if you want angles, it’s better to use the
 standard position method <code class="docutils literal notranslate"><span class="pre">radec(epoch='date')</span></code> since that will
