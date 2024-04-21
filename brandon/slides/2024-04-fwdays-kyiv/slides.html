@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Talk</title>
+  <link rel="stylesheet" href="../css/pygments.css" type="text/css" />
+  <style>
+    @font-face {
+        font-family: 'mono';
+    }
+    html {
+    }
+    body {
+        margin: 0px;
+        /* width: 1920px; */
+        width: 1440px;
+        font-family: 'DejaVu Sans Mono';
+        font-size: 36px;
+    }
+    body:before {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 1920px;
+        height: 1080px;
+        content: " ";
+        background-color: gray;
+    }
+    body:after {
+        display: block;
+        height: 2000px;
+        content: " ";
+    }
+    body > div {
+        text-align: center;
+    }
+    pre {
+        position: relative;
+        display: inline-block;
+        font-family: 'DejaVu Sans Mono';
+        margin: 15px 0px;
+        border: 0px solid orange;
+        border-radius: 10px;
+        /* max-width: 1800px; */
+        max-width: 1344px;
+        padding: 12px;
+        background-color: white;
+        text-align: left;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    pre:first-child {
+        margin-top: 720px;
+    }
+    img.spinner {
+        position: absolute;
+        top: 72px;
+        left: 12px;
+        width: 72px;
+        height: 72px;
+    }
+    .filename {
+        position: relative;
+        top: -20px;
+        left: -30px;
+        border: 2px solid blue;
+        border-radius: 10px;
+        background-color: #ddd;
+        padding: 10px 30px;
+    }
+    .shell-command {
+        font-weight: bold;
+    }
+    .n {color: #664400}
+    b {color: #a34809}
+    i {font-weight: bold; color: #095358}
+    .timer {
+        z-index: 1;
+        position: fixed;
+        top: 10px;
+        left: 1600px;
+    }
+    .timer.emergency {
+        background-color: red;
+    }
+
+    /* Slides are also published as a static page on my website. */
+    body.static {
+        width: auto;
+        background-color: gray;
+        font-size: 18px;
+    }
+    body.static:before, body.static:after {
+        content: normal;  /* removes these two pseudo-elements */
+    }
+    body.static img.spinner {
+        display: none;
+    }
+    body.static pre {
+        max-width: 40em;
+    }
+    body.static pre:first-child {
+        margin-top: 2em;
+    }
+  </style>
+  <script src="/js/jquery-3.7.1.min.js"></script>
+  <script src="/js/timer.js"></script>
+  <script>
+    $(document).ready(function() {
+        $('body').removeClass('static');
+        $spinner = $('img.spinner').remove();
+        if (!window.location.hash)
+            window.location.hash = '0';
+        else
+            window.dispatchEvent(new HashChangeEvent("hashchange"));
+        $('pre').on('click', function() {
+            window.location.hash = '' + $pre_array.index(this);
+        });
+    });
+    $('html').on('keypress', function(e) {
+        var n = parseInt(window.location.hash.slice(1));
+        if (e.key == 'b' || e.key == 'p') {
+            window.location.hash = Math.max(0, n - 1);
+            return false;
+        }
+        if (e.key == 'f' || e.key == 'n' || e.key == ' ') {
+            var slide_count = $('pre').length;
+            window.location.hash = Math.min(slide_count - 1, n + 1);
+            return false;
+        }
+    });
+    $(window).on('hashchange',function(){
+        var index = parseInt(location.hash.slice(1));
+        /*global*/ current_slide_number = index;  /* for timer.js */
+        /*global*/ last_slide_change = new Date();
+        if (typeof($pre_array) == "undefined") {
+            $pre_array = $('pre');
+            for (i=0; i < $pre_array.length; i++)
+                if (i > index)
+                    $pre_array.eq(i).css({'opacity': 0});
+            /*global*/ slide_count = $('pre').length; /* for timer.js */
+            setup_timer();
+        }
+        if (typeof($prior) != "undefined") {
+            $prior.stop().animate({
+                borderWidth: 0,
+                borderRadius: 10
+            }, 500);
+        }
+        var index = parseInt(location.hash.slice(1));
+        var $pre = $pre_array.eq(index);
+        /*global*/ $prior = $pre;
+        $('html').stop().animate({
+            scrollTop: Math.round(
+                $pre.offset().top - 540 + (540/1080) * $pre.height()
+                // $pre.offset().top - 720 + (720/1080) * $pre.height()
+            )
+        }, 300);
+        $pre.animate({
+            borderWidth: 36,
+            borderRadius: 36,
+        }, 100);
+        if ($pre.css('opacity') != 1) {  // first time slide is exposed
+            $pre.animate({
+                opacity: 1
+            }, 100);
+            var $output = $pre.find('.output');
+            if ($output.length) {
+                $spinner.remove().appendTo($pre);
+                $output.css({
+                    opacity: 0
+                }).delay(1000).animate({
+                    opacity: 1
+                }, 0, function() {$spinner.remove()});
+            }
+        }
+    });
+  </script>
+</head>
+<body class="static">
+<img class="spinner" src="../images/180-ring-with-bg.svg">
+<div>
+<pre><i> </i>
+<i>     Forcing unittest to function     </i>
+
+            Brandon Rhodes
+            April 20, 2024
+             <b>Pre-recorded</b>
+
+         Python + DS fwdays'24
+            Kyiv — Ukraine
+
+</pre><br><pre>Let’s tackle an example problem.
+</pre><br><pre>When I check out a small package that
+has zero <i>runtime</i> dependencies,
+
+I like to be able to <b>run its tests</b>
+with zero <i>testing</i> dependencies.
+</pre><br><pre>For a big project, with <b>dependencies</b>:
+  <i>Heavyweight setup</i>
+  uv venv
+  uv pip install -r requirements.txt
+  3rd party test framework
+
+<b>Zero</b>-dependency project:</b>
+  <i>Ideally, zero install</i>
+</pre><br><pre> Python’s old motto
+<i>‘batteries included’</i>
+</pre><br><pre>The Python Standard Library does include
+ a testing framework, named  `<span class="n">unittest</span>`
+</pre><br><pre>It was originally <b>underpowered</b>.
+</pre><br><pre>So <i>third-party testing
+frameworks</i> became popular.
+</pre><br><pre>But `<span class="n">unittest</span>` started to
+quietly improve in Python 3.2.
+</pre><br><pre>$ python -m unittest --help
+...
+  -f, --failfast  Stop on first failure
+...
+</pre><br><pre>$ python -m unittest --help
+...
+  -b, --buffer    Buffer stdout/stderr
+...
+</pre><br><pre>Test discovery!
+</pre><br><pre><span class="filename">package/__init__.py</span>
+<span class="c1"># A simple package.</span>
+</pre><br><pre><span class="filename">package/tests.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_two</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest package</span>
+<div class=output>------------------------------------------
+Ran 0 tests in 0.000s
+NO TESTS RAN
+</div></pre><br><pre>  `<span class="n">unittest</span>` forced you to list
+<i>every module</i> on the command line.
+</pre><br><pre><span class="shell-command">$ python -m unittest -v package.tests</span>
+<div class=output>test_one (package.tests.Tests.test_one) ... ok
+test_two (package.tests.Tests.test_two) ... ok
+------------------------------------------
+Ran 2 tests in 0.000s
+OK
+</div></pre><br><pre>Test <i>discovery</i> fixes this!
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test_one (package.tests.Tests.test_one) ... ok
+test_two (package.tests.Tests.test_two) ... ok
+------------------------------------------
+Ran 2 tests in 0.000s
+OK
+</div></pre><br><pre>   Test discovery made
+`<span class="n">unittest</span>` nearly useable!
+</pre><br><pre>And it’s pretty fast.
+</pre><br><pre>`<span class="n">unittest</span>` runs our tiny `<span class="n">test</span><span class="o">.</span><span class="n">py</span>` pretty quickly:
+
+$ time python -m unittest discover project
+...
+0.104 total
+</pre><br><pre>Compare that to the third-party `<span class="n">pytest</span>` framework:
+
+$ time pytest project
+...
+0.808 total
+</pre><br><pre>‘all unit tests combined
+ should run in 1 second’
+</pre><br><pre>But `<span class="n">unittest</span>` has a <b>big</b> remaining problem
+</pre><br><pre>It makes you write tests as ugly <b>methods</b>,
+rather than as beautiful <i>functions</i>.
+</pre><br><pre>Which means we have to:
+
+• Import a class we <b>don’t want</b>
+• Build a subclass we <b>don’t like</b>
+• Lose 4 columns to <b>useless</b> indentation
+</pre><br><pre><span class="filename">package/tests.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_two</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre><br><pre>Q: Could my own package add this missing
+   feature to `<span class="n">unittest</span>`? And let me start
+   using `<span class="n">unittest</span>` again?
+</pre><br><pre>A: This is Python! We can do anything!
+</pre><br><pre>Q: Can I add <b>test function</b> support
+   in a way that is simple and elegant
+   <i>enough</i> that I’m willing to use it?
+</pre><br><pre>A: <b>Let’s try!</b>
+</pre><br><pre>Q: How does `<span class="n">unittest</span>` find tests?
+</pre><br><pre>A: Through Python’s powers
+   of <i>introspection</i>.
+</pre><br><pre>Most Python programmers know how to
+access the items in a `<span class="nb">list</span>` or `<span class="nb">dict</span>`.
+</pre><br><pre>But how do we loop over the names in
+a <i>namespace</i> — a module or class?
+</pre><br><pre>Two builtins:
+
+1. `<span class="nb">dir</span><span class="p">()</span>`
+2. `<span class="nb">getattr</span><span class="p">()</span>`
+</pre><br><pre><span class="filename">package/tests.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_two</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre><br><pre><span class="filename">example.py</span>
+<span class="kn">from</span> <span class="nn">package</span> <span class="kn">import</span> <span class="n">tests</span>
+
+<span class="n">names</span> <span class="o">=</span> <span class="nb">dir</span><span class="p">(</span><span class="n">tests</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+</pre><br><pre><span class="shell-command">$ python example.py</span>
+<div class=output>[&#x27;TestCase&#x27;, &#x27;Tests&#x27;, &#x27;__builtins__&#x27;, &#x27;__cached__&#x27;, &#x27;__doc__&#x27;, &#x27;__file__&#x27;, &#x27;__loader__&#x27;, &#x27;__name__&#x27;, &#x27;__package__&#x27;, &#x27;__spec__&#x27;]
+</div></pre><br><pre>After learning a name from `<span class="nb">dir</span><span class="p">()</span>`,
+we can get its object with `<span class="nb">getattr</span><span class="p">()</span>`.
+</pre><br><pre><span class="filename">example.py</span>
+<span class="kn">from</span> <span class="nn">package</span> <span class="kn">import</span> <span class="n">tests</span>
+
+<span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tests</span><span class="p">,</span> <span class="s1">&#39;TestCase&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</pre><br><pre><span class="shell-command">$ python example.py</span>
+<div class=output>&lt;class &#x27;unittest.case.TestCase&#x27;&gt;
+</div></pre><br><pre>`<span class="nb">dir</span><span class="p">()</span>` and `<span class="nb">getattr</span><span class="p">()</span>` are an
+elegant part of Python’s design.
+</pre><br><pre>Some of the older dynamic
+languages offered only `<span class="nb">eval</span><span class="p">()</span>`
+</pre><br><pre><span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;tests.&#39;</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span>
+</pre><br><pre>• Slow
+• Overpowered
+• Dangerous
+</pre><br><pre>So, instead of forcing you to call `<span class="nb">eval</span><span class="p">()</span>`,
+Python offers a <i>clean, limited, dynamic</i>
+operator for each namespace operation.
+</pre><br><pre><span class="s1">&#39;a.b&#39;</span>       <span class="o">==</span>   <span class="nb">getattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="s1">&#39;a.b = x&#39;</span>   <span class="o">==</span>   <span class="nb">setattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="s1">&#39;del a.b&#39;</span>   <span class="o">==</span>   <span class="nb">delattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span>
+</pre><br><pre>What steps does `<span class="n">unittest</span>` follow
+when looking for tests in a module?
+</pre><br><pre>  ‘The `<span class="n">unittest</span>` contract’
+
+1. Collect `<span class="n">TestCase</span>` classes.
+2. Call `<span class="n">load_tests</span><span class="p">()</span>`.
+</pre><br><pre><span class="c1"># `unittest/loader.py` to find classes:</span>
+
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">case</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span> <span class="o">...</span>
+</pre><br><pre><span class="c1"># `unittest/loader.py` to find methods:</span>
+
+<span class="nb">dir</span><span class="p">(</span><span class="n">testCaseClass</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">attrname</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="nb">getattr</span><span class="p">(</span><span class="n">testCaseClass</span><span class="p">,</span> <span class="n">attrname</span><span class="p">)</span>
+</pre><br><pre>Then, things get weird: `<span class="n">unittest</span>`
+instantiates your test class <i>n</i> times,
+once for each test method that it found.
+</pre><br><pre>This is easier to <i>show</i> than <b>describe</b>.
+So here’s our test module again:
+</pre><br><pre><span class="filename">package/tests.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_two</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre><br><pre>And here are <i>exactly</i> the steps
+that `<span class="n">unittest</span>` will perform:
+</pre><br><pre><span class="filename">example.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestSuite</span><span class="p">,</span> <span class="n">TextTestRunner</span>
+<span class="kn">from</span> <span class="nn">package.tests</span> <span class="kn">import</span> <span class="n">Tests</span>
+
+<span class="n">cases</span> <span class="o">=</span> <span class="p">[</span><span class="n">Tests</span><span class="p">(</span><span class="s1">&#39;test_one&#39;</span><span class="p">),</span> <span class="n">Tests</span><span class="p">(</span><span class="s1">&#39;test_two&#39;</span><span class="p">)]</span>
+<span class="n">suite</span> <span class="o">=</span> <span class="n">TestSuite</span><span class="p">(</span><span class="n">cases</span><span class="p">)</span>
+<span class="n">TextTestRunner</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">suite</span><span class="p">)</span>
+</pre><br><pre><span class="shell-command">$ python example.py</span>
+<div class=output>..
+------------------------------------------
+Ran 2 tests in 0.000s
+OK
+</div></pre><br><pre>So that’s how `<span class="n">unittest</span>` normally loads
+tests: from `<span class="n">TestCase</span>` methods.
+</pre><br><pre>But there’s also an <b>escape hatch!</b>
+</pre><br><pre>After building the test suite,
+`<span class="n">unittest</span>` does one last check:
+</pre><br><pre><span class="c1"># From `unittest/loader.py`:</span>
+
+<span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;load_tests&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</pre><br><pre>If `<span class="n">load_tests</span><span class="p">()</span>` is defined,
+then `<span class="n">unittest</span>` calls it.
+</pre><br><pre><span class="filename">package/tests.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_two</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">load_tests</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">suite</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+    <span class="c1"># ...add or remove tests from `suite`...</span>
+    <span class="k">return</span> <span class="n">suite</span>
+</pre><br><pre>Here, for example, is how
+to <b>add</b> a test to the suite:
+</pre><br><pre><span class="filename">package/tests.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_two</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">division</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">10</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test_one (package.tests.Tests.test_one) ... ok
+test_two (package.tests.Tests.test_two) ... ok
+------------------------------------------
+Ran 2 tests in 0.000s
+OK
+</div></pre><br><pre><span class="filename">package/tests.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_two</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">division</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">10</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">load_tests</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">suite</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+    <span class="n">suite</span><span class="o">.</span><span class="n">addTest</span><span class="p">(</span><span class="n">Tests</span><span class="p">(</span><span class="s1">&#39;division&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">suite</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test_one (package.tests.Tests.test_one) ... ok
+test_two (package.tests.Tests.test_two) ... ok
+division (package.tests.Tests.division) ... ok
+------------------------------------------
+Ran 3 tests in 0.000s
+OK
+</div></pre><br><pre>The Standard Library `<span class="n">doctest</span>` documentation
+recommends this exact mechanism for adding
+<i>doctests</i> to your package’s test suite.
+</pre><br><pre><span class="c1"># Example from `doctest` documentation:</span>
+
+<span class="kn">import</span> <span class="nn">doctest</span>
+<span class="kn">import</span> <span class="nn">my_module_with_doctests</span>
+
+<span class="k">def</span> <span class="nf">load_tests</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">suite</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
+    <span class="n">suite</span><span class="o">.</span><span class="n">addTests</span><span class="p">(</span><span class="n">doctest</span><span class="o">.</span><span class="n">DocTestSuite</span><span class="p">(</span>
+        <span class="n">my_module_with_doctests</span><span class="p">,</span>
+    <span class="p">))</span>
+    <span class="k">return</span> <span class="n">tests</span>
+</pre><br><pre>So, if we want `<span class="n">unittest</span>` to load our <i>test
+functions</i>, we have <b>two chances</b> to do it!
+</pre><br><pre>  ‘The `<span class="n">unittest</span>` contract’
+
+1. Collect `<span class="n">TestCase</span>` classes.
+2. Call `<span class="n">load_tests</span><span class="p">()</span>`.
+</pre><br><pre>       Design Decision!
+
+Which mechanism should we use
+for enrolling test functions?
+</pre><br><pre>Let’s <b>code both solutions</b> and use
+that experience to help us <i>decide!</i>
+</pre><br><pre>  [ ] `<span class="n">TestCase</span>` class
+↗
+↘
+  [ ] `<span class="n">load_tests</span><span class="p">()</span>`
+</pre><br><pre><span class="filename">package/tests.py</span>
+<span class="k">def</span> <span class="nf">test_one</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">test_two</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">2</span><span class="o">*</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">4</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>------------------------------------------
+Ran 0 tests in 0.000s
+NO TESTS RAN
+</div></pre><br><pre>Q: How should we get ourselves started?
+</pre><br><pre>A: Let’s do API-driven development!
+</pre><br><pre>Let’s write a call to an API we <i>wish</i> existed
+and then see if we can <b>make</b> it exist!
+</pre><br><pre><span class="filename">package/tests.py</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">find_tests</span>
+
+<span class="k">def</span> <span class="nf">test_one</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">test_two</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">2</span><span class="o">*</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">4</span>
+
+<span class="n">Tests</span> <span class="o">=</span> <span class="n">find_tests</span><span class="p">()</span>
+</pre><br><pre>Next, let’s try implementing this API!
+</pre><br><pre><span class="filename">package/utils.py</span>
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">():</span>
+    <span class="o">...</span>
+    <span class="c1"># What can we put here to build</span>
+    <span class="c1"># a `Tests` class that will convince</span>
+    <span class="c1"># `unittest` to run our functions?</span>
+    <span class="o">...</span>
+</pre><br><pre>An essential technique:
+      <b>hard-coding!</b>
+</pre><br><pre>I’m going to write <i>exactly the code</i>
+that’s needed for this <b>one specific case</b>
+so we reach a working proof-of-concept
+as quickly as possible.
+</pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">package</span> <span class="kn">import</span> <span class="n">tests</span>
+    <span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">test_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">tests</span><span class="o">.</span><span class="n">test_one</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Tests</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test_one (package.utils.find_tests.&lt;locals&gt;.Tests.test_one) ... ok
+------------------------------------------
+Ran 1 test in 0.000s
+OK
+</div></pre><br><pre><img src="../images/party-popper.svg" height="150" width="150">
+</pre><br><pre>That’s why I love hard-coding!
+</pre><br><pre>Now that the code <i>works</i>,
+I can <b>iterate quickly</b> towards
+a full solution, enjoying <i>working</i>
+<i>code</i> at every step.
+</pre><br><pre>Let’s iterate!
+</pre><br><pre>[ ] How it finds the module.
+[ ] How it finds the tests.
+[ ] How it adds the tests to the class.
+</pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">package</span> <span class="kn">import</span> <span class="n">tests</span>
+    <span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">test_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">tests</span><span class="o">.</span><span class="n">test_one</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Tests</span>
+</pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">package</span> <span class="kn">import</span> <span class="n">tests</span>
+    <span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">tests</span><span class="o">.</span><span class="n">test_one</span>
+    <span class="n">Tests</span><span class="o">.</span><span class="n">test_one</span> <span class="o">=</span> <span class="n">f</span>
+    <span class="k">return</span> <span class="n">Tests</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test_one (package.utils.find_tests.&lt;locals&gt;.Tests.test_one) ... ERROR
+==========================================
+ERROR: test_one (package.utils.find_tests.&lt;locals&gt;.Tests.test_one)
+------------------------------------------
+TypeError: test_one() takes 0 positional arguments but 1 was given
+------------------------------------------
+Ran 1 test in 0.000s
+FAILED (errors=1)
+</div></pre><br><pre>What did we do wrong?
+</pre><br><pre>Always commit <i>working code</i> to
+version control, so you know <b>exactly</b>
+what changed when you break something!
+</pre><br><pre>Let’s back up to our previous working code:
+</pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">package</span> <span class="kn">import</span> <span class="n">tests</span>
+    <span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">test_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">tests</span><span class="o">.</span><span class="n">test_one</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Tests</span>
+</pre><br><pre>So we need a wrapper.
+</pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+         <span class="n">function</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">method</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">package</span> <span class="kn">import</span> <span class="n">tests</span>
+    <span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">tests</span><span class="o">.</span><span class="n">test_one</span>
+    <span class="n">Tests</span><span class="o">.</span><span class="n">test_one</span> <span class="o">=</span> <span class="n">wrap</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Tests</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test_one (package.utils.find_tests.&lt;locals&gt;.Tests.test_one) ... ok
+------------------------------------------
+Ran 1 test in 0.000s
+OK
+</div></pre><br><pre><img src="../images/party-popper.svg" height="150" width="150">
+</pre><br><pre>[ ] How it finds the module.
+[ ] How it finds the tests.
+[✔] How it adds the tests to the class.
+</pre><br><pre>It turns out that `<span class="n">wrap</span><span class="p">()</span>`
+should look <i>very</i> familiar.
+</pre><br><pre>It already a builtin!
+
+   `<span class="nb">staticmethod</span>`
+</pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="c1"># def wrap(function):</span>
+<span class="c1">#     def method(self):</span>
+<span class="c1">#          function()</span>
+<span class="c1">#     return method</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">package</span> <span class="kn">import</span> <span class="n">tests</span>
+    <span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">tests</span><span class="o">.</span><span class="n">test_one</span>
+    <span class="n">Tests</span><span class="o">.</span><span class="n">test_one</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Tests</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test_one (package.utils.find_tests.&lt;locals&gt;.Tests.test_one) ... ok
+------------------------------------------
+Ran 1 test in 0.000s
+OK
+</div></pre><br><pre>[ ] How it finds the module.
+[ ] How it finds the tests.
+[✔] How it adds the tests to the class.
+</pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="c1"># def wrap(function):</span>
+<span class="c1">#     def method(self):</span>
+<span class="c1">#          function()</span>
+<span class="c1">#     return method</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">package</span> <span class="kn">import</span> <span class="n">tests</span>
+    <span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">tests</span><span class="o">.</span><span class="n">test_one</span>
+    <span class="n">Tests</span><span class="o">.</span><span class="n">test_one</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Tests</span>
+</pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">package</span> <span class="kn">import</span> <span class="n">tests</span>
+    <span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">tests</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">):</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tests</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">Tests</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">Tests</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test_one (package.utils.find_tests.&lt;locals&gt;.Tests.test_one) ... ok
+test_two (package.utils.find_tests.&lt;locals&gt;.Tests.test_two) ... ok
+------------------------------------------
+Ran 2 tests in 0.000s
+OK
+</div></pre><br><pre>[ ] How it finds the module.
+[✔] How it finds the tests.
+[✔] How it adds the tests to the class.
+</pre><br><pre>Well — how <i>do</i> you find the module?
+</pre><br><pre>Q: Where do modules live?
+</pre><br><pre>A: They live in the `<span class="n">sys</span><span class="o">.</span><span class="n">modules</span>` dictionary.
+</pre><br><pre><i>If</i> we knew the module’s name, we
+could retrieve it from `<span class="n">sys</span><span class="o">.</span><span class="n">modules</span>`.
+</pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">():</span>
+    <span class="n">module_name</span> <span class="o">=</span> <span class="s1">&#39;package.tests&#39;</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">module_name</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">):</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">Tests</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">Tests</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test_one (package.utils.find_tests.&lt;locals&gt;.Tests.test_one) ... ok
+test_two (package.utils.find_tests.&lt;locals&gt;.Tests.test_two) ... ok
+------------------------------------------
+Ran 2 tests in 0.000s
+OK
+</div></pre><br><pre>So now we face a simpler problem:
+
+Q: How do I get the module’s <b>name</b>?
+</pre><br><pre>A: Adjust the API so it’s passed in!
+</pre><br><pre><span class="filename">package/tests.py</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">find_tests</span>
+
+<span class="k">def</span> <span class="nf">test_one</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">test_two</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">2</span><span class="o">*</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">4</span>
+
+<span class="n">Tests</span> <span class="o">=</span> <span class="n">find_tests</span><span class="p">()</span>
+</pre><br><pre><span class="filename">package/tests.py</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">find_tests</span>
+
+<span class="k">def</span> <span class="nf">test_one</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">test_two</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">2</span><span class="o">*</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">4</span>
+
+<span class="n">Tests</span> <span class="o">=</span> <span class="n">find_tests</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+</pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">(</span><span class="n">module_name</span><span class="p">):</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">module_name</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">):</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">Tests</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">Tests</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test_one (package.utils.find_tests.&lt;locals&gt;.Tests.test_one) ... ok
+test_two (package.utils.find_tests.&lt;locals&gt;.Tests.test_two) ... ok
+------------------------------------------
+Ran 2 tests in 0.000s
+OK
+</div></pre><br><pre>[✔] How it finds the module.
+[✔] How it finds the tests.
+[✔] How it adds the tests to the class.
+</pre><br><pre>  [✔] `<span class="n">TestCase</span>` class: 10 lines of code + 1 per module
+↗
+↘
+  [ ] `<span class="n">load_tests</span><span class="p">()</span>`
+</pre><br><pre><span class="n">Tests</span> <span class="o">=</span> <span class="n">find_tests</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+</pre><br><pre>Let’s now turn to the
+other big alternative.
+</pre><br><pre>Once again, <i>API-Driven Design</i>!
+</pre><br><pre><span class="filename">package/tests.py</span>
+<span class="k">def</span> <span class="nf">test_one</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">test_two</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">2</span><span class="o">*</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">4</span>
+
+<span class="k">def</span> <span class="nf">load_tests</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">suite</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">return</span> <span class="n">suite</span>
+</pre><br><pre><span class="filename">package/tests.py</span>
+<span class="k">def</span> <span class="nf">test_one</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">test_two</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">2</span><span class="o">*</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">4</span>
+
+<span class="k">def</span> <span class="nf">load_tests</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">suite</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+    <span class="n">suite</span><span class="o">.</span><span class="n">addTests</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">suite</span>
+</pre><br><pre><span class="filename">package/tests.py</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">find_tests</span>
+
+<span class="k">def</span> <span class="nf">test_one</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">test_two</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">2</span><span class="o">*</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">4</span>
+
+<span class="k">def</span> <span class="nf">load_tests</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">suite</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+    <span class="n">suite</span><span class="o">.</span><span class="n">addTests</span><span class="p">(</span><span class="n">find_tests</span><span class="p">(</span><span class="o">...</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">suite</span>
+</pre><br><pre><span class="filename">package/tests.py</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">find_tests</span>
+
+<span class="k">def</span> <span class="nf">test_one</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">test_two</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">2</span><span class="o">*</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">4</span>
+
+<span class="k">def</span> <span class="nf">load_tests</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">suite</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+    <span class="n">suite</span><span class="o">.</span><span class="n">addTests</span><span class="p">(</span><span class="n">find_tests</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">suite</span>
+</pre><br><pre>Time to write a new `<span class="n">utils</span><span class="o">.</span><span class="n">py</span>` module!
+</pre><br><pre>Let’s again start by <b>hard-coding</b> the test,
+to quickly reach a <i>working solution</i>!
+</pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">(</span><span class="n">package_name</span><span class="p">):</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">package_name</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">test_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">module</span><span class="o">.</span><span class="n">test_one</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">Tests</span><span class="p">(</span><span class="s1">&#39;test_one&#39;</span><span class="p">)]</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test_one (package.utils.find_tests.&lt;locals&gt;.Tests.test_one) ... ok
+------------------------------------------
+Ran 1 test in 0.000s
+OK
+</div></pre><br><pre><img src="../images/party-popper.svg" height="150" width="150">
+</pre><br><pre>  [✔] `<span class="n">TestCase</span>` class: 10 lines of code + 1 per module
+↗
+↘
+  […] `<span class="n">load_tests</span><span class="p">()</span>`
+</pre><br><pre>Now, we enjoy the luxury of
+<b>iterating</b> on a <i>working solution</i>.
+</pre><br><pre>Let’s make the class fully <i>generic</i>.
+</pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">(</span><span class="n">package_name</span><span class="p">):</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">package_name</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Test</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">test_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">f</span><span class="p">()</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">test_one</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">Test</span><span class="p">(</span><span class="s1">&#39;test_one&#39;</span><span class="p">)]</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test_one (package.utils.find_tests.&lt;locals&gt;.Test.test_one) ... ok
+------------------------------------------
+Ran 1 test in 0.000s
+OK
+</div></pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">(</span><span class="n">package_name</span><span class="p">):</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">package_name</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Test</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">f</span><span class="p">()</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">test_one</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">Test</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)]</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test (package.utils.find_tests.&lt;locals&gt;.Test.test) ... ok
+------------------------------------------
+Ran 1 test in 0.000s
+OK
+</div></pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">(</span><span class="n">package_name</span><span class="p">):</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">package_name</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Test</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">f</span><span class="p">()</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">test_one</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">Test</span><span class="p">()]</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test (package.utils.find_tests.&lt;locals&gt;.Test.test) ... ok
+------------------------------------------
+Ran 1 test in 0.000s
+OK
+</div></pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">(</span><span class="n">package_name</span><span class="p">):</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">package_name</span><span class="p">]</span>
+    <span class="k">class</span> <span class="nc">Test</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">Test</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">test_one</span><span class="p">)]</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test (package.utils.find_tests.&lt;locals&gt;.Test.test) ... ok
+------------------------------------------
+Ran 1 test in 0.000s
+OK
+</div></pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="k">class</span> <span class="nc">Test</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">(</span><span class="n">package_name</span><span class="p">):</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">package_name</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">Test</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">test_one</span><span class="p">)]</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>test (package.utils.Test.test) ... ok
+------------------------------------------
+Ran 1 test in 0.000s
+OK
+</div></pre><br><pre>Then I noticed something.
+</pre><br><pre>This `<span class="n">Tests</span>` class?
+</pre><br><pre>It already exists!
+</pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">FunctionTestCase</span>
+
+<span class="c1"># class Tests(TestCase):</span>
+<span class="c1">#     def __init__(self, f):</span>
+<span class="c1">#         super().__init__(&#39;test&#39;)</span>
+<span class="c1">#         self.f = f</span>
+<span class="c1">#     def test(self):</span>
+<span class="c1">#         self.f()</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">(</span><span class="n">package_name</span><span class="p">):</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">package_name</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">FunctionTestCase</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">test_one</span><span class="p">)]</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>unittest.case.FunctionTestCase (test_one) ... ok
+------------------------------------------
+Ran 1 test in 0.000s
+OK
+</div></pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">FunctionTestCase</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">(</span><span class="n">package_name</span><span class="p">):</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">package_name</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">FunctionTestCase</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">test_one</span><span class="p">)]</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>unittest.case.FunctionTestCase (test_one) ... ok
+------------------------------------------
+Ran 1 test in 0.000s
+OK
+</div></pre><br><pre><span class="filename">package/utils.py</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">FunctionTestCase</span>
+
+<span class="k">def</span> <span class="nf">find_tests</span><span class="p">(</span><span class="n">package_name</span><span class="p">):</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">package_name</span><span class="p">]</span>
+    <span class="n">tests</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">):</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">tests</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FunctionTestCase</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">tests</span>
+</pre><br><pre><span class="shell-command">$ python -m unittest discover -v</span>
+<div class=output>unittest.case.FunctionTestCase (test_one) ... ok
+unittest.case.FunctionTestCase (test_two) ... ok
+------------------------------------------
+Ran 2 tests in 0.000s
+OK
+</div></pre><br><pre><img src="../images/party-popper.svg" height="150" width="150">
+</pre><br><pre>  [✔] `<span class="n">TestCase</span>` class: 11 lines of code + 1 per module
+↗
+↘
+  [✔] `<span class="n">load_tests</span><span class="p">()</span>`: 10 lines of code + 3 per module
+</pre><br><pre><span class="k">def</span> <span class="nf">load_tests</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">suite</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+    <span class="n">suite</span><span class="o">.</span><span class="n">addTests</span><span class="p">(</span><span class="n">find_tests</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">suite</span>
+</pre><br><pre>Verdict? I choose `<span class="n">load_tests</span><span class="p">()</span>`!
+</pre><br><pre>• <i>Explicit</i> rather than <b>implicit</b>.
+• Uses a standard `<span class="n">unittest</span>` feature.
+• Creates only instances at runtime, not classes.
+• Composes well with the `<span class="n">doctest</span>` instructions.
+</pre><br><pre>&lt;aside&gt;
+</pre><br><pre>I’m sure you have a question:
+ <i>‘But what about asserts?!’</i>
+</pre><br><pre>Because you noticed me quietly pivot
+from `<span class="n">assertEqual</span><span class="p">()</span>` to plain `<span class="k">assert</span>`.
+</pre><br><pre><span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># vs</span>
+
+<span class="k">def</span> <span class="nf">test_one</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">2</span>
+</pre><br><pre>How do we get pretty asserts back?
+</pre><br><pre>If you don’t have `<span class="bp">self</span>`, how
+do we call `<span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">()</span>`?
+</pre><br><pre>The Prebound Method Pattern
+</pre><br><pre><span class="filename">project/asserts.py</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="n">_c</span> <span class="o">=</span> <span class="n">TestCase</span><span class="p">()</span>
+<span class="n">assertEqual</span> <span class="o">=</span> <span class="n">_c</span><span class="o">.</span><span class="n">assertEqual</span>
+<span class="n">assertNotEqual</span> <span class="o">=</span> <span class="n">_c</span><span class="o">.</span><span class="n">assertNotEqual</span>
+<span class="n">assertIsNone</span> <span class="o">=</span> <span class="n">_c</span><span class="o">.</span><span class="n">assertIsNone</span>
+<span class="o">...</span>
+</pre><br><pre><span class="kn">from</span> <span class="nn">asserts</span> <span class="kn">import</span> <span class="n">assertEqual</span>
+
+<span class="k">def</span> <span class="nf">test_one</span><span class="p">():</span>
+    <span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_two</span><span class="p">():</span>
+    <span class="n">assertEqual</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre><br><pre>&lt;/aside&gt;
+</pre><br><pre>Takeaways
+
+• How <b>introspection</b> works.
+• How to use introspection in <b>developer tools</b>.
+• How <i>hard-coded</i> solutions let us start fast.
+• How <b>prototypes</b> help us decide between approaches.
+• And, of course, you now know how to plug <i>test
+  functions</i> into `<span class="n">unittest</span>` if you ever want to.
+</pre><br><pre>  Thank you very much!
+   I’m Brandon Rhodes.
+
+I hope you enjoy the rest
+ of Python+DS fwdays’24.
+
+<img src="../images/party-popper.svg" height="150" width="150">
+</pre><br>
