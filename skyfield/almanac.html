@@ -24,27 +24,27 @@
 <p>To help you navigate, here are the topics covered on this page:</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#rounding-time-to-the-nearest-minute" id="id4">Rounding time to the nearest minute</a></li>
-<li><a class="reference internal" href="#risings-and-settings" id="id5">Risings and settings</a><ul>
-<li><a class="reference internal" href="#sunrise-and-sunset" id="id6">Sunrise and Sunset</a></li>
-<li><a class="reference internal" href="#detecting-polar-day-and-polar-night" id="id7">Detecting polar day and polar night</a></li>
-<li><a class="reference internal" href="#moonrise-and-moonset" id="id8">Moonrise and moonset</a></li>
-<li><a class="reference internal" href="#planet-rising-and-setting" id="id9">Planet rising and setting</a></li>
-<li><a class="reference internal" href="#computing-your-own-refraction-angle" id="id10">Computing your own refraction angle</a></li>
-<li><a class="reference internal" href="#elevated-vantage-points" id="id11">Elevated vantage points</a></li>
-<li><a class="reference internal" href="#when-a-right-ascension-and-declination-rises-and-sets" id="id12">When a right ascension and declination rises and sets</a></li>
+<li><a class="reference internal" href="#rounding-time-to-the-nearest-minute" id="toc-entry-1">Rounding time to the nearest minute</a></li>
+<li><a class="reference internal" href="#risings-and-settings-1" id="toc-entry-2">Risings and settings</a><ul>
+<li><a class="reference internal" href="#sunrise-and-sunset" id="toc-entry-3">Sunrise and Sunset</a></li>
+<li><a class="reference internal" href="#detecting-polar-day-and-polar-night" id="toc-entry-4">Detecting polar day and polar night</a></li>
+<li><a class="reference internal" href="#moonrise-and-moonset" id="toc-entry-5">Moonrise and moonset</a></li>
+<li><a class="reference internal" href="#planet-rising-and-setting" id="toc-entry-6">Planet rising and setting</a></li>
+<li><a class="reference internal" href="#computing-your-own-refraction-angle" id="toc-entry-7">Computing your own refraction angle</a></li>
+<li><a class="reference internal" href="#elevated-vantage-points" id="toc-entry-8">Elevated vantage points</a></li>
+<li><a class="reference internal" href="#when-a-right-ascension-and-declination-rises-and-sets" id="toc-entry-9">When a right ascension and declination rises and sets</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#the-seasons" id="id13">The Seasons</a></li>
-<li><a class="reference internal" href="#phases-of-the-moon" id="id14">Phases of the Moon</a></li>
-<li><a class="reference internal" href="#lunar-nodes" id="id15">Lunar Nodes</a></li>
-<li><a class="reference internal" href="#opposition-and-conjunction" id="id16">Opposition and Conjunction</a></li>
-<li><a class="reference internal" href="#meridian-transits" id="id17">Meridian Transits</a></li>
-<li><a class="reference internal" href="#legacy-transit-routine" id="id18">Legacy transit routine</a></li>
-<li><a class="reference internal" href="#legacy-rising-and-setting-routines" id="id19">Legacy rising and setting routines</a></li>
-<li><a class="reference internal" href="#twilight" id="id20">Twilight</a></li>
-<li><a class="reference internal" href="#solar-terms" id="id21">Solar terms</a></li>
-<li><a class="reference internal" href="#lunar-eclipses" id="id22">Lunar eclipses</a></li>
+<li><a class="reference internal" href="#the-seasons" id="toc-entry-10">The Seasons</a></li>
+<li><a class="reference internal" href="#phases-of-the-moon" id="toc-entry-11">Phases of the Moon</a></li>
+<li><a class="reference internal" href="#lunar-nodes-1" id="toc-entry-12">Lunar Nodes</a></li>
+<li><a class="reference internal" href="#opposition-and-conjunction" id="toc-entry-13">Opposition and Conjunction</a></li>
+<li><a class="reference internal" href="#meridian-transits" id="toc-entry-14">Meridian Transits</a></li>
+<li><a class="reference internal" href="#legacy-transit-routine" id="toc-entry-15">Legacy transit routine</a></li>
+<li><a class="reference internal" href="#legacy-rising-and-setting-routines" id="toc-entry-16">Legacy rising and setting routines</a></li>
+<li><a class="reference internal" href="#twilight" id="toc-entry-17">Twilight</a></li>
+<li><a class="reference internal" href="#solar-terms" id="toc-entry-18">Solar terms</a></li>
+<li><a class="reference internal" href="#lunar-eclipses-1" id="toc-entry-19">Lunar eclipses</a></li>
 </ul>
 </div>
 <p>Here are the imports and objects that will drive the examples below:</p>
@@ -129,8 +129,8 @@ minute, try manually adding 30&nbsp;seconds to the time before displaying it:</p
 </div>
 <p>The results should then agree with the tables produced by the USNO.</p>
 </div>
-<div class="section" id="risings-and-settings">
-<span id="id1"></span><h2>Risings and settings<a class="headerlink" href="#risings-and-settings" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="risings-and-settings-1">
+<span id="risings-and-settings"></span><h2>Risings and settings<a class="headerlink" href="#risings-and-settings-1" title="Permalink to this headline">¶</a></h2>
 <p>Skyfield can compute when a given body rises and sets
 for an observer at the Earth’s surface.
 The routines are designed for bodies
@@ -477,8 +477,8 @@ corresponding array of Moon phases with 0 for New Moon and 3 for Last
 Quarter.  You can use the array <code class="docutils literal notranslate"><span class="pre">MOON_PHASES</span></code> to retrieve names for
 each phase.</p>
 </div>
-<div class="section" id="lunar-nodes">
-<span id="id2"></span><h2>Lunar Nodes<a class="headerlink" href="#lunar-nodes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="lunar-nodes-1">
+<span id="lunar-nodes"></span><h2>Lunar Nodes<a class="headerlink" href="#lunar-nodes-1" title="Permalink to this headline">¶</a></h2>
 <p>The Moon’s ascending node and descending node are the moments each lunar
 month when the Moon crosses the plane of Earth’s orbit and eclipses are
 possible.</p>
@@ -666,8 +666,8 @@ as <code class="docutils literal notranslate"><span class="pre">SOLAR_TERMS_JP</
 <code class="docutils literal notranslate"><span class="pre">SOLAR_TERMS_ZHT</span></code> for Traditional Chinese, and (as shown above)
 <code class="docutils literal notranslate"><span class="pre">SOLAR_TERMS_ZHS</span></code> for Simplified Chinese.</p>
 </div>
-<div class="section" id="lunar-eclipses">
-<span id="id3"></span><h2>Lunar eclipses<a class="headerlink" href="#lunar-eclipses" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="lunar-eclipses-1">
+<span id="lunar-eclipses"></span><h2>Lunar eclipses<a class="headerlink" href="#lunar-eclipses-1" title="Permalink to this headline">¶</a></h2>
 <p>Skyfield can find the dates of lunar eclipses.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">eclipselib</span>
 

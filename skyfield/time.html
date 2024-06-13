@@ -305,6 +305,8 @@ the only way to stay within the rules
 while keeping UTC synchronized with the Earth
 is to occasionally add an extra leap second
 to one of the year’s minutes.</p>
+<p>See <a class="reference internal" href="accuracy-efficiency.html#the-leap-second-table"><span class="std std-ref">The leap second table</span></a> if you are interested
+in printing Skyfield’s full list of leap seconds.</p>
 <p>The <a class="reference external" href="http://hpiers.obspm.fr/">International Earth Rotation Service</a>
 currently restricts itself to appending a leap second
 to the last minute of June or the last minute of December.
@@ -419,8 +421,8 @@ you will notice
 that the clock time returned by Skyfield’s UTC functions
 is one second earlier or later than you expect.</p>
 </div>
-<div class="section" id="date-arrays">
-<span id="id1"></span><h2>Date arrays<a class="headerlink" href="#date-arrays" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="date-arrays-1">
+<span id="date-arrays"></span><h2>Date arrays<a class="headerlink" href="#date-arrays-1" title="Permalink to this headline">¶</a></h2>
 <p>If you want to ask where a planet or satellite was
 across a whole series of times and dates,
 then Skyfield will work most efficiently if,
@@ -660,7 +662,7 @@ TDB = 2456658.500777592
 <p>International Atomic Time (TAI) is maintained
 by the worldwide network of atomic clocks
 referenced by researchers with a need for very accurate time.
-The official leap second table
+The official <a class="reference internal" href="accuracy-efficiency.html#the-leap-second-table"><span class="std std-ref">leap second table</span></a>
 is actually a table of offsets between TAI and UTC.
 At the end of June 2012, for example,
 the TAI−UTC offset was changed from 34.0 to 35.0
@@ -671,10 +673,13 @@ were already maintaining a uniform time scale of their own
 before TAI was established,
 using a slightly different starting point for the day.
 For practical purposes, TT is simply TAI
-plus exactly 32.184 seconds.
-So it is now more than a minute ahead of UTC.
-You can also retrieve Terrestrial Time as a floating point number of years
-of exactly 365.25 days each:</p>
+plus exactly 32.184&nbsp;seconds.
+So it is now more than a minute ahead of UTC.</p>
+<p>You can not only ask Skyfield for TT as a Julian date and a calendar date,
+but as a floating-point number of years
+of exactly 365.25 days each —
+a value which is often used as the time parameter
+in long-term astronomical formulae:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Julian year = </span><span class="si">{:.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">J</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -689,10 +694,10 @@ and therefore unaffected by the Earth’s motion.
 The acceleration that Earth experiences in its orbit —
 sometimes speeding up, sometimes slowing down —
 varies the rate at which our atomic clocks
-seem to run to an outside observer,
+run relative to an outside observer,
 as predicted by Einstein’s theory of General Relativity.
-So physical simulations of the Solar System tend to use TDB,
-which is continuous with the <em>T</em><sub>eph</sub> time scale
+So physical simulations of the Solar System use TDB as their clock.
+It is considered equivalent to the <em>T</em><sub>eph</sub> time scale
 traditionally used for Solar System and spacecraft simulations
 at the Jet Propulsion Laboratory.</p>
 </div>

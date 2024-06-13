@@ -25,7 +25,7 @@
 that will be expanded into a full guide.
 Right now it covers only one topic.</p>
 <div class="section" id="precession-and-nutation">
-<span id="polar-motion"></span><h2>Precession and Nutation<a class="headerlink" href="#precession-and-nutation" title="Permalink to this headline">¶</a></h2>
+<h2>Precession and Nutation<a class="headerlink" href="#precession-and-nutation" title="Permalink to this headline">¶</a></h2>
 <p>As explained in the section on
 <a class="reference internal" href="positions.html#apparent-right-ascension-and-declination"><span class="std std-ref">Apparent right ascension and declination</span></a>,
 Skyfield uses the IAU&nbsp;2000A precession-nutation model
@@ -51,8 +51,8 @@ into the Earth equatorial coordinate system of that date and time.
 See the section on <a class="reference internal" href="coordinates.html#rotation-matrices"><span class="std std-ref">Rotation Matrices</span></a>
 for a guide to using a rotation matrix.</p>
 </div>
-<div class="section" id="id1">
-<h2>Polar Motion<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="polar-motion-1">
+<span id="polar-motion"></span><h2>Polar Motion<a class="headerlink" href="#polar-motion-1" title="Permalink to this headline">¶</a></h2>
 <p>It was discovered more than a century ago
 that the Earth’s crust has a slight freedom
 to wobble with respect to the Earth’s axis of rotation in space,
@@ -108,6 +108,39 @@ from the perspective of a space probe.</li>
 simply install the IERS tables on your timescale object
 as shown in the example code above.
 Polar motion will be used everywhere that it applies.</p>
+</div>
+<div class="section" id="the-leap-second-table-1">
+<span id="the-leap-second-table"></span><h2>The leap second table<a class="headerlink" href="#the-leap-second-table-1" title="Permalink to this headline">¶</a></h2>
+<p>If you want to double-check that Skyfield’s leap second table
+agrees with other tools or software,
+you can easily print it out.
+Each timescale object offers an array of Julian dates <code class="docutils literal notranslate"><span class="pre">leap_dates</span></code>
+and another array of the same length named <code class="docutils literal notranslate"><span class="pre">leap_offsets</span></code>
+that offers the difference between UTC and TAI in seconds:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">jd</span><span class="p">,</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">leap_dates</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">leap_offsets</span><span class="p">):</span>
+    <span class="n">ymd</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">tt_jd</span><span class="p">(</span><span class="n">jd</span><span class="p">)</span><span class="o">.</span><span class="n">tt_strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">jd</span><span class="p">,</span> <span class="n">ymd</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{:+}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">offset</span><span class="p">)))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2441499.5 1972-07-01 +11
+2441683.5 1973-01-01 +12
+2442048.5 1974-01-01 +13
+...
+2456109.5 2012-07-01 +35
+2457204.5 2015-07-01 +36
+2457754.5 2017-01-01 +37
+</pre></div>
+</div>
+<p>Note that each leap second occurs just before
+the Julian date given in the table.
+Taking the second row as an example,
+the offset between TAI and UTC increased to +12
+at the first moment of the day 1973-01-01.
+It did so because that day was immediately preceded by a leap second
+that was attached to the <em>previous</em> day as its final second.
+So the leap second followed the normal, non-leap second 1972-12-31 12:59:59
+and had the special designation 1972-12-31 12:59:60.</p>
 </div>
 <div class="section" id="bad-performance-and-using-100-cpu">
 <h2>Bad performance and using 100% CPU<a class="headerlink" href="#bad-performance-and-using-100-cpu" title="Permalink to this headline">¶</a></h2>

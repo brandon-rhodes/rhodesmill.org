@@ -139,6 +139,14 @@ code.py-obj {
     background: none;
     font-family: "Gentium Custom", sans-serif, serif;
 }
+ul > li {
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+}
+div.toctree-wrapper ul > li, div.contents ul > li {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
 dt {
     display: inline-block;
     padding-left: 4em;
@@ -157,6 +165,7 @@ pre {
     border: 1px dashed #93A1A1;
     padding: 0.5em 0.8em;
     line-height: 1.25;
+    overflow-wrap: break-word;
     font-size: 0.83333333em;
 }
 .highlight-none pre {

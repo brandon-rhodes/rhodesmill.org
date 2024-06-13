@@ -21,28 +21,33 @@
     
     <div class="section" id="earth-satellites">
 <h1>Earth Satellites<a class="headerlink" href="#earth-satellites" title="Permalink to this headline">¶</a></h1>
-<p>Skyfield is able to predict the positions of Earth satellites
-by loading satellite orbital elements
-from Two-Line Element (TLE) files —
-published by organizations like <a class="reference external" href="https://celestrak.org/">CelesTrak</a> —
-and running them through the SGP4 satellite propagation routine.
-But there several limitations to be aware of
-when using Skyfield to generate positions
-for artificial satellites in Earth orbit:</p>
+<p>Skyfield is able to predict the position of an Earth satellite
+by downloading the satellite’s standard SGP4 orbital elements.
+Orbital elements are published by organizations like <a class="reference external" href="https://celestrak.org/">CelesTrak</a>.
+Beware of these limitations:</p>
 <ol class="arabic">
-<li><p class="first">Do not expect perfect agreement between
-any two pieces of software that are trying to predict
-satellite positions from TLE data files.
-As Vallado, Crawford, and Hujsak document
+<li><p class="first">Don’t expect perfect agreement between
+any two pieces of software that are trying to predict satellite positions.
+As Vallado, Crawford, and Hujsak point out
 in their crucial paper <a class="reference external" href="https://celestrak.org/publications/AIAA/2006-6753/">Revisiting Spacetrack Report #3</a>,
-there are many slightly different versions
+there are many different versions
 of the basic satellite prediction algorithm circulating in the wild.
-Happily,
 Skyfield uses the corrected and updated version of the algorithm
-that they created as part of writing that report.</p>
+that they published in that report.</p>
 </li>
-<li><p class="first">Satellite positions have limited precision.
-Here’s what <a class="reference external" href="https://celestrak.org/publications/AIAA/2006-6753/">Revisiting Spacetrack Report #3</a> says in Appendix&nbsp;B:</p>
+<li><p class="first">Satellite orbital elements go rapidly out of date.
+As explained below in <a class="reference internal" href="#tle-epoch"><span class="std std-ref">Checking an element set’s epoch</span></a>,
+you will want to pay attention to the “epoch” date —
+the date on which a particular element set is most accurate.
+The element set might only be useful for a couple of weeks
+to either side of its epoch.
+For earlier dates,
+you will want to pull old elements from an archive;
+for later dates,
+you will want to download a fresh set of elements.</p>
+</li>
+<li><p class="first">Satellite orbits don’t have perfect accuracy.
+According to <a class="reference external" href="https://celestrak.org/publications/AIAA/2006-6753/">Revisiting Spacetrack Report #3</a>:</p>
 <blockquote>
 <div><p>“The maximum accuracy for a TLE is
 limited by the number of decimal places in each field.
@@ -50,72 +55,224 @@ In general, TLE data is accurate to about a kilometer or so
 at epoch and it quickly degrades.”</p>
 </div></blockquote>
 </li>
-<li><p class="first">Satellite elements go rapidly out of date.
-As explained below in <a class="reference internal" href="#checking-a-tles-epoch">Checking a TLE’s epoch</a>,
-you will want to pay attention to the “epoch” —
-the date on which an element set is most accurate —
-of every TLE element set you use.
-Elements are only useful for a week or two
-on either side of the epoch date.
-For later dates,
-you will want to download a fresh set of elements.
-For earlier dates,
-you will want to pull an old TLE from the archives.</p>
-</li>
-<li><p class="first">A satellite’s orbital elements are in constant flux
-from effects like atmospheric drag, the Moon’s gravity,
-and its own propulsion.
-In particular, the true anomaly parameter can swing wildly
-for satellites with nearly circular orbits,
-because the reference point from which true anomaly is measured —
-the satellite’s perigee —
-can be moved by even slight perturbations to the orbit.</p>
-</li>
-<li><p class="first">Given the low accuracy of TLE elements,
-there is no point in calling the usual Skyfield
+<li><p class="first">Given how close Earth satellites are to Earth,
+there’s no point in calling the usual Skyfield
 <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">observe()</span></code></a> method
-that repeatedly re-computes an object’s position
-to account for the light-travel time to the observer.
-As we will see below,
-the difference is irrelevant for Earth satellites
-and not worth the added expense of re-computing the position
-several times in a row.</p>
+that accounts for light-travel time.
+As shown below, simple vector subtraction should work just as well.</p>
+</li>
+<li><p class="first">Finally, note that even though several satellite elements
+have familiar names like <em>inclination</em> and <em>eccentricity</em>,
+they are not simple Kepler elements,
+and the SGP4 routine will not predict the same position
+as a simple Kepler orbit would.</p>
 </li>
 </ol>
-<p>Note that even though several TLE elements
-have names that might remind you of Kepler orbital elements,
-like <em>inclination</em> and <em>eccentricity</em>,
-the SGP4 routine does not treat a satellite’s orbit as a simple ellipse,
-and will produce a different position than a Kepler orbit would.</p>
-<div class="section" id="loading-tle-element-sets">
-<h2>Loading TLE element sets<a class="headerlink" href="#loading-tle-element-sets" title="Permalink to this headline">¶</a></h2>
-<p>Skyfield supports several approaches to loading TLE data.</p>
-<div class="section" id="downloading-a-tle-file">
-<h3>Downloading a TLE file<a class="headerlink" href="#downloading-a-tle-file" title="Permalink to this headline">¶</a></h3>
-<p>You can find satellite element sets at the
-<a class="reference external" href="http://celestrak.org/NORAD/elements/">NORAD Two-Line Element Sets</a>
-page of the Celestrak web site.</p>
-<p>Beware that the two-line element (TLE) format is very rigid.
-The meaning of each character
-is based on its exact offset from the beginning of the line.
-You must download and use the element set’s text
-without making any change to its whitespace.</p>
-<p>Skyfield loader objects offer a <a class="reference internal" href="api-iokit.html#skyfield.iokit.Loader.tle_file" title="skyfield.iokit.Loader.tle_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tle_file()</span></code></a>
-method that can download and cache a file full of satellite elements
-from a site like Celestrak.
-A&nbsp;popular observing target for satellite observers
-is the International Space Station,
-which is listed in Celestrak’s <code class="docutils literal notranslate"><span class="pre">stations.txt</span></code> file:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">wgs84</span>
+<div class="section" id="the-tle-format-and-its-rivals">
+<span id="satellite-element-formats"></span><h2>The TLE format and its rivals<a class="headerlink" href="#the-tle-format-and-its-rivals" title="Permalink to this headline">¶</a></h2>
+<p>Most folks download satellite element sets from CelesTrak:</p>
+<p><a class="reference external" href="https://celestrak.org/NORAD/elements/index.php">https://celestrak.org/NORAD/elements/index.php</a></p>
+<p>CelesTrak supports several data formats.
+The original Two-Line Element ‘TLE’ format
+describes a satellite orbit using two lines of dense ASCII text.
+Whitespace is significant
+because every character needs to be aligned in exactly the right column.
+Here, for example, are elements for the International Space Station (ISS):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ISS</span> <span class="p">(</span><span class="n">ZARYA</span><span class="p">)</span>
+<span class="mi">1</span> <span class="mi">25544</span><span class="n">U</span> <span class="mi">98067</span><span class="n">A</span>   <span class="mf">24127.82853009</span>  <span class="mf">.00015698</span>  <span class="mi">00000</span><span class="o">+</span><span class="mi">0</span>  <span class="mi">27310</span><span class="o">-</span><span class="mi">3</span> <span class="mi">0</span>  <span class="mi">9995</span>
+<span class="mi">2</span> <span class="mi">25544</span>  <span class="mf">51.6393</span> <span class="mf">160.4574</span> <span class="mi">0003580</span> <span class="mf">140.6673</span> <span class="mf">205.7250</span> <span class="mf">15.50957674452123</span>
+</pre></div>
+</div>
+<p>But CelesTrak also supports modern formats.
+Here is the same element set in JSON format —
+specifically, CelesTrak’s <code class="docutils literal notranslate"><span class="pre">FORMAT=json-pretty</span></code> format,
+which adds indentation to make it easy to read;
+use <code class="docutils literal notranslate"><span class="pre">FORMAT=json</span></code> if you don’t need the extra spaces and newlines:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span>
+    <span class="s2">&quot;OBJECT_NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;ISS (ZARYA)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OBJECT_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;1998-067A&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EPOCH&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-05-06T19:53:04.999776&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MEAN_MOTION&quot;</span><span class="p">:</span> <span class="mf">15.50957674</span><span class="p">,</span>
+    <span class="s2">&quot;ECCENTRICITY&quot;</span><span class="p">:</span> <span class="mf">0.000358</span><span class="p">,</span>
+    <span class="s2">&quot;INCLINATION&quot;</span><span class="p">:</span> <span class="mf">51.6393</span><span class="p">,</span>
+    <span class="s2">&quot;RA_OF_ASC_NODE&quot;</span><span class="p">:</span> <span class="mf">160.4574</span><span class="p">,</span>
+    <span class="s2">&quot;ARG_OF_PERICENTER&quot;</span><span class="p">:</span> <span class="mf">140.6673</span><span class="p">,</span>
+    <span class="s2">&quot;MEAN_ANOMALY&quot;</span><span class="p">:</span> <span class="mf">205.725</span><span class="p">,</span>
+    <span class="s2">&quot;EPHEMERIS_TYPE&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;CLASSIFICATION_TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;U&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NORAD_CAT_ID&quot;</span><span class="p">:</span> <span class="mi">25544</span><span class="p">,</span>
+    <span class="s2">&quot;ELEMENT_SET_NO&quot;</span><span class="p">:</span> <span class="mi">999</span><span class="p">,</span>
+    <span class="s2">&quot;REV_AT_EPOCH&quot;</span><span class="p">:</span> <span class="mi">45212</span><span class="p">,</span>
+    <span class="s2">&quot;BSTAR&quot;</span><span class="p">:</span> <span class="mf">0.0002731</span><span class="p">,</span>
+    <span class="s2">&quot;MEAN_MOTION_DOT&quot;</span><span class="p">:</span> <span class="mf">0.00015698</span><span class="p">,</span>
+    <span class="s2">&quot;MEAN_MOTION_DDOT&quot;</span><span class="p">:</span> <span class="mi">0</span>
+<span class="p">}]</span>
+</pre></div>
+</div>
+<p>And here are the same elements with <code class="docutils literal notranslate"><span class="pre">FORMAT=CSV</span></code>
+(this is only two lines of text,
+but your browser will probably wrap them
+to fit your screen):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OBJECT_NAME</span><span class="p">,</span><span class="n">OBJECT_ID</span><span class="p">,</span><span class="n">EPOCH</span><span class="p">,</span><span class="n">MEAN_MOTION</span><span class="p">,</span><span class="n">ECCENTRICITY</span><span class="p">,</span><span class="n">INCLINATION</span><span class="p">,</span><span class="n">RA_OF_ASC_NODE</span><span class="p">,</span><span class="n">ARG_OF_PERICENTER</span><span class="p">,</span><span class="n">MEAN_ANOMALY</span><span class="p">,</span><span class="n">EPHEMERIS_TYPE</span><span class="p">,</span><span class="n">CLASSIFICATION_TYPE</span><span class="p">,</span><span class="n">NORAD_CAT_ID</span><span class="p">,</span><span class="n">ELEMENT_SET_NO</span><span class="p">,</span><span class="n">REV_AT_EPOCH</span><span class="p">,</span><span class="n">BSTAR</span><span class="p">,</span><span class="n">MEAN_MOTION_DOT</span><span class="p">,</span><span class="n">MEAN_MOTION_DDOT</span>
+<span class="n">ISS</span> <span class="p">(</span><span class="n">ZARYA</span><span class="p">),</span><span class="mi">1998</span><span class="o">-</span><span class="mi">067</span><span class="n">A</span><span class="p">,</span><span class="mi">2024</span><span class="o">-</span><span class="mi">05</span><span class="o">-</span><span class="mi">06</span><span class="n">T19</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mf">04.999776</span><span class="p">,</span><span class="mf">15.50957674</span><span class="p">,</span><span class="mf">.000358</span><span class="p">,</span><span class="mf">51.6393</span><span class="p">,</span><span class="mf">160.4574</span><span class="p">,</span><span class="mf">140.6673</span><span class="p">,</span><span class="mf">205.7250</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">U</span><span class="p">,</span><span class="mi">25544</span><span class="p">,</span><span class="mi">999</span><span class="p">,</span><span class="mi">45212</span><span class="p">,</span><span class="mf">.2731E-3</span><span class="p">,</span><span class="mf">.15698E-3</span><span class="p">,</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>Note these differences:</p>
+<ul class="simple">
+<li>Even though today the JSON and CSV formats
+carry exactly the same data as the TLE —
+for example, all three of the examples above
+give the inclination as 51.6393°,
+with four digits past the decimal point —
+both JSON and CSV will be able to carry greater precision in the future.
+The old TLE format, by contrast,
+will never be able to add more decimal places
+because each element has a fixed-width number of characters.</li>
+<li>The TLE format has run out of simple integer catalog numbers,
+because it limits the catalog number
+(in the above example, <code class="docutils literal notranslate"><span class="pre">25544</span></code>)
+to 5&nbsp;digits.
+The JSON and CSV formats, by contrast,
+don’t place a limit on the size of the catalog number.</li>
+<li>The JSON and CSV formats are self-documenting.
+You can tell, even as a first-time reader,
+which element is the inclination.
+The old TLE lines provide no hint about which element is which.</li>
+<li>The TLE and CSV formats are both very efficient,
+and describe an orbit using about 150&nbsp;characters.
+Yes, the CSV file has that big 225-character header at the top;
+but the header line only appears once,
+no matter how many satellites are listed after it.
+By contrast,
+the bulky JSON format requires more than 400&nbsp;characters per satellite
+because the element names need to be repeated again every time.</li>
+</ul>
+<p>There are more obscure formats in use at CelesTrak,
+including a ‘key-value notation (KVN)’ and an unfortunate&nbsp;XML format,
+but here we will focus on the mainstream formats listed above.</p>
+<div class="section" id="downloading-satellite-elements">
+<h3>Downloading satellite elements<a class="headerlink" href="#downloading-satellite-elements" title="Permalink to this headline">¶</a></h3>
+<p>Whether you choose one of CelesTrak’s
+<a class="reference external" href="https://celestrak.org/NORAD/elements/">pre-packaged satellite lists</a>
+like ‘Space Stations’ or ‘CubeSats’,
+or perform a
+<a class="reference external" href="https://celestrak.org/NORAD/documentation/gp-data-formats.php">query for a particular satellite</a>,
+there are three issues to beware of:</p>
+<ul class="simple">
+<li>Be sure to save the data to a file the first time your script runs,
+so that subsequent runs won’t need to download the same data again.
+This is crucial to reducing the load on the CelesTrak servers
+and helping them continue to provide CelesTrak as a free service.</li>
+<li>Satellite elements gradually go out of date.
+Once a file is a few days old,
+you will probably want to download the file again.</li>
+<li>The CelesTrak data URLs all use the exact same filename.
+So if you download the ‘Space Stations’
+whose URL looks like <code class="docutils literal notranslate"><span class="pre">gp.php?GROUP=stations</span></code>,
+and then the ‘CubeSats’ with <code class="docutils literal notranslate"><span class="pre">gp.php?GROUP=cubesat</span></code>,
+then Skyfield will save them to the same filename <code class="docutils literal notranslate"><span class="pre">gp.php</span></code>
+and the CubeSats will wind up overwriting the Space Stations.
+To avoid this, use the <code class="docutils literal notranslate"><span class="pre">filename=</span></code> optional argument
+to create a separate local file for each remote URL.</li>
+</ul>
+<p>Here’s a useful pattern for downloading element sets with Skyfield:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
 
-<span class="n">stations_url</span> <span class="o">=</span> <span class="s1">&#39;http://celestrak.org/NORAD/elements/stations.txt&#39;</span>
-<span class="n">satellites</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">tle_file</span><span class="p">(</span><span class="n">stations_url</span><span class="p">)</span>
+<span class="n">max_days</span> <span class="o">=</span> <span class="mf">7.0</span>         <span class="c1"># download again once 7 days old</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;stations.csv&#39;</span>  <span class="c1"># custom filename, not &#39;gp.php&#39;</span>
+
+<span class="n">base</span> <span class="o">=</span> <span class="s1">&#39;https://celestrak.org/NORAD/elements/gp.php&#39;</span>
+<span class="n">url</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="s1">&#39;?GROUP=stations&amp;FORMAT=csv&#39;</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">load</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">or</span> <span class="n">load</span><span class="o">.</span><span class="n">days_old</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">max_days</span><span class="p">:</span>
+    <span class="n">load</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The next section will illustrate how to load satellites
+once you have downloaded the file.</p>
+<p>If your project is serious enough
+that you will need to be able to double-check and replicate old results later,
+then don’t follow this example —
+every time the file gets too old,
+this code will overwrite the file with new data.
+Instead, you will probably want to put the date in the filename,
+and archive each file along with your project’s code.</p>
+</div>
+<div class="section" id="loading-satellite-elements-1">
+<span id="loading-satellite-elements"></span><h3>Loading satellite elements<a class="headerlink" href="#loading-satellite-elements-1" title="Permalink to this headline">¶</a></h3>
+<p>Once you have downloaded a file of elements,
+use one of these patterns to load them into Skyfield.
+For the traditional TLE format:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">skyfield.iokit</span> <span class="kn">import</span> <span class="n">parse_tle_file</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">load</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;stations.tle&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">satellites</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parse_tle_file</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">ts</span><span class="p">))</span>
+
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loaded&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">satellites</span><span class="p">),</span> <span class="s1">&#39;satellites&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Loaded 60 satellites
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Loaded 27 satellites
 </pre></div>
 </div>
+<p>For the verbose but easy-to-read JSON format:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">EarthSatellite</span><span class="p">,</span> <span class="n">load</span>
+
+<span class="k">with</span> <span class="n">load</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;stations.json&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">sats</span> <span class="o">=</span> <span class="p">[</span><span class="n">EarthSatellite</span><span class="o">.</span><span class="n">from_omm</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span> <span class="k">for</span> <span class="n">fields</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loaded&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sats</span><span class="p">),</span> <span class="s1">&#39;satellites&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Loaded 27 satellites
+</pre></div>
+</div>
+<p>For the more compact CSV format:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">EarthSatellite</span><span class="p">,</span> <span class="n">load</span>
+
+<span class="k">with</span> <span class="n">load</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;stations.csv&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">timescale</span><span class="p">()</span>
+<span class="n">sats</span> <span class="o">=</span> <span class="p">[</span><span class="n">EarthSatellite</span><span class="o">.</span><span class="n">from_omm</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span> <span class="k">for</span> <span class="n">fields</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loaded&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sats</span><span class="p">),</span> <span class="s1">&#39;satellites&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Loaded 27 satellites
+</pre></div>
+</div>
+<p>In each case,
+you are asked to provide a <code class="docutils literal notranslate"><span class="pre">ts</span></code> timescale.
+Why?
+Because Skyfield needs the timescale’s knowledge of leap seconds
+to turn each satellite’s epoch date
+into an <code class="docutils literal notranslate"><span class="pre">.epoch</span></code> <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> object.</p>
+</div>
+<div class="section" id="loading-satellite-data-from-a-string">
+<h3>Loading satellite data from a string<a class="headerlink" href="#loading-satellite-data-from-a-string" title="Permalink to this headline">¶</a></h3>
+<p>If your program has already loaded TLE, JSON, or CSV data into memory
+and doesn’t need to read it over again from a file,
+you can make the string behave like a file
+by wrapping it in a Python I/O object:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># For TLE and JSON:</span>
+
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">(</span><span class="n">byte_string</span><span class="p">)</span>
+
+<span class="c1"># For CSV:</span>
+
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">text_string</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can then use the resulting file object <code class="docutils literal notranslate"><span class="pre">f</span></code>
+with the example code in the previous section.</p>
 </div>
 <div class="section" id="indexing-satellites-by-name-or-number">
 <h3>Indexing satellites by name or number<a class="headerlink" href="#indexing-satellites-by-name-or-number" title="Permalink to this headline">¶</a></h3>
@@ -130,7 +287,7 @@ using Python’s dictionary comprehension syntax:</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">satellite</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ISS (ZARYA) catalog #25544 epoch 2014-01-20 22:23:04 UTC
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ISS (ZARYA) catalog #25544 epoch 2024-05-09 08:48:20 UTC
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">by_number</span> <span class="o">=</span> <span class="p">{</span><span class="n">sat</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">satnum</span><span class="p">:</span> <span class="n">sat</span> <span class="k">for</span> <span class="n">sat</span> <span class="ow">in</span> <span class="n">satellites</span><span class="p">}</span>
@@ -138,76 +295,14 @@ using Python’s dictionary comprehension syntax:</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">satellite</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ISS (ZARYA) catalog #25544 epoch 2014-01-20 22:23:04 UTC
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ISS (ZARYA) catalog #25544 epoch 2024-05-09 08:48:20 UTC
 </pre></div>
 </div>
-</div>
-<div class="section" id="performing-a-tle-query">
-<h3>Performing a TLE query<a class="headerlink" href="#performing-a-tle-query" title="Permalink to this headline">¶</a></h3>
-<p>In addition to offering traditional text files
-like <code class="docutils literal notranslate"><span class="pre">stations.txt</span></code> and <code class="docutils literal notranslate"><span class="pre">active.txt</span></code>,
-Celestrak supports queries that return TLE elements.</p>
-<p>But be careful!</p>
-<p>Because every query to Celestrak requests the same filename <code class="docutils literal notranslate"><span class="pre">tle.php</span></code>
-Skyfield will by default only download the first result.
-Your second, third, and all subsequent attempts to query Celestrak
-will simply return the contents
-of the <code class="docutils literal notranslate"><span class="pre">tle.php</span></code> file that’s already on disk —
-giving you the results of your first query over and over again.</p>
-<p>Here are two easy remedies:</p>
-<ol class="arabic simple">
-<li>Specify the argument <code class="docutils literal notranslate"><span class="pre">reload=True</span></code>,
-which asks Skyfield to always download new results
-even if there is already a file on disk.
-Every query will overwrite the file with new data.</li>
-<li>Or, specify a <code class="docutils literal notranslate"><span class="pre">filename=</span></code> argument
-so that each query’s result
-is saved to a file specific to that query.
-Each query result will be saved to disk with its own filename.</li>
-</ol>
-<p>Here’s an example of the second approach —
-code that requests one specific satellite,
-saving the result to a file specific to the query:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">25544</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://celestrak.org/satcat/tle.php?CATNR=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;tle-CATNR-</span><span class="si">{}</span><span class="s1">.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-<span class="n">satellites</span> <span class="o">=</span> <span class="n">load</span><span class="o">.</span><span class="n">tle_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">satellites</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&lt;EarthSatellite ISS (ZARYA) catalog #25544 epoch 2020-11-07 22:23:09 UTC&gt;]
-</pre></div>
-</div>
-<p>The above code will download a new result
-each time it’s asked for a satellite that it hasn’t yet fetched.
-But note that when asked again for the same satellite,
-it will simply reload the existing file from disk
-unless <code class="docutils literal notranslate"><span class="pre">reload=True</span></code> is specified.</p>
-</div>
-<div class="section" id="loading-a-tle-file-from-a-string">
-<h3>Loading a TLE file from a string<a class="headerlink" href="#loading-a-tle-file-from-a-string" title="Permalink to this headline">¶</a></h3>
-<p>If your program has already loaded the text of a TLE file,
-and you don’t need Skyfield to handle the download for you,
-then you can turn it into a list of Skyfield satellites
-with the <a class="reference internal" href="api-iokit.html#skyfield.iokit.parse_tle_file" title="skyfield.iokit.parse_tle_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_tle_file()</span></code></a> function.
-The function is a Python generator,
-so we use Python’s <code class="docutils literal notranslate"><span class="pre">list()</span></code> constructor
-to load all the satellites:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
-<span class="kn">from</span> <span class="nn">skyfield.iokit</span> <span class="kn">import</span> <span class="n">parse_tle_file</span>
-
-<span class="n">f</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">(</span><span class="n">stations_txt_bytes</span><span class="p">)</span>
-<span class="n">satellites</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parse_tle_file</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>If it’s simpler in your case,
-you can instead pass <a class="reference internal" href="api-iokit.html#skyfield.iokit.parse_tle_file" title="skyfield.iokit.parse_tle_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_tle_file()</span></code></a>
-a simple list of lines.</p>
 </div>
 <div class="section" id="loading-a-single-tle-set-from-strings">
 <h3>Loading a single TLE set from strings<a class="headerlink" href="#loading-a-single-tle-set-from-strings" title="Permalink to this headline">¶</a></h3>
 <p>If your program already has the two lines of TLE data for a satellite
-and doesn’t need Skyfield to download and parse a Celestrak file,
+and doesn’t need Skyfield to download and parse a CelesTrak file,
 you can instantiate an <a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite" title="skyfield.sgp4lib.EarthSatellite"><code class="xref py py-class docutils literal notranslate"><span class="pre">EarthSatellite</span></code></a> directly.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">EarthSatellite</span>
 
@@ -223,14 +318,13 @@ you can instantiate an <a class="reference internal" href="api-satellites.html#s
 </div>
 </div>
 </div>
-<div class="section" id="checking-a-tles-epoch">
-<h2>Checking a TLE’s epoch<a class="headerlink" href="#checking-a-tles-epoch" title="Permalink to this headline">¶</a></h2>
-<p>The “epoch” date of a satellite element set
-is the all-important date and time
-for which the set of elements is most accurate,
-and before or after which they go rapidly out of date.
-You can access this value as an attribute of the object
-in case your program wants to check how old the elements are:</p>
+<div class="section" id="checking-an-element-sets-epoch">
+<span id="tle-epoch"></span><h2>Checking an element set’s epoch<a class="headerlink" href="#checking-an-element-sets-epoch" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">.epoch</span></code> time of a satellite element set
+is the date and time on which the element set is most accurate.
+Before or after that date,
+the element set will be less accurate.
+The epoch is a Skyfield <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">satellite</span><span class="o">.</span><span class="n">epoch</span><span class="o">.</span><span class="n">utc_jpl</span><span class="p">())</span>
 </pre></div>
 </div>
@@ -298,7 +392,9 @@ For example,
 here is how to determine
 how many times our example satellite rises above 30° of altitude
 over the span of a single day:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bluffton</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="o">+</span><span class="mf">40.8939</span><span class="p">,</span> <span class="o">-</span><span class="mf">83.8917</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">wgs84</span>
+
+<span class="n">bluffton</span> <span class="o">=</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">latlon</span><span class="p">(</span><span class="o">+</span><span class="mf">40.8939</span><span class="p">,</span> <span class="o">-</span><span class="mf">83.8917</span><span class="p">)</span>
 <span class="n">t0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">23</span><span class="p">)</span>
 <span class="n">t1</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">events</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">find_events</span><span class="p">(</span><span class="n">bluffton</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">altitude_degrees</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
@@ -558,7 +654,6 @@ Given an ephemeris with which it can compute the Sun’s position,
 it will return <code class="docutils literal notranslate"><span class="pre">True</span></code> when the satellite is in sunlight
 and <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
-<span class="n">satellite</span> <span class="o">=</span> <span class="n">by_name</span><span class="p">[</span><span class="s1">&#39;ISS (ZARYA)&#39;</span><span class="p">]</span>
 
 <span class="n">two_hours</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
 <span class="n">sunlit</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">two_hours</span><span class="p">)</span><span class="o">.</span><span class="n">is_sunlit</span><span class="p">(</span><span class="n">eph</span><span class="p">)</span>
@@ -597,7 +692,6 @@ Skyfield provides a simple geometric estimate for this
 through the <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.is_behind_earth" title="skyfield.positionlib.ICRF.is_behind_earth"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_behind_earth()</span></code></a> method.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">eph</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
 <span class="n">earth</span><span class="p">,</span> <span class="n">venus</span> <span class="o">=</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;earth&#39;</span><span class="p">],</span> <span class="n">eph</span><span class="p">[</span><span class="s1">&#39;venus&#39;</span><span class="p">]</span>
-<span class="n">satellite</span> <span class="o">=</span> <span class="n">by_name</span><span class="p">[</span><span class="s1">&#39;ISS (ZARYA)&#39;</span><span class="p">]</span>
 
 <span class="n">two_hours</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
 <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">earth</span> <span class="o">+</span> <span class="n">satellite</span><span class="p">)</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">two_hours</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">venus</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>

@@ -101,19 +101,19 @@ no problem with the user accessing them as degrees:</p>
 <p>But exceptions will trigger if we try to express the angle in hours:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">hours</span>
 <span class="gt">Traceback (most recent call last):</span>
-  <span class="c">...</span>
+<span class="w">  </span><span class="c">...</span>
 <span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in degrees, not hours; if you want to use hours anyway, then please use the attribute _hours</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">hstr</span><span class="p">()</span>
 <span class="gt">Traceback (most recent call last):</span>
-  <span class="c">...</span>
+<span class="w">  </span><span class="c">...</span>
 <span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in degrees, not hours; if you want to use hours anyway, then call signed_hms() with warn=False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">hms</span><span class="p">()</span>
 <span class="gt">Traceback (most recent call last):</span>
-  <span class="c">...</span>
+<span class="w">  </span><span class="c">...</span>
 <span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in degrees, not hours; if you want to use hours anyway, then call signed_hms() with warn=False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">signed_hms</span><span class="p">()</span>
 <span class="gt">Traceback (most recent call last):</span>
-  <span class="c">...</span>
+<span class="w">  </span><span class="c">...</span>
 <span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in degrees, not hours; if you want to use hours anyway, then call signed_hms() with warn=False</span>
 </pre></div>
 </div>
@@ -145,19 +145,19 @@ becomes the easy operation:</p>
 <p>And it is now degrees that take a bit of extra effort to retrieve.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">degrees</span>
 <span class="gt">Traceback (most recent call last):</span>
-  <span class="c">...</span>
+<span class="w">  </span><span class="c">...</span>
 <span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in hours, not degrees; if you want to use degrees anyway, then please use the attribute _degrees</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">dstr</span><span class="p">()</span>
 <span class="gt">Traceback (most recent call last):</span>
-  <span class="c">...</span>
+<span class="w">  </span><span class="c">...</span>
 <span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in hours, not degrees; if you want to use degrees anyway, then call dstr() with warn=False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">dms</span><span class="p">()</span>
 <span class="gt">Traceback (most recent call last):</span>
-  <span class="c">...</span>
+<span class="w">  </span><span class="c">...</span>
 <span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in hours, not degrees; if you want to use hours anyway, then call signed_hms() with warn=False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">signed_dms</span><span class="p">()</span>
 <span class="gt">Traceback (most recent call last):</span>
-  <span class="c">...</span>
+<span class="w">  </span><span class="c">...</span>
 <span class="gr">WrongUnitError</span>: <span class="n">this angle is usually expressed in hours, not degrees; if you want to use hours anyway, then call signed_hms() with warn=False</span>
 </pre></div>
 </div>

@@ -24,28 +24,28 @@
 <p>Quick links to the sections below:</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#version" id="id1">Version</a></li>
-<li><a class="reference internal" href="#opening-files" id="id2">Opening files</a></li>
-<li><a class="reference internal" href="#time-scales" id="id3">Time scales</a></li>
-<li><a class="reference internal" href="#time-objects" id="id4">Time objects</a></li>
-<li><a class="reference internal" href="#time-utilities" id="id5">Time utilities</a></li>
-<li><a class="reference internal" href="#vector-functions" id="id6">Vector functions</a></li>
-<li><a class="reference internal" href="#planetary-ephemerides" id="id7">Planetary ephemerides</a></li>
-<li><a class="reference internal" href="#planetary-magnitudes" id="id8">Planetary magnitudes</a></li>
-<li><a class="reference internal" href="#planetary-reference-frames" id="id9">Planetary reference frames</a></li>
-<li><a class="reference internal" href="#almanac" id="id10">Almanac</a></li>
-<li><a class="reference internal" href="#geographic-locations" id="id11">Geographic locations</a></li>
-<li><a class="reference internal" href="#kepler-orbits" id="id12">Kepler orbits</a></li>
-<li><a class="reference internal" href="#kepler-orbit-data" id="id13">Kepler orbit data</a></li>
-<li><a class="reference internal" href="#earth-satellites" id="id14">Earth satellites</a></li>
-<li><a class="reference internal" href="#stars-and-other-distant-objects" id="id15">Stars and other distant objects</a></li>
-<li><a class="reference internal" href="#astronomical-positions" id="id16">Astronomical positions</a></li>
-<li><a class="reference internal" href="#reference-frames" id="id17">Reference frames</a></li>
-<li><a class="reference internal" href="#constellations" id="id18">Constellations</a></li>
-<li><a class="reference internal" href="#searching" id="id19">Searching</a></li>
-<li><a class="reference internal" href="#osculating-orbital-elements" id="id20">Osculating orbital elements</a></li>
-<li><a class="reference internal" href="#units" id="id21">Units</a></li>
-<li><a class="reference internal" href="#trigonometry" id="id22">Trigonometry</a></li>
+<li><a class="reference internal" href="#version" id="toc-entry-1">Version</a></li>
+<li><a class="reference internal" href="#opening-files" id="toc-entry-2">Opening files</a></li>
+<li><a class="reference internal" href="#time-scales" id="toc-entry-3">Time scales</a></li>
+<li><a class="reference internal" href="#time-objects" id="toc-entry-4">Time objects</a></li>
+<li><a class="reference internal" href="#time-utilities" id="toc-entry-5">Time utilities</a></li>
+<li><a class="reference internal" href="#vector-functions" id="toc-entry-6">Vector functions</a></li>
+<li><a class="reference internal" href="#planetary-ephemerides" id="toc-entry-7">Planetary ephemerides</a></li>
+<li><a class="reference internal" href="#planetary-magnitudes" id="toc-entry-8">Planetary magnitudes</a></li>
+<li><a class="reference internal" href="#planetary-reference-frames" id="toc-entry-9">Planetary reference frames</a></li>
+<li><a class="reference internal" href="#almanac" id="toc-entry-10">Almanac</a></li>
+<li><a class="reference internal" href="#geographic-locations" id="toc-entry-11">Geographic locations</a></li>
+<li><a class="reference internal" href="#kepler-orbits" id="toc-entry-12">Kepler orbits</a></li>
+<li><a class="reference internal" href="#kepler-orbit-data" id="toc-entry-13">Kepler orbit data</a></li>
+<li><a class="reference internal" href="#earth-satellites" id="toc-entry-14">Earth satellites</a></li>
+<li><a class="reference internal" href="#stars-and-other-distant-objects" id="toc-entry-15">Stars and other distant objects</a></li>
+<li><a class="reference internal" href="#astronomical-positions" id="toc-entry-16">Astronomical positions</a></li>
+<li><a class="reference internal" href="#reference-frames" id="toc-entry-17">Reference frames</a></li>
+<li><a class="reference internal" href="#constellations" id="toc-entry-18">Constellations</a></li>
+<li><a class="reference internal" href="#searching" id="toc-entry-19">Searching</a></li>
+<li><a class="reference internal" href="#osculating-orbital-elements" id="toc-entry-20">Osculating orbital elements</a></li>
+<li><a class="reference internal" href="#units" id="toc-entry-21">Units</a></li>
+<li><a class="reference internal" href="#trigonometry" id="toc-entry-22">Trigonometry</a></li>
 </ul>
 </div>
 <div class="section" id="version">
@@ -590,10 +590,13 @@ See <a class="reference internal" href="earth-satellites.html"><span class="doc"
 <tr class="row-odd"><td><a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite" title="skyfield.sgp4lib.EarthSatellite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EarthSatellite</span></code></a>(line1,&nbsp;line2[,&nbsp;name,&nbsp;ts])</td>
 <td>An Earth satellite loaded from a TLE file and propagated with SGP4.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite.from_satrec" title="skyfield.sgp4lib.EarthSatellite.from_satrec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EarthSatellite.from_satrec</span></code></a>(satrec,&nbsp;ts)</td>
+<tr class="row-even"><td><a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite.from_omm" title="skyfield.sgp4lib.EarthSatellite.from_omm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EarthSatellite.from_omm</span></code></a>(ts,&nbsp;element_dict)</td>
+<td>Build an EarthSatellite from OMM text fields.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite.from_satrec" title="skyfield.sgp4lib.EarthSatellite.from_satrec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EarthSatellite.from_satrec</span></code></a>(satrec,&nbsp;ts)</td>
 <td>Build an EarthSatellite from a raw sgp4 Satrec object.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.TEME" title="skyfield.sgp4lib.TEME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TEME</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.TEME" title="skyfield.sgp4lib.TEME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TEME</span></code></a></td>
 <td>The satellite-specific True Equator Mean Equinox frame of reference.</td>
 </tr>
 </tbody>

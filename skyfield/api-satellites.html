@@ -97,6 +97,15 @@ parameters for a particular satellite can be accessed through its
 the text of a TLE set.  See <a class="reference internal" href="earth-satellites.html#from-satrec"><span class="std std-ref">Build a satellite with a specific gravity model</span></a> for detais.</p>
 </dd></dl>
 
+<dl class="classmethod">
+<dt id="skyfield.sgp4lib.EarthSatellite.from_omm">
+<em class="property">classmethod </em><code class="descname">from_omm</code><span class="sig-paren">(</span><em>ts</em>, <em>element_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.sgp4lib.EarthSatellite.from_omm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build an EarthSatellite from OMM text fields.</p>
+<p>Provide a <code class="docutils literal notranslate"><span class="pre">ts</span></code> timescale object, and a Python dict of OMM
+field names and values.  The timescale is used to build the
+satellite’s <code class="docutils literal notranslate"><span class="pre">.epoch</span></code> time.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="skyfield.sgp4lib.EarthSatellite.ITRF_position_velocity_error">
 <code class="descname">ITRF_position_velocity_error</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.sgp4lib.EarthSatellite.ITRF_position_velocity_error" title="Permalink to this definition">¶</a></dt>

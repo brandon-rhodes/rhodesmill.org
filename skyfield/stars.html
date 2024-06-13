@@ -149,16 +149,16 @@ combined with their magnitude to produce a plot.</p>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">7.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;The brightest stars in Orion&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;The brightest stars in Orion&#39;</span><span class="p">,</span>
+       <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Right ascension (h)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Declination (°)&#39;</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;bright_stars.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The result of the simple filtering and plotting is an (admittedly
 primitive) rendering of Orion!</p>
 <img alt="_images/bright_stars.png" src="_images/bright_stars.png" />
-<p>Skyfield does not yet offer star chart routines, but hopefully they will
-appear before the end of the year.  For now you can peek at the Skyfield
-file <code class="docutils literal notranslate"><span class="pre">charting.py</span></code> and experiment on your own.</p>
+<p>For a more complete example of code that draws a star chart,
+see <a class="reference internal" href="example-plots.html#neowise-chart"><span class="std std-ref">Drawing a finder chart for comet NEOWISE</span></a>.</p>
 </div>
 <div class="section" id="building-a-single-star-from-its-coordinates">
 <h2>Building a single star from its coordinates<a class="headerlink" href="#building-a-single-star-from-its-coordinates" title="Permalink to this headline">¶</a></h2>
