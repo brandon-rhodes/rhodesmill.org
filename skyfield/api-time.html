@@ -364,9 +364,8 @@ The most commonly used formats are:</p>
 <li><code class="docutils literal notranslate"><span class="pre">%S</span></code> second</li>
 <li><code class="docutils literal notranslate"><span class="pre">%A</span></code> day of week, <code class="docutils literal notranslate"><span class="pre">%a</span></code> its abbreviation</li>
 </ul>
-<p>You can find the full list, along with options that control
-field widths and leading zeros, at:</p>
-<p><a class="reference external" href="https://docs.python.org/3/library/time.html#time.strftime">https://docs.python.org/3/library/time.html#time.strftime</a></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">%Z</span></code> and <code class="docutils literal notranslate"><span class="pre">%z</span></code> formats are not supported; instead, simply
+use the literal characters <code class="docutils literal notranslate"><span class="pre">'UTC'</span></code> in your format string.</p>
 <p>If the smallest time unit in your format is minutes or seconds,
 then the time is rounded to the nearest minute or second.
 Otherwise the value is truncated rather than rounded.</p>

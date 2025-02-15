@@ -243,9 +243,7 @@ you provide a parallax indicating that the star is close enough to the
 Solar System that we have been able to measure its distance.  Finally,
 there is even a tiny effect from its radial velocity if it is known.</p>
 <p>Here are all three effects applied to Barnard’s star:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">T0</span>
-
-<span class="n">barnard</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">ra_hours</span><span class="o">=</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mf">48.49803</span><span class="p">),</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">barnard</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">ra_hours</span><span class="o">=</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mf">48.49803</span><span class="p">),</span>
                <span class="n">dec_degrees</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mf">36.2072</span><span class="p">),</span>
                <span class="n">ra_mas_per_year</span><span class="o">=-</span><span class="mf">798.71</span><span class="p">,</span>
                <span class="n">dec_mas_per_year</span><span class="o">=+</span><span class="mf">10337.77</span><span class="p">,</span>

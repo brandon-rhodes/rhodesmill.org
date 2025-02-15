@@ -122,6 +122,40 @@ in this URL to match papers already using it as an identifier):
 <span id="changelog"></span><h2>Changelog<a class="headerlink" href="#changelog-1" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="released-versions">
 <h3>Released versions<a class="headerlink" href="#released-versions" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="v1-50-2024-february-15">
+<h4>v1.50 — 2024 February 15<a class="headerlink" href="#v1-50-2024-february-15" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>A new <a class="reference internal" href="api-framelib.html#skyfield.framelib.mean_equator_and_equinox_of_date" title="skyfield.framelib.mean_equator_and_equinox_of_date"><code class="xref py py-class docutils literal notranslate"><span class="pre">mean_equator_and_equinox_of_date</span></code></a>
+coordinate frame lets users generate the same coordinates that an
+almanac might give.</li>
+<li>Skyfield now offers a Solar System Barycenter object, so users don’t
+have to construct the position themselves: <code class="docutils literal notranslate"><span class="pre">SSB.at(t)</span></code> returns a
+position whose coordinates and velocity are both zero in the ICRS.</li>
+<li>The routines added last year, <a class="reference internal" href="api-almanac.html#skyfield.almanac.find_risings" title="skyfield.almanac.find_risings"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_risings()</span></code></a>
+and <a class="reference internal" href="api-almanac.html#skyfield.almanac.find_settings" title="skyfield.almanac.find_settings"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_settings()</span></code></a>, could occasionally miss
+a sunrise or moonrise at high latitudes like 70°N where the Sun or
+Moon barely crests the horizon.  This has been fixed at a moderate
+cost to their runtime.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/998">#998</a></li>
+<li>Skyfield no longer tries to protect users by raising an exception if,
+contrary to the usual custom in astronomy, they ask for <code class="docutils literal notranslate"><span class="pre">ra.degrees</span></code>
+or <code class="docutils literal notranslate"><span class="pre">dec.hours</span></code>.  So users no longer need to add an underscore prefix
+(<code class="docutils literal notranslate"><span class="pre">_degrees</span></code> or <code class="docutils literal notranslate"><span class="pre">_hours</span></code>) to bypass the exception, though both
+names will keep working to support legacy code.</li>
+<li>The time methods <a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_datetime" title="skyfield.timelib.Time.utc_datetime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">utc_datetime()</span></code></a> and
+<a class="reference internal" href="api-time.html#skyfield.timelib.Time.utc_datetime_and_leap_second" title="skyfield.timelib.Time.utc_datetime_and_leap_second"><code class="xref py py-meth docutils literal notranslate"><span class="pre">utc_datetime_and_leap_second()</span></code></a> now
+intercept the <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> that Python raises for a negative year or
+a Julian-only leap day, and replace the generic error message with a
+more specific one.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/957">#957</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/992">#992</a></li>
+<li>If you call <code class="docutils literal notranslate"><span class="pre">load.timescale(builtin=False)</span></code> to download an updated
+copy of the IERS <code class="docutils literal notranslate"><span class="pre">finals2000A.all</span></code> Earth orientation data file,
+Skyfield now fetches the file with HTTPS, since their old FTP server
+seems to have disappeared.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/1019">#1019</a></li>
+</ul>
+</div>
 <div class="section" id="v1-49-2024-june-13">
 <h4>v1.49 — 2024 June 13<a class="headerlink" href="#v1-49-2024-june-13" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
@@ -142,17 +176,37 @@ separately.</li>
 </div>
 <div class="section" id="v1-48-2024-february-7">
 <h4>v1.48 — 2024 February 7<a class="headerlink" href="#v1-48-2024-february-7" title="Permalink to this headline">¶</a></h4>
-<ul class="simple">
-<li>Times now support the <code class="docutils literal notranslate"><span class="pre">&lt;</span></code> operator, so Python can sort them.</li>
-<li>For convenience, geoids like <a class="reference internal" href="api-topos.html#skyfield.toposlib.wgs84" title="skyfield.toposlib.wgs84"><code class="xref py py-data docutils literal notranslate"><span class="pre">wgs84</span></code></a> have a
-new attribute <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.polar_radius" title="skyfield.toposlib.Geoid.polar_radius"><code class="xref py py-data docutils literal notranslate"><span class="pre">polar_radius</span></code></a>.</li>
-<li>You can no longer subtract two positions unless they have the same
+<ul>
+<li><p class="first">Skyfield is now compatible with NumPy&nbsp;2.0!  (Previous versions of
+Skyfield would raise an <code class="docutils literal notranslate"><span class="pre">ImportError</span></code> trying to import the symbol
+<code class="docutils literal notranslate"><span class="pre">float_</span></code>, which is now named <code class="docutils literal notranslate"><span class="pre">float64</span></code>.)</p>
+</li>
+<li><p class="first">Times now support the <code class="docutils literal notranslate"><span class="pre">&lt;</span></code> operator, so Python can sort them.</p>
+</li>
+<li><p class="first">For convenience, geoids like <a class="reference internal" href="api-topos.html#skyfield.toposlib.wgs84" title="skyfield.toposlib.wgs84"><code class="xref py py-data docutils literal notranslate"><span class="pre">wgs84</span></code></a> have a
+new attribute <a class="reference internal" href="api-topos.html#skyfield.toposlib.Geoid.polar_radius" title="skyfield.toposlib.Geoid.polar_radius"><code class="xref py py-data docutils literal notranslate"><span class="pre">polar_radius</span></code></a>.</p>
+</li>
+<li><p class="first">You can no longer subtract two positions unless they have the same
 <code class="docutils literal notranslate"><span class="pre">.center</span></code>.  Otherwise, a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> is raised.  This check has
 always been performed when you subtract vector functions, but it was
-missing from the position subtraction routine.</li>
-<li>On days that the Sun fails to rise and set in the Arctic and
+missing from the position subtraction routine.</p>
+</li>
+<li><p class="first">On days that the Sun fails to rise and set in the Arctic and
 Antarctic, the new rising and setting routines now correctly set the
-value <code class="docutils literal notranslate"><span class="pre">False</span></code> not only for sunrise but also for sunset.</li>
+value <code class="docutils literal notranslate"><span class="pre">False</span></code> not only for sunrise but also for sunset.</p>
+</li>
+<li><p class="first">Fix: Skyfield no longer raises the following exception
+if you call <a class="reference internal" href="api-position.html#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">observe()</span></code></a>
+on a position whose coordinate and time arrays are empty.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ne">ValueError</span><span class="p">:</span> <span class="n">zero</span><span class="o">-</span><span class="n">size</span> <span class="n">array</span> <span class="n">to</span> <span class="n">reduction</span> <span class="n">operation</span> <span class="n">maximum</span> <span class="n">which</span> <span class="n">has</span> <span class="n">no</span> <span class="n">identity</span>
+</pre></div>
+</div>
+<p>Instead, an empty apparent position is now returned.
+The exception was sometimes triggered by almanac routines
+if you searched for an event that didn’t occur
+between your start and end times.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/991">#991</a></p>
+</li>
 </ul>
 </div>
 <div class="section" id="v1-47-2024-january-13">
