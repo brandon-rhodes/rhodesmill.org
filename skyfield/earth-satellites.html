@@ -466,7 +466,7 @@ than those of the old J2000 system.)</p>
 <span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
 
 <span class="n">geocentric</span> <span class="o">=</span> <span class="n">satellite</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[-3918.87650458 -1887.64838745  5209.08801512]
@@ -534,7 +534,7 @@ to you as an observer.
 If you are interested you can access this relative position
 as plain (<em>x,y,z</em>) coordinates:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">topocentric</span> <span class="o">=</span> <span class="n">difference</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">topocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">topocentric</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[ 331.61901192  392.18492744 1049.7597825 ]
@@ -827,12 +827,12 @@ we can learn about the propagation errors
 that are limiting this TLE set’s predictions:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">geocentric</span> <span class="o">=</span> <span class="n">sat</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Before:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
 
 <span class="n">geocentric</span> <span class="o">=</span> <span class="n">sat</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">After:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">km</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">geocentric</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 </div>

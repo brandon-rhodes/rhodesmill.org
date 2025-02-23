@@ -35,7 +35,7 @@ that can be used to express them.</p>
 reference frame that is the replacement for J2000.  Their axes agree
 to within 0.02 arcseconds.  It also supersedes older equinox-based
 systems like B1900 and B1950.</p>
-<p>Each instance of this class provides a <code class="docutils literal notranslate"><span class="pre">.position</span></code> vector and a
+<p>Each instance of this class provides a <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> vector and a
 <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> vector that specify (<em>x,y,z</em>) coordinates along the axes
 of the ICRF.  A specific time <code class="docutils literal notranslate"><span class="pre">.t</span></code> might be specified or might be
 <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
@@ -130,7 +130,6 @@ a specific epoch time.</p>
 <span class="go">+18deg 33&#39; 04.5&quot;</span>
 </pre></div>
 </div>
-<p>To get J2000.0 coordinates, simply pass <code class="docutils literal notranslate"><span class="pre">ts.J2000</span></code>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -361,7 +360,7 @@ its location at a particular time:</p>
 <span class="go">&lt;Barycentric BCRS position and velocity at date t center=0 target=499&gt;</span>
 </pre></div>
 </div>
-<p>This class’s <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> are (<em>x,y,z</em>) vectors in
+<p>This class’s <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> are (<em>x,y,z</em>) vectors in
 the Barycentric Celestial Reference System (BCRS), the modern
 replacement for J2000 coordinates measured from the Solar System
 Barycenter.</p>
@@ -399,7 +398,7 @@ body back when it emitted (or reflected) the light that is now
 reaching the observer’s eye or telescope.  Astrometric positions are
 usually generated in Skyfield by calling the <a class="reference internal" href="#skyfield.positionlib.Barycentric" title="skyfield.positionlib.Barycentric"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Barycentric</span></code></a> method
 <a class="reference internal" href="#skyfield.positionlib.Barycentric.observe" title="skyfield.positionlib.Barycentric.observe"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">observe()</span></code></a>, which performs the light-time correction.</p>
-<p>Both the <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> are (<em>x,y,z</em>) vectors
+<p>Both the <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> are (<em>x,y,z</em>) vectors
 oriented along the axes of the ICRF, the modern replacement for the
 J2000 reference frame.</p>
 <p>It is common to either call <code class="docutils literal notranslate"><span class="pre">.radec()</span></code> (with no argument) on an
@@ -472,7 +471,7 @@ observer’s motion through space.</li>
 </ul>
 <p>These positions are usually produced in Skyfield by calling the
 <a class="reference internal" href="#skyfield.positionlib.Astrometric.apparent" title="skyfield.positionlib.Astrometric.apparent"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">apparent()</span></code></a> method of an <a class="reference internal" href="#skyfield.positionlib.Astrometric" title="skyfield.positionlib.Astrometric"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Astrometric</span></code></a> object.</p>
-<p>Both the <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> are (<em>x,y,z</em>) vectors
+<p>Both the <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> are (<em>x,y,z</em>) vectors
 oriented along the axes of the ICRF, the modern replacement for the
 J2000 reference frame.  If the observer is at the geocenter, they
 are more specifically GCRS coordinates.  Two common coordinates that
@@ -500,7 +499,7 @@ well as the orientation of its axes in space.</p>
 Earth at a given instant and the position of a target body at the
 same instant, without accounting for light-travel time or the effect
 of relativity on the light itself.</p>
-<p>Its <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> vectors have (<em>x,y,z</em>) axes that
+<p>Its <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> vectors have (<em>x,y,z</em>) axes that
 are those of the Geocentric Celestial Reference System (GCRS), an
 inertial system that is an update to J2000 and that does not rotate
 with the Earth itself.</p>

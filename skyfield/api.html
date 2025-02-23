@@ -617,7 +617,7 @@ See <a class="reference internal" href="earth-satellites.html"><span class="doc"
 <h2>Astronomical positions<a class="headerlink" href="#astronomical-positions" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a> three-dimensional position vector serves as the base class
 for all of the following position classes.  Each class represents an
-(<em>x,y,z</em>) <code class="docutils literal notranslate"><span class="pre">.position</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> vector oriented to the axes of
+(<em>x,y,z</em>) <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> and <code class="docutils literal notranslate"><span class="pre">.velocity</span></code> vector oriented to the axes of
 the International Celestial Reference System&nbsp;(ICRS),
 an inertial system that’s an update to J2000
 and that does not rotate with respect to the universe.</p>
@@ -679,7 +679,7 @@ declination coordinates with
 <col width="75%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.position</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.xyz</span></code></td>
 <td>An (<em>x,y,z</em>) <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a>.</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.velocity</span></code></td>
@@ -696,6 +696,8 @@ declination coordinates with
 </tr>
 </tbody>
 </table>
+<p>The <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> attribute used to be named <code class="docutils literal notranslate"><span class="pre">.position</span></code>.  To support older
+code, Skyfield will always recognize the original name as an alias.</p>
 <p>All positions support these methods:</p>
 <table border="1" class="longtable docutils">
 <colgroup>

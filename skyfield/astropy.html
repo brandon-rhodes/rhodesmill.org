@@ -69,7 +69,7 @@ using any linear and velocity units you specify.</p>
 <span class="n">t</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">utc</span><span class="p">(</span><span class="mi">1980</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">barycentric</span> <span class="o">=</span> <span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">barycentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">au</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">barycentric</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">au</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">barycentric</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">au</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">day</span><span class="p">))</span>
 </pre></div>
 </div>

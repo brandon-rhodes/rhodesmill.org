@@ -203,7 +203,7 @@ in Geocentric Celestial Reference System (GCRS) coordinates.</p>
 <col width="75%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.position</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.xyz</span></code></td>
 <td>An (<em>x,y,z</em>) <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a>.</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.velocity</span></code></td>
@@ -225,7 +225,7 @@ are simple instances of Skyfield’s distance, velocity, and time classes,
 which you can learn more about
 by clicking on their class names.
 They support operations like:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Earth x,y,z:&#39;</span><span class="p">,</span> <span class="n">barycentric</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">au</span><span class="p">,</span> <span class="s1">&#39;au&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Earth x,y,z:&#39;</span><span class="p">,</span> <span class="n">barycentric</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">au</span><span class="p">,</span> <span class="s1">&#39;au&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mars relative velocity:&#39;</span><span class="p">,</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">km_per_s</span><span class="p">,</span> <span class="s1">&#39;km/s&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Time of observation:&#39;</span><span class="p">,</span> <span class="n">apparent</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">utc_strftime</span><span class="p">())</span>
 </pre></div>

@@ -122,6 +122,64 @@ in this URL to match papers already using it as an identifier):
 <span id="changelog"></span><h2>Changelog<a class="headerlink" href="#changelog-1" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="released-versions">
 <h3>Released versions<a class="headerlink" href="#released-versions" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="v1-51-2024-february-23">
+<h4>v1.51 — 2024 February 23<a class="headerlink" href="#v1-51-2024-february-23" title="Permalink to this headline">¶</a></h4>
+<ul>
+<li><p class="first">Skyfield now supports ephemeris files like <code class="docutils literal notranslate"><span class="pre">de441.bsp</span></code> that have two
+or more segments per target.  In earlier versions of Skyfield, only
+one segment per target would get used, which for <code class="docutils literal notranslate"><span class="pre">de441.bsp</span></code> was
+cutting the range of supported dates in half.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/691">#691</a></p>
+</li>
+<li><p class="first">The documentation now uses the newer name <code class="docutils literal notranslate"><span class="pre">.xyz</span></code>, which has been
+quietly supported for around three years, for the
+<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF" title="skyfield.positionlib.ICRF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICRF</span></code></a> attribute that was originally
+named <code class="docutils literal notranslate"><span class="pre">.position</span></code> and holds its position vector.  The old name
+(which will continue to be supported) could lead to code that looked a
+little redundant, asking for the <code class="docutils literal notranslate"><span class="pre">position</span></code> of a <code class="docutils literal notranslate"><span class="pre">position</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">position</span> <span class="o">=</span> <span class="n">mars</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">position</span>
+</pre></div>
+</div>
+<p>So Skyfield now encourages code to ask for <code class="docutils literal notranslate"><span class="pre">position.xyz</span></code> instead.
+An advantage is that the new name is self-documenting: the name
+reminds the user that it is a 3-vector of Cartesian components.</p>
+</li>
+<li><p class="first">Skyfield’s internal table for the ∆T Earth orientation parameter has
+been updated, so that its predictions now extend to 2026-02-28.</p>
+</li>
+<li><p class="first">Fix: the <a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite.find_events" title="skyfield.sgp4lib.EarthSatellite.find_events"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_events()</span></code></a> Earth
+satellite method was returning an empty list of events if the only
+event in the time period was a lone rising or setting.  It should now
+detect and return them.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/856">#856</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/996">#996</a>
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/1017">#1017</a></p>
+</li>
+<li><p class="first">Fix: the <a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite.find_events" title="skyfield.sgp4lib.EarthSatellite.find_events"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_events()</span></code></a> Earth
+satellite method, faced with a single pass that was very close to the
+start time, was returning an inaccurate setting time.  It should now
+return an accurate setting time.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/1000">#1000</a></p>
+</li>
+<li><p class="first">Fix: the <a class="reference internal" href="api-satellites.html#skyfield.sgp4lib.EarthSatellite.find_events" title="skyfield.sgp4lib.EarthSatellite.find_events"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_events()</span></code></a> Earth
+satellite method would miss a rising that came a fraction of a second
+before the corresponding culmination.  It should now find both.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/559">#559</a></p>
+</li>
+<li><p class="first">Fix: bodies with Kepler orbits (like comets and asteroids) were
+incorrectly returning positions with only a single dimension if given
+a <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> that was an array but had only one
+element.  This could cause the rising and setting almanac routines to
+raise a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> if they found only a single rising or setting.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/959">#959</a></p>
+</li>
+<li><p class="first">Fix: the position vectors for Kepler orbit bodies, like comets and
+asteroids, now have a useful <code class="docutils literal notranslate"><span class="pre">.target_name</span></code> like <code class="docutils literal notranslate"><span class="pre">'Ceres'</span></code> or
+<code class="docutils literal notranslate"><span class="pre">'1P/Halley'</span></code> instead of the less informative value <code class="docutils literal notranslate"><span class="pre">'str'</span></code>.</p>
+</li>
+</ul>
+</div>
 <div class="section" id="v1-50-2024-february-15">
 <h4>v1.50 — 2024 February 15<a class="headerlink" href="#v1-50-2024-february-15" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
