@@ -122,6 +122,27 @@ in this URL to match papers already using it as an identifier):
 <span id="changelog"></span><h2>Changelog<a class="headerlink" href="#changelog-1" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="released-versions">
 <h3>Released versions<a class="headerlink" href="#released-versions" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="v1-52-2025-march-18">
+<h4>v1.52 — 2025 March 18<a class="headerlink" href="#v1-52-2025-march-18" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Fix: on rare occasions the <a class="reference internal" href="api-almanac.html#skyfield.almanac.find_risings" title="skyfield.almanac.find_risings"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_risings()</span></code></a>
+and <a class="reference internal" href="api-almanac.html#skyfield.almanac.find_settings" title="skyfield.almanac.find_settings"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_settings()</span></code></a> routines could return an
+invalid result if no rising or setting was found, instead of returning
+the moment of transit as their fallback result.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/1057">#1057</a></li>
+<li>Fix: if the <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.altaz" title="skyfield.positionlib.ICRF.altaz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">altaz()</span></code></a> method was
+given a position with a NaN coordinate, and was passed
+<code class="docutils literal notranslate"><span class="pre">temperature_C</span></code> and <code class="docutils literal notranslate"><span class="pre">pressure_mbar</span></code> parameters with which to
+compute refraction, then it would loop forever.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/1046">#1046</a></li>
+<li>Fix: the new <a class="reference internal" href="api-framelib.html#skyfield.framelib.mean_equator_and_equinox_of_date" title="skyfield.framelib.mean_equator_and_equinox_of_date"><code class="xref py py-class docutils literal notranslate"><span class="pre">mean_equator_and_equinox_of_date</span></code></a>
+reference frame was off by nearly 0.02&nbsp;arcseconds because it applied
+precession but forgot to apply the frame tie between ICRS and J2000.</li>
+<li>To avoid deprecation warnings on recent Pythons, Skyfield now avoids
+Python’s <code class="docutils literal notranslate"><span class="pre">datetime.utcnow()</span></code> method, and avoids applying the <code class="docutils literal notranslate"><span class="pre">~</span></code>
+unary operator.</li>
+</ul>
+</div>
 <div class="section" id="v1-51-2025-february-23">
 <h4>v1.51 — 2025 February 23<a class="headerlink" href="#v1-51-2025-february-23" title="Permalink to this headline">¶</a></h4>
 <ul>
