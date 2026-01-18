@@ -430,21 +430,23 @@ through the <code class="docutils literal notranslate"><span class="pre">pressur
 
 <dl class="method">
 <dt id="skyfield.positionlib.Astrometric.apparent">
-<code class="descname">apparent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Astrometric.apparent" title="Permalink to this definition">¶</a></dt>
+<code class="descname">apparent</code><span class="sig-paren">(</span><em>deflectors=(10</em>, <em>599</em>, <em>699)</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.positionlib.Astrometric.apparent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute an <a class="reference internal" href="#skyfield.positionlib.Apparent" title="skyfield.positionlib.Apparent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Apparent</span></code></a> position for this body.</p>
-<p>This applies two effects to the position that arise from
-relativity and shift slightly where the other body will appear
-in the sky: the deflection that the image will experience if its
-light passes close to large masses in the Solar System, and the
-aberration of light caused by the observer’s own velocity.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">earth</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">mars</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
-<span class="go">&lt;Apparent GCRS position and velocity at date t center=399 target=499&gt;</span>
-</pre></div>
-</div>
-<p>These transforms convert the position from the BCRS reference
-frame of the Solar System barycenter and to the reference frame
-of the observer.  In the specific case of an Earth observer, the
-output reference frame is the GCRS.</p>
+<p>This applies two effects to an astrometric position that arise
+from relativity and that shift the position slightly: deflection
+as light passes massive bodies on its way to the observer, and
+the aberration of light caused by the observer’s own velocity.</p>
+<p>These two transforms convert the position from the BCRS
+reference frame of the Solar System barycenter to the reference
+frame of the observer.  In the specific case where the observer
+is the Earth, the output reference frame is the GCRS.</p>
+<p>The default value of the <code class="docutils literal notranslate"><span class="pre">deflectors</span></code> argument selects the
+three largest Solar System masses for deflection: the Sun 10,
+Jupiter 599, and Saturn 699.  The caller can override this by
+providing their own tuple of codes, or an empty tuple.</p>
+<p>If the observer is on the Earth’s surface or in Earth orbit,
+then Skyfield also applies the deflection caused by the Earth’s
+own mass.</p>
 </dd></dl>
 
 </dd></dl>

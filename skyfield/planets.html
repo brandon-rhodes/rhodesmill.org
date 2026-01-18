@@ -235,7 +235,7 @@ Here, for example, are the targets supported by DE421:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">planets</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>SPICE kernel file &#39;de421.bsp&#39; has 15 segments
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Segments from kernel file &#39;de421.bsp&#39;:
   JD 2414864.50 - JD 2471184.50  (1899-07-28 through 2053-10-08)
       0 -&gt; 1    SOLAR SYSTEM BARYCENTER -&gt; MERCURY BARYCENTER
       0 -&gt; 2    SOLAR SYSTEM BARYCENTER -&gt; VENUS BARYCENTER
@@ -259,8 +259,8 @@ for any body that an ephemeris links to target zero,
 the Solar System barycenter.
 For example,
 DE421 — as you can see above —
-provides a segment directly linking the Solar System barycenter
-with the Sun:</p>
+provides a segment directly linking the Sun
+to the Solar System barycenter:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sun</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;Sun&#39;</span><span class="p">]</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span>
 </pre></div>
@@ -268,11 +268,10 @@ with the Sun:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&#39;de421.bsp&#39; segment 0 SOLAR SYSTEM BARYCENTER -&gt; 10 SUN
 </pre></div>
 </div>
-<p>By contrast,
-generating a position for the Moon with DE421
-requires Skyfield to add together two segments behind the scenes.
-The first segment provides the position of the Earth-Moon center of gravity,
-while the second segment provides the offset from there to the Moon.</p>
+<p>Linking the Moon to the Solar System barycenter with DE421
+requires two segments,
+one providing the vector to the Earth-Moon system’s center of gravity,
+and the second providing the vector from there to the Moon.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">moon</span> <span class="o">=</span> <span class="n">planets</span><span class="p">[</span><span class="s1">&#39;Moon&#39;</span><span class="p">]</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">moon</span><span class="p">)</span>
 </pre></div>
@@ -282,18 +281,81 @@ while the second segment provides the offset from there to the Moon.</p>
  &#39;de421.bsp&#39; segment 3 EARTH BARYCENTER -&gt; 301 MOON
 </pre></div>
 </div>
+<p>Each time you ask this <code class="docutils literal notranslate"><span class="pre">moon</span></code> object for a position,
+it computes both vectors and adds them together for you.</p>
 <p>Note that most planets are so massive compared to their moons
 that you can ignore the difference
 between the planet and its system barycenter.
 If you want to observe Mars or Jupiter from elsewhere in the Solar System,
 just ask for the <code class="docutils literal notranslate"><span class="pre">Mars</span> <span class="pre">Barycenter</span></code>
-or <code class="docutils literal notranslate"><span class="pre">Jupiter</span> <span class="pre">Barycenter</span></code> position instead.
-The Earth-Moon system is unusual
-for featuring a satellite with so much mass —
-though even in that case,
-their common barycenter is always inside the Earth.
-Only Pluto has a satellite so massive and so distant
-that the Pluto-Charon barycenter is in space between them.</p>
+or <code class="docutils literal notranslate"><span class="pre">Jupiter</span> <span class="pre">Barycenter</span></code>.
+Only the Earth and Pluto have such massive moons
+that their system barycenters are poor approximations
+for the position of the planets themselves.</p>
+</div>
+<div class="section" id="loading-several-ephemeris-files">
+<h2>Loading several ephemeris files<a class="headerlink" href="#loading-several-ephemeris-files" title="Permalink to this headline">¶</a></h2>
+<p>You may sometimes need to load segments
+from several different ephemeris files at once.
+For example,
+if you load <code class="docutils literal notranslate"><span class="pre">jup310.bsp</span></code> for its support of Jupiter’s moons,
+you will find that it doesn’t include most of the other planets.
+This means that you will get an error
+if you try to compute an apparent position,
+because Skyfield —
+wanting to provide its usual high precision —
+will try to compute how much the position is deflected
+by the gravity of the Sun, Jupiter, and Saturn,
+but Saturn is missing from <code class="docutils literal notranslate"><span class="pre">jup310.bsp</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">jup310</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;jup310.bsp&#39;</span><span class="p">)</span>
+<span class="n">ganymede</span> <span class="o">=</span> <span class="n">jup310</span><span class="p">[</span><span class="s1">&#39;Ganymede&#39;</span><span class="p">]</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">ganymede</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">earth</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Traceback (most recent call last):
+  ...
+ValueError: ephemeris is missing &#39;6 SATURN BARYCENTER&#39;...
+</pre></div>
+</div>
+<p>If you simply don’t need the extra accuracy
+that is provided by accounting for deflection,
+you can turn deflection off
+by replacing the default tuple of deflectors <code class="docutils literal notranslate"><span class="pre">(10,</span> <span class="pre">599,</span> <span class="pre">699)</span></code>
+(which means Sun, Jupiter, Saturn)
+with an empty tuple:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">no_deflectors</span> <span class="o">=</span> <span class="p">()</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">ganymede</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">earth</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">(</span><span class="n">no_deflectors</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or, you can leave deflection turned on,
+and supplement your in-memory ephemeris object
+with additional segments
+loaded from another ephemeris file.
+Since the <code class="docutils literal notranslate"><span class="pre">.segments</span></code> attribute of an ephemeris object
+is simply a Python list,
+you can <code class="docutils literal notranslate"><span class="pre">.extend()</span></code> it with further segments:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">jup310</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span>
+
+<span class="n">de421</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;de421.bsp&#39;</span><span class="p">)</span>
+<span class="n">jup310</span><span class="o">.</span><span class="n">segments</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">de421</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span>
+
+<span class="n">after</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">jup310</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Expanded ephemeris from </span><span class="si">{}</span><span class="s1"> to </span><span class="si">{}</span><span class="s1"> segments&#39;</span>
+      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="p">))</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">ganymede</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">earth</span><span class="p">)</span><span class="o">.</span><span class="n">apparent</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Expanded ephemeris from 13 to 28 segments
+</pre></div>
+</div>
+<p>Note that extending the segment list
+does not make any change to your files on disk;
+the files <code class="docutils literal notranslate"><span class="pre">de421.bsp</span></code> and <code class="docutils literal notranslate"><span class="pre">jup310.bsp</span></code> are left unmodified.
+Instead, the <code class="docutils literal notranslate"><span class="pre">.extend()</span></code> maneuver
+simply collects the segments together in memory
+where a single Python ephemeris object can see them.</p>
 </div>
 <div class="section" id="making-an-excerpt-of-an-ephemeris">
 <span id="making-an-ephemeris-excerpt"></span><h2>Making an excerpt of an ephemeris<a class="headerlink" href="#making-an-excerpt-of-an-ephemeris" title="Permalink to this headline">¶</a></h2>
