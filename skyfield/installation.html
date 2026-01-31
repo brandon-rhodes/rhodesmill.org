@@ -143,6 +143,13 @@ deflection only makes a difference of microseconds.</li>
 <li>You can now subtract a NumPy array of floating point TT days from a
 Skyfield <a class="reference internal" href="api-time.html#skyfield.timelib.Time" title="skyfield.timelib.Time"><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></a> object of the same length;
 previously, only a plain int or float was supported as the subtrahend.</li>
+<li>Bugfix: the <code class="docutils literal notranslate"><span class="pre">apparent()</span></code> method in previous Skyfield versions was
+using the wrong coordinates for Earth’s center when computing how
+Earth’s gravity deflects positions for topocentric observers.  This
+has been fixed, and Skyfield’s test suite shows that agreement with
+the Naval Observatory’s high-precision NOVAS library has improved from
+0.5&nbsp;mas to 0.01&nbsp;mas for topocentric positions.  (Astrometric positions
+were already agreeing at the 0.01&nbsp;mas level.)</li>
 </ul>
 </div>
 <div class="section" id="v1-53-2025-april-7">
