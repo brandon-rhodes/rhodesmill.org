@@ -59,8 +59,8 @@ to reach the target.</p>
 we will see how to ask for both Cartesian and spherical coordinates
 in a variety of coordinate systems.</p>
 </div>
-<div class="section" id="icrs-and-equatorial-right-ascension-and-declination">
-<h2>ICRS and equatorial right ascension and declination<a class="headerlink" href="#icrs-and-equatorial-right-ascension-and-declination" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="icrs-right-ascension-and-declination">
+<h2>ICRS right ascension and declination<a class="headerlink" href="#icrs-right-ascension-and-declination" title="Permalink to this headline">¶</a></h2>
 <p><em>Equatorial</em> coordinates,
 which measure angles from the Earth’s equator and poles,
 have already been described in the <a class="reference internal" href="positions.html"><span class="doc">Positions</span></a> chapter:</p>
@@ -96,9 +96,9 @@ astronomers decided it was time to get off of the equatorial treadmill.
 They defined a new coordinate system:
 the ICRS (International Celestial Reference System).
 Its axes point almost exactly along the old J2000 axes,
-but are permanent and immobile,
-and can achieve unbounded precision
-because instead of using the Earth
+but are permanent and immobile.
+It can achieve unbounded precision because,
+instead of using the Earth,
 its axes are tied to the locations of very distant quasars.</p>
 <p>In the <a class="reference internal" href="positions.html"><span class="doc">Positions</span></a> chapter
 you’ve already seen
@@ -147,53 +147,78 @@ Spherical ICRS:
 <p>Note that <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> is a <a class="reference internal" href="api-units.html#skyfield.units.Distance" title="skyfield.units.Distance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Distance</span></code></a> object
 and supports not only <code class="docutils literal notranslate"><span class="pre">.au</span></code>
 but also several other units of measure.</p>
+</div>
+<div class="section" id="equatorial-right-ascension-and-declination">
+<h2>Equatorial right ascension and declination<a class="headerlink" href="#equatorial-right-ascension-and-declination" title="Permalink to this headline">¶</a></h2>
 <p>If instead of using the permanent ICRS
-you want to measure coordinates against the Earth’s axes as they precess,
-then retrieving spherical coordinates is easy:
-simply provide a date to <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radec()</span></code></a>
+you want right ascension and declination
+measured against the Earth’s true equator and axes,
+then retrieving spherical coordinates is easy.
+Simply provide a date to <a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.radec" title="skyfield.positionlib.ICRF.radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radec()</span></code></a>
 and it will return a right ascension and declination
-relative to the Earth’s equator and equinox as of that date.</p>
-<p>It’s less usual for someone to want (<em>x,y,z</em>) coordinates
-measured against the real equator and equinox,
-so there’s no built-in method to retrieve them.
-Instead, you’ll need to import the reference frame itself
-and pass it to the position’s
-<a class="reference internal" href="api-position.html#skyfield.positionlib.ICRF.frame_xyz" title="skyfield.positionlib.ICRF.frame_xyz"><code class="xref py py-meth docutils literal notranslate"><span class="pre">frame_xyz()</span></code></a> method:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.framelib</span> <span class="kn">import</span> \
-    <span class="n">true_equator_and_equinox_of_date</span> <span class="k">as</span> <span class="n">of_date</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cartesian equinox-of-date coordinates:&#39;</span><span class="p">)</span>
-
-<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">frame_xyz</span><span class="p">(</span><span class="n">of_date</span><span class="p">)</span><span class="o">.</span><span class="n">au</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  x = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  y = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  z = </span><span class="si">{:.3f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">()</span>
+relative to the Earth’s equator and equinox as of that date.
+Or provide the string <code class="docutils literal notranslate"><span class="pre">'date'</span></code> and the date of the position itself is used.
+You can find example code in the ‘Positions’ chapter
+in the sections <a class="reference internal" href="positions.html#astrometric-ra-dec"><span class="std std-ref">Astrometric right ascension and declination</span></a> and <a class="reference internal" href="positions.html#apparent-ra-dec"><span class="std std-ref">Apparent right ascension and declination</span></a>.</p>
+<p>But maybe your situation is more complicated.
+You might want (<em>x,y,z</em>) coordinates instead of right ascension and declination.
+Or maybe you want coordinates measured against the mean equator and equinox
+instead of the true equator and equinox.</p>
+<p>In that case you will want to import one of these two reference frames:</p>
+<ul class="simple">
+<li><a class="reference internal" href="api-framelib.html#skyfield.framelib.true_equator_and_equinox_of_date" title="skyfield.framelib.true_equator_and_equinox_of_date"><code class="xref py py-class docutils literal notranslate"><span class="pre">true_equator_and_equinox_of_date</span></code></a> —
+a reference frame
+that accounts for nearly every wobble of the Earth’s real axis.
+The effects of both precession and nutation are included.
+(The only effect omitted is the tiny daily offset 𝑥 and 𝑦
+that you may have loaded from an IERS data file
+as described in the <a class="reference internal" href="accuracy-efficiency.html#polar-motion"><span class="std std-ref">Polar Motion</span></a> section.)</li>
+<li><a class="reference internal" href="api-framelib.html#skyfield.framelib.mean_equator_and_equinox_of_date" title="skyfield.framelib.mean_equator_and_equinox_of_date"><code class="xref py py-class docutils literal notranslate"><span class="pre">mean_equator_and_equinox_of_date</span></code></a> —
+a reference frame
+that includes only the smooth long-term motion of precession,
+but omits all of the smaller wobbles in the Earth’s axis
+that we call nutation.
+The mean equator and equinox are sometimes used to tabulate coordinates
+in books like the <em>Astronomical Almanac</em>.</li>
+</ul>
+<p>You can get both spherical and (<em>x,y,z</em>) coordinates
+for either of these reference frames
+by importing them and using them like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.framelib</span> <span class="kn">import</span> <span class="n">true_equator_and_equinox_of_date</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Spherical equinox-of-date coordinates:&#39;</span><span class="p">)</span>
 
-<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">radec</span><span class="p">(</span><span class="n">position</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+<span class="n">dec</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">frame_latlon</span><span class="p">(</span><span class="n">true_equator_and_equinox_of_date</span><span class="p">)</span>
+
+<span class="n">ra</span><span class="o">.</span><span class="n">preference</span> <span class="o">=</span> <span class="s1">&#39;hours&#39;</span>  <span class="c1"># print hours instead of degrees</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="s1">&#39;right ascension&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="s1">&#39;declination&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="s1">&#39;distance&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cartesian equinox-of-date coordinates:&#39;</span><span class="p">)</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">frame_xyz</span><span class="p">(</span><span class="n">true_equator_and_equinox_of_date</span><span class="p">)</span><span class="o">.</span><span class="n">au</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  x = </span><span class="si">{:.6f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  y = </span><span class="si">{:.6f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  z = </span><span class="si">{:.6f}</span><span class="s1"> au&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Cartesian equinox-of-date coordinates:
-  x = -1.510 au
-  y = -1.808 au
-  z = -0.775 au
-
-Spherical equinox-of-date coordinates:
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Spherical equinox-of-date coordinates:
   15h 20m 28.70s right ascension
   -18deg 13&#39; 18.5&quot; declination
   2.47983 au distance
+
+Cartesian equinox-of-date coordinates:
+  x = -1.510302 au
+  y = -1.807555 au
+  z = -0.775435 au
 </pre></div>
 </div>
-<p>Note that the distance is exactly the same as before,
-because this is exactly the same position —
-it’s merely being measured against a slightly different set of axes.</p>
+<p>The code will look almost exactly the same for the mean equator and equinox,
+except for which frame is imported and used.</p>
 </div>
 <div class="section" id="altitude-and-azimuth-horizonal-coordinates">
 <span id="horizontal-coordinates"></span><h2>Altitude and azimuth (‘horizonal’ coordinates)<a class="headerlink" href="#altitude-and-azimuth-horizonal-coordinates" title="Permalink to this headline">¶</a></h2>
@@ -274,7 +299,8 @@ above either sea level or the ground.</p>
 <p>If you are pointing a telescope or other instrument,
 you might be interested in a variation on equatorial coordinates:
 replacing right ascension with <em>hour angle,</em>
-which measures ±180° from your own local meridian.</p>
+which measures ±180° from your own local meridian,
+whose hour angle is&nbsp;0°.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ha</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">hadec</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hour Angle:&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="p">)</span>
