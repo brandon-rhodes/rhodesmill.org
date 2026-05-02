@@ -455,6 +455,9 @@ for a coordinate system oriented to the Solar System.</p>
 <div class="line">↔ Longitude 0°–360° measured east from March equinox</div>
 </div>
 </div></blockquote>
+<p>Let’s take the <code class="docutils literal notranslate"><span class="pre">position</span></code> we already calculated above,
+which happens to measure the position of Mars as viewed from Earth’s center,
+and express that vector’s direction in ecliptic coordinates:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skyfield.framelib</span> <span class="kn">import</span> <span class="n">ecliptic_frame</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cartesian ecliptic coordinates:&#39;</span><span class="p">)</span>
