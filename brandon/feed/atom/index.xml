@@ -20,7 +20,7 @@ over the first half of 2026
 to produce several updates and releases.
 In case anyone is curious about what I’ve been up to,
 here are the milestones that were reached over the past few months.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;January&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;January&lt;/h2&gt;
 &lt;p&gt;The first month of the year
 saw a new release of my flagship astronomy library,
 &lt;a href="https://rhodesmill.org/skyfield/installation.html#v1-54-2026-january-18"&gt;Skyfield version 1.54&lt;/a&gt;.&lt;/p&gt;
@@ -55,7 +55,7 @@ to an array’s &lt;code&gt;.shape&lt;/code&gt; attribute,
 and so jplephem’s use of that maneuver
 was starting to annoy users with deprecation warnings.
 The library now uses NumPy’s &lt;code&gt;.reshape()&lt;/code&gt; instead.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;February&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;February&lt;/h2&gt;
 &lt;p&gt;There are still folks out there
 who use my &lt;a href="https://rhodesmill.org/pyephem/"&gt;PyEphem&lt;/a&gt;
 astronomy library.
@@ -73,7 +73,7 @@ don’t look for the release in the changelog on the PyEphem web site.
 It turns out that the Sphinx documentation build for PyEphem is broken
 because of breaking changes in Sphinx itself, in setuptools, &lt;em&gt;and&lt;/em&gt; in jinja2.
 Hopefully I’ll get it fixed later this year.)&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;March&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;March&lt;/h2&gt;
 &lt;p&gt;For half a decade
 I have been the custodian of the
 &lt;a href="https://xephem.github.io/XEphem/Site/xephem.html"&gt;XEphem&lt;/a&gt;
@@ -94,7 +94,7 @@ on the main Sky View showing the stars and planets.&lt;/p&gt;
 that were included in the new release,
 click “Change log” in the left-hand menu
 at the &lt;a href="https://xephem.github.io/XEphem/Site/xephem.html"&gt;project’s web site&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;April–June&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;April–June&lt;/h2&gt;
 &lt;p&gt;My main focus in the second quarter of the year
 was wrangling a series of pull requests from a generous contributor,
 Clément Robert,
@@ -113,7 +113,7 @@ every time a major Python version is released,
 asking for a new release of sgp4.
 Instead, the existing binary wheel will continue working
 even as they make new releases of Python.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;I wasn’t at PyCon this year&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;I wasn’t at PyCon this year&lt;/h2&gt;
 &lt;p&gt;I didn’t attend PyCon 2026, in Long Beach, California, this year.&lt;/p&gt;
 &lt;p&gt;If any readers turn out to be seriously curious as to why,
 then I’ll need to set aside some time to sit down
@@ -187,7 +187,7 @@ from every tweak or improvement that I made.&lt;/p&gt;
 &lt;p&gt;Maybe I’ll find myself shifting myself back
 to a majority-keyboard schedule within the next year or two?
 We’ll see!&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;What’s Next?&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;What’s Next?&lt;/h2&gt;
 &lt;p&gt;So what will I focus on as we begin the second half of 2026?
 With the sgp4 release now complete,
 I feel like it’s time to take a deep breath and regroup.&lt;/p&gt;
