@@ -43,7 +43,7 @@ function start_seadragon(name, image_width, image_height, rotation) {
 
     OpenSeadragon({
         id: 'map',
-        prefixUrl: 'https://rawgit.com/fabiovalse/Hub/master/lib/openseadragon/images/',
+        prefixUrl: "https://cdn.jsdelivr.net/npm/openseadragon@2.4.0/build/openseadragon/images/",
         navigatorSizeRatio: 0.25,
         showRotationControl: true,
         degrees: rotation,
