@@ -207,12 +207,17 @@ over one week of July&nbsp;2020:</p>
 <p>Its code includes many design decisions and presentation tweaks
 that you will probably want to adjust for your own project.
 Use the script as a starting point:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fix &quot;AttributeError: module &#39;_tkinter&#39; has no attribute &#39;__file__&#39;&quot;</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>
+
+<span class="c1"># Then, we can proceed with our normal imports.</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="kn">import</span> <span class="n">LineCollection</span>
 
 <span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">Star</span><span class="p">,</span> <span class="n">load</span>
-<span class="kn">from</span> <span class="nn">skyfield.constants</span> <span class="kn">import</span> <span class="n">GM_SUN_Pitjeva_2005_km3_s2</span> <span class="k">as</span> <span class="n">GM_SUN</span>
+<span class="kn">from</span> <span class="nn">skyfield.constants</span> <span class="kn">import</span> <span class="n">GM_SUN_DE440_km3_s2</span> <span class="k">as</span> <span class="n">GM_SUN</span>
 <span class="kn">from</span> <span class="nn">skyfield.data</span> <span class="kn">import</span> <span class="n">hipparcos</span><span class="p">,</span> <span class="n">mpc</span><span class="p">,</span> <span class="n">stellarium</span>
 <span class="kn">from</span> <span class="nn">skyfield.projections</span> <span class="kn">import</span> <span class="n">build_stereographic_projection</span>
 
@@ -247,16 +252,14 @@ Use the script as a starting point:</p>
 <span class="k">with</span> <span class="n">load</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">hipparcos</span><span class="o">.</span><span class="n">URL</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">stars</span> <span class="o">=</span> <span class="n">hipparcos</span><span class="o">.</span><span class="n">load_dataframe</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-<span class="c1"># And the constellation outlines come from Stellarium.  We make a list</span>
-<span class="c1"># of the stars at which each edge stars, and the star at which each edge</span>
-<span class="c1"># ends.</span>
+<span class="c1"># The constellation outlines come from Stellarium.</span>
 
 <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/Stellarium/stellarium/&#39;</span>
-       <span class="s1">&#39;eb47095a9282cf6b981f6e37fe1ea3a3ae0fd167&#39;</span>
-       <span class="s1">&#39;/skycultures/modern_st/constellationship.fab&#39;</span><span class="p">)</span>
+       <span class="s1">&#39;2b10b1a3bb534eb4e7586751054bf67b36c22e53&#39;</span>
+       <span class="s1">&#39;/skycultures/modern_st/index.json&#39;</span><span class="p">)</span>
 
-<span class="k">with</span> <span class="n">load</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">constellations</span> <span class="o">=</span> <span class="n">stellarium</span><span class="o">.</span><span class="n">parse_constellations</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">load</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;modern_st_index.json&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">constellations</span> <span class="o">=</span> <span class="n">stellarium</span><span class="o">.</span><span class="n">parse_constellations_json</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
 <span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">edge</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">edges</span> <span class="ow">in</span> <span class="n">constellations</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">]</span>
 <span class="n">edges_star1</span> <span class="o">=</span> <span class="p">[</span><span class="n">star1</span> <span class="k">for</span> <span class="n">star1</span><span class="p">,</span> <span class="n">star2</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">]</span>

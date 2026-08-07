@@ -122,6 +122,37 @@ in this URL to match papers already using it as an identifier):
 <span id="changelog"></span><h2>Changelog<a class="headerlink" href="#changelog-1" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="released-versions">
 <h3>Released versions<a class="headerlink" href="#released-versions" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="v1-55-2026-august-7">
+<h4>v1.55 — 2026 August 7<a class="headerlink" href="#v1-55-2026-august-7" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>The Stellarium project has adopted a new file format
+for storing constellation lines,
+so Skyfield has gained a new function
+<a class="reference internal" href="api.html#skyfield.data.stellarium.parse_constellations_json" title="skyfield.data.stellarium.parse_constellations_json"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_constellations_json()</span></code></a>
+and the example script <a class="reference internal" href="example-plots.html#neowise-chart"><span class="std std-ref">Drawing a finder chart for comet NEOWISE</span></a> in Skyfield’s documentation
+has been updated to use it.</li>
+<li>A new <em>GM</em><sub>☉</sub> constant is available for use with Kepler orbits.
+It’s named <code class="docutils literal notranslate"><span class="pre">GM_SUN_DE440_km3_s2</span></code>
+and uses the value published with the DE440 ephemeris.
+The difference between it and the older constant
+<code class="docutils literal notranslate"><span class="pre">GM_SUN_Pitjeva_2005_km3_s2</span></code> is probably too small
+to make any practical difference —
+they differ by a proportion of only about 5.4×10<sup>−12</sup> —
+but because the newer constant’s name is easier to read and type,
+the Kepler documentation has been tweaked to use it instead.</li>
+<li>Fix: if
+<a class="reference internal" href="api-almanac.html#skyfield.almanac.find_risings" title="skyfield.almanac.find_risings"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_risings()</span></code></a> or
+<a class="reference internal" href="api-almanac.html#skyfield.almanac.find_settings" title="skyfield.almanac.find_settings"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_settings()</span></code></a>
+converged too quickly on the exact time of rising or setting,
+then they would print a
+<code class="docutils literal notranslate"><span class="pre">RuntimeWarning:</span> <span class="pre">invalid</span> <span class="pre">value</span> <span class="pre">encountered</span> <span class="pre">in</span> <span class="pre">divide</span></code>
+and return a NaN value instead of a time.
+<a class="reference external" href="https://github.com/skyfielders/python-skyfield/issues/1140">#1140</a></li>
+<li>Skyfield’s refraction logic
+should no longer trigger the recent NumPy <code class="docutils literal notranslate"><span class="pre">FutureWarning</span></code>
+about the changes that NumPy is planning to make to <code class="docutils literal notranslate"><span class="pre">np.bool</span></code>.</li>
+</ul>
+</div>
 <div class="section" id="v1-54-2026-january-18">
 <h4>v1.54 — 2026 January 18<a class="headerlink" href="#v1-54-2026-january-18" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">

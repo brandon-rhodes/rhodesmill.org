@@ -845,20 +845,27 @@ from a full name back to an abbreviation:</p>
 <dl class="function">
 <dt id="skyfield.data.stellarium.parse_constellations">
 <code class="descclassname">skyfield.data.stellarium.</code><code class="descname">parse_constellations</code><span class="sig-paren">(</span><em>lines</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.data.stellarium.parse_constellations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list of constellation outlines.</p>
-<p>Each constellation outline is a list of edges, each of which is
-drawn between a pair of specific stars:</p>
+<dd><p>Parse an old-fashioned <code class="docutils literal notranslate"><span class="pre">constellationship.fab</span></code> file.</p>
+<p>Stellarium has deprecated this file format.  See the docstring of
+the next function for the structure of the return value.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="skyfield.data.stellarium.parse_constellations_json">
+<code class="descclassname">skyfield.data.stellarium.</code><code class="descname">parse_constellations_json</code><span class="sig-paren">(</span><em>lines</em><span class="sig-paren">)</span><a class="headerlink" href="#skyfield.data.stellarium.parse_constellations_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse Stellarium <code class="docutils literal notranslate"><span class="pre">/skycultures/modern_st/index.json</span></code> constellations.</p>
+<p>The return value is a Python list of tuples, each giving a 3-letter
+constellation abbreviation and a list of line segments to be drawn
+between pairs of stars in that constellation:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
-    <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">[(</span><span class="n">star1</span><span class="p">,</span> <span class="n">star2</span><span class="p">),</span> <span class="p">(</span><span class="n">star3</span><span class="p">,</span> <span class="n">star4</span><span class="p">),</span> <span class="o">...</span><span class="p">]),</span>
-    <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">[(</span><span class="n">star1</span><span class="p">,</span> <span class="n">star2</span><span class="p">),</span> <span class="p">(</span><span class="n">star3</span><span class="p">,</span> <span class="n">star4</span><span class="p">),</span> <span class="o">...</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s1">&#39;And&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="mi">677</span><span class="p">,</span> <span class="mi">3092</span><span class="p">),</span> <span class="p">(</span><span class="mi">3092</span><span class="p">,</span> <span class="mi">5447</span><span class="p">),</span> <span class="o">...</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s1">&#39;Ant&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="mi">53502</span><span class="p">,</span> <span class="mi">51172</span><span class="p">),</span> <span class="p">(</span><span class="mi">51172</span><span class="p">,</span> <span class="mi">46515</span><span class="p">)]),</span>
+    <span class="p">(</span><span class="s1">&#39;Aps&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="mi">72370</span><span class="p">,</span> <span class="mi">81065</span><span class="p">),</span> <span class="p">(</span><span class="mi">80047</span><span class="p">,</span> <span class="mi">81852</span><span class="p">),</span> <span class="o">...</span><span class="p">]),</span>
     <span class="o">...</span>
 <span class="p">]</span>
 </pre></div>
 </div>
-<p>Each name is a 3-letter constellation abbreviation; each star is an
-integer Hipparcos catalog number.  See <a class="reference internal" href="example-plots.html#neowise-chart"><span class="std std-ref">Drawing a finder chart for comet NEOWISE</span></a> for an
-example of how to combine this data with the Hipparcos star catalog
-to draw constellation lines on a chart.</p>
+<p>Each star is identified by its integer Hipparcos catalog number.</p>
 </dd></dl>
 
 <dl class="function">
